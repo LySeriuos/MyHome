@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home
+namespace Device_Profile
 {
-    internal class DeviceName
+    public enum VisualDevicesType
     {
+        Tv,       
+        Projector,
+        ExtraMonitor,
+        Other
     }
 }
