@@ -1,4 +1,5 @@
 ﻿
+using My_Home;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,13 +63,51 @@ namespace Device_Profile
 			set { _deviceModelNumber = value; }
 		}
 
-		private string myVar;
+		private string _ipAdrress;
 
-		public string MyProperty
+		public string IpAdress
 		{
-			get { return myVar; }
-			set { myVar = value; }
+			get { return _ipAdrress; }
+			set { _ipAdrress = value; }
 		}
+
+		private string _macAdrress;
+
+		public string MacAdrress
+		{
+			get { return _macAdrress; }
+			set { _macAdrress = value; }
+		}
+
+		private string _deviceProduser;
+
+		public string DeviceProduser
+		{
+			get { return _deviceProduser; }
+			set { _deviceProduser = value; }
+		}
+
+		private string _manualBookLink;
+
+		public string ManualBookLink
+		{
+			get { return _manualBookLink; }
+			set { _manualBookLink = value; }
+		}
+
+		private DeviceWarranty _deviceWarranty;
+
+		public DeviceWarranty DeviceWarranty
+        {
+			get { return _deviceWarranty; }
+			set { _deviceWarranty = value; }
+		}
+
+
+
+
+
+
 
 
 
