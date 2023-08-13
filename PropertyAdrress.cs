@@ -49,13 +49,7 @@ namespace My_Home
 			set { _country = value; }
 		}
 
-		private DevicesProfile _devicesProfile;
-
-		public DevicesProfile DevicesProfile
-		{
-			get { return _devicesProfile; }
-			set { _devicesProfile = value; }
-		}
+		
 
 	}
 }
