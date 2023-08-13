@@ -27,17 +27,17 @@ namespace My_Home
 
 		// password class will be added later
 		// not sure about this class here
-		private DevicesProfile _devicesProfile;
-
-		public DevicesProfile DevicseProfile
+		private List<DevicesProfile> _devicesProfile;
+		
+		public List<DevicesProfile> DevicesProfile
 		{
 			get { return _devicesProfile; }
 			set { _devicesProfile = value; }
 		}
 
-		private Property _property;
+		private List <Property> _property;
 
-		public Property Property
+		public List <Property> Property
 		{
 			get { return _property; }
 			set { _property = value; }
