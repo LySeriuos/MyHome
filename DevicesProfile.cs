@@ -27,34 +27,6 @@ namespace Device_Profile
 			set { _deviceType = value; }
 		}
 
-		private KitchenDevicesType _kitchenDevicesType;
-		public KitchenDevicesType KitchenDevicesType
-		{
-			get { return _kitchenDevicesType; }
-			set { _kitchenDevicesType = value; }
-		}
-
-		private WashingCleaningDevicesType _washingCleaningDevicesType;
-		public WashingCleaningDevicesType WashingCleaningDevicesType
-		{
-			get { return _washingCleaningDevicesType; }
-			set { _washingCleaningDevicesType = value; }
-		}
-
-		private VisualDevicesType _visualDeviceType;
-		public VisualDevicesType VisualDevicesType
-		{
-			get { return _visualDeviceType; }
-			set { _visualDeviceType = value; }
-		}
-
-		private SmartDevicesType _smartDevicesType;
-		public SmartDevicesType SmartDevicesType
-		{
-			get { return _smartDevicesType; }
-			set { _smartDevicesType = value; }
-		}
-
 		private string _deviceModelNumber;
 
 		public string DeviceModelNumber
