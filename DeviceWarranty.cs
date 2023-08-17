@@ -24,20 +24,20 @@ namespace My_Home
 			set { _receiptLink = value; }
 		}
 
-		private string _shopName;
+		private Shop _shop;
 
-		public string ShopName									//maybe store / shop class
-		{														//maybe store / shop class
-			get { return _shopName; }							//maybe store / shop class
-			set { _shopName = value; }							//maybe store / shop class
-		}														//maybe store / shop class
-																//maybe store / shop class
-		private string _shopWebAdrress;							//maybe store / shop class
-																//maybe store / shop class
-		public string ShopWebAdrress							//maybe store / shop class
-		{														//maybe store / shop class
-			get { return _shopWebAdrress; }						//maybe store / shop class
-			set { _shopWebAdrress = value; }					//maybe store / shop class
+		public Shop Shop								
+		{												
+			get { return _shop; }						
+			set { _shop = value; }						
+		}												
+														
+		private string _shopWebAdrress;					
+														
+		public string ShopWebAdrress					
+		{												
+			get { return _shopWebAdrress; }				
+			set { _shopWebAdrress = value; }					
 		}
 
 		private DateTime _purchaseDate;
