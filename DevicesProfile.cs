@@ -20,11 +20,11 @@ namespace Device_Profile
 			set { _deviceName = value; }
 		}
 
-		private SoundDevicesType _soundDeviceType;
-		public SoundDevicesType SoundDevicesType
+		private DeviceType _deviceType;
+		public DeviceType DeviceType
 		{
-			get { return _soundDeviceType; }
-			set { _soundDeviceType = value; }
+			get { return _deviceType; }
+			set { _deviceType = value; }
 		}
 
 		private KitchenDevicesType _kitchenDevicesType;

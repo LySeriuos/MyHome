@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class PropertyAdrress
+    internal class Address
     {
 		private string _streetName;
 

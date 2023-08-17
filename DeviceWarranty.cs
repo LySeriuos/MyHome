@@ -8,9 +8,9 @@ namespace My_Home
 {
     internal class DeviceWarranty
     {
-		private int _warrantyPeriod;
+		private TimeSpan _warrantyPeriod;
 
-		public int WarrantyPeriod
+		public TimeSpan WarrantyPeriod
 		{
 			get { return _warrantyPeriod; }
 			set { _warrantyPeriod = value; }
@@ -26,18 +26,18 @@ namespace My_Home
 
 		private string _shopName;
 
-		public string ShopName
-		{
-			get { return _shopName; }
-			set { _shopName = value; }
-		}
-
-		private string _shopWebAdrress;
-
-		public string ShopWebAdrress
-		{
-			get { return _shopWebAdrress; }
-			set { _shopWebAdrress = value; }
+		public string ShopName									//maybe store / shop class
+		{														//maybe store / shop class
+			get { return _shopName; }							//maybe store / shop class
+			set { _shopName = value; }							//maybe store / shop class
+		}														//maybe store / shop class
+																//maybe store / shop class
+		private string _shopWebAdrress;							//maybe store / shop class
+																//maybe store / shop class
+		public string ShopWebAdrress							//maybe store / shop class
+		{														//maybe store / shop class
+			get { return _shopWebAdrress; }						//maybe store / shop class
+			set { _shopWebAdrress = value; }					//maybe store / shop class
 		}
 
 		private DateTime _purchaseDate;

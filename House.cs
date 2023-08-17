@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class Property
+    internal class House
     {
         private string _propertyName;
 
@@ -17,9 +17,9 @@ namespace My_Home
             set { _propertyName = value; }
         }
 
-        private PropertyAdrress _propertyAdrress;
+        private Address _propertyAdrress;
 
-        public PropertyAdrress PropertyAdress
+        public Address PropertyAdress
         {
             get { return _propertyAdrress; }
             set { _propertyAdrress = value; }
