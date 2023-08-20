@@ -25,12 +25,20 @@ namespace My_Home
         }
 
         private Address _address;
-
         public Address Adrress
         {
             get { return _address; }
             set { _address = value; }
         }
+
+        private int _phoneNumber;
+
+        public int PhoneNumber
+        {
+            get { return _phoneNumber; }
+            set { _phoneNumber = value; }
+        }
+
 
     }
 }

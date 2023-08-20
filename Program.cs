@@ -6,11 +6,7 @@ namespace My_Home
     {
         static void Main(string[] args)
         {
-            List <string> theList = DeviceDetails.GetVideo();
-            foreach (var item in theList)
-            {
-                Console.WriteLine(item);
-            }
+            
         }
     }
 }
