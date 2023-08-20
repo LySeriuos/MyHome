@@ -30,14 +30,6 @@ namespace My_Home
 		{												
 			get { return _shop; }						
 			set { _shop = value; }						
-		}												
-														
-		private string _shopWebAdrress;					
-														
-		public string ShopWebAdrress					
-		{												
-			get { return _shopWebAdrress; }				
-			set { _shopWebAdrress = value; }					
 		}
 
 		private DateTime _purchaseDate;

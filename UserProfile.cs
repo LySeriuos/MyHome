@@ -1,4 +1,4 @@
-﻿using Device_Profile;
+﻿using MyHome;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +29,9 @@ namespace My_Home
 		// not sure about this class here
 
 
-		private List <House> _house;
+		private List <RealEstate> _house;
 
-		public List <House> House
+		public List <RealEstate> House
 		{
 			get { return _house; }
 			set { _house = value; }

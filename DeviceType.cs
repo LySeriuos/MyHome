@@ -11,22 +11,14 @@ namespace My_Home
         Audio,
         Video,
         Computer,
-        DataStorage,
         MobileDevice,
-        Watches,
-        Navigation,
-        Camera,
         Kitchen,
         Bathroom,
-        Sound,
         Garden,
-        SmartLights,
-        HomeAssistans,
-        WashingDrying,
         Cleaning,
-        SecurityCamera,
-        SecuritySensor,
-        HybridDevice, // these kind of devices has few purposes, but always one is the main so i don't know if I need this category.
+        Security,
+        Other,
+        MultiDevice, // these kind of devices has few purposes, but always one is the main so i don't know if I need this category.
     }
 
 }

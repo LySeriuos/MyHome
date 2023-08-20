@@ -1,10 +1,16 @@
-﻿namespace My_Home
+﻿using MyHome;
+
+namespace My_Home
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            List <string> theList = DeviceDetails.GetVideo();
+            foreach (var item in theList)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }

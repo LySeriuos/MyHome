@@ -1,4 +1,4 @@
-﻿using Device_Profile;
+﻿using MyHome;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class House
+    internal class RealEstate
     {
         private string _propertyName;
 
