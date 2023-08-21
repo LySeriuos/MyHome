@@ -35,7 +35,7 @@ namespace My_Home
             jamesHouse1.RealEstateName = "James House";
             jamesHouse1.DevicesProfile = new List<DevicesProfile>();
            
-            //Address 1
+            //Address RealEstate 1
 
             Address jamesHouse1Address = new Address();
             jamesHouse1Address.StreetName = "Walton Street";
@@ -131,7 +131,7 @@ namespace My_Home
             int jamesDevice2WarrantyPeriod = 1;
             jamesDevice2Warranty.ExtraDeviceInsuranceLength = 1;
             DateTime purchaseDate2 = new DateTime(2023, 1, 23);
-            DateTime validUntil2 = purchaseDate1.AddYears(jamesDevice2WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
+            DateTime validUntil2 = purchaseDate2.AddYears(jamesDevice2WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
             jamesDevice2Warranty.PurchaseDate = purchaseDate2;
             now = DateTime.Now;
             jamesDevice2Warranty.WarrantyPeriod = validUntil2 - now;
@@ -184,9 +184,7 @@ namespace My_Home
             johnHouse1.RealEstateName = "John Apartament";
             johnHouse1.DevicesProfile = new List<DevicesProfile>();
 
-            
-
-            //Address 1
+            //Address Realestate 1
 
             Address johnHouse1Address = new Address();
             johnHouse1Address.StreetName = "Valldammsgatan";
@@ -199,32 +197,32 @@ namespace My_Home
 
             // DevicesProfile 1
 
-            DevicesProfile johnApartamentDevice1 = new DevicesProfile();
-            johnApartamentDevice1.DeviceName = "DishWasher";
-            johnApartamentDevice1.DeviceType = DeviceType.Kitchen;
-            johnApartamentDevice1.DeviceModelNumber = "DBI8557MIMXXLBS";
-            johnApartamentDevice1.DeviceSerialNumber = "131002350324";
-            johnApartamentDevice1.IpAdress = "228.215.193.124";
-            johnApartamentDevice1.MacAdrress = "87-86-1F-E0-A3-A6";
-            johnApartamentDevice1.DeviceProduser = "Asko";
-            johnApartamentDevice1.ManualBookLink = "https://www.bruksanvisni.ng/asko/dbi8557mimxxls/bruksanvisning";
+            DevicesProfile johnHouse1Device1 = new DevicesProfile();
+            johnHouse1Device1.DeviceName = "DishWasher";
+            johnHouse1Device1.DeviceType = DeviceType.Kitchen;
+            johnHouse1Device1.DeviceModelNumber = "DBI8557MIMXXLBS";
+            johnHouse1Device1.DeviceSerialNumber = "131002350324";
+            johnHouse1Device1.IpAdress = "228.215.193.124";
+            johnHouse1Device1.MacAdrress = "87-86-1F-E0-A3-A6";
+            johnHouse1Device1.DeviceProduser = "Asko";
+            johnHouse1Device1.ManualBookLink = "https://www.bruksanvisni.ng/asko/dbi8557mimxxls/bruksanvisning";
             
 
             // Device Warranty 1 
 
-            DeviceWarranty johnAprtmntDevice1Warranty = new DeviceWarranty
+            DeviceWarranty johnHouse1Device1Warranty = new DeviceWarranty
             {
                 ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
-            int johnAprtmntDevice1WarrantyPeriod = 2;
-            johnAprtmntDevice1Warranty.ExtraDeviceInsuranceLength = 3;
+            int johnHouse1Device1WarrantyPeriod = 2;
+            johnHouse1Device1Warranty.ExtraDeviceInsuranceLength = 3;
             DateTime purchaseDate3 = new DateTime(2022, 6, 10);
-            DateTime validUntil3 = purchaseDate1.AddYears(johnAprtmntDevice1WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
-            johnAprtmntDevice1Warranty.PurchaseDate = purchaseDate3;
+            DateTime validUntil3 = purchaseDate3.AddYears(johnHouse1Device1WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
+            johnHouse1Device1Warranty.PurchaseDate = purchaseDate3;
             now = DateTime.Now;
-            johnAprtmntDevice1Warranty.WarrantyPeriod = validUntil3 - now;
-            johnApartamentDevice1.DeviceWarranty = johnAprtmntDevice1Warranty;
+            johnHouse1Device1Warranty.WarrantyPeriod = validUntil3 - now;
+            johnHouse1Device1.DeviceWarranty = johnHouse1Device1Warranty;
 
             // Shop 1
 
@@ -232,7 +230,7 @@ namespace My_Home
             shop3.ShopName = "Elgiganten";
             shop3.PhoneNumber = 0771115115;
             shop3.ShopWebAdrress = "https://www.elgiganten.se/";
-            johnAprtmntDevice1Warranty.Shop = shop3;
+            johnHouse1Device1Warranty.Shop = shop3;
 
             // Shop 1 Address
 
@@ -241,10 +239,83 @@ namespace My_Home
             shop3Address.HouseNumber = 110;
             shop3Address.City = "Logan";
             shop3Address.Country = "USA";
-            johnAprtmntDevice1Warranty.Shop.Adrress = shop3Address;
+            johnHouse1Device1Warranty.Shop.Adrress = shop3Address;
             
             // Adding Device object to the RealEstate list
-            johnHouse1.DevicesProfile.Add(johnApartamentDevice1);
+            johnHouse1.DevicesProfile.Add(johnHouse1Device1);
+
+            // Adding RealEstate object to the userProfile List
+            userProfile2.House.Add(johnHouse1);
+
+
+            RealEstate johnHouse2 = new RealEstate();
+
+            //Place name 1
+
+            johnHouse2.RealEstateName = "John House To Rent";
+            johnHouse2.DevicesProfile = new List<DevicesProfile>();
+
+            //Address Realestate 1
+
+            Address johnHouse2Address = new Address();
+            johnHouse2Address.StreetName = "Vipgränden";
+            johnHouse2Address.HouseNumber = 81;
+            johnHouse2Address.HouseNumberExtension = "A";
+            johnHouse2Address.City = "Gullringen";
+            johnHouse2Address.Country = "Sweden";
+            johnHouse2.Address = johnHouse2Address;
+
+            // maybe I should put State, it could be useful
+
+            // DevicesProfile 1
+
+            DevicesProfile johnHouse2Device1 = new DevicesProfile();
+            johnHouse2Device1.DeviceName = "Washing-Drying Machine";
+            johnHouse2Device1.DeviceType = DeviceType.Cleaning; // could be gruoped as multidevice but still it should be grouped as Cleaning device
+            johnHouse2Device1.DeviceModelNumber = "CV90V6S2BA";
+            johnHouse2Device1.DeviceSerialNumber = "1ABC2DEF345678G";
+            johnHouse2Device1.IpAdress = "188.188.72.36";
+            johnHouse2Device1.MacAdrress = "F8-15-50-CC-A3-6E";
+            johnHouse2Device1.DeviceProduser = "LG";
+            // local file
+            johnHouse2Device1.ManualBookLink = "file:///C:/Users/shiranco.DESKTOP-HRN41TE/Downloads/[EPREL_20230519175627742_20230519175627742]%20(1).pdf"; 
+
+
+            // Device Warranty 1 
+
+            DeviceWarranty johnHouse2Device1Warranty = new DeviceWarranty
+            {
+                ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
+                ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
+            };
+            int johnhouse2Device1WarrantyPeriod = 2;
+            johnHouse1Device1Warranty.ExtraDeviceInsuranceLength = 3;
+            DateTime purchaseDate4 = new DateTime(2022, 6, 10);
+            DateTime validUntil4 = purchaseDate4.AddYears(johnhouse2Device1WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
+            johnHouse1Device1Warranty.PurchaseDate = purchaseDate4;
+            now = DateTime.Now;
+            johnHouse1Device1Warranty.WarrantyPeriod = validUntil4 - now;
+            johnHouse1Device1.DeviceWarranty = johnHouse2Device1Warranty;
+
+            // Shop 1
+
+            Shop shop3 = new Shop();
+            shop3.ShopName = "Elgiganten";
+            shop3.PhoneNumber = 0771115115;
+            shop3.ShopWebAdrress = "https://www.elgiganten.se/";
+            johnHouse1Device1Warranty.Shop = shop3;
+
+            // Shop 1 Address
+
+            Address shop3Address = new Address();
+            shop3Address.StreetName = "1007 N Main St";
+            shop3Address.HouseNumber = 110;
+            shop3Address.City = "Logan";
+            shop3Address.Country = "USA";
+            johnHouse1Device1Warranty.Shop.Adrress = shop3Address;
+
+            // Adding Device object to the RealEstate list
+            johnHouse1.DevicesProfile.Add(johnHouse1Device1);
 
             // Adding RealEstate object to the userProfile List
             userProfile2.House.Add(johnHouse1);
