@@ -25,6 +25,15 @@ namespace My_Home
 			set { _houseNumber = value; }
 		}
 
+		private string _apartamentNumber;
+
+		public string ApartamentNumber
+		{
+			get { return _apartamentNumber; }
+			set { _apartamentNumber = value; }
+		}
+
+
 		private string _houseNumberExtension;
 
 		public string HouseNumberExtension

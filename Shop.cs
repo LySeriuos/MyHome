@@ -31,9 +31,9 @@ namespace My_Home
             set { _address = value; }
         }
 
-        private int _phoneNumber;
+        private long _phoneNumber;
 
-        public int PhoneNumber
+        public long PhoneNumber
         {
             get { return _phoneNumber; }
             set { _phoneNumber = value; }

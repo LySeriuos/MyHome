@@ -212,13 +212,13 @@ namespace My_Home
 
             DeviceWarranty johnHouse1Device1Warranty = new DeviceWarranty
             {
-                ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
-                ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
+                ReceiptLink = "https://img.freepik.com/free-vector/receipt-template-collection-with-realistic-design_23-2147910552.jpg?w=1380&t=st=1692650469~exp=1692651069~hmac=91e29da374bc7eddec6ec6c10e9cb828b93ac76cf4c79d558a6ea1257ef728a4",
+                ExtraDeviceInsuranceLink = "https://img.yumpu.com/20322498/1/500x640/ladda-ned-produktblad-som-pdf.jpg"
             };
             int johnHouse1Device1WarrantyPeriod = 2;
             johnHouse1Device1Warranty.ExtraDeviceInsuranceLength = 3;
             DateTime purchaseDate3 = new DateTime(2022, 6, 10);
-            DateTime validUntil3 = purchaseDate3.AddYears(johnHouse1Device1WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
+            DateTime validUntil3 = purchaseDate3.AddYears(johnHouse1Device1WarrantyPeriod + johnHouse1Device1Warranty.ExtraDeviceInsuranceLength);
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate3;
             now = DateTime.Now;
             johnHouse1Device1Warranty.WarrantyPeriod = validUntil3 - now;
@@ -235,10 +235,10 @@ namespace My_Home
             // Shop 1 Address
 
             Address shop3Address = new Address();
-            shop3Address.StreetName = "1007 N Main St";
-            shop3Address.HouseNumber = 110;
-            shop3Address.City = "Logan";
-            shop3Address.Country = "USA";
+            shop3Address.StreetName = "Norra Svedengatan";
+            shop3Address.HouseNumber = 19;
+            shop3Address.City = "Linköping";
+            shop3Address.Country = "Sweden";
             johnHouse1Device1Warranty.Shop.Adrress = shop3Address;
             
             // Adding Device object to the RealEstate list
@@ -250,12 +250,12 @@ namespace My_Home
 
             RealEstate johnHouse2 = new RealEstate();
 
-            //Place name 1
+            //Place name 2
 
-            johnHouse2.RealEstateName = "John House To Rent";
+            johnHouse2.RealEstateName = "John House Rental";
             johnHouse2.DevicesProfile = new List<DevicesProfile>();
 
-            //Address Realestate 1
+            //Address Realestate 2
 
             Address johnHouse2Address = new Address();
             johnHouse2Address.StreetName = "Vipgränden";
@@ -264,10 +264,9 @@ namespace My_Home
             johnHouse2Address.City = "Gullringen";
             johnHouse2Address.Country = "Sweden";
             johnHouse2.Address = johnHouse2Address;
-
             // maybe I should put State, it could be useful
 
-            // DevicesProfile 1
+            // Realestate 2 DevicesProfile 1
 
             DevicesProfile johnHouse2Device1 = new DevicesProfile();
             johnHouse2Device1.DeviceName = "Washing-Drying Machine";
@@ -278,10 +277,10 @@ namespace My_Home
             johnHouse2Device1.MacAdrress = "F8-15-50-CC-A3-6E";
             johnHouse2Device1.DeviceProduser = "LG";
             // local file
-            johnHouse2Device1.ManualBookLink = "file:///C:/Users/shiranco.DESKTOP-HRN41TE/Downloads/[EPREL_20230519175627742_20230519175627742]%20(1).pdf"; 
+            johnHouse2Device1.ManualBookLink = "file:///C:/Users/shiranco.DESKTOP-HRN41TE/Downloads/[EPREL_20230519175627742_20230519175627742]%20(1).pdf";
 
 
-            // Device Warranty 1 
+            // Realestate 2 Device1 Warranty 
 
             DeviceWarranty johnHouse2Device1Warranty = new DeviceWarranty
             {
@@ -289,40 +288,89 @@ namespace My_Home
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
             int johnhouse2Device1WarrantyPeriod = 2;
-            johnHouse1Device1Warranty.ExtraDeviceInsuranceLength = 3;
-            DateTime purchaseDate4 = new DateTime(2022, 6, 10);
+            johnHouse1Device1Warranty.ExtraDeviceInsuranceLength = 5;
+            DateTime purchaseDate4 = new DateTime(2020, 1, 14);
             DateTime validUntil4 = purchaseDate4.AddYears(johnhouse2Device1WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate4;
             now = DateTime.Now;
             johnHouse1Device1Warranty.WarrantyPeriod = validUntil4 - now;
             johnHouse1Device1.DeviceWarranty = johnHouse2Device1Warranty;
 
-            // Shop 1
+            // Realestate 2 Shop 1
 
-            Shop shop3 = new Shop();
-            shop3.ShopName = "Elgiganten";
-            shop3.PhoneNumber = 0771115115;
-            shop3.ShopWebAdrress = "https://www.elgiganten.se/";
-            johnHouse1Device1Warranty.Shop = shop3;
+            Shop shop4 = new Shop();
+            shop4.ShopName = "Elgiganten";
+            shop4.PhoneNumber = 0771115115;
+            shop4.ShopWebAdrress = "https://www.elgiganten.se/";
+            johnHouse1Device1Warranty.Shop = shop4;
 
-            // Shop 1 Address
+            // Realestate 2 Shop 1 Address
 
-            Address shop3Address = new Address();
-            shop3Address.StreetName = "1007 N Main St";
-            shop3Address.HouseNumber = 110;
-            shop3Address.City = "Logan";
-            shop3Address.Country = "USA";
-            johnHouse1Device1Warranty.Shop.Adrress = shop3Address;
+            Address shop4Address = new Address();
+            shop4Address.StreetName = "Ljunghedsvägen";
+            shop4Address.HouseNumber = 7;
+            shop4Address.City = "Västervik";
+            shop4Address.Country = "Sweden";
+            johnHouse1Device1Warranty.Shop.Adrress = shop4Address;
 
             // Adding Device object to the RealEstate list
-            johnHouse1.DevicesProfile.Add(johnHouse1Device1);
+            johnHouse2.DevicesProfile.Add(johnHouse2Device1);
+
+            // Realestate 2 DevicesProfile 2
+
+            DevicesProfile johnHouse2Device2 = new DevicesProfile();
+            johnHouse2Device2.DeviceName = "Main Bedroom TV";
+            johnHouse2Device2.DeviceType = DeviceType.Video; // could be gruoped as multidevice but still it should be grouped as Cleaning device
+            johnHouse2Device2.DeviceModelNumber = "TQ55LS03BGUXXC";
+            johnHouse2Device2.DeviceSerialNumber = "AKZ43CPQ505923D";
+            johnHouse2Device2.IpAdress = "134.121.255.219";
+            johnHouse2Device2.MacAdrress = "B5-76-8F-F6-7A-1B";
+            johnHouse2Device2.DeviceProduser = "Samsung";
+            johnHouse2Device2.ManualBookLink = "https://www.samsung.com/uk/support/model/QE55LS03BGUXXU/#downloads";
+
+
+            // Realestate 2 Device Warranty 2 
+
+            DeviceWarranty johnHouse2Device2Warranty = new DeviceWarranty
+            {
+                ReceiptLink = "https://qph.cf2.quoracdn.net/main-qimg-8aa597ee2d773fce151545846c9d08a0-pjlq",
+                ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
+            };
+            int johnhouse2Device2WarrantyPeriod = 2;
+            johnHouse2Device2Warranty.ExtraDeviceInsuranceLength = 2;
+            DateTime purchaseDate5 = new DateTime(2021, 3, 23);
+            DateTime validUntil5 = purchaseDate4.AddYears(johnhouse2Device2WarrantyPeriod + johnHouse2Device2Warranty.ExtraDeviceInsuranceLength);
+            johnHouse1Device1Warranty.PurchaseDate = purchaseDate5;
+            now = DateTime.Now;
+            johnHouse1Device1Warranty.WarrantyPeriod = validUntil5 - now;
+            johnHouse1Device1.DeviceWarranty = johnHouse2Device1Warranty;
+
+            // Realestate 2 Shop 2
+
+            Shop shop5 = new Shop();
+            shop4.ShopName = "Elgiganten";
+            shop4.PhoneNumber = 0771115115;
+            shop4.ShopWebAdrress = "https://www.elgiganten.se/";
+            johnHouse1Device1Warranty.Shop = shop5;
+
+            // Real Estate 2 Shop 2 Address
+
+            // if it is the same shop?
+            Address shop5Address = new Address();
+            shop5Address.StreetName = "Ljunghedsvägen";
+            shop5Address.HouseNumber = 7;
+            shop5Address.City = "Västervik";
+            shop5Address.Country = "Sweden";
+            johnHouse1Device1Warranty.Shop.Adrress = shop5Address;
+
+            // Adding Device object to the RealEstate list
+            johnHouse2.DevicesProfile.Add(johnHouse2Device2);
 
             // Adding RealEstate object to the userProfile List
-            userProfile2.House.Add(johnHouse1);
+            userProfile2.House.Add(johnHouse2);
 
             // Adding userProfile to the user List
             usersList.Add(userProfile2);
-
 
             return usersList;
         }
