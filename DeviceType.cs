@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal enum DeviceType
+    public enum DeviceType
     {
         Audio,
         Video,

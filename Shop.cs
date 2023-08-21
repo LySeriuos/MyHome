@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class Shop
+    public class Shop
     {
         private string _shopName;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class UserProfile
+    public class UserProfile
     {
 		private string _userName;
 

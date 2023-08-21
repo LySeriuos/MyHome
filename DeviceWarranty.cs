@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class DeviceWarranty
+    public class DeviceWarranty
     {
 		private TimeSpan _warrantyPeriod;
 

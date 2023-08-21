@@ -4,10 +4,6 @@ using MyHome;
 internal static class DeviceDetailsHelpers
 {
 
-
-
-
-
     public static void GetDetails(DeviceType deviceType)
     {
 

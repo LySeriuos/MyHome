@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class RealEstate
+    public class RealEstate
     {
-        private string _propertyName;
+        private string _realEstateName;
 
-        public string PropertyName
+        public string RealEstateName
         {
-            get { return _propertyName; }
-            set { _propertyName = value; }
+            get { return _realEstateName; }
+            set { _realEstateName = value; }
         }
 
-        private Address _propertyAdrress;
+        private Address _address;
 
-        public Address PropertyAdress
+        public Address Address
         {
-            get { return _propertyAdrress; }
-            set { _propertyAdrress = value; }
+            get { return _address; }
+            set { _address = value; }
         }
 
         private List <DevicesProfile> _devicesProfile;

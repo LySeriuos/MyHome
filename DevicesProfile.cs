@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace MyHome
 {
 	
-    internal class DevicesProfile
+    public class DevicesProfile
     {
 		
 		private string _deviceName;
@@ -34,6 +34,15 @@ namespace MyHome
 			get { return _deviceModelNumber; }
 			set { _deviceModelNumber = value; }
 		}
+
+		private string _deviceSerialNumber;	
+
+		public string DeviceSerialNumber
+		{
+			get { return _deviceSerialNumber; }
+			set { _deviceSerialNumber = value; }
+		}
+
 
 		private string _ipAdrress;
 
