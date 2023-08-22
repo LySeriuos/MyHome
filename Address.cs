@@ -25,9 +25,9 @@ namespace My_Home
 			set { _houseNumber = value; }
 		}
 
-		private string _apartamentNumber;
+		private int _apartamentNumber;
 
-		public string ApartamentNumber
+		public int ApartamentNumber
 		{
 			get { return _apartamentNumber; }
 			set { _apartamentNumber = value; }
