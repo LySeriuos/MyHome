@@ -7,11 +7,16 @@ namespace My_Home
         static void Main(string[] args)
         {
             List<UserProfile> list = TestData.User();
-           foreach (UserProfile item in list)
+            var x = GetDevicesCloseToWarrantyEnd(list[0]);
+            foreach (UserProfile item in list)
             {
-                
-                Console.WriteLine(item.UserName + item.Email);
+
+                }
             }
+        }
+        static List<DevicesProfile> GetDevicesCloseToWarrantyEnd(UserProfile u)
+        {
+            throw new NotImplementedException(); //
         }
     }
 }

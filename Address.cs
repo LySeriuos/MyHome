@@ -58,7 +58,10 @@ namespace My_Home
 			set { _country = value; }
 		}
 
-		
+        public override string ToString()
+        {
+			return _streetName + " " + _city + "" + _houseNumber + "" + _country;
+        }
 
-	}
+    }
 }

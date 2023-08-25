@@ -15,9 +15,10 @@ namespace My_Home
         public static List<UserProfile> User()
         {
             List<UserProfile> usersList = new List<UserProfile>();
-            DateTime now = DateTime.Now;
+            DateTime now;
 
             // User Profile 1
+            #region User1 
             UserProfile userProfile1 = new UserProfile();
 
             userProfile1.UserName = "James";
@@ -43,6 +44,14 @@ namespace My_Home
             jamesHouse1Address.City = "Salt Lake City";
             jamesHouse1Address.Country = "Usa";            
             jamesHouse1.Address = jamesHouse1Address;
+
+     
+            var houseTest = new Address()
+            {
+                ApartamentNumber = 5,
+                City = "Vienna",
+                Country = "austria"
+            };
             
             // maybe I should put State, it could be useful
 
@@ -66,7 +75,6 @@ namespace My_Home
             jamesDevice1.ManualBookLink = "https://www.bhphotovideo.com/lit_files/116441.pdf";             
             
 
-
             // Device Warranty 1
 
             DeviceWarranty jamesDevice1Warranty = new DeviceWarranty
@@ -74,6 +82,8 @@ namespace My_Home
                 ReceiptLink = "https://discuss.poynt.net/uploads/default/original/2X/6/60c4199364474569561cba359d486e6c69ae8cba.jpeg",
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
+
+            jamesDevice1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
             int jamesDevice1WarrantyPeriod = 1;
             jamesDevice1Warranty.ExtraDeviceInsuranceLength = 3;
             DateTime purchaseDate1 = new DateTime(2023, 7, 15);
@@ -166,9 +176,9 @@ namespace My_Home
             usersList.Add(userProfile1);
 
 
-
+#endregion
             ////////// User Profile 2 ///////////////////////
-
+            #region User2
 
             UserProfile userProfile2 = new UserProfile();
 
@@ -320,7 +330,7 @@ namespace My_Home
 
             DevicesProfile johnHouse2Device2 = new DevicesProfile();
             johnHouse2Device2.DeviceName = "Main Bedroom TV";
-            johnHouse2Device2.DeviceType = DeviceType.Video; // could be gruoped as multidevice but still it should be grouped as Cleaning device
+            johnHouse2Device2.DeviceType = DeviceType.Video;
             johnHouse2Device2.DeviceModelNumber = "TQ55LS03BGUXXC";
             johnHouse2Device2.DeviceSerialNumber = "AKZ43CPQ505923D";
             johnHouse2Device2.IpAdress = "134.121.255.219";
@@ -368,7 +378,7 @@ namespace My_Home
 
             // Adding RealEstate object to the userProfile List
             userProfile2.House.Add(johnHouse2);
-
+            #endregion
             // Adding userProfile to the user List
             usersList.Add(userProfile2);
 

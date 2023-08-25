@@ -16,6 +16,18 @@ namespace My_Home
 			set { _warrantyPeriod = value; }
 		}
 
+
+		public DateTime WarrantyEnd
+		{
+			get 
+			{
+				return _purchaseDate + _warrantyPeriod;
+
+            }
+
+		}
+
+
 		private string _receiptLink;
 
 		public string ReceiptLink

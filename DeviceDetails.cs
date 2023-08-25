@@ -86,56 +86,56 @@ namespace MyHome
             return multiDevicesList;
         }
 
-        private static void GetDetails(DeviceType deviceType)
-        {
-            switch (deviceType)
-            {
-                case DeviceType.Audio:
-                    GetAudio();
-                    break;
+        //private static List<String> GetDetails(DeviceType deviceType)
+        //{
+        //    switch (deviceType)
+        //    {
+        //        case DeviceType.Audio:
+        //            GetAudio();
+        //            break;
 
-                case DeviceType.Video:
-                    GetVideo();
-                    break;
+        //        case DeviceType.Video:
+        //            GetVideo();
+        //            break;
 
-                case DeviceType.Computer:
-                    GetComputer();
-                    break;
+        //        case DeviceType.Computer:
+        //            GetComputer();
+        //            break;
 
-                case DeviceType.MobileDevice:
-                    GetMobileDevice();
-                    break;
+        //        case DeviceType.MobileDevice:
+        //            GetMobileDevice();
+        //            break;
 
-                case DeviceType.Kitchen:
-                    GetKitchen();
-                    break;
+        //        case DeviceType.Kitchen:
+        //            GetKitchen();
+        //            break;
 
-                case DeviceType.Bathroom:
-                    GetBathroom();
-                    break;
+        //        case DeviceType.Bathroom:
+        //            GetBathroom();
+        //            break;
 
-                case DeviceType.Garden:
-                    GetGarden();
-                    break;
+        //        case DeviceType.Garden:
+        //            GetGarden();
+        //            break;
 
-                case DeviceType.Cleaning:
-                    GetCleaning();
-                    break;
+        //        case DeviceType.Cleaning:
+        //            GetCleaning();
+        //            break;
 
-                case DeviceType.Security:
-                    GetSecurity();
-                    break;
+        //        case DeviceType.Security:
+        //            GetSecurity();
+        //            break;
 
-                case DeviceType.Other:
-                    GetOtherDevices();
-                    break;
+        //        case DeviceType.Other:
+        //            return new List<string>() { "Navigation", "Home Lighting" };
+        //            break;
 
-                case DeviceType.MultiDevice:
-                    GetMultiDevices();
-                    break;
+        //        case DeviceType.MultiDevice:
+        //            GetMultiDevices();
+        //            break;
 
-            }
-        }
+        //    }
+        //}
     }
 }
 
