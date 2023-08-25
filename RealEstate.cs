@@ -33,7 +33,10 @@ namespace My_Home
             set { _devicesProfile = value; }
         }
 
-
+        public override string ToString()
+        {
+            return _realEstateName;
+        }
 
 
     }
