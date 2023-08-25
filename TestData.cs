@@ -69,7 +69,7 @@ namespace My_Home
             jamesDevice1.DeviceType = DeviceType.Computer;
             jamesDevice1.DeviceModelNumber = "NPC-I7-4070-0423";
             jamesDevice1.DeviceSerialNumber = "7394291106279";
-            jamesDevice1.IpAdress = "58.31.187.181";
+            jamesDevice1.IpAddress = "58.31.187.181";
             jamesDevice1.MacAdrress = "2E-A2-C8-A8-20-99";
             jamesDevice1.DeviceProduser = "Samsung";
             jamesDevice1.ManualBookLink = "https://www.bhphotovideo.com/lit_files/116441.pdf";             
@@ -125,7 +125,7 @@ namespace My_Home
             jamesDevice2.DeviceType = DeviceType.MobileDevice;
             jamesDevice2.DeviceModelNumber = "A2891";
             jamesDevice2.DeviceSerialNumber = "HM95O92P2F";
-            jamesDevice2.IpAdress = "192.168.1.13";
+            jamesDevice2.IpAddress = "192.168.1.13";
             jamesDevice2.MacAdrress = "00-B0-D0-63-C2-26";
             jamesDevice2.DeviceProduser = "Apple";
             jamesDevice2.ManualBookLink = "https://support.apple.com/sv-se/guide/iphone/iphfc2d9bc6a/ios";
@@ -212,7 +212,7 @@ namespace My_Home
             johnHouse1Device1.DeviceType = DeviceType.Kitchen;
             johnHouse1Device1.DeviceModelNumber = "DBI8557MIMXXLBS";
             johnHouse1Device1.DeviceSerialNumber = "131002350324";
-            johnHouse1Device1.IpAdress = "228.215.193.124";
+            johnHouse1Device1.IpAddress = "228.215.193.124";
             johnHouse1Device1.MacAdrress = "87-86-1F-E0-A3-A6";
             johnHouse1Device1.DeviceProduser = "Asko";
             johnHouse1Device1.ManualBookLink = "https://www.bruksanvisni.ng/asko/dbi8557mimxxls/bruksanvisning";
@@ -283,7 +283,7 @@ namespace My_Home
             johnHouse2Device1.DeviceType = DeviceType.Cleaning; // could be gruoped as multidevice but still it should be grouped as Cleaning device
             johnHouse2Device1.DeviceModelNumber = "CV90V6S2BA";
             johnHouse2Device1.DeviceSerialNumber = "1ABC2DEF345678G";
-            johnHouse2Device1.IpAdress = "188.188.72.36";
+            johnHouse2Device1.IpAddress = "188.188.72.36";
             johnHouse2Device1.MacAdrress = "F8-15-50-CC-A3-6E";
             johnHouse2Device1.DeviceProduser = "LG";
             // local file
@@ -333,7 +333,7 @@ namespace My_Home
             johnHouse2Device2.DeviceType = DeviceType.Video;
             johnHouse2Device2.DeviceModelNumber = "TQ55LS03BGUXXC";
             johnHouse2Device2.DeviceSerialNumber = "AKZ43CPQ505923D";
-            johnHouse2Device2.IpAdress = "134.121.255.219";
+            johnHouse2Device2.IpAddress = "134.121.255.219";
             johnHouse2Device2.MacAdrress = "B5-76-8F-F6-7A-1B";
             johnHouse2Device2.DeviceProduser = "Samsung";
             johnHouse2Device2.ManualBookLink = "https://www.samsung.com/uk/support/model/QE55LS03BGUXXU/#downloads";

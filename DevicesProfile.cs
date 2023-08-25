@@ -46,18 +46,18 @@ namespace MyHome
 
 		private string _ipAdrress;
 
-		public string IpAdress
+		public string IpAddress
 		{
 			get { return _ipAdrress; }
 			set { _ipAdrress = value; }
 		}
 
-		private string _macAdrress;
+		private string _macAddress;
 
 		public string MacAdrress
 		{
-			get { return _macAdrress; }
-			set { _macAdrress = value; }
+			get { return _macAddress; }
+			set { _macAddress = value; }
 		}
 
 		private string _deviceProduser;
@@ -84,6 +84,10 @@ namespace MyHome
 			set { _deviceWarranty = value; }
 		}
 
+        public override string ToString()
+        {
+            return _deviceName + " " + _deviceModelNumber + "" + _deviceSerialNumber + "" + _ipAdrress + "" + _macAddress + "" + _deviceProduser;
+        }
 
 
 
@@ -97,6 +101,5 @@ namespace MyHome
 
 
 
-
-	}
+    }
 }
