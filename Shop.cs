@@ -39,6 +39,11 @@ namespace My_Home
             set { _phoneNumber = value; }
         }
 
+        public override string ToString()
+        {
+            return _shopName + "" + _phoneNumber;
+        }
+
 
     }
 }
