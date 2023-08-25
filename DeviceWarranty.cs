@@ -27,7 +27,6 @@ namespace My_Home
 
 		}
 
-
 		private string _receiptLink;
 
 		public string ReceiptLink
@@ -68,9 +67,12 @@ namespace My_Home
 			set { _extraDeviceInsuranceLength = value; }
 		}
 
+        public override string ToString()
+        {
+			return _warrantyPeriod + "" + _purchaseDate + "" + "" + _extraDeviceInsuranceLength;
+        }
 
 
 
-
-	}
+    }
 }
