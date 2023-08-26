@@ -85,9 +85,9 @@ namespace My_Home
 
             jamesDevice1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
             int jamesDevice1WarrantyPeriod = 1;
-            jamesDevice1Warranty.ExtraDeviceInsuranceLength = 3;
+            jamesDevice1Warranty.ExtendedWarranty = 3;
             DateTime purchaseDate1 = new DateTime(2023, 7, 15);
-            DateTime validUntil1 = purchaseDate1.AddYears(jamesDevice1WarrantyPeriod+jamesDevice1Warranty.ExtraDeviceInsuranceLength);
+            DateTime validUntil1 = purchaseDate1.AddYears(jamesDevice1WarrantyPeriod+jamesDevice1Warranty.ExtendedWarranty);
             // it is typical warranty in the USA is 1 year 
             // it should be enum bycountries because later it automatically count warranty period or ? 
 
@@ -139,9 +139,9 @@ namespace My_Home
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
             int jamesDevice2WarrantyPeriod = 1;
-            jamesDevice2Warranty.ExtraDeviceInsuranceLength = 1;
+            jamesDevice2Warranty.ExtendedWarranty = 1;
             DateTime purchaseDate2 = new DateTime(2023, 1, 23);
-            DateTime validUntil2 = purchaseDate2.AddYears(jamesDevice2WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
+            DateTime validUntil2 = purchaseDate2.AddYears(jamesDevice2WarrantyPeriod + jamesDevice2Warranty.ExtendedWarranty);
             jamesDevice2Warranty.PurchaseDate = purchaseDate2;
             now = DateTime.Now;
             jamesDevice2Warranty.WarrantyPeriod = validUntil2 - now;
@@ -226,9 +226,9 @@ namespace My_Home
                 ExtraDeviceInsuranceLink = "https://img.yumpu.com/20322498/1/500x640/ladda-ned-produktblad-som-pdf.jpg"
             };
             int johnHouse1Device1WarrantyPeriod = 2;
-            johnHouse1Device1Warranty.ExtraDeviceInsuranceLength = 3;
+            johnHouse1Device1Warranty.ExtendedWarranty = 3;
             DateTime purchaseDate3 = new DateTime(2022, 6, 10);
-            DateTime validUntil3 = purchaseDate3.AddYears(johnHouse1Device1WarrantyPeriod + johnHouse1Device1Warranty.ExtraDeviceInsuranceLength);
+            DateTime validUntil3 = purchaseDate3.AddYears(johnHouse1Device1WarrantyPeriod + johnHouse1Device1Warranty.ExtendedWarranty);
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate3;
             now = DateTime.Now;
             johnHouse1Device1Warranty.WarrantyPeriod = validUntil3 - now;
@@ -298,9 +298,9 @@ namespace My_Home
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
             int johnhouse2Device1WarrantyPeriod = 2;
-            johnHouse1Device1Warranty.ExtraDeviceInsuranceLength = 5;
+            johnHouse1Device1Warranty.ExtendedWarranty = 5;
             DateTime purchaseDate4 = new DateTime(2020, 1, 14);
-            DateTime validUntil4 = purchaseDate4.AddYears(johnhouse2Device1WarrantyPeriod + jamesDevice2Warranty.ExtraDeviceInsuranceLength);
+            DateTime validUntil4 = purchaseDate4.AddYears(johnhouse2Device1WarrantyPeriod + jamesDevice2Warranty.ExtendedWarranty);
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate4;
             now = DateTime.Now;
             johnHouse1Device1Warranty.WarrantyPeriod = validUntil4 - now;
@@ -347,9 +347,9 @@ namespace My_Home
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
             int johnhouse2Device2WarrantyPeriod = 2;
-            johnHouse2Device2Warranty.ExtraDeviceInsuranceLength = 2;
+            johnHouse2Device2Warranty.ExtendedWarranty = 2;
             DateTime purchaseDate5 = new DateTime(2021, 3, 23);
-            DateTime validUntil5 = purchaseDate4.AddYears(johnhouse2Device2WarrantyPeriod + johnHouse2Device2Warranty.ExtraDeviceInsuranceLength);
+            DateTime validUntil5 = purchaseDate4.AddYears(johnhouse2Device2WarrantyPeriod + johnHouse2Device2Warranty.ExtendedWarranty);
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate5;
             now = DateTime.Now;
             johnHouse1Device1Warranty.WarrantyPeriod = validUntil5 - now;

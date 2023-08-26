@@ -21,10 +21,8 @@ namespace My_Home
 		{
 			get 
 			{
-				return _purchaseDate + _warrantyPeriod;
-
+				return _purchaseDate + _warrantyPeriod + _extendedWarranty;
             }
-
 		}
 
 		private string _receiptLink;
@@ -59,17 +57,17 @@ namespace My_Home
 			set { _extraDeviceInsuranceLink = value; }
 		}
 
-		private int _extraDeviceInsuranceLength;
+		private TimeSpan _extendedWarranty;
 
-		public int ExtraDeviceInsuranceLength
+		public TimeSpan ExtendedWarranty
         {
-			get { return _extraDeviceInsuranceLength; }
-			set { _extraDeviceInsuranceLength = value; }
+			get { return _extendedWarranty; }
+			set { _extendedWarranty = value; }
 		}
 
         public override string ToString()
         {
-			return _warrantyPeriod + "" + _purchaseDate + "" + "" + _extraDeviceInsuranceLength;
+			return _warrantyPeriod + "" + _purchaseDate + "" + "" + _extendedWarranty;
         }
 
 
