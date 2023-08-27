@@ -40,7 +40,7 @@ namespace My_Home
 
         public override string ToString()
         {
-			return _email + "" + _userName;
+			return _email + " " + _userName;
         }
     }
 }

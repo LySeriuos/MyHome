@@ -84,17 +84,16 @@ namespace My_Home
             };
 
             jamesDevice1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
-            int jamesDevice1WarrantyPeriod = 1;
-            jamesDevice1Warranty.ExtendedWarranty = 3;
+            jamesDevice1Warranty.ExtendedWarranty = new TimeSpan(1095, 0, 0, 0);
             DateTime purchaseDate1 = new DateTime(2023, 7, 15);
-            DateTime validUntil1 = purchaseDate1.AddYears(jamesDevice1WarrantyPeriod+jamesDevice1Warranty.ExtendedWarranty);
+            
             // it is typical warranty in the USA is 1 year 
             // it should be enum bycountries because later it automatically count warranty period or ? 
 
             // counting the length of left time for warranty
             jamesDevice1Warranty.PurchaseDate = purchaseDate1;
             now = DateTime.Now;
-            jamesDevice1Warranty.WarrantyPeriod = validUntil1 - now;
+            
             jamesDevice1.DeviceWarranty = jamesDevice1Warranty;
 
             // Shop 1
@@ -129,7 +128,7 @@ namespace My_Home
             jamesDevice2.MacAdrress = "00-B0-D0-63-C2-26";
             jamesDevice2.DeviceProduser = "Apple";
             jamesDevice2.ManualBookLink = "https://support.apple.com/sv-se/guide/iphone/iphfc2d9bc6a/ios";
-            jamesHouse1.DevicesProfile.Add(jamesDevice2);
+            
 
             // Device Warranty 2 
 
@@ -138,13 +137,12 @@ namespace My_Home
                 ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
-            int jamesDevice2WarrantyPeriod = 1;
-            jamesDevice2Warranty.ExtendedWarranty = 1;
-            DateTime purchaseDate2 = new DateTime(2023, 1, 23);
-            DateTime validUntil2 = purchaseDate2.AddYears(jamesDevice2WarrantyPeriod + jamesDevice2Warranty.ExtendedWarranty);
+            jamesDevice2Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
+            jamesDevice2Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
+            DateTime purchaseDate2 = new DateTime(2023, 1, 23);            
             jamesDevice2Warranty.PurchaseDate = purchaseDate2;
             now = DateTime.Now;
-            jamesDevice2Warranty.WarrantyPeriod = validUntil2 - now;
+            
             jamesDevice2.DeviceWarranty = jamesDevice2Warranty;
 
             // Shop 2
@@ -225,13 +223,13 @@ namespace My_Home
                 ReceiptLink = "https://img.freepik.com/free-vector/receipt-template-collection-with-realistic-design_23-2147910552.jpg?w=1380&t=st=1692650469~exp=1692651069~hmac=91e29da374bc7eddec6ec6c10e9cb828b93ac76cf4c79d558a6ea1257ef728a4",
                 ExtraDeviceInsuranceLink = "https://img.yumpu.com/20322498/1/500x640/ladda-ned-produktblad-som-pdf.jpg"
             };
-            int johnHouse1Device1WarrantyPeriod = 2;
-            johnHouse1Device1Warranty.ExtendedWarranty = 3;
+            johnHouse1Device1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
+            johnHouse1Device1Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
             DateTime purchaseDate3 = new DateTime(2022, 6, 10);
-            DateTime validUntil3 = purchaseDate3.AddYears(johnHouse1Device1WarrantyPeriod + johnHouse1Device1Warranty.ExtendedWarranty);
+            
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate3;
             now = DateTime.Now;
-            johnHouse1Device1Warranty.WarrantyPeriod = validUntil3 - now;
+            
             johnHouse1Device1.DeviceWarranty = johnHouse1Device1Warranty;
 
             // Shop 1
@@ -297,14 +295,14 @@ namespace My_Home
                 ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
-            int johnhouse2Device1WarrantyPeriod = 2;
-            johnHouse1Device1Warranty.ExtendedWarranty = 5;
+            johnHouse2Device1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
+            johnHouse2Device1Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
             DateTime purchaseDate4 = new DateTime(2020, 1, 14);
-            DateTime validUntil4 = purchaseDate4.AddYears(johnhouse2Device1WarrantyPeriod + jamesDevice2Warranty.ExtendedWarranty);
-            johnHouse1Device1Warranty.PurchaseDate = purchaseDate4;
+            
+            johnHouse2Device1Warranty.PurchaseDate = purchaseDate4;
             now = DateTime.Now;
-            johnHouse1Device1Warranty.WarrantyPeriod = validUntil4 - now;
-            johnHouse1Device1.DeviceWarranty = johnHouse2Device1Warranty;
+            
+            johnHouse2Device1.DeviceWarranty = johnHouse2Device1Warranty;
 
             // Realestate 2 Shop 1
 
@@ -339,21 +337,21 @@ namespace My_Home
             johnHouse2Device2.ManualBookLink = "https://www.samsung.com/uk/support/model/QE55LS03BGUXXU/#downloads";
 
 
-            // Realestate 2 Device Warranty 2 
+            // Realestate 2 Device 2 Warranty  
 
             DeviceWarranty johnHouse2Device2Warranty = new DeviceWarranty
             {
                 ReceiptLink = "https://qph.cf2.quoracdn.net/main-qimg-8aa597ee2d773fce151545846c9d08a0-pjlq",
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
-            int johnhouse2Device2WarrantyPeriod = 2;
-            johnHouse2Device2Warranty.ExtendedWarranty = 2;
+            johnHouse2Device2Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
+            johnHouse2Device2Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
             DateTime purchaseDate5 = new DateTime(2021, 3, 23);
-            DateTime validUntil5 = purchaseDate4.AddYears(johnhouse2Device2WarrantyPeriod + johnHouse2Device2Warranty.ExtendedWarranty);
-            johnHouse1Device1Warranty.PurchaseDate = purchaseDate5;
+            
+            johnHouse2Device2Warranty.PurchaseDate = purchaseDate5;
             now = DateTime.Now;
-            johnHouse1Device1Warranty.WarrantyPeriod = validUntil5 - now;
-            johnHouse1Device1.DeviceWarranty = johnHouse2Device1Warranty;
+            
+            johnHouse2Device2.DeviceWarranty = johnHouse2Device2Warranty;
 
             // Realestate 2 Shop 2
 
@@ -361,7 +359,7 @@ namespace My_Home
             shop4.ShopName = "Elgiganten";
             shop4.PhoneNumber = 0771115115;
             shop4.ShopWebAdrress = "https://www.elgiganten.se/";
-            johnHouse1Device1Warranty.Shop = shop5;
+            johnHouse2Device2Warranty.Shop = shop5;
 
             // Real Estate 2 Shop 2 Address
 
@@ -371,7 +369,7 @@ namespace My_Home
             shop5Address.HouseNumber = 7;
             shop5Address.City = "Västervik";
             shop5Address.Country = "Sweden";
-            johnHouse1Device1Warranty.Shop.Adrress = shop5Address;
+            johnHouse2Device2Warranty.Shop.Adrress = shop5Address;
 
             // Adding Device object to the RealEstate list
             johnHouse2.DevicesProfile.Add(johnHouse2Device2);

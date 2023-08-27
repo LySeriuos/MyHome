@@ -1,4 +1,6 @@
 ﻿using MyHome;
+using System.Collections.Generic;
+
 namespace My_Home
 
 {
@@ -7,12 +9,19 @@ namespace My_Home
         static void Main(string[] args)
         {
             List<UserProfile> list = TestData.User();
-            //var x = GetDevicesCloseToWarrantyEnd(list[0]);
-            foreach (UserProfile item in list)
+
+
+
+
+            List<string> warrantiesList = Logic.ExpiringFirstWarrantyList(list);
+            foreach (string item in warrantiesList)
             {
                 Console.WriteLine(item);
-                
             }
+
+            //var x = GetDevicesCloseToWarrantyEnd(list[0]);
+
+
         }
         //static List<DevicesProfile> GetDevicesCloseToWarrantyEnd(UserProfile u)
         //{

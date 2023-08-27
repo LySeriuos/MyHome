@@ -16,7 +16,6 @@ namespace My_Home
 			set { _warrantyPeriod = value; }
 		}
 
-
 		public DateTime WarrantyEnd
 		{
 			get 
@@ -67,7 +66,7 @@ namespace My_Home
 
         public override string ToString()
         {
-			return _warrantyPeriod + "" + _purchaseDate + "" + "" + _extendedWarranty;
+			return _warrantyPeriod + " " + _purchaseDate + " " + " " + _extendedWarranty;
         }
 
 
