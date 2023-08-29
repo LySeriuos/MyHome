@@ -8,12 +8,13 @@ namespace My_Home
     {
         static void Main(string[] args)
         {
+
+            
             List<UserProfile> list = TestData.User();
+            
+            
+            List <string> warrantiesList = Logic.ExpiringFirstWarrantyList(list);
 
-
-
-
-            List<string> warrantiesList = Logic.ExpiringFirstWarrantyList(list);
             foreach (string item in warrantiesList)
             {
                 Console.WriteLine(item);
@@ -23,7 +24,7 @@ namespace My_Home
 
 
         }
-        //static List<DevicesProfile> GetDevicesCloseToWarrantyEnd(UserProfile u)
+        // public static object ExpiringFirstWarrantyList(UserProfile userProfile)
         //{
         //    throw new NotImplementedException(); //
         //}

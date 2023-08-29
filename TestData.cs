@@ -223,8 +223,8 @@ namespace My_Home
                 ReceiptLink = "https://img.freepik.com/free-vector/receipt-template-collection-with-realistic-design_23-2147910552.jpg?w=1380&t=st=1692650469~exp=1692651069~hmac=91e29da374bc7eddec6ec6c10e9cb828b93ac76cf4c79d558a6ea1257ef728a4",
                 ExtraDeviceInsuranceLink = "https://img.yumpu.com/20322498/1/500x640/ladda-ned-produktblad-som-pdf.jpg"
             };
-            johnHouse1Device1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
-            johnHouse1Device1Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
+            johnHouse1Device1Warranty.WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0);
+            johnHouse1Device1Warranty.ExtendedWarranty = new TimeSpan(1095, 0, 0, 0, 0);
             DateTime purchaseDate3 = new DateTime(2022, 6, 10);
             
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate3;
@@ -295,7 +295,7 @@ namespace My_Home
                 ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
-            johnHouse2Device1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
+            johnHouse2Device1Warranty.WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0);
             johnHouse2Device1Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
             DateTime purchaseDate4 = new DateTime(2020, 1, 14);
             
@@ -344,7 +344,7 @@ namespace My_Home
                 ReceiptLink = "https://qph.cf2.quoracdn.net/main-qimg-8aa597ee2d773fce151545846c9d08a0-pjlq",
                 ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf"
             };
-            johnHouse2Device2Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
+            johnHouse2Device2Warranty.WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0);
             johnHouse2Device2Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
             DateTime purchaseDate5 = new DateTime(2021, 3, 23);
             
@@ -356,9 +356,9 @@ namespace My_Home
             // Realestate 2 Shop 2
 
             Shop shop5 = new Shop();
-            shop4.ShopName = "Elgiganten";
-            shop4.PhoneNumber = 0771115115;
-            shop4.ShopWebAdrress = "https://www.elgiganten.se/";
+            shop5.ShopName = "Elgiganten";
+            shop5.PhoneNumber = 0771115115;
+            shop5.ShopWebAdrress = "https://www.elgiganten.se/";
             johnHouse2Device2Warranty.Shop = shop5;
 
             // Real Estate 2 Shop 2 Address

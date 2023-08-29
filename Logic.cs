@@ -12,31 +12,40 @@ namespace My_Home
         public static List<string> ExpiringFirstWarrantyList(List<UserProfile> users)
         {
             List<string> expiringDate = new List<string>();
-            foreach (UserProfile user in users)
+            List<RealEstate> houses;
+            List<DevicesProfile> devices;
+            DateTime localDate = DateTime.Now;
+
+            for (int i = 0; i < users.Count; i++)
             {
-                List<RealEstate> houses = user.House;
-                foreach (RealEstate house in houses)
+                houses = users[i].House;
+
+                for (int j = 0; j < houses.Count; j++)
                 {
-                    List<DevicesProfile> devices = house.DevicesProfile;
-                    foreach (DevicesProfile device in devices)
-                    {                         
-                        string deviceName  = device.DeviceName; 
-                        DeviceWarranty deviceWarranty = device.DeviceWarranty;
-                        DateTime dateTime = deviceWarranty.WarrantyEnd;
-                        Console.WriteLine(dateTime);
-
-
-                        string dateTimeString = dateTime.ToString("yyyy/MM/d");
+                    devices = houses[j].DevicesProfile;
+                    for (int k = 0; k < devices.Count; k++)
+                    {
+                        string deviceName = devices[k].DeviceName;
+                        DeviceWarranty deviceWarranty = devices[k].DeviceWarranty;
                         string warrantyEndsToString = deviceWarranty.WarrantyEnd.ToString("yyyy/MM/d");
-                        expiringDate.Add( deviceName);
-                        
-                        continue;
+                        var leftToTheWarranty = deviceWarranty.WarrantyEnd - localDate;
+                        Console.WriteLine(leftToTheWarranty.ToString("yyyy/MM/dd"));
+                        expiringDate.Add(deviceName + " " + warrantyEndsToString);
                     }
-                    continue;
+
                 }
-                
             }
             return expiringDate;
+        }
+
+        public static UserProfile AllTheUsers(UserProfile user)
+        {
+            return user;
+        }
+
+        public static void GetTheShortesWarranty(List<UserProfile> users)
+        {
+
         }
 
     }
