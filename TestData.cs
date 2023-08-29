@@ -297,7 +297,7 @@ namespace My_Home
             };
             johnHouse2Device1Warranty.WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0);
             johnHouse2Device1Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
-            DateTime purchaseDate4 = new DateTime(2020, 1, 14);
+            DateTime purchaseDate4 = new DateTime(2021, 1, 14);
             
             johnHouse2Device1Warranty.PurchaseDate = purchaseDate4;
             now = DateTime.Now;

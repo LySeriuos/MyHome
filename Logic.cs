@@ -27,9 +27,7 @@ namespace My_Home
                     {
                         string deviceName = devices[k].DeviceName;
                         DeviceWarranty deviceWarranty = devices[k].DeviceWarranty;
-                        string warrantyEndsToString = deviceWarranty.WarrantyEnd.ToString("yyyy/MM/d");
-                        var leftToTheWarranty = deviceWarranty.WarrantyEnd - localDate;
-                        Console.WriteLine(leftToTheWarranty.ToString("yyyy/MM/dd"));
+                        string warrantyEndsToString = deviceWarranty.WarrantyEnd.ToString("yyyy/MM/d");                       
                         expiringDate.Add(deviceName + " " + warrantyEndsToString);
                     }
 
@@ -38,14 +36,21 @@ namespace My_Home
             return expiringDate;
         }
 
-        public static UserProfile AllTheUsers(UserProfile user)
+        public static List <DateTime> WarrantiesToTheList(UserProfile user)
         {
-            return user;
-        }
-
-        public static void GetTheShortesWarranty(List<UserProfile> users)
-        {
-
+            List<DateTime> warranties = new List<DateTime>();
+            List<RealEstate> realEstates = user.House;
+            foreach (RealEstate house in realEstates)
+            {
+                List<DevicesProfile> devices = house.DevicesProfile;
+                foreach (DevicesProfile device in devices)
+                {
+                    DeviceWarranty warranty = device.DeviceWarranty;
+                    DateTime deviceWarranty = warranty.WarrantyEnd;
+                    warranties.Add(warranty.WarrantyEnd);
+                }
+            }
+            return warranties;
         }
 
     }
