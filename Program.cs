@@ -17,6 +17,8 @@ namespace My_Home
                 Console.WriteLine(d);
             }
 
+            
+
             //var x = GetDevicesCloseToWarrantyEnd(list[0]);
 
 

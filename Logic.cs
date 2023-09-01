@@ -50,14 +50,28 @@ namespace My_Home
                     DeviceWarranty warranty = device.DeviceWarranty;
                     DateTime deviceWarranty = warranty.WarrantyEnd;
                     DateTime dateTime = DateTime.Now;
-                    TimeSpan daysCounting = deviceWarranty.Subtract(dateTime);                    
+                    TimeSpan daysCounting = deviceWarranty.Subtract(dateTime);
+
+                    var totalDaysWarrantyEnds = 0;
                     string convertingToDays = daysCounting.ToString("%d");
-                    devicesWarranties.Add($"{userDevice} in {houseName} Warranty Expiring in: {convertingToDays} days");
+                    try
+                    {
+                        totalDaysWarrantyEnds = Int32.Parse(convertingToDays);
+                    }
+                    catch (FormatException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    if (totalDaysWarrantyEnds < 150)
+                    {
+                        devicesWarranties.Add($"{userDevice} in {houseName} Warranty Expiring in: {convertingToDays} days");
+                        
+                    }
+                    
                 }
             }
             devicesWarranties = devicesWarranties.OrderByDescending(convertingToDays => convertingToDays).ToList();
             return devicesWarranties;
-
         }
 
 
