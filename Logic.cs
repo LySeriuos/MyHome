@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,31 +28,39 @@ namespace My_Home
                     {
                         string deviceName = devices[k].DeviceName;
                         DeviceWarranty deviceWarranty = devices[k].DeviceWarranty;
-                        string warrantyEndsToString = deviceWarranty.WarrantyEnd.ToString("yyyy/MM/d");                       
+                        string warrantyEndsToString = deviceWarranty.WarrantyEnd.ToString("yyyy/MM/d");
                         expiringDate.Add(deviceName + " " + warrantyEndsToString);
                     }
-
                 }
             }
             return expiringDate;
         }
 
-        public static List <DateTime> WarrantiesToTheList(UserProfile user)
+        public static List<string> DevicesAndWarranties(UserProfile userProfile)
         {
-            List<DateTime> warranties = new List<DateTime>();
-            List<RealEstate> realEstates = user.House;
+            List<string> devicesWarranties = new List<string>();
+            List<RealEstate> realEstates = userProfile.House;
             foreach (RealEstate house in realEstates)
             {
                 List<DevicesProfile> devices = house.DevicesProfile;
                 foreach (DevicesProfile device in devices)
-                {
+                {                    
+                    string houseName = house.RealEstateName;
+                    string userDevice = device.DeviceName;
                     DeviceWarranty warranty = device.DeviceWarranty;
                     DateTime deviceWarranty = warranty.WarrantyEnd;
-                    warranties.Add(warranty.WarrantyEnd);
+                    DateTime dateTime = DateTime.Now;
+                    TimeSpan daysCounting = deviceWarranty.Subtract(dateTime);                    
+                    string convertingToDays = daysCounting.ToString("%d");
+                    devicesWarranties.Add($"{userDevice} in {houseName} Warranty Expiring in: {convertingToDays} days");
                 }
             }
-            return warranties;
+            devicesWarranties = devicesWarranties.OrderByDescending(convertingToDays => convertingToDays).ToList();
+            return devicesWarranties;
+
         }
 
+
     }
+
 }

@@ -11,18 +11,11 @@ namespace My_Home
 
             
             List<UserProfile> list = TestData.User();
-            UserProfile users = Logic.AllTheUsers(list[0]);
-            List<string> devicesWarranties = Logic.GetTheShortesWarranty(list[1]);
-            foreach (string device in devicesWarranties)
+            List<string> devicesClosestToTheEndList = Logic.DevicesAndWarranties(list[0]);
+            foreach (string d in devicesClosestToTheEndList)
             {
-                //Console.WriteLine(device);
-
+                Console.WriteLine(d);
             }
-
-
-            List <string> warrantiesList = Logic.ExpiringFirstWarrantyList(list);
-
-            
 
             //var x = GetDevicesCloseToWarrantyEnd(list[0]);
 
