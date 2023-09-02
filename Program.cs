@@ -11,11 +11,14 @@ namespace My_Home
 
             
             List<UserProfile> list = TestData.User();
-            List<string> devicesClosestToTheEndList = Logic.DevicesAndWarranties(list[0]);
+            List<string> devicesClosestToTheEndList = Logic.DevicesAndWarranties(list[1]);
             foreach (string d in devicesClosestToTheEndList)
             {
                 Console.WriteLine(d);
             }
+
+            List<RealEstate> realEstate = Logic.RealEstates(list[0]);
+            
 
             
 

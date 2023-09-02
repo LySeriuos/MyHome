@@ -62,17 +62,29 @@ namespace My_Home
                     {
                         Console.WriteLine(e.Message);
                     }
-                    if (totalDaysWarrantyEnds < 150)
+                    // if warranties end earlier than 5 month before the date so it will be printed to the user
+                    if (totalDaysWarrantyEnds < 180)
                     {
-                        devicesWarranties.Add($"{userDevice} in {houseName} Warranty Expiring in: {convertingToDays} days");
-                        
+                        devicesWarranties.Add($"{userDevice} in {houseName} Warranty is Expiring in: {convertingToDays} days");                        
                     }
-                    
                 }
             }
             devicesWarranties = devicesWarranties.OrderByDescending(convertingToDays => convertingToDays).ToList();
             return devicesWarranties;
         }
+ 
+        public static List<RealEstate> RealEstates(UserProfile user)
+        {
+            List<RealEstate> house = user.House;
+            
+            return house;
+        }
+
+
+
+       
+
+        
 
 
     }
