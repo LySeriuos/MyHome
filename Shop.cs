@@ -18,14 +18,14 @@ namespace My_Home
                                                                 
         private string _shopWebAdrress;                         
                                                                 
-        public string ShopWebAdrress                            
+        public string ShopWebAddress                            
         {                                                       
             get { return _shopWebAdrress; }                     
             set { _shopWebAdrress = value; }                    
         }
 
         private Address _address;
-        public Address Adrress
+        public Address Address
         {
             get { return _address; }
             set { _address = value; }
@@ -41,7 +41,7 @@ namespace My_Home
 
         public override string ToString()
         {
-            return _shopName + "" + _phoneNumber;
+            return _shopName + " " + _phoneNumber;
         }
 
 

@@ -1,11 +1,4 @@
 ﻿using MyHome;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace My_Home
 {
@@ -101,7 +94,7 @@ namespace My_Home
             Shop shop1 = new Shop();
             shop1.ShopName = "Tesco";
             shop1.PhoneNumber = 00441992632222;
-            shop1.ShopWebAdrress = "https://www.tescoplc.com/";
+            shop1.ShopWebAddress = "https://www.tescoplc.com/";
             jamesDevice1Warranty.Shop = shop1;
 
             // Shop Address 1
@@ -111,7 +104,7 @@ namespace My_Home
             shopAddress1.HouseNumber = 1925;
             shopAddress1.City = "Salt Lake City";
             shopAddress1.Country = "USA";
-            jamesDevice1Warranty.Shop.Adrress = shopAddress1;
+            jamesDevice1Warranty.Shop.Address = shopAddress1;
 
             // Adding Device object to the RealEstate list
 
@@ -150,7 +143,7 @@ namespace My_Home
             Shop shop2 = new Shop();
             shop2.ShopName = "T-Mobile";
             shop2.PhoneNumber = 18009378997;
-            shop2.ShopWebAdrress = "https://www.t-mobile.com/?INTNAV=tNav:Home";
+            shop2.ShopWebAddress = "https://www.t-mobile.com/?INTNAV=tNav:Home";
             jamesDevice2Warranty.Shop = shop2;
 
             // Shop 2 Address
@@ -160,7 +153,7 @@ namespace My_Home
             shop2Address.HouseNumber = 110;
             shop2Address.City = "Logan";
             shop2Address.Country = "USA";
-            jamesDevice2Warranty.Shop.Adrress = shop2Address;
+            jamesDevice2Warranty.Shop.Address = shop2Address;
 
             // Adding Device object to the RealEstate list
 
@@ -237,7 +230,7 @@ namespace My_Home
             Shop shop3 = new Shop();
             shop3.ShopName = "Elgiganten";
             shop3.PhoneNumber = 0771115115;
-            shop3.ShopWebAdrress = "https://www.elgiganten.se/";
+            shop3.ShopWebAddress = "https://www.elgiganten.se/";
             johnHouse1Device1Warranty.Shop = shop3;
 
             // Shop 1 Address
@@ -247,7 +240,7 @@ namespace My_Home
             shop3Address.HouseNumber = 19;
             shop3Address.City = "Linköping";
             shop3Address.Country = "Sweden";
-            johnHouse1Device1Warranty.Shop.Adrress = shop3Address;
+            johnHouse1Device1Warranty.Shop.Address = shop3Address;
             
             // Adding Device object to the RealEstate list
             johnHouse1.DevicesProfile.Add(johnHouse1Device1);
@@ -309,8 +302,8 @@ namespace My_Home
             Shop shop4 = new Shop();
             shop4.ShopName = "Elgiganten";
             shop4.PhoneNumber = 0771115115;
-            shop4.ShopWebAdrress = "https://www.elgiganten.se/";
-            johnHouse1Device1Warranty.Shop = shop4;
+            shop4.ShopWebAddress = "https://www.elgiganten.se/";
+            johnHouse2Device1Warranty.Shop = shop4;
 
             // Realestate 2 Shop 1 Address
 
@@ -319,7 +312,7 @@ namespace My_Home
             shop4Address.HouseNumber = 7;
             shop4Address.City = "Västervik";
             shop4Address.Country = "Sweden";
-            johnHouse1Device1Warranty.Shop.Adrress = shop4Address;
+            johnHouse2Device1Warranty.Shop.Address = shop4Address;
 
             // Adding Device object to the RealEstate list
             johnHouse2.DevicesProfile.Add(johnHouse2Device1);
@@ -349,16 +342,16 @@ namespace My_Home
             DateTime purchaseDate5 = new DateTime(2021, 3, 23);
             
             johnHouse2Device2Warranty.PurchaseDate = purchaseDate5;
-            now = DateTime.Now;
             
             johnHouse2Device2.DeviceWarranty = johnHouse2Device2Warranty;
+
 
             // Realestate 2 Shop 2
 
             Shop shop5 = new Shop();
             shop5.ShopName = "Elgiganten";
             shop5.PhoneNumber = 0771115115;
-            shop5.ShopWebAdrress = "https://www.elgiganten.se/";
+            shop5.ShopWebAddress = "https://www.elgiganten.se/";
             johnHouse2Device2Warranty.Shop = shop5;
 
             // Real Estate 2 Shop 2 Address
@@ -369,8 +362,9 @@ namespace My_Home
             shop5Address.HouseNumber = 7;
             shop5Address.City = "Västervik";
             shop5Address.Country = "Sweden";
-            johnHouse2Device2Warranty.Shop.Adrress = shop5Address;
+            johnHouse2Device2Warranty.Shop.Address = shop5Address;
 
+            
             // Adding Device object to the RealEstate list
             johnHouse2.DevicesProfile.Add(johnHouse2Device2);
 

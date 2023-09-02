@@ -17,16 +17,20 @@ namespace My_Home
             //    Console.WriteLine(d);
             //}
 
-            List<RealEstate> realEstate = Logic.RealEstates(list[0]);
-            List<DevicesProfile> devices = Logic.GetAllUserDevices(list[0]);
+            List<RealEstate> realEstates = Logic.RealEstates(list[1]);
+            
+            List<DevicesProfile> devices = Logic.GetAllUserDevices(list[1]);
             foreach (DevicesProfile device in devices)
             {
-                Console.WriteLine(device.DeviceSerialNumber + " " + device.DeviceName);
-            }
+                DeviceWarranty deviceWarranty = device.DeviceWarranty;
+                Shop shop = deviceWarranty.Shop;
 
+
+                Console.WriteLine(shop.ShopWebAddress.ToString());
+            }
+            DeviceWarranty warranty = Logic.GetUserDevicesWarranties(list[0]);
             
 
-            //var x = GetDevicesCloseToWarrantyEnd(list[0]);
 
 
         }

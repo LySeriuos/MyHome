@@ -90,11 +90,26 @@ namespace My_Home
             return devices;
         }
 
+        public static DeviceWarranty GetUserDevicesWarranties(UserProfile user)
+        {             
+            List<RealEstate> house = user.House;
+            DeviceWarranty warranty = new DeviceWarranty();
+            foreach (RealEstate realestate in house)
+            {
+                List<DevicesProfile> devices = realestate.DevicesProfile;
+                foreach(DevicesProfile device in devices)
+                {
+                    warranty = device.DeviceWarranty;
+                }                
+            }
+            return warranty;
+        }
 
 
-       
 
-        
+
+
+
 
 
     }

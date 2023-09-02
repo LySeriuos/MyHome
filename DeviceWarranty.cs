@@ -66,10 +66,10 @@ namespace My_Home
 
         public override string ToString()
         {
-			return _warrantyPeriod + " " + _purchaseDate + " " + " " + _extendedWarranty;
+			return _warrantyPeriod.ToString("%d") + " " + _purchaseDate.ToShortDateString() + " " + " " + _extendedWarranty.ToString("%d");
         }
 
-
+		
 
     }
 }
