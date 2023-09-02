@@ -12,13 +12,17 @@ namespace My_Home
             
             List<UserProfile> list = TestData.User();
             List<string> devicesClosestToTheEndList = Logic.DevicesAndWarranties(list[1]);
-            foreach (string d in devicesClosestToTheEndList)
-            {
-                Console.WriteLine(d);
-            }
+            //foreach (string d in devicesClosestToTheEndList)
+            //{
+            //    Console.WriteLine(d);
+            //}
 
             List<RealEstate> realEstate = Logic.RealEstates(list[0]);
-            
+            List<DevicesProfile> devices = Logic.GetAllUserDevices(list[0]);
+            foreach (DevicesProfile device in devices)
+            {
+                Console.WriteLine(device.DeviceSerialNumber + " " + device.DeviceName);
+            }
 
             
 

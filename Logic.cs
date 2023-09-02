@@ -75,9 +75,19 @@ namespace My_Home
  
         public static List<RealEstate> RealEstates(UserProfile user)
         {
-            List<RealEstate> house = user.House;
-            
+            List<RealEstate> house = user.House;            
             return house;
+        }
+
+        public static List<DevicesProfile> GetAllUserDevices(UserProfile user)
+        {
+            List<DevicesProfile> devices = new List<DevicesProfile>();
+            List<RealEstate> house = user.House;
+            foreach(RealEstate realestate in house)
+            {
+                devices = realestate.DevicesProfile;
+            }
+            return devices;
         }
 
 
