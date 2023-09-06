@@ -9,7 +9,7 @@ namespace My_Home
         static void Main(string[] args)
         {
             List<UserProfile> list = TestData.User();
-            List<DevicesProfile> devicesClosestToTheEndList = Logic.DevicesAndWarranties(list[1], 180);
+            List<DevicesProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(list[1], 180);
             foreach (DevicesProfile d in devicesClosestToTheEndList)
             {
                 Console.WriteLine(d);

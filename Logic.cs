@@ -46,7 +46,7 @@ namespace My_Home
         /// <param name="userProfile">Devices connected to User</param>
         /// <param name="daysTillEnd">Max days until devices warranties ends</param>
         /// <returns>List of devices which are in the period of Max days to warraties ends</returns>
-        public static List<DevicesProfile> DevicesAndWarranties(UserProfile userProfile, int daysTillEnd = 180)
+        public static List<DevicesProfile> ExpiringDevicesWarrantiesInDays(UserProfile userProfile, int daysTillEnd = 180)
         {
             List<DevicesProfile> expiringDevices = new List<DevicesProfile>();
             List<RealEstate> realEstates = userProfile.RealEstates;
@@ -72,7 +72,7 @@ namespace My_Home
         }
 
         /// <summary>
-        /// Geting all user devices
+        /// Geting all user's devices
         /// </summary>
         /// <param name="user"> User </param>
         /// <returns>List of user devices</returns>
