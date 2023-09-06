@@ -10,36 +10,7 @@ namespace My_Home
 {
     public class Logic
     {
-        /// <summary>
-        /// Geting all users' devices
-        /// </summary>
-        /// <param name="users"> Users </param>
-        /// <returns>List of all devices</returns>
-        public static List<string> ExpiringFirstWarrantyList(List<UserProfile> users)
-        {
-            List<string> expiringDate = new List<string>();
-            List<RealEstate> houses;
-            List<DevicesProfile> devices;
-            DateTime localDate = DateTime.Now;
 
-            for (int i = 0; i < users.Count; i++)
-            {
-                houses = users[i].RealEstates;
-
-                for (int j = 0; j < houses.Count; j++)
-                {
-                    devices = houses[j].DevicesProfiles;
-                    for (int k = 0; k < devices.Count; k++)
-                    {
-                        string deviceName = devices[k].DeviceName;
-                        DeviceWarranty deviceWarranty = devices[k].DeviceWarranty;
-                        string warrantyEndsToString = deviceWarranty.WarrantyEnd.ToString("yyyy/MM/d");
-                        expiringDate.Add(deviceName + " " + warrantyEndsToString);
-                    }
-                }
-            }
-            return expiringDate;
-        }
         /// <summary>
         /// Method to get all devices with warranties which ending soon
         /// </summary>
