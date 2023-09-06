@@ -16,46 +16,46 @@ namespace My_Home
 
             userProfile1.UserName = "James";
             userProfile1.Email = "james@gmail.com";
-            userProfile1.House = new List<RealEstate>();
+            userProfile1.RealEstates = new List<RealEstate>();
             // missing pasword method
-            
-            
+
+
             //Real Estate 1, User can have more than one place
-            
+
             RealEstate jamesHouse1 = new RealEstate();
-            
+
             //Place name 1
 
-            jamesHouse1.RealEstateName = "James House";
-            jamesHouse1.DevicesProfile = new List<DevicesProfile>();
-           
+            jamesHouse1.RealEstateName = "James RealEstates";
+            jamesHouse1.DevicesProfiles = new List<DevicesProfile>();
+
             //Address RealEstate 1
 
             Address jamesHouse1Address = new Address();
             jamesHouse1Address.StreetName = "Walton Street";
             jamesHouse1Address.HouseNumber = 583;
             jamesHouse1Address.City = "Salt Lake City";
-            jamesHouse1Address.Country = "Usa";            
+            jamesHouse1Address.Country = "Usa";
             jamesHouse1.Address = jamesHouse1Address;
 
-     
+
             var houseTest = new Address()
             {
                 ApartamentNumber = 5,
                 City = "Vienna",
                 Country = "austria"
             };
-            
+
             // maybe I should put State, it could be useful
 
             //for test purposes
-            foreach (RealEstate userProfile in userProfile1.House)
+            foreach (RealEstate userProfile in userProfile1.RealEstates)
             {
                 Console.WriteLine(userProfile.RealEstateName);
                 Console.WriteLine(userProfile.Address.City);
             }
 
-            // DevicesProfile 1
+            // DevicesProfiles 1
 
             DevicesProfile jamesDevice1 = new DevicesProfile();
             jamesDevice1.DeviceName = "Gaming Computer";
@@ -65,8 +65,8 @@ namespace My_Home
             jamesDevice1.IpAddress = "58.31.187.181";
             jamesDevice1.MacAdrress = "2E-A2-C8-A8-20-99";
             jamesDevice1.DeviceProduser = "Samsung";
-            jamesDevice1.ManualBookLink = "https://www.bhphotovideo.com/lit_files/116441.pdf";             
-            
+            jamesDevice1.ManualBookLink = "https://www.bhphotovideo.com/lit_files/116441.pdf";
+
 
             // Device Warranty 1
 
@@ -79,14 +79,14 @@ namespace My_Home
             jamesDevice1Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
             jamesDevice1Warranty.ExtendedWarranty = new TimeSpan(1095, 0, 0, 0);
             DateTime purchaseDate1 = new DateTime(2023, 7, 15);
-            
+
             // it is typical warranty in the USA is 1 year 
             // it should be enum bycountries because later it automatically count warranty period or ? 
 
             // counting the length of left time for warranty
             jamesDevice1Warranty.PurchaseDate = purchaseDate1;
             now = DateTime.Now;
-            
+
             jamesDevice1.DeviceWarranty = jamesDevice1Warranty;
 
             // Shop 1
@@ -108,9 +108,16 @@ namespace My_Home
 
             // Adding Device object to the RealEstate list
 
-            jamesHouse1.DevicesProfile.Add(jamesDevice1);
+            jamesHouse1.DevicesProfiles.Add(jamesDevice1);
+          //example  jamesHouse1.DevicesProfiles.Add(new DevicesProfiles()  //TODO: hint inline initialisation for less copy paste errors
+          //example  {
+          //example      DeviceName = "Gaming Computer",
+          //example      DeviceType = DeviceType.Computer,
+          //example 
+          //example  });
 
-            // DevicesProfile 2
+
+            // DevicesProfiles 2
 
             DevicesProfile jamesDevice2 = new DevicesProfile();
             jamesDevice2.DeviceName = "James Phone";
@@ -121,7 +128,7 @@ namespace My_Home
             jamesDevice2.MacAdrress = "00-B0-D0-63-C2-26";
             jamesDevice2.DeviceProduser = "Apple";
             jamesDevice2.ManualBookLink = "https://support.apple.com/sv-se/guide/iphone/iphfc2d9bc6a/ios";
-            
+
 
             // Device Warranty 2 
 
@@ -132,10 +139,10 @@ namespace My_Home
             };
             jamesDevice2Warranty.WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0);
             jamesDevice2Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
-            DateTime purchaseDate2 = new DateTime(2023, 1, 23);            
+            DateTime purchaseDate2 = new DateTime(2023, 1, 23);
             jamesDevice2Warranty.PurchaseDate = purchaseDate2;
             now = DateTime.Now;
-            
+
             jamesDevice2.DeviceWarranty = jamesDevice2Warranty;
 
             // Shop 2
@@ -157,17 +164,17 @@ namespace My_Home
 
             // Adding Device object to the RealEstate list
 
-            jamesHouse1.DevicesProfile.Add(jamesDevice2);
+            jamesHouse1.DevicesProfiles.Add(jamesDevice2);
 
             // Adding RealEstate object to the userProfile List
 
-            userProfile1.House.Add(jamesHouse1);
+            userProfile1.RealEstates.Add(jamesHouse1);
 
             // Adding userProfile to the user List
             usersList.Add(userProfile1);
 
 
-#endregion
+            #endregion
             ////////// User Profile 2 ///////////////////////
             #region User2
 
@@ -175,7 +182,7 @@ namespace My_Home
 
             userProfile2.UserName = "John";
             userProfile2.Email = "john@gmail.com";
-            userProfile2.House = new List<RealEstate>();
+            userProfile2.RealEstates = new List<RealEstate>();
             // missing pasword method
 
             RealEstate johnHouse1 = new RealEstate();
@@ -183,7 +190,7 @@ namespace My_Home
             //Place name 1
 
             johnHouse1.RealEstateName = "John Apartament";
-            johnHouse1.DevicesProfile = new List<DevicesProfile>();
+            johnHouse1.DevicesProfiles = new List<DevicesProfile>();
 
             //Address Realestate 1
 
@@ -193,10 +200,10 @@ namespace My_Home
             johnHouse1Address.City = "Gusum";
             johnHouse1Address.Country = "Sweden";
             johnHouse1.Address = johnHouse1Address;
-            
+
             // maybe I should put State, it could be useful
 
-            // DevicesProfile 1
+            // DevicesProfiles 1
 
             DevicesProfile johnHouse1Device1 = new DevicesProfile();
             johnHouse1Device1.DeviceName = "DishWasher";
@@ -207,7 +214,7 @@ namespace My_Home
             johnHouse1Device1.MacAdrress = "87-86-1F-E0-A3-A6";
             johnHouse1Device1.DeviceProduser = "Asko";
             johnHouse1Device1.ManualBookLink = "https://www.bruksanvisni.ng/asko/dbi8557mimxxls/bruksanvisning";
-            
+
 
             // Device Warranty 1 
 
@@ -219,10 +226,10 @@ namespace My_Home
             johnHouse1Device1Warranty.WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0);
             johnHouse1Device1Warranty.ExtendedWarranty = new TimeSpan(1095, 0, 0, 0, 0);
             DateTime purchaseDate3 = new DateTime(2022, 6, 10);
-            
+
             johnHouse1Device1Warranty.PurchaseDate = purchaseDate3;
             now = DateTime.Now;
-            
+
             johnHouse1Device1.DeviceWarranty = johnHouse1Device1Warranty;
 
             // Shop 1
@@ -241,20 +248,20 @@ namespace My_Home
             shop3Address.City = "Linköping";
             shop3Address.Country = "Sweden";
             johnHouse1Device1Warranty.Shop.Address = shop3Address;
-            
+
             // Adding Device object to the RealEstate list
-            johnHouse1.DevicesProfile.Add(johnHouse1Device1);
+            johnHouse1.DevicesProfiles.Add(johnHouse1Device1);
 
             // Adding RealEstate object to the userProfile List
-            userProfile2.House.Add(johnHouse1);
+            userProfile2.RealEstates.Add(johnHouse1);
 
 
             RealEstate johnHouse2 = new RealEstate();
 
             //Place name 2
 
-            johnHouse2.RealEstateName = "John House Rental";
-            johnHouse2.DevicesProfile = new List<DevicesProfile>();
+            johnHouse2.RealEstateName = "John RealEstates Rental";
+            johnHouse2.DevicesProfiles = new List<DevicesProfile>();
 
             //Address Realestate 2
 
@@ -267,7 +274,7 @@ namespace My_Home
             johnHouse2.Address = johnHouse2Address;
             // maybe I should put State, it could be useful
 
-            // Realestate 2 DevicesProfile 1
+            // Realestate 2 DevicesProfiles 1
 
             DevicesProfile johnHouse2Device1 = new DevicesProfile();
             johnHouse2Device1.DeviceName = "Washing-Drying Machine";
@@ -291,10 +298,10 @@ namespace My_Home
             johnHouse2Device1Warranty.WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0);
             johnHouse2Device1Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
             DateTime purchaseDate4 = new DateTime(2021, 1, 14);
-            
+
             johnHouse2Device1Warranty.PurchaseDate = purchaseDate4;
             now = DateTime.Now;
-            
+
             johnHouse2Device1.DeviceWarranty = johnHouse2Device1Warranty;
 
             // Realestate 2 Shop 1
@@ -315,9 +322,9 @@ namespace My_Home
             johnHouse2Device1Warranty.Shop.Address = shop4Address;
 
             // Adding Device object to the RealEstate list
-            johnHouse2.DevicesProfile.Add(johnHouse2Device1);
+            johnHouse2.DevicesProfiles.Add(johnHouse2Device1);
 
-            // Realestate 2 DevicesProfile 2
+            // Realestate 2 DevicesProfiles 2
 
             DevicesProfile johnHouse2Device2 = new DevicesProfile();
             johnHouse2Device2.DeviceName = "Main Bedroom TV";
@@ -340,9 +347,9 @@ namespace My_Home
             johnHouse2Device2Warranty.WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0);
             johnHouse2Device2Warranty.ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0);
             DateTime purchaseDate5 = new DateTime(2021, 3, 23);
-            
+
             johnHouse2Device2Warranty.PurchaseDate = purchaseDate5;
-            
+
             johnHouse2Device2.DeviceWarranty = johnHouse2Device2Warranty;
 
 
@@ -364,18 +371,18 @@ namespace My_Home
             shop5Address.Country = "Sweden";
             johnHouse2Device2Warranty.Shop.Address = shop5Address;
 
-            
+
             // Adding Device object to the RealEstate list
-            johnHouse2.DevicesProfile.Add(johnHouse2Device2);
+            johnHouse2.DevicesProfiles.Add(johnHouse2Device2);
 
             // Adding RealEstate object to the userProfile List
-            userProfile2.House.Add(johnHouse2);
+            userProfile2.RealEstates.Add(johnHouse2);
             #endregion
             // Adding userProfile to the user List
             usersList.Add(userProfile2);
 
             return usersList;
         }
-        
+
     }
 }

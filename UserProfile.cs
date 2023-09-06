@@ -32,7 +32,7 @@ namespace My_Home
 
 		private List <RealEstate> _house;
 
-		public List <RealEstate> House
+		public List <RealEstate> RealEstates
 		{
 			get { return _house; }
 			set { _house = value; }

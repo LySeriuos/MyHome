@@ -27,7 +27,7 @@ namespace My_Home
 
         private List <DevicesProfile> _devicesProfile;
 
-        public List <DevicesProfile> DevicesProfile
+        public List <DevicesProfile> DevicesProfiles
         {
             get { return _devicesProfile; }
             set { _devicesProfile = value; }

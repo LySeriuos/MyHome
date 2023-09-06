@@ -86,7 +86,7 @@ namespace MyHome
 
         public override string ToString()
         {
-            return _deviceName + " " + _deviceModelNumber + "" + _deviceSerialNumber + "" + _ipAdrress + "" + _macAddress + "" + _deviceProduser;
+            return _deviceName + " " + _deviceModelNumber + " " + _deviceSerialNumber + " " + _ipAdrress + " " + _macAddress + " " + _deviceProduser;
         }
 
 

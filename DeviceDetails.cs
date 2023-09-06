@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyHome
 {
-    public static class DeviceDetails
+    public class DeviceDetails
     {
        
         public static List<string> GetDetails(DeviceType deviceType)
