@@ -10,6 +10,11 @@ namespace My_Home
 {
     public class Logic
     {
+        /// <summary>
+        /// Geting all users' devices
+        /// </summary>
+        /// <param name="users"> Users </param>
+        /// <returns>List of all devices</returns>
         public static List<string> ExpiringFirstWarrantyList(List<UserProfile> users)
         {
             List<string> expiringDate = new List<string>();
