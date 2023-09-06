@@ -66,12 +66,6 @@ namespace My_Home
             return expiringDevices;
         }
 
-        public static List<RealEstate> RealEstates(UserProfile user)
-        {
-            List<RealEstate> house = user.RealEstates;
-            return house;
-        }
-
         public static List<DevicesProfile> GetAllUserDevices(UserProfile user)
         {
             List<DevicesProfile> devices = new List<DevicesProfile>();
@@ -96,19 +90,6 @@ namespace My_Home
                 }
             }
             return warranty;
-        }
-
-
-        public static List<DeviceType> GetSubcategoryList(List<DevicesProfile> devices)
-        {
-            List<DeviceType> deviceDetailsList = new List<DeviceType>();
-
-            foreach (DevicesProfile device in devices)
-            {
-                deviceDetailsList.Add(device.DeviceType);
-                Console.WriteLine(deviceDetailsList);
-            }
-            return deviceDetailsList;
         }
 
 
