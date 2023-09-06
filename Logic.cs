@@ -66,6 +66,11 @@ namespace My_Home
             return expiringDevices;
         }
 
+        /// <summary>
+        /// Geting all user devices
+        /// </summary>
+        /// <param name="user"> User </param>
+        /// <returns>List of user devices</returns>
         public static List<DevicesProfile> GetAllUserDevices(UserProfile user)
         {
             List<DevicesProfile> devices = new List<DevicesProfile>();
@@ -77,6 +82,11 @@ namespace My_Home
             return devices;
         }
 
+        /// <summary>
+        /// Geting user's devices expiring warranties dates
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <returns>List of devices warranties</returns>
         public static DeviceWarranty GetUserDevicesWarranties(UserProfile user)
         {
             List<RealEstate> house = user.RealEstates;
