@@ -15,11 +15,11 @@ namespace My_Home
                 Console.WriteLine(d);
             }
 
-            DeviceType deviceType;
+            
             List<DevicesProfile> devices = Logic.GetAllUserDevices(list[1]);
             foreach (DevicesProfile device in devices)
             {
-                deviceType = device.DeviceType;
+                DeviceType deviceType = device.DeviceType;
                 DeviceWarranty deviceWarranty = device.DeviceWarranty;
                 Shop shop = deviceWarranty.Shop;
             }
