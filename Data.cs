@@ -14,7 +14,7 @@ namespace My_Home
         /// </summary>
         /// <param name="users">All users list</param>
         /// <param name="path">location destination where list will be saved</param>
-        public static void SaveQnAListToXml(List<UserProfile> users, string path)
+        public static void SaveUsersListToXml(List<UserProfile> users, string path)
         {
             //    var path = @"C:\Users\shiranco.DESKTOP-HRN41TE\Documents\temp\UserQuestionsAndAnswers.xml";
             XmlSerializer XmlSerializer = new XmlSerializer(typeof(List<UserProfile>));
@@ -29,7 +29,7 @@ namespace My_Home
         /// </summary>
         /// <param name="path">saved list location destination</param>
         /// <returns>Saved List</returns>
-        public static List<UserProfile> GetQnAListToXml(string path)
+        public static List<UserProfile> GetUsersListFromXml(string path)
         {
             List<UserProfile> usersList = new();
             if (File.Exists(path))

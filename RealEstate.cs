@@ -25,9 +25,9 @@ namespace My_Home
             set { _address = value; }
         }
 
-        private List <DevicesProfile> _devicesProfile;
+        private List <DeviceProfile> _devicesProfile;
 
-        public List <DevicesProfile> DevicesProfiles
+        public List <DeviceProfile> DevicesProfiles
         {
             get { return _devicesProfile; }
             set { _devicesProfile = value; }

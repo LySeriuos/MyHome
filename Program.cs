@@ -1,4 +1,5 @@
-﻿using MyHome;
+﻿using Aspose.Cells;
+using MyHome;
 using System.Collections.Generic;
 
 namespace My_Home
@@ -8,19 +9,28 @@ namespace My_Home
     {
         static void Main(string[] args)
         {
+            // saved Test Data to local file
             string path = @"C:\Temp\usersListTestData.xml";
-            List<UserProfile> usersList = TestData.User();
-            Data.SaveQnAListToXml(usersList, path);
+            List<UserProfile> usersList = TestData.Users();
+            List<UserProfile> userProfiles = Data.GetUsersListFromXml(path);
+            foreach (UserProfile userProfile in userProfiles)
+            {             
+                foreach(RealEstate realEstate in userProfile.RealEstates)
+                {
+                    Console.WriteLine(realEstate.RealEstateName);
+                }
+            }
+            Data.SaveUsersListToXml(usersList, path);
             
-            List<DevicesProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
-            foreach (DevicesProfile d in devicesClosestToTheEndList)
+            List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
+            foreach (DeviceProfile d in devicesClosestToTheEndList)
             {
                 Console.WriteLine(d);
             }
 
             
-            List<DevicesProfile> devices = Logic.GetAllUserDevices(usersList[1]);
-            foreach (DevicesProfile device in devices)
+            List<DeviceProfile> devices = Logic.GetAllUserDevices(usersList[1]);
+            foreach (DeviceProfile device in devices)
             {
                 DeviceType deviceType = device.DeviceType;
                 DeviceWarranty deviceWarranty = device.DeviceWarranty;

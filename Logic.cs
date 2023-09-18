@@ -14,17 +14,17 @@ namespace My_Home
         /// <summary>
         /// Method to get all devices with warranties which ending soon
         /// </summary>
-        /// <param name="userProfile">Devices connected to User</param>
+        /// <param name="userProfile">Devices connected to Users</param>
         /// <param name="daysTillEnd">Max days until devices warranties ends</param>
         /// <returns>List of devices which are in the period of Max days to warraties ends</returns>
-        public static List<DevicesProfile> ExpiringDevicesWarrantiesInDays(UserProfile userProfile, int daysTillEnd = 180)
+        public static List<DeviceProfile> ExpiringDevicesWarrantiesInDays(UserProfile userProfile, int daysTillEnd = 180)
         {
-            List<DevicesProfile> expiringDevices = new List<DevicesProfile>();
+            List<DeviceProfile> expiringDevices = new List<DeviceProfile>();
             List<RealEstate> realEstates = userProfile.RealEstates;
             foreach (RealEstate realEstate in realEstates)
             {
-                List<DevicesProfile> devices = realEstate.DevicesProfiles;
-                foreach (DevicesProfile device in devices)
+                List<DeviceProfile> devices = realEstate.DevicesProfiles;
+                foreach (DeviceProfile device in devices)
                 {
                     string userDevice = device.DeviceName;
                     DeviceWarranty warranty = device.DeviceWarranty;
@@ -45,11 +45,11 @@ namespace My_Home
         /// <summary>
         /// Geting all user's devices
         /// </summary>
-        /// <param name="user"> User </param>
+        /// <param name="user"> Users </param>
         /// <returns>List of user devices</returns>
-        public static List<DevicesProfile> GetAllUserDevices(UserProfile user)
+        public static List<DeviceProfile> GetAllUserDevices(UserProfile user)
         {
-            List<DevicesProfile> devices = new List<DevicesProfile>();
+            List<DeviceProfile> devices = new List<DeviceProfile>();
             List<RealEstate> house = user.RealEstates;
             foreach (RealEstate realestate in house)
             {
@@ -61,7 +61,7 @@ namespace My_Home
         /// <summary>
         /// Geting user's devices expiring warranties dates
         /// </summary>
-        /// <param name="user">User</param>
+        /// <param name="user">Users</param>
         /// <returns>List of devices warranties</returns>
         public static DeviceWarranty GetUserDevicesWarranties(UserProfile user)
         {
@@ -69,8 +69,8 @@ namespace My_Home
             DeviceWarranty warranty = new DeviceWarranty();
             foreach (RealEstate realestate in house)
             {
-                List<DevicesProfile> devices = realestate.DevicesProfiles;
-                foreach (DevicesProfile device in devices)
+                List<DeviceProfile> devices = realestate.DevicesProfiles;
+                foreach (DeviceProfile device in devices)
                 {
                     warranty = device.DeviceWarranty;
                 }

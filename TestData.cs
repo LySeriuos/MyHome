@@ -5,12 +5,12 @@ namespace My_Home
     public static class TestData
     {
 
-        public static List<UserProfile> User()
+        public static List<UserProfile> Users()
         {
             List<UserProfile> usersList = new List<UserProfile>();
             DateTime now;
 
-            // User Profile 1
+            // Users Profile 1
             #region User1 
             UserProfile userProfile1 = new UserProfile()
             {
@@ -21,12 +21,12 @@ namespace My_Home
             // missing pasword method
 
 
-            //Real Estate 1, User can have more than one place
+            //Real Estate 1, Users can have more than one place
 
             RealEstate jamesRealEstate1 = new RealEstate()
             {
                 RealEstateName = "James RealEstates",
-                DevicesProfiles = new List<DevicesProfile>()
+                DevicesProfiles = new List<DeviceProfile>()
             };
 
             // Adding RealEstate object to the userProfile List
@@ -47,7 +47,7 @@ namespace My_Home
 
             // DevicesProfiles 1
 
-            DevicesProfile jamesDevice1 = new DevicesProfile()
+            DeviceProfile jamesDevice1 = new DeviceProfile()
             {
                 DeviceName = "Gaming Computer",
                 DeviceType = DeviceType.Computer,
@@ -102,7 +102,7 @@ namespace My_Home
 
             // DevicesProfiles 2
 
-            DevicesProfile jamesDevice2 = new DevicesProfile()
+            DeviceProfile jamesDevice2 = new DeviceProfile()
             {
                 DeviceName = "James Phone",
                 DeviceType = DeviceType.MobileDevice,
@@ -159,7 +159,7 @@ namespace My_Home
 
 
             #endregion
-            ////////// User Profile 2 ///////////////////////
+            ////////// Users Profile 2 ///////////////////////
             #region User2
 
             UserProfile userProfile2 = new UserProfile()
@@ -174,7 +174,7 @@ namespace My_Home
             RealEstate johnHouse1 = new RealEstate()
             {
                 RealEstateName = "John Apartament",
-                DevicesProfiles = new List<DevicesProfile>()
+                DevicesProfiles = new List<DeviceProfile>()
             };
 
             // Adding RealEstate object to the userProfile List
@@ -196,7 +196,7 @@ namespace My_Home
 
             // DevicesProfiles 1
 
-            DevicesProfile johnHouse1Device1 = new DevicesProfile()
+            DeviceProfile johnHouse1Device1 = new DeviceProfile()
             {
                 DeviceName = "DishWasher",
                 DeviceType = DeviceType.Kitchen,
@@ -251,8 +251,8 @@ namespace My_Home
 
             RealEstate johnHouse2 = new RealEstate()
             {
-                RealEstateName = "John RealEstates Rental",
-                DevicesProfiles = new List<DevicesProfile>()
+                RealEstateName = "John RealEstate Rental",
+                DevicesProfiles = new List<DeviceProfile>()
             };
 
             //Address Realestate 2
@@ -271,7 +271,7 @@ namespace My_Home
 
             // Realestate 2 DevicesProfiles 1
 
-            DevicesProfile johnHouse2Device1 = new DevicesProfile()
+            DeviceProfile johnHouse2Device1 = new DeviceProfile()
             {
                 DeviceName = "Washing-Drying Machine",
                 DeviceType = DeviceType.Cleaning, // could be gruoped as multidevice but still it should be grouped as Cleaning device
@@ -326,7 +326,7 @@ namespace My_Home
 
             // Realestate 2 DevicesProfiles 2
 
-            DevicesProfile johnHouse2Device2 = new DevicesProfile()
+            DeviceProfile johnHouse2Device2 = new DeviceProfile()
             {
                 DeviceName = "Main Bedroom TV",
                 DeviceType = DeviceType.Video,
@@ -376,7 +376,6 @@ namespace My_Home
             };
 
             johnHouse2Device2Warranty.Shop.Address = shop5Address;
-
 
             // Adding Device object to the RealEstate list
             johnHouse2.DevicesProfiles.Add(johnHouse2Device2);

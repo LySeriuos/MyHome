@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace MyHome
 {
 	
-    public class DevicesProfile
+    public class DeviceProfile
     {
 		
 		private string _deviceName;
