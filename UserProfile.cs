@@ -30,12 +30,12 @@ namespace My_Home
 		// not sure about this class here
 
 
-		private List <RealEstate> _house;
+		private List <RealEstate> _realEstate;
 
 		public List <RealEstate> RealEstates
 		{
-			get { return _house; }
-			set { _house = value; }
+			get { return _realEstate; }
+			set { _realEstate = value; }
 		}
 
         public override string ToString()

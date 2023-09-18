@@ -10,36 +10,21 @@ namespace My_Home
         static void Main(string[] args)
         {
             // saved Test Data to local file
-            string path = @"C:\Temp\usersListTestData.xml";
-            List<UserProfile> usersList = TestData.Users();
-            List<UserProfile> userProfiles = Data.GetUsersListFromXml(path);
-            foreach (UserProfile userProfile in userProfiles)
-            {             
-                foreach(RealEstate realEstate in userProfile.RealEstates)
-                {
-                    Console.WriteLine(realEstate.RealEstateName);
-                }
-            }
-            Data.SaveUsersListToXml(usersList, path);
+            string path = @"C:\Temp\usersListTestData111.xml";
             
-            List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
-            foreach (DeviceProfile d in devicesClosestToTheEndList)
-            {
-                Console.WriteLine(d);
-            }
-
+            List<UserProfile> usersList = Data.GetUsersListFromXml(path);
+            //Data.SaveUsersListToXml(usersList, path);
             
+            List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);  
             List<DeviceProfile> devices = Logic.GetAllUserDevices(usersList[1]);
-            foreach (DeviceProfile device in devices)
-            {
-                DeviceType deviceType = device.DeviceType;
-                DeviceWarranty deviceWarranty = device.DeviceWarranty;
-                Shop shop = deviceWarranty.Shop;
-            }
+           
+            
             DeviceWarranty warranty = Logic.GetUserDevicesWarranties(usersList[0]);
-
-
-
+            List<DeviceProfile> device = Logic.MoveDeviceToOtherRealEstate(usersList[1]);
+            foreach (DeviceProfile deviceProfile in device)
+            {
+                Console.WriteLine(deviceProfile.DeviceName);
+            }
         }
         // public static object ExpiringFirstWarrantyList(UserProfile userProfile)
         //{

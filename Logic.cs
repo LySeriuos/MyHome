@@ -37,7 +37,7 @@ namespace My_Home
                         expiringDevices.Add(device);
                     }
                 }
-            }            
+            }
             expiringDevices = expiringDevices.OrderByDescending(d => d.DeviceWarranty.WarrantyEnd).ToList();
             return expiringDevices;
         }
@@ -78,6 +78,43 @@ namespace My_Home
             return warranty;
         }
 
+        public static List<DeviceProfile> MoveDeviceToOtherRealEstate(UserProfile user)
+        {
+            int devicesListIndex;
+            int realEstateID = 0;
+
+            List<RealEstate> realEstateList = user.RealEstates;
+            List<DeviceProfile> devices1 = realEstateList[0].DevicesProfiles;
+            int countedRealEstates = realEstateList.Count;
+            foreach (RealEstate realEstate in realEstateList)
+            {
+                List<DeviceProfile> devices = realEstate.DevicesProfiles;
+
+                foreach (DeviceProfile device in devices)
+                {
+                    if (device.DeviceSerialNumber == "AKZ43CPQ505923D")
+                    {
+                        string realEstateName = realEstate.RealEstateName;
+                        realEstateID = realEstateList.IndexOf(realEstate);
+                        devices1.Add(device);
+                        devicesListIndex = devices.IndexOf(device);
+                        DeviceProfile device1 = realEstate.DevicesProfiles[devicesListIndex];
+                        //realEstateListIndex = realEstate.DevicesProfiles.IndexOf(device);
+                        string klo = device.DeviceName;
+                        
+                        break;
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+            }
+
+
+            return devices1;
+
+        }
 
 
 
