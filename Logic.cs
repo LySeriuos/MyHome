@@ -80,40 +80,25 @@ namespace My_Home
 
         public static List<DeviceProfile> MoveDeviceToOtherRealEstate(UserProfile user)
         {
-            int devicesListIndex;
-            int realEstateID = 0;
-
+            
             List<RealEstate> realEstateList = user.RealEstates;
             List<DeviceProfile> devices1 = realEstateList[0].DevicesProfiles;
-            int countedRealEstates = realEstateList.Count;
+            List<DeviceProfile> devices2 = realEstateList[1].DevicesProfiles;
             foreach (RealEstate realEstate in realEstateList)
             {
                 List<DeviceProfile> devices = realEstate.DevicesProfiles;
-
                 foreach (DeviceProfile device in devices)
                 {
                     if (device.DeviceSerialNumber == "AKZ43CPQ505923D")
                     {
-                        string realEstateName = realEstate.RealEstateName;
-                        realEstateID = realEstateList.IndexOf(realEstate);
+                        int objectIndexInList = devices.IndexOf(device);
                         devices1.Add(device);
-                        devicesListIndex = devices.IndexOf(device);
-                        DeviceProfile device1 = realEstate.DevicesProfiles[devicesListIndex];
-                        //realEstateListIndex = realEstate.DevicesProfiles.IndexOf(device);
-                        string klo = device.DeviceName;
-                        
+                        devices.RemoveAt(objectIndexInList);
                         break;
-                    }
-                    else
-                    {
-                        
                     }
                 }
             }
-
-
-            return devices1;
-
+            return devices2;
         }
 
 

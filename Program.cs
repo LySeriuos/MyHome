@@ -23,7 +23,7 @@ namespace My_Home
             List<DeviceProfile> device = Logic.MoveDeviceToOtherRealEstate(usersList[1]);
             foreach (DeviceProfile deviceProfile in device)
             {
-                Console.WriteLine(deviceProfile.DeviceName);
+                Console.WriteLine(deviceProfile.DeviceName + " " + deviceProfile.DeviceSerialNumber);
             }
         }
         // public static object ExpiringFirstWarrantyList(UserProfile userProfile)
