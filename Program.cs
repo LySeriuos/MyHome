@@ -17,10 +17,17 @@ namespace My_Home
             
             List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);  
             List<DeviceProfile> devices = Logic.GetAllUserDevices(usersList[1]);
-           
-            
+
+            // Selected device example of user
+            DeviceProfile selectedDevice = devices[2];
+
+            // for test purposes
+            Console.WriteLine($"{selectedDevice.DeviceName} + {selectedDevice.DeviceSerialNumber} : selected device");
+
+            // device selection by serial number
+            string deviceSerialNumber = "AKZ43CPQ505923D";
             DeviceWarranty warranty = Logic.GetUserDevicesWarranties(usersList[0]);
-            List<DeviceProfile> device = Logic.MoveDeviceToOtherRealEstate(usersList[1]);
+            List<DeviceProfile> device = Logic.MoveDeviceToOtherRealEstate(usersList[1], deviceSerialNumber, selectedDevice);
             foreach (DeviceProfile deviceProfile in device)
             {
                 Console.WriteLine(deviceProfile.DeviceName + " " + deviceProfile.DeviceSerialNumber);

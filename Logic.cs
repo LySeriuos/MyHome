@@ -78,35 +78,40 @@ namespace My_Home
             return warranty;
         }
 
-        public static List<DeviceProfile> MoveDeviceToOtherRealEstate(UserProfile user)
-        {
-            
+        public static List<DeviceProfile> MoveDeviceToOtherRealEstate(UserProfile user, string serialNumber, DeviceProfile selectedDevice)
+        {            
             List<RealEstate> realEstateList = user.RealEstates;
-            List<DeviceProfile> devices1 = realEstateList[0].DevicesProfiles;
-            List<DeviceProfile> devices2 = realEstateList[1].DevicesProfiles;
+            
+            List<DeviceProfile> devicesListInRealEstate1 = realEstateList[0].DevicesProfiles;
+            List<DeviceProfile> devicesInRealEstate2 = realEstateList[1].DevicesProfiles;
+            DeviceProfile userDevice = devicesListInRealEstate1[2];
+            //Console.WriteLine(userDevice.DeviceName);
             foreach (RealEstate realEstate in realEstateList)
             {
                 List<DeviceProfile> devices = realEstate.DevicesProfiles;
-                foreach (DeviceProfile device in devices)
+                bool objectExistInList = devices.Contains(selectedDevice);
+                Console.WriteLine(objectExistInList);
+                if (objectExistInList)
                 {
-                    if (device.DeviceSerialNumber == "AKZ43CPQ505923D")
+
+                }
+                
+                foreach (DeviceProfile device in devices)
+                {                    
+                    if (device.DeviceSerialNumber == serialNumber)
                     {
                         int objectIndexInList = devices.IndexOf(device);
-                        devices1.Add(device);
+                        //Console.WriteLine(objectIndexInList);
+                        int realEstateObjectIndex = realEstateList.IndexOf(realEstate);
+                        //Console.WriteLine(realEstateObjectIndex);
+                        devicesListInRealEstate1.Add(device);
                         devices.RemoveAt(objectIndexInList);
                         break;
                     }
                 }
             }
-            return devices2;
+            return devicesListInRealEstate1;
         }
-
-
-
-
-
-
-
     }
 
 }
