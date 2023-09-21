@@ -78,6 +78,13 @@ namespace My_Home
             return warranty;
         }
 
+        /// <summary>
+        /// Method to move device object from one Real Estate to another Real Estatee by device's serial number
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <param name="serialNumber">Device's serial number</param>
+        /// <param name="userChosedRealEstateToMoveDevice">Chosed Real Estate where to move the device</param>
+        /// <returns>bool to give a respons for user if device moving was successful </returns>
         public static bool MoveDeviceToOtherRealEstate(UserProfile user, string serialNumber, RealEstate userChosedRealEstateToMoveDevice)
         {
             List<RealEstate> realEstateList = user.RealEstates;
