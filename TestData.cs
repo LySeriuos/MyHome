@@ -8,7 +8,6 @@ namespace My_Home
         public static List<UserProfile> Users()
         {
             List<UserProfile> usersList = new List<UserProfile>();
-            DateTime now;
 
             // Users Profile 1
             #region User1 

@@ -78,40 +78,36 @@ namespace My_Home
             return warranty;
         }
 
-        public static List<DeviceProfile> MoveDeviceToOtherRealEstate(UserProfile user, string serialNumber, DeviceProfile selectedDevice)
-        {            
+        public static bool MoveDeviceToOtherRealEstate(UserProfile user, string serialNumber, RealEstate userChosedRealEstateToMoveDevice)
+        {
             List<RealEstate> realEstateList = user.RealEstates;
-            
-            List<DeviceProfile> devicesListInRealEstate1 = realEstateList[0].DevicesProfiles;
-            List<DeviceProfile> devicesInRealEstate2 = realEstateList[1].DevicesProfiles;
-            DeviceProfile userDevice = devicesListInRealEstate1[2];
-            //Console.WriteLine(userDevice.DeviceName);
+            List<DeviceProfile> devices = new List<DeviceProfile>();
+            DeviceProfile foundDevice = new();
+            int countedDevicesBeforeRemoval = 0;
+            bool deviceWasAdded = false;
+
             foreach (RealEstate realEstate in realEstateList)
             {
-                List<DeviceProfile> devices = realEstate.DevicesProfiles;
-                bool objectExistInList = devices.Contains(selectedDevice);
-                Console.WriteLine(objectExistInList);
-                if (objectExistInList)
-                {
-
-                }
-                
-                foreach (DeviceProfile device in devices)
-                {                    
-                    if (device.DeviceSerialNumber == serialNumber)
-                    {
-                        int objectIndexInList = devices.IndexOf(device);
-                        //Console.WriteLine(objectIndexInList);
-                        int realEstateObjectIndex = realEstateList.IndexOf(realEstate);
-                        //Console.WriteLine(realEstateObjectIndex);
-                        devicesListInRealEstate1.Add(device);
-                        devices.RemoveAt(objectIndexInList);
-                        break;
-                    }
-                }
+                devices = realEstate.DevicesProfiles;                
+                foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault(foundDevice);
+                countedDevicesBeforeRemoval = devices.Count;                
             }
-            return devicesListInRealEstate1;
+
+            userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
+            devices.Remove(foundDevice);            
+            int countedDevicesAfterAddingTheDevice = userChosedRealEstateToMoveDevice.DevicesProfiles.Count;
+            if (countedDevicesBeforeRemoval < countedDevicesAfterAddingTheDevice)
+            {
+                deviceWasAdded = true;
+            }
+            else
+            {
+                deviceWasAdded = false;
+            }
+
+            return deviceWasAdded;
         }
+
     }
 
 }
