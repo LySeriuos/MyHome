@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspose.Cells" Version="23.8.0" />
+    <PackageReference Include="BarCode" Version="2023.9.45" />
   </ItemGroup>
 
 </Project>

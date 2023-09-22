@@ -5,6 +5,9 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using IronBarCode;
+using System.Security.Cryptography;
 
 namespace My_Home
 {
@@ -97,7 +100,7 @@ namespace My_Home
             {
                 devices = realEstate.DevicesProfiles;                
                 foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault(foundDevice);
-                countedDevicesBeforeRemoval = devices.Count;                
+                countedDevicesBeforeRemoval = devices.Count;
             }
 
             userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
@@ -111,10 +114,36 @@ namespace My_Home
             {
                 deviceWasAdded = false;
             }
-
             return deviceWasAdded;
         }
 
-    }
+        public static void CreateQRCodeForEveryDevice(UserProfile user)
+        {
+            List<RealEstate> realEstates = user.RealEstates;
+            var devices = from realEstate in realEstates
+                          from DeviceDetails device in realEstate.DevicesProfiles
+                          select device;
+            QRCodeWriter.CreateQrCode($"" +
+                $"" +
+                $"'", 500, QRCodeWriter.QrErrorCorrectionLevel.Medium).SaveAsPng("MyQR.png");
+        }
 
+        public static void AddObjectsToDict(UserProfile user)
+        {
+            List<RealEstate> realEstates = user.RealEstates;
+            List<DeviceID> devicesIDs = new List<DeviceID>();
+            Dictionary<DeviceID, DeviceProfile> dictObjectIdAndDevice = new Dictionary<DeviceID, DeviceProfile>();
+            DeviceID deviceID = null;
+            foreach (var realEstate in realEstates)
+            {
+                List<DeviceProfile> devices = realEstate.DevicesProfiles;
+                foreach (var device in devices)
+                {
+                    devicesIDs.Max();                    
+                    dictObjectIdAndDevice.Add(deviceID, device);
+                }
+            }
+            
+        }
+    }
 }

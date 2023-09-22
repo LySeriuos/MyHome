@@ -38,6 +38,23 @@ namespace My_Home
 			set { _realEstate = value; }
 		}
 
+		private List <DeviceID> _deviceID;
+		public List	<DeviceID> DevicesIDs
+		{
+			get { return _deviceID; }
+			set { _deviceID = value; }
+		}
+
+		//private Dictionary <DeviceID, DeviceProfile> _devicesIdAndObjectDevices;
+		
+		//public Dictionary<DeviceID, DeviceProfile> DevicesIdAndObjectDevices
+		//{
+		//	get { return _devicesIdAndObjectDevices; }
+		//	set { _devicesIdAndObjectDevices = value; }
+		//}
+
+		
+
         public override string ToString()
         {
 			return _email + " " + _userName;

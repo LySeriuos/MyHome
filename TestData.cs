@@ -15,9 +15,16 @@ namespace My_Home
             {
                 UserName = "James",
                 Email = "james@gmail.com",
-                RealEstates = new List<RealEstate>()
+                RealEstates = new List<RealEstate>(),
+                DevicesIDs = new List<DeviceID>()
             };
             // missing pasword method
+            List<DeviceID> devicesIDs = new List<DeviceID>();
+            DeviceID deviceID = new DeviceID()
+            {
+                ID = 1
+            };
+            de
 
 
             //Real Estate 1, Users can have more than one place
