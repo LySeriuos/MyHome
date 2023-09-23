@@ -103,8 +103,9 @@ namespace My_Home
                 countedDevicesBeforeRemoval = devices.Count;
             }
 
+            
+            devices.Remove(foundDevice);
             userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
-            devices.Remove(foundDevice);            
             int countedDevicesAfterAddingTheDevice = userChosedRealEstateToMoveDevice.DevicesProfiles.Count;
             if (countedDevicesBeforeRemoval < countedDevicesAfterAddingTheDevice)
             {
@@ -133,17 +134,43 @@ namespace My_Home
             List<RealEstate> realEstates = user.RealEstates;
             List<DeviceID> devicesIDs = new List<DeviceID>();
             Dictionary<DeviceID, DeviceProfile> dictObjectIdAndDevice = new Dictionary<DeviceID, DeviceProfile>();
-            DeviceID deviceID = null;
+            DeviceID iD = new DeviceID();
+            int i = 0;
+            List<DeviceProfile> devices = new List<DeviceProfile>();
+            
             foreach (var realEstate in realEstates)
             {
-                List<DeviceProfile> devices = realEstate.DevicesProfiles;
+                devices = realEstate.DevicesProfiles;
                 foreach (var device in devices)
                 {
-                    devicesIDs.Max();                    
-                    dictObjectIdAndDevice.Add(deviceID, device);
+                    iD.ID = i++;
+                    devicesIDs.Add(iD);
+                    
+                    Console.WriteLine(iD.ID);
+                    
                 }
             }
             
+            
+            int countedElements = devicesIDs.Count;
+            Console.WriteLine(countedElements);
+            foreach (var item in devicesIDs)
+            {
+                Console.WriteLine($"{item.ID}");
+            }
+            foreach(var dict in dictObjectIdAndDevice)
+            {
+                //Console.WriteLine(dict.ToString());
+            }
+            //var maxValue = dictObjectIdAndDevice.Max(x => x.Key)+1;
+          
+            //Console.WriteLine($"{maxValue}");
+
+            //var dic = devicesIDs.Zip(devices).ToDictionary(x => x.First, x => x.Second);
+            //foreach (var device in dic)
+            //{
+            //    Console.WriteLine(device.ToString());
+            //}
         }
     }
 }

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace My_Home
 {
-    internal class DeviceID
+    public class DeviceID
     {
-		private int _iD;
-
+		private int _iD = 0;
 		public int ID
 		{
 			get { return _iD; }

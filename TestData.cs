@@ -19,12 +19,12 @@ namespace My_Home
                 DevicesIDs = new List<DeviceID>()
             };
             // missing pasword method
-            List<DeviceID> devicesIDs = new List<DeviceID>();
-            DeviceID deviceID = new DeviceID()
-            {
-                ID = 1
-            };
-            de
+            //List<DeviceID> devicesIDs = new List<DeviceID>();
+            //DeviceID deviceID = new DeviceID()
+            //{
+            //    ID = 1
+            //};
+            //devicesIDs.Add(deviceID);
 
 
             //Real Estate 1, Users can have more than one place
