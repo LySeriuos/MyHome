@@ -50,7 +50,15 @@ namespace My_Home
             chosedRealEstate.DevicesProfiles.Add(new DeviceProfile
             {
                 DeviceName = Console.ReadLine(),
-            });
+                //DeviceType = ,
+                DeviceModelNumber = Console.ReadLine(),
+                DeviceSerialNumber = Console.ReadLine(),
+                IpAddress = Console.ReadLine(),
+                MacAdrress = Console.ReadLine(),
+                DeviceProduser = Console.ReadLine(),
+                ManualBookLink = Console.ReadLine(),
+            }); 
+            
             //user.RealEstates = Console.ReadLine();
             return deviceProfile;
         }
