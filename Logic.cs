@@ -129,6 +129,11 @@ namespace My_Home
                 $"'", 500, QRCodeWriter.QrErrorCorrectionLevel.Medium).SaveAsPng("MyQR.png");
         }
 
+        /// <summary>
+        /// Created two new lists and one dictionary to assign IDs and devices
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <returns>Dictionary</returns>
         public static Dictionary<DeviceID, DeviceProfile> AddObjectsToDict(UserProfile user)
         {
             List<RealEstate> realEstates = user.RealEstates;
@@ -141,26 +146,22 @@ namespace My_Home
             foreach (var realEstate in realEstates)
             {
                 devices = realEstate.DevicesProfiles;
-                Console.WriteLine(devices.Count());
                 foreach (var device in devices)
                 {
                     deviceProfiles.Add(device);
                     DeviceID iD = new DeviceID();
                     iD.ID = indexStartingInDictionary;
                     devicesIDs.Add(iD);
-                    indexStartingInDictionary++;
-                    //    Console.WriteLine(iD.ID);                    
+                    indexStartingInDictionary++;                   
                 }
             }
-
-            //var maxValue = dictObjectIdAndDevice.Max(x => x.Key)+1;
-
-            //Console.WriteLine($"{maxValue}");
+            // assigned index to device with zip method
             var dictIdAndDeviceProfile = devicesIDs.Zip(deviceProfiles).ToDictionary(x => x.First, x => x.Second);
-            Dictionary<DeviceID, DeviceProfile> dictionary4 = new Dictionary<DeviceID, DeviceProfile>();
+
+            //trying to add lists of objects in to dictionary. Difficult to iterate
             dictObjectIdAndDevice.Add(devicesIDs, deviceProfiles);
            
-
+            // returing dictionary 
             return dictIdAndDeviceProfile;
         }
     }
