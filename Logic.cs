@@ -98,12 +98,12 @@ namespace My_Home
 
             foreach (RealEstate realEstate in realEstateList)
             {
-                devices = realEstate.DevicesProfiles;                
+                devices = realEstate.DevicesProfiles;
                 foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault(foundDevice);
                 countedDevicesBeforeRemoval = devices.Count;
             }
 
-            
+
             devices.Remove(foundDevice);
             userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
             int countedDevicesAfterAddingTheDevice = userChosedRealEstateToMoveDevice.DevicesProfiles.Count;
@@ -129,48 +129,39 @@ namespace My_Home
                 $"'", 500, QRCodeWriter.QrErrorCorrectionLevel.Medium).SaveAsPng("MyQR.png");
         }
 
-        public static void AddObjectsToDict(UserProfile user)
+        public static Dictionary<DeviceID, DeviceProfile> AddObjectsToDict(UserProfile user)
         {
             List<RealEstate> realEstates = user.RealEstates;
             List<DeviceID> devicesIDs = new List<DeviceID>();
-            Dictionary<DeviceID, DeviceProfile> dictObjectIdAndDevice = new Dictionary<DeviceID, DeviceProfile>();
-            DeviceID iD = new DeviceID();
-            int i = 0;
+            Dictionary<List<DeviceID>, List<DeviceProfile>> dictObjectIdAndDevice = new Dictionary<List<DeviceID>, List<DeviceProfile>>();
+
+            int indexStartingInDictionary = 1;
             List<DeviceProfile> devices = new List<DeviceProfile>();
-            
+            List<DeviceProfile> deviceProfiles = new List<DeviceProfile>();
             foreach (var realEstate in realEstates)
             {
                 devices = realEstate.DevicesProfiles;
+                Console.WriteLine(devices.Count());
                 foreach (var device in devices)
                 {
-                    iD.ID = i++;
+                    deviceProfiles.Add(device);
+                    DeviceID iD = new DeviceID();
+                    iD.ID = indexStartingInDictionary;
                     devicesIDs.Add(iD);
-                    
-                    Console.WriteLine(iD.ID);
-                    
+                    indexStartingInDictionary++;
+                    //    Console.WriteLine(iD.ID);                    
                 }
             }
-            
-            
-            int countedElements = devicesIDs.Count;
-            Console.WriteLine(countedElements);
-            foreach (var item in devicesIDs)
-            {
-                Console.WriteLine($"{item.ID}");
-            }
-            foreach(var dict in dictObjectIdAndDevice)
-            {
-                //Console.WriteLine(dict.ToString());
-            }
-            //var maxValue = dictObjectIdAndDevice.Max(x => x.Key)+1;
-          
-            //Console.WriteLine($"{maxValue}");
 
-            //var dic = devicesIDs.Zip(devices).ToDictionary(x => x.First, x => x.Second);
-            //foreach (var device in dic)
-            //{
-            //    Console.WriteLine(device.ToString());
-            //}
+            //var maxValue = dictObjectIdAndDevice.Max(x => x.Key)+1;
+
+            //Console.WriteLine($"{maxValue}");
+            var dictIdAndDeviceProfile = devicesIDs.Zip(deviceProfiles).ToDictionary(x => x.First, x => x.Second);
+            Dictionary<DeviceID, DeviceProfile> dictionary4 = new Dictionary<DeviceID, DeviceProfile>();
+            dictObjectIdAndDevice.Add(devicesIDs, deviceProfiles);
+           
+
+            return dictIdAndDeviceProfile;
         }
     }
 }
