@@ -20,8 +20,9 @@ namespace My_Home
             // device selection by serial number for test purposes
             string deviceSerialNumber = "AKZ43CPQ505923D";
             RealEstate userChosedRealEstateToMoveDevice = usersList[1].RealEstates[0];
+            
+            bool goodAnswer = Logic.MoveDeviceToOtherRealEstate(usersList[1], deviceSerialNumber, userChosedRealEstateToMoveDevice);
             Data.SaveUsersListToXml(usersList, path);
-            //bool goodAnswer = Logic.MoveDeviceToOtherRealEstate(usersList[1], deviceSerialNumber, userChosedRealEstateToMoveDevice);
             // saved updated devices profile
 
             Logic.AddObjectsToDict(usersList[1]);

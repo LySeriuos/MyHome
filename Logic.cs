@@ -90,6 +90,8 @@ namespace My_Home
         /// <returns>bool to give a respons for user if device moving was successful </returns>
         public static bool MoveDeviceToOtherRealEstate(UserProfile user, string serialNumber, RealEstate userChosedRealEstateToMoveDevice)
         {
+            RealEstate realEstate1 = userChosedRealEstateToMoveDevice;
+            Console.WriteLine(realEstate1);
             List<RealEstate> realEstateList = user.RealEstates;
             List<DeviceProfile> devices = new List<DeviceProfile>();
             DeviceProfile foundDevice = new();
@@ -102,13 +104,10 @@ namespace My_Home
                 foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault(foundDevice);
                 countedDevicesBeforeRemoval = devices.Count;
             }
-
-
             devices.Remove(foundDevice);
-            userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
-            int countedDevicesAfterAddingTheDevice = userChosedRealEstateToMoveDevice.DevicesProfiles.Count;
-            if (countedDevicesBeforeRemoval < countedDevicesAfterAddingTheDevice)
+            if (!realEstate1.DevicesProfiles.Contains(foundDevice))
             {
+                userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
                 deviceWasAdded = true;
             }
             else
