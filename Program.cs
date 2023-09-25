@@ -27,6 +27,18 @@ namespace My_Home
 
             Logic.AddObjectsToDict(usersList[1]);
 
+            RealEstateToChoose selection = UI.SelectRealEstate();
+            // the main game menu
+            switch (selection)
+            {
+                case RealEstateToChoose.RealEstate1: //add questions
+                    break;
+                case RealEstateToChoose.RealEstate2: // play game
+                    break;
+                default:
+                    Console.WriteLine("Unknown choice");
+                    return;
+            }
         }
         // public static object ExpiringFirstWarrantyList(UserProfile userProfile)
         //{
