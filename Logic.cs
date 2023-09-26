@@ -95,14 +95,13 @@ namespace My_Home
             List<RealEstate> realEstateList = user.RealEstates;
             List<DeviceProfile> devices = new List<DeviceProfile>();
             DeviceProfile foundDevice = new();
-            int countedDevicesBeforeRemoval = 0;
             bool deviceWasAdded = false;
 
             foreach (RealEstate sourceRealestate in realEstateList)
             {
                 devices = sourceRealestate.DevicesProfiles;
-                foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault(); //TODO: break loop if found
-                countedDevicesBeforeRemoval = devices.Count;
+                foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault();
+                break;
             }
 
             devices.Remove(foundDevice);
