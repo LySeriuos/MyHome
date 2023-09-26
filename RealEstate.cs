@@ -9,6 +9,14 @@ namespace My_Home
 {
     public class RealEstate
     {
+        private int _ID;
+
+        public int ID
+        {
+            get { return _ID; }
+            set { _ID = value; }
+        }
+
         private string _realEstateName;
 
         public string RealEstateName

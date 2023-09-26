@@ -10,7 +10,15 @@ namespace My_Home
 {
     public class UserProfile
     {
-		private string _userName;
+        private int _ID;
+
+        public int ID
+        {
+            get { return _ID; }
+            set { _ID = value; }
+        }
+
+        private string _userName;
 
 		public string UserName
 		{
@@ -45,15 +53,20 @@ namespace My_Home
 			set { _deviceID = value; }
 		}
 
-		//private Dictionary <DeviceID, DeviceProfile> _devicesIdAndObjectDevices;
-		
-		//public Dictionary<DeviceID, DeviceProfile> DevicesIdAndObjectDevices
-		//{
-		//	get { return _devicesIdAndObjectDevices; }
-		//	set { _devicesIdAndObjectDevices = value; }
-		//}
+        //private Dictionary<DeviceID, DeviceProfile> _devicesIdAndObjectDevices;
 
-		
+        //public Dictionary<DeviceID, DeviceProfile> DevicesIdAndObjectDevices
+        //{
+        //	get { return _devicesIdAndObjectDevices; }
+        //	set { _devicesIdAndObjectDevices = value; }
+        //}
+
+        public List<DeviceProfile> GetAllDevices()
+		{
+			throw new NotImplementedException();
+		}
+
+
 
         public override string ToString()
         {
