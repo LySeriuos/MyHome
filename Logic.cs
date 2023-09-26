@@ -103,8 +103,7 @@ namespace My_Home
                 foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault();
                 break;
             }
-
-            devices.Remove(foundDevice);
+            
             if (!targetRealEstate.DevicesProfiles.Contains(foundDevice))
             {
                 userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
@@ -114,6 +113,7 @@ namespace My_Home
             {
                 deviceWasAdded = false;
             }
+            devices.Remove(foundDevice);
             return deviceWasAdded;
         }
 
