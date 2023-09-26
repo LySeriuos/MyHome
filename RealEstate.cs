@@ -9,12 +9,12 @@ namespace My_Home
 {
     public class RealEstate
     {
-        private int _ID;
+        private int _realEstateID;
 
-        public int ID
+        public int RealEstateID
         {
-            get { return _ID; }
-            set { _ID = value; }
+            get { return _realEstateID; }
+            set { _realEstateID = value; }
         }
 
         private string _realEstateName;

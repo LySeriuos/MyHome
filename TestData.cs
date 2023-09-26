@@ -13,24 +13,19 @@ namespace My_Home
             #region User1 
             UserProfile userProfile1 = new UserProfile()
             {
+                UserID = 1,
                 UserName = "James",
                 Email = "james@gmail.com",
-                RealEstates = new List<RealEstate>(),
-                DevicesIDs = new List<DeviceID>()
+                RealEstates = new List<RealEstate>()
             };
             // missing pasword method
-            //List<DeviceID> devicesIDs = new List<DeviceID>();
-            //DeviceID deviceID = new DeviceID()
-            //{
-            //    ID = 1
-            //};
-            //devicesIDs.Add(deviceID);
-
+           
 
             //Real Estate 1, Users can have more than one place
 
             RealEstate jamesRealEstate1 = new RealEstate()
             {
+                RealEstateID = 1,
                 RealEstateName = "James RealEstates",
                 DevicesProfiles = new List<DeviceProfile>()
             };
@@ -55,6 +50,7 @@ namespace My_Home
 
             DeviceProfile jamesDevice1 = new DeviceProfile()
             {
+                DeviceID = 1,
                 DeviceName = "Gaming Computer",
                 DeviceType = DeviceType.Computer,
                 DeviceModelNumber = "NPC-I7-4070-0423",
@@ -110,6 +106,7 @@ namespace My_Home
 
             DeviceProfile jamesDevice2 = new DeviceProfile()
             {
+                DeviceID = 2,
                 DeviceName = "James Phone",
                 DeviceType = DeviceType.MobileDevice,
                 DeviceModelNumber = "A2891",
@@ -170,6 +167,7 @@ namespace My_Home
 
             UserProfile userProfile2 = new UserProfile()
             {
+                UserID = 2,
                 UserName = "John",
                 Email = "john@gmail.com",
                 RealEstates = new List<RealEstate>()
@@ -179,6 +177,7 @@ namespace My_Home
             //Place name 1
             RealEstate johnHouse1 = new RealEstate()
             {
+                RealEstateID = 1,
                 RealEstateName = "John Apartament",
                 DevicesProfiles = new List<DeviceProfile>()
             };
@@ -204,6 +203,7 @@ namespace My_Home
 
             DeviceProfile johnHouse1Device1 = new DeviceProfile()
             {
+                DeviceID = 1,
                 DeviceName = "DishWasher",
                 DeviceType = DeviceType.Kitchen,
                 DeviceModelNumber = "DBI8557MIMXXLBS",
@@ -257,6 +257,7 @@ namespace My_Home
 
             RealEstate johnHouse2 = new RealEstate()
             {
+                RealEstateID = 2,
                 RealEstateName = "John RealEstate Rental",
                 DevicesProfiles = new List<DeviceProfile>()
             };
@@ -279,6 +280,7 @@ namespace My_Home
 
             DeviceProfile johnHouse2Device1 = new DeviceProfile()
             {
+                DeviceID = 2,
                 DeviceName = "Washing-Drying Machine",
                 DeviceType = DeviceType.Cleaning, // could be gruoped as multidevice but still it should be grouped as Cleaning device
                 DeviceModelNumber = "CV90V6S2BA",
@@ -334,6 +336,7 @@ namespace My_Home
 
             DeviceProfile johnHouse2Device2 = new DeviceProfile()
             {
+                DeviceID = 3,
                 DeviceName = "Main Bedroom TV",
                 DeviceType = DeviceType.Video,
                 DeviceModelNumber = "TQ55LS03BGUXXC",

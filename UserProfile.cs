@@ -10,12 +10,12 @@ namespace My_Home
 {
     public class UserProfile
     {
-        private int _ID;
+        private int _userID;
 
-        public int ID
+        public int UserID
         {
-            get { return _ID; }
-            set { _ID = value; }
+            get { return _userID; }
+            set { _userID = value; }
         }
 
         private string _userName;

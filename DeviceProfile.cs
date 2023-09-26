@@ -12,12 +12,12 @@ namespace MyHome
 	
     public class DeviceProfile
     {
-		private int _ID;
+		private int _deviceID;
 
-		public int ID
+		public int DeviceID
 		{
-			get { return _ID; }
-			set { _ID = value; }
+			get { return _deviceID; }
+			set { _deviceID = value; }
 		}
 
 

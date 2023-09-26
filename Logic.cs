@@ -133,27 +133,27 @@ namespace My_Home
         /// </summary>
         /// <param name="user">User</param>
         /// <returns>Dictionary</returns>
-        public static Dictionary<DeviceID, DeviceProfile> AddObjectsToDict(UserProfile user)
-        {
-            List<RealEstate> realEstates = user.RealEstates;
-            List<DeviceID> devicesIDs = new List<DeviceID>();
-            Dictionary<List<DeviceID>, List<DeviceProfile>> dictObjectIdAndDevice = new Dictionary<List<DeviceID>, List<DeviceProfile>>();
+        //public static Dictionary<DeviceID, DeviceProfile> AddObjectsToDict(UserProfile user)
+        //{
+        //    List<RealEstate> realEstates = user.RealEstates;
+        //    List<DeviceID> devicesIDs = new List<DeviceID>();
+        //    Dictionary<List<DeviceID>, List<DeviceProfile>> dictObjectIdAndDevice = new Dictionary<List<DeviceID>, List<DeviceProfile>>();
 
-            int indexStartingInDictionary = 1;
-            List<DeviceProfile> devices = new List<DeviceProfile>();
-            List<DeviceProfile> deviceProfiles = new List<DeviceProfile>();
-            foreach (var realEstate in realEstates)
-            {
-                devices = realEstate.DevicesProfiles;
-                foreach (var device in devices)
-                {
-                    deviceProfiles.Add(device);
-                    DeviceID iD = new DeviceID();
-                    iD.ID = indexStartingInDictionary;
-                    devicesIDs.Add(iD);
-                    indexStartingInDictionary++;                   
-                }
-            }
+        //    int indexStartingInDictionary = 1;
+        //    List<DeviceProfile> devices = new List<DeviceProfile>();
+        //    List<DeviceProfile> deviceProfiles = new List<DeviceProfile>();
+        //    foreach (var realEstate in realEstates)
+        //    {
+        //        devices = realEstate.DevicesProfiles;
+        //        foreach (var device in devices)
+        //        {
+        //            deviceProfiles.Add(device);
+        //            DeviceID iD = new DeviceID();
+        //            iD.ID = indexStartingInDictionary;
+        //            devicesIDs.Add(iD);
+        //            indexStartingInDictionary++;                   
+        //        }
+        //    }
             // assigned index to device with zip method
             var dictIdAndDeviceProfile = devicesIDs.Zip(deviceProfiles).ToDictionary(x => x.First, x => x.Second);
 
