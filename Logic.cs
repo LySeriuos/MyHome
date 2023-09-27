@@ -52,13 +52,14 @@ namespace My_Home
         /// <returns>List of user devices</returns>
         public static List<DeviceProfile> GetAllUserDevices(UserProfile user)
         {
-            List<DeviceProfile> devices = new List<DeviceProfile>();
-            List<RealEstate> house = user.RealEstates;
-            foreach (RealEstate realestate in house)
+            List<DeviceProfile> allDevices = new List<DeviceProfile>();
+            List<RealEstate> realEstates = user.RealEstates;           
+            var devices = realEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
+            foreach (DeviceProfile device in devices)
             {
-                devices = realestate.DevicesProfiles;
-            }
-            return devices;
+                allDevices.Add(device);
+            }            
+            return allDevices;
         }
 
         /// <summary>
@@ -153,15 +154,15 @@ namespace My_Home
         //            devicesIDs.Add(iD);
         //            indexStartingInDictionary++;                   
         //        }
-        //    }
-            // assigned index to device with zip method
-            var dictIdAndDeviceProfile = devicesIDs.Zip(deviceProfiles).ToDictionary(x => x.First, x => x.Second);
+        ////    }
+        //    // assigned index to device with zip method
+        //    var dictIdAndDeviceProfile = devicesIDs.Zip(deviceProfiles).ToDictionary(x => x.First, x => x.Second);
 
-            //trying to add lists of objects in to dictionary. Difficult to iterate
-            dictObjectIdAndDevice.Add(devicesIDs, deviceProfiles);
+        //    //trying to add lists of objects in to dictionary. Difficult to iterate
+        //    dictObjectIdAndDevice.Add(devicesIDs, deviceProfiles);
            
-            // returing dictionary 
-            return dictIdAndDeviceProfile;
-        }
+        //    // returing dictionary 
+        //    return dictIdAndDeviceProfile;
+        //}
     }
 }
