@@ -14,8 +14,8 @@ namespace My_Home
 
             List<UserProfile> usersList = Data.GetUsersListFromXml(path);
             List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
-            List<DeviceProfile> devices = Logic.GetAllUserDevices(usersList[1]);
-            foreach(var device in devices)
+            List<DeviceProfile> userDevices = Logic.GetAllUserDevices(usersList[1]);
+            foreach(var device in userDevices)
             {
                 Console.WriteLine(device.DeviceID);
             }
@@ -27,24 +27,26 @@ namespace My_Home
             RealEstate userChosedRealEstateToMoveDevice = usersList[1].RealEstates[0];
 
             bool goodAnswer = Logic.MoveDeviceToOtherRealEstate(usersList[1], deviceSerialNumber, userChosedRealEstateToMoveDevice);
-            //Data.SaveUsersListToXml(usersList, path);
-            // saved updated devices profile
+
+            
+            // saved updated userDevices profile
 
 
-            //example general adding new device 
-            //var newDevice = UI.AddNewDevice();
+            //example general adding new device
+            var newDevice = UI.AddNewDevice(userChosedRealEstateToMoveDevice);
+            RealEstate realEstate = usersList[1].RealEstates[1];
 
-            ////have user select realestate
-            //RealEstate realEstate = new RealEstate();
+            //have user select realestate
+            realEstate.DevicesProfiles.Add(newDevice);
 
-            //UserProfile currentUser = new UserProfile();
+            //UserProfile currentUser = usersList[1];
 
             //List<DeviceProfile> devicesDetails = currentUser.GetAllDevices();
 
-            //int maxID = devicesDetails.Max(d => d.ID);
+            //int maxID = userDevices.Max(d => d.DeviceID);
 
-            //newDevice.ID = maxID + 1;
-
+            //newDevice.DeviceID = maxID + 1;
+            Data.SaveUsersListToXml(usersList, path);
             ////example id search
 
             //var searchID = 20;
@@ -52,13 +54,13 @@ namespace My_Home
             //var foundDevice = currentUser.GetAllDevices().Where(d=> d.ID == searchID).FirstOrDefault(); 
 
 
-           // add new device to realestate
+            // add new device to realestate
 
 
 
-           // Logic.AddObjectsToDict(usersList[1]);
+            // Logic.AddObjectsToDict(usersList[1]);
 
-            
+
         }
         // public static object ExpiringFirstWarrantyList(UserProfile userProfile)
         //{

@@ -50,7 +50,7 @@ namespace My_Home
 
 		private string _extraDeviceInsuranceLink;
 
-		public string ExtraDeviceInsuranceLink
+		public string ExtraInsuranceWarrantyLink
         {
 			get { return _extraDeviceInsuranceLink; }
 			set { _extraDeviceInsuranceLink = value; }
@@ -58,7 +58,7 @@ namespace My_Home
 
 		private TimeSpan _extendedWarranty;
 
-		public TimeSpan ExtendedWarranty
+		public TimeSpan ExtraInsuranceWarrantyLenght
         {
 			get { return _extendedWarranty; }
 			set { _extendedWarranty = value; }

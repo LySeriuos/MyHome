@@ -71,9 +71,9 @@ namespace My_Home
             DeviceWarranty jamesDevice1Warranty = new DeviceWarranty
             {
                 ReceiptLink = "https://discuss.poynt.net/uploads/default/original/2X/6/60c4199364474569561cba359d486e6c69ae8cba.jpeg",
-                ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
+                ExtraInsuranceWarrantyLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
                 WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0),
-                ExtendedWarranty = new TimeSpan(1095, 0, 0, 0),
+                ExtraInsuranceWarrantyLenght = new TimeSpan(1095, 0, 0, 0),
                 PurchaseDate = new DateTime(2023, 7, 15),
             };
 
@@ -126,9 +126,9 @@ namespace My_Home
             DeviceWarranty jamesDevice2Warranty = new DeviceWarranty
             {
                 ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
-                ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
+                ExtraInsuranceWarrantyLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
                 WarrantyPeriod = new TimeSpan(365, 0, 0, 0, 0),
-                ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0),
+                ExtraInsuranceWarrantyLenght = new TimeSpan(365, 0, 0, 0, 0),
                 PurchaseDate = new DateTime(2023, 1, 23)
             };
 
@@ -222,9 +222,9 @@ namespace My_Home
             DeviceWarranty johnHouse1Device1Warranty = new DeviceWarranty
             {
                 ReceiptLink = "https://img.freepik.com/free-vector/receipt-template-collection-with-realistic-design_23-2147910552.jpg?w=1380&t=st=1692650469~exp=1692651069~hmac=91e29da374bc7eddec6ec6c10e9cb828b93ac76cf4c79d558a6ea1257ef728a4",
-                ExtraDeviceInsuranceLink = "https://img.yumpu.com/20322498/1/500x640/ladda-ned-produktblad-som-pdf.jpg",
+                ExtraInsuranceWarrantyLink = "https://img.yumpu.com/20322498/1/500x640/ladda-ned-produktblad-som-pdf.jpg",
                 WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0),
-                ExtendedWarranty = new TimeSpan(1095, 0, 0, 0, 0),
+                ExtraInsuranceWarrantyLenght = new TimeSpan(1095, 0, 0, 0, 0),
                 PurchaseDate = new DateTime(2022, 6, 10)
             };
 
@@ -298,9 +298,9 @@ namespace My_Home
             DeviceWarranty johnHouse2Device1Warranty = new DeviceWarranty
             {
                 ReceiptLink = "https://studylib.net/doc/25904030/t-mobile-receipt-en-edited.pdf",
-                ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
+                ExtraInsuranceWarrantyLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
                 WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0),
-                ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0),
+                ExtraInsuranceWarrantyLenght = new TimeSpan(365, 0, 0, 0, 0),
                 PurchaseDate = new DateTime(2021, 1, 14)
             };
 
@@ -353,10 +353,9 @@ namespace My_Home
             DeviceWarranty johnHouse2Device2Warranty = new DeviceWarranty
             {
                 ReceiptLink = "https://qph.cf2.quoracdn.net/main-qimg-8aa597ee2d773fce151545846c9d08a0-pjlq",
-                ExtraDeviceInsuranceLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
-
+                ExtraInsuranceWarrantyLink = "https://www.stewart.com/content/dam/stewart/Microsites/mexico/pdfs/01_20_2023-intl-stgm-title-app-corporation-english.pdf",
                 WarrantyPeriod = new TimeSpan(730, 0, 0, 0, 0),
-                ExtendedWarranty = new TimeSpan(365, 0, 0, 0, 0),
+                ExtraInsuranceWarrantyLenght = new TimeSpan(365, 0, 0, 0, 0),
                 PurchaseDate = new DateTime(2021, 3, 23)
             };
 

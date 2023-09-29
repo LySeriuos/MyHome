@@ -129,6 +129,8 @@ namespace My_Home
                 $"'", 500, QRCodeWriter.QrErrorCorrectionLevel.Medium).SaveAsPng("MyQR.png");
         }
 
+      
+
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices
         /// </summary>
@@ -160,7 +162,7 @@ namespace My_Home
 
         //    //trying to add lists of objects in to dictionary. Difficult to iterate
         //    dictObjectIdAndDevice.Add(devicesIDs, deviceProfiles);
-           
+
         //    // returing dictionary 
         //    return dictIdAndDeviceProfile;
         //}

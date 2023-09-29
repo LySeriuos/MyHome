@@ -12,7 +12,9 @@ namespace MyHome
 	
     public class DeviceProfile
     {
-		private int _deviceID;
+       
+
+        private int _deviceID;
 
 		public int DeviceID
 		{
@@ -91,6 +93,20 @@ namespace MyHome
 			get { return _deviceWarranty; }
 			set { _deviceWarranty = value; }
 		}
+
+
+        //public DeviceProfile(string deviceName, DeviceType deviceType, string deviceModelNumber, string deviceSerialNumber, string ipAdrress, string macAddress, string deviceProduser, string manualBookLink)
+        //{
+        //    DeviceName = deviceName;
+        //    DeviceType = deviceType;
+        //    DeviceModelNumber = deviceModelNumber;
+        //    DeviceSerialNumber = deviceSerialNumber;
+        //    IpAddress = ipAdrress;
+        //    MacAdrress = macAddress;
+        //    DeviceProduser = deviceProduser;
+        //    ManualBookLink = manualBookLink;
+        //}
+
 
         public override string ToString()
         {
