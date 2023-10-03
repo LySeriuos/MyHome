@@ -9,26 +9,36 @@ namespace My_Home
 
         public static DeviceProfile AddNewDevice(RealEstate userChosedRealEstateToMoveDevice)
         {
+            TimeSpan interval;
             DeviceProfile device = new DeviceProfile();
 
-            Console.WriteLine("Add new Device Name");
-            device.DeviceName = Console.ReadLine();
-            Console.WriteLine("Add Model number");
-            device.DeviceModelNumber = Console.ReadLine();
-            Console.WriteLine("Add Serial number");
-            device.DeviceSerialNumber = Console.ReadLine();
-            Console.WriteLine("Add IP address");
-            device.IpAddress = Console.ReadLine();
-            Console.WriteLine("Add MAC address");
-            device.MacAdrress = Console.ReadLine();
-            Console.WriteLine("Add Device Produser");
-            device.DeviceProduser = Console.ReadLine();
-            Console.WriteLine("Add Link To Manual");
-            device.ManualBookLink = Console.ReadLine();
+            //Console.WriteLine("Add new Device Name");
+            //device.DeviceName = Console.ReadLine();
+            //Console.WriteLine("Add Model number");
+            //device.DeviceModelNumber = Console.ReadLine();
+            //Console.WriteLine("Add Serial number");
+            //device.DeviceSerialNumber = Console.ReadLine();
+            //Console.WriteLine("Add IP address");
+            //device.IpAddress = Console.ReadLine();
+            //Console.WriteLine("Add MAC address");
+            //device.MacAdrress = Console.ReadLine();
+            //Console.WriteLine("Add Device Produser");
+            //device.DeviceProduser = Console.ReadLine();
+            //Console.WriteLine("Add Link To Manual");
+            //device.ManualBookLink = Console.ReadLine();
 
             DeviceWarranty deviceWarranty = device.DeviceWarranty;
             Console.WriteLine("Add warranty length");
-            deviceWarranty.WarrantyPeriod = TimeSpan.Parse(Console.ReadLine());
+            string warrantyPeriod = Console.ReadLine();
+            TimeSpan time = new TimeSpan(0,0,0,0);
+            //deviceWarranty.WarrantyPeriod = TimeSpan.ParseExact(warrantyPeriod, "%d");
+            time = new TimeSpan(0,0,0,0);
+            string gugu = time.ToString("c");
+            TimeSpan giid = TimeSpan.Parse(gugu);
+            deviceWarranty.WarrantyPeriod = giid;
+            Console.WriteLine("{0} --> {1}", warrantyPeriod, giid.ToString("c"));
+
+            //deviceWarranty.WarrantyPeriod = TimeSpan.Parse(Console.ReadLine());
             Console.WriteLine("Add link to receipt");
             deviceWarranty.ReceiptLink = Console.ReadLine();
             Console.WriteLine("Add extra insurance or warranty length");
