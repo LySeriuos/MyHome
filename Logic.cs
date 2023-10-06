@@ -129,7 +129,15 @@ namespace My_Home
                 $"'", 500, QRCodeWriter.QrErrorCorrectionLevel.Medium).SaveAsPng("MyQR.png");
         }
 
-      
+        //public static int GetIdNumberForDevice(UserProfile currentUser, List<DeviceProfile> userDevices)
+        //{
+        //    List<DeviceProfile> devicesDetails = currentUser.GetAllUserDevices();
+        //    int maxID = userDevices.Max(d => d.DeviceID);
+        //    Console.WriteLine(maxID);
+        //    maxID++;
+        //    return maxID;
+        //}
+
 
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices

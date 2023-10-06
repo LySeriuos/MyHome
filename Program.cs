@@ -28,24 +28,24 @@ namespace My_Home
 
             bool goodAnswer = Logic.MoveDeviceToOtherRealEstate(usersList[1], deviceSerialNumber, userChosedRealEstateToMoveDevice);
 
-            
-            // saved updated userDevices profile
 
+            // saved updated userDevices profile
+            
 
             //example general adding new device
-            var newDevice = UI.AddNewDevice(userChosedRealEstateToMoveDevice);
+            var newDevice = UI.AddNewDevice();
             RealEstate realEstate = usersList[1].RealEstates[1];
+            UserProfile currentUser = usersList[1];
 
+            List<DeviceProfile> devicesDetails = currentUser.GetAllDevices();
+
+            int maxID = devicesDetails.Max(d => d.DeviceID);
+            Console.WriteLine($"{maxID} good");
+            newDevice.DeviceID = maxID + 1;
             //have user select realestate
             realEstate.DevicesProfiles.Add(newDevice);
 
-            //UserProfile currentUser = usersList[1];
-
-            //List<DeviceProfile> devicesDetails = currentUser.GetAllDevices();
-
-            //int maxID = userDevices.Max(d => d.DeviceID);
-
-            //newDevice.DeviceID = maxID + 1;
+            
             Data.SaveUsersListToXml(usersList, path);
             ////example id search
 

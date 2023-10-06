@@ -48,7 +48,13 @@ namespace My_Home
 
         public List<DeviceProfile> GetAllDevices()
 		{
-			throw new NotImplementedException();
+            List<DeviceProfile> allDevices = new List<DeviceProfile>();            
+            var devices = RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
+            foreach (DeviceProfile device in devices)
+            {
+                allDevices.Add(device);
+            }
+            return allDevices;
 		}
 
 
