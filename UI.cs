@@ -1,5 +1,4 @@
 ﻿using MyHome;
-using SixLabors.ImageSharp.Metadata.Profiles.Icc;
 using System.Runtime.Loader;
 
 namespace My_Home

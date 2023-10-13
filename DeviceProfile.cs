@@ -12,8 +12,6 @@ namespace MyHome
 	
     public class DeviceProfile
     {
-       
-
         private int _deviceID;
 
 		public int DeviceID
@@ -93,7 +91,6 @@ namespace MyHome
 			get { return _deviceWarranty; }
 			set { _deviceWarranty = value; }
 		}
-
 
         //public DeviceProfile(string deviceName, DeviceType deviceType, string deviceModelNumber, string deviceSerialNumber, string ipAdrress, string macAddress, string deviceProduser, string manualBookLink)
         //{

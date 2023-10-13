@@ -6,7 +6,6 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using IronBarCode;
 using System.Security.Cryptography;
 
 namespace My_Home
@@ -118,25 +117,19 @@ namespace My_Home
             return deviceWasAdded;
         }
 
-        public static void CreateQRCodeForEveryDevice(UserProfile user)
-        {
-            List<RealEstate> realEstates = user.RealEstates;
-            var devices = from realEstate in realEstates
-                          from DeviceDetails device in realEstate.DevicesProfiles
-                          select device;
-            QRCodeWriter.CreateQrCode($"" +
-                $"" +
-                $"'", 500, QRCodeWriter.QrErrorCorrectionLevel.Medium).SaveAsPng("MyQR.png");
-        }
-
-        //public static int GetIdNumberForDevice(UserProfile currentUser, List<DeviceProfile> userDevices)
+        //public static void CreateQRCodeForEveryDevice(List <DeviceProfile> userDevices)
         //{
-        //    List<DeviceProfile> devicesDetails = currentUser.GetAllUserDevices();
-        //    int maxID = userDevices.Max(d => d.DeviceID);
-        //    Console.WriteLine(maxID);
-        //    maxID++;
-        //    return maxID;
+        //   foreach(DeviceProfile deviceProfile in userDevices)
+        //    {
+        //        string idNumber = deviceProfile.DeviceID.ToString();
+        //        var qRCode = QRCodeWriter.CreateQrCode($"{idNumber}");
+        //        qRCode.SaveAsPng("C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png");
+                
+        //    }
+            
+            
         //}
+
 
 
         /// <summary>
