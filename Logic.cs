@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Security.Cryptography;
+using QRCoder;
 
 namespace My_Home
 {
@@ -52,12 +53,12 @@ namespace My_Home
         public static List<DeviceProfile> GetAllUserDevices(UserProfile user)
         {
             List<DeviceProfile> allDevices = new List<DeviceProfile>();
-            List<RealEstate> realEstates = user.RealEstates;           
+            List<RealEstate> realEstates = user.RealEstates;
             var devices = realEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
             foreach (DeviceProfile device in devices)
             {
                 allDevices.Add(device);
-            }            
+            }
             return allDevices;
         }
 
@@ -103,7 +104,7 @@ namespace My_Home
                 foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault();
                 break;
             }
-            
+
             if (!targetRealEstate.DevicesProfiles.Contains(foundDevice))
             {
                 userChosedRealEstateToMoveDevice.DevicesProfiles.Add(foundDevice);
@@ -116,20 +117,20 @@ namespace My_Home
             devices.Remove(foundDevice);
             return deviceWasAdded;
         }
-
-        //public static void CreateQRCodeForEveryDevice(List <DeviceProfile> userDevices)
-        //{
-        //   foreach(DeviceProfile deviceProfile in userDevices)
-        //    {
-        //        string idNumber = deviceProfile.DeviceID.ToString();
-        //        var qRCode = QRCodeWriter.CreateQrCode($"{idNumber}");
-        //        qRCode.SaveAsPng("C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png");
-                
-        //    }
-            
-            
-        //}
-
+        /// <summary>
+        /// Method to create QrCode for devices 
+        /// </summary>
+        /// <param name="idNumber">Device's ID number</param>
+        public static void CreateQRCodeForEveryDevice(string idNumber)
+        {
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode($"Device ID number: {idNumber}", QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+#pragma warning disable CA1416 // Validate platform compatibility
+            qrCodeImage.Save("C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png");
+#pragma warning restore CA1416 // Validate platform compatibility
+        }
 
 
         /// <summary>
