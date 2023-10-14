@@ -53,7 +53,7 @@ namespace My_Home
             Address address = new();
             Console.WriteLine("Add shop street name");
             address.StreetName = Console.ReadLine();            
-            Console.WriteLine("Addd shop house number");
+            Console.WriteLine("Add shop house number");
             address.HouseNumber = Int32.Parse(Console.ReadLine());
             Console.WriteLine("Add shop house extended number/letter");
             address.HouseNumberExtension = Console.ReadLine();
@@ -64,6 +64,27 @@ namespace My_Home
             shop.Address = address;
 
             return device;
+        }
+
+        public static RealEstate AddNewrealEstate()
+        {
+            RealEstate realEstate = new ();
+            Console.WriteLine("Add new RealEstate Name");
+            realEstate.RealEstateName = Console.ReadLine();
+
+            Address address = new();
+            Console.WriteLine("Add RealEstate's street name");
+            address.StreetName = Console.ReadLine();
+            Console.WriteLine("Add RealEstate's  house number");
+            address.HouseNumber = Int32.Parse(Console.ReadLine());
+            Console.WriteLine("Add RealEstate's  house extended number/letter");
+            address.HouseNumberExtension = Console.ReadLine();
+            Console.WriteLine("Add RealEstate's  city name");
+            address.City = Console.ReadLine();
+            Console.WriteLine("Add RealEstate's  Country");
+            address.Country = Console.ReadLine();
+            realEstate.Address = address;
+            return realEstate;
         }
     }
 }
