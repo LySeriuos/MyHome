@@ -19,10 +19,10 @@ DeviceWarranty warranty = Logic.GetUserDevicesWarranties(usersList[0]);
 
 
 // device selection by serial number for test purposes
-string deviceSerialNumber = "AKZ43CPQ505923D";
-RealEstate userChosedRealEstateToMoveDevice = usersList[1].RealEstates[0];
 
-bool goodAnswer = Logic.MoveDeviceToOtherRealEstate(usersList[1], deviceSerialNumber, userChosedRealEstateToMoveDevice);
+RealEstate userChosedRealEstateToMoveDevice = usersList[1].RealEstates[0];
+int searchID = 6;
+bool movedDevice = Logic.MoveDeviceToOtherRealEstate(usersList[1], searchID, userChosedRealEstateToMoveDevice);
 
 // variables for testing
 RealEstate realEstate = usersList[1].RealEstates[1];
@@ -40,10 +40,9 @@ UserProfile currentUser = usersList[1];
 //realEstate.DevicesProfiles.Add(newDevice);
 
 // getting device ID from Qr Code
-var searchID = 6;
+
 DeviceProfile foundedDevice = Logic.GetDeviceInfoByID(searchID, currentUser);
-Console.WriteLine(foundedDevice.ToString());   
-//creating Qr code for device 
+Console.WriteLine(foundedDevice.ToString());//creating Qr code for device 
 string idNumber = userDevices[0].DeviceID.ToString();
 Logic.CreateQRCodeForDevice(idNumber);
 // saved updated userDevices profile
