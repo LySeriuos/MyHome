@@ -144,6 +144,8 @@ namespace My_Home
             return foundDevice;
         }
 
+        
+
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices
         /// </summary>
