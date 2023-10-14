@@ -5,9 +5,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using QRCoder;
-using iTextSharp.text.pdf.qrcode;
-using SkiaSharp;
 using My_Home;
+
 
 // saved Test Data to local file
 string path = @"C:\Temp\usersListTestData111.xml";
@@ -44,22 +43,13 @@ UserProfile currentUser = usersList[1];
 
 
 
-//string idNumber = userDevices[0].DeviceID.ToString();
-//var qRCode = QRCodeWriter.CreateQrCode($"{idNumber}");
-//qRCode.SaveAsPng("C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png");
-
-
-
+string idNumber = userDevices[0].DeviceID.ToString();
 QRCodeGenerator qrGenerator = new QRCodeGenerator();
-QRCodeData qrCodeData = (qrGenerator.CreateQrCode("Hi", QRCodeGenerator.ECCLevel.Q) as QRCodeData);
-
-PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
-BitmapByteQRCode qrCodeImage = qrCode.GetGraphic(20);
-
-//QRCodeGenerator qrGenerator = new QRCodeGenerator();
-//QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
-//QRCode qrCode = new QRCode(qrCodeData);
-//Bitmap qrCodeImage = qrCode.GetGraphic(20);
-
-// saved updated userDevices profile
-Data.SaveUsersListToXml(usersList, path);
+QRCodeData qrCodeData = qrGenerator.CreateQrCode($"Device ID number: {idNumber}", QRCodeGenerator.ECCLevel.Q);
+QRCode qrCode = new QRCode(qrCodeData);
+Bitmap qrCodeImage = qrCode.GetGraphic(20);
+#pragma warning disable CA1416 // Validate platform compatibility
+qrCodeImage.Save("C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png");
+#pragma warning restore CA1416 // Validate platform compatibility
+                              // saved updated userDevices profile
+//Data.SaveUsersListToXml(usersList, path);
