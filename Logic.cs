@@ -121,7 +121,7 @@ namespace My_Home
         /// Method to create QrCode for devices 
         /// </summary>
         /// <param name="idNumber">Device's ID number</param>
-        public static void CreateQRCodeForEveryDevice(string idNumber)
+        public static void CreateQRCodeForDevice(string idNumber)
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode($"Device ID number: {idNumber}", QRCodeGenerator.ECCLevel.Q);
@@ -132,6 +132,17 @@ namespace My_Home
 #pragma warning restore CA1416 // Validate platform compatibility
         }
 
+        /// <summary>
+        /// Method to get DeviceProfile by ID
+        /// </summary>
+        /// <param name="searchID">get device with this ID</param>
+        /// <param name="currentUser">user profile</param>
+        /// <returns>device profile</returns>
+        public static DeviceProfile GetDeviceInfoByID(int searchID, UserProfile currentUser)
+        {
+            var foundDevice = currentUser.GetAllDevices().Where(d => d.DeviceID == searchID).FirstOrDefault();
+            return foundDevice;
+        }
 
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices

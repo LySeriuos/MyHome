@@ -14,10 +14,7 @@ string path = @"C:\Temp\usersListTestData111.xml";
 List<UserProfile> usersList = Data.GetUsersListFromXml(path);
 List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
 List<DeviceProfile> userDevices = Logic.GetAllUserDevices(usersList[1]);
-foreach (var device in userDevices)
-{
-    Console.WriteLine(device.DeviceID);
-}
+
 DeviceWarranty warranty = Logic.GetUserDevicesWarranties(usersList[0]);
 
 
@@ -26,13 +23,14 @@ string deviceSerialNumber = "AKZ43CPQ505923D";
 RealEstate userChosedRealEstateToMoveDevice = usersList[1].RealEstates[0];
 
 bool goodAnswer = Logic.MoveDeviceToOtherRealEstate(usersList[1], deviceSerialNumber, userChosedRealEstateToMoveDevice);
-//var newDevice = UI.AddNewDevice();
 
 // variables for testing
 RealEstate realEstate = usersList[1].RealEstates[1];
 UserProfile currentUser = usersList[1];
 
-//// Adding new ID for new Device
+
+// Adding new ID for new Device
+//var newDevice = UI.AddNewDevice();
 //List<DeviceProfile> devicesDetails = currentUser.GetAllDevices();
 //int maxID = devicesDetails.Max(d => d.DeviceID);
 //Console.WriteLine($"{maxID} good");
@@ -41,7 +39,10 @@ UserProfile currentUser = usersList[1];
 //// adding new device to selected real Estate
 //realEstate.DevicesProfiles.Add(newDevice);
 
-
+// getting device ID from Qr Code
+var searchID = 6;
+DeviceProfile foundedDevice = Logic.GetDeviceInfoByID(searchID, currentUser);
+Console.WriteLine(foundedDevice.ToString());   
 //creating Qr code for device 
 string idNumber = userDevices[0].DeviceID.ToString();
 Logic.CreateQRCodeForDevice(idNumber);
