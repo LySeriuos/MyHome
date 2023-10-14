@@ -89,7 +89,7 @@ namespace My_Home
         /// <param name="serialNumber">Device's serial number</param>
         /// <param name="userChosedRealEstateToMoveDevice">Chosed Real Estate where to move the device</param>
         /// <returns>bool to give a respons for user if device moving was successful </returns>
-        public static bool MoveDeviceToOtherRealEstate(UserProfile user, string serialNumber, RealEstate userChosedRealEstateToMoveDevice)
+        public static bool MoveDeviceToOtherRealEstate(UserProfile user, int deviceID, RealEstate userChosedRealEstateToMoveDevice)
         {
             RealEstate targetRealEstate = userChosedRealEstateToMoveDevice;
             Console.WriteLine(targetRealEstate);
@@ -101,7 +101,7 @@ namespace My_Home
             foreach (RealEstate sourceRealestate in realEstateList)
             {
                 devices = sourceRealestate.DevicesProfiles;
-                foundDevice = devices.Where(d => d.DeviceSerialNumber == serialNumber).FirstOrDefault();
+                foundDevice = devices.Where(d => d.DeviceID == deviceID).FirstOrDefault();
                 break;
             }
 
@@ -144,7 +144,7 @@ namespace My_Home
             return foundDevice;
         }
 
-        
+        public 
 
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices
