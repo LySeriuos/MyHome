@@ -1,5 +1,5 @@
-﻿using MyHome;
-using System.Runtime.Loader;
+﻿using System.Runtime.Loader;
+using My_Home.models;
 
 namespace My_Home
 {
@@ -8,12 +8,12 @@ namespace My_Home
 
         public static DeviceProfile AddNewDevice()
         {
-            DeviceProfile device = new();            
+            DeviceProfile device = new();
             Console.WriteLine("Add new Device Name");
             device.DeviceName = Console.ReadLine();
             Console.WriteLine("Add Device Type. 0 Audio, 1 Computer, 2 Kitchen, 3 Mobile Device, 4 Bathroom, 5 Cleaning, 6 Video, 7 Garden, 8 Security, 9 Multi Device, Other as a Default");
-            int chosedDeviceType = Int32.Parse(Console.ReadLine());
-            device.DeviceType = GetEnumOfDeviceType.SelectDeviceType(chosedDeviceType);           
+            int chosedDeviceType = int.Parse(Console.ReadLine());
+            device.DeviceType = GetEnumOfDeviceType.SelectDeviceType(chosedDeviceType);
             Console.WriteLine("Add Model number");
             device.DeviceModelNumber = Console.ReadLine();
             Console.WriteLine("Add Serial number");
@@ -41,20 +41,20 @@ namespace My_Home
             deviceWarranty.ExtraInsuranceWarrantyLink = Console.ReadLine();
             device.DeviceWarranty = deviceWarranty;
 
-            Shop shop = new();          
+            Shop shop = new();
             Console.WriteLine("Add Shop name");
             shop.ShopName = Console.ReadLine();
             Console.WriteLine("Add Shop number");
-            shop.PhoneNumber = Int32.Parse(Console.ReadLine());
+            shop.PhoneNumber = int.Parse(Console.ReadLine());
             Console.WriteLine("Add web address to the shop");
             shop.ShopWebAddress = Console.ReadLine();
             deviceWarranty.Shop = shop;
 
             Address address = new();
             Console.WriteLine("Add shop street name");
-            address.StreetName = Console.ReadLine();            
+            address.StreetName = Console.ReadLine();
             Console.WriteLine("Add shop house number");
-            address.HouseNumber = Int32.Parse(Console.ReadLine());
+            address.HouseNumber = int.Parse(Console.ReadLine());
             Console.WriteLine("Add shop house extended number/letter");
             address.HouseNumberExtension = Console.ReadLine();
             Console.WriteLine("Add shop city name");
@@ -68,7 +68,7 @@ namespace My_Home
 
         public static RealEstate AddNewrealEstate()
         {
-            RealEstate realEstate = new ();
+            RealEstate realEstate = new();
             Console.WriteLine("Add new RealEstate Name");
             realEstate.RealEstateName = Console.ReadLine();
 
@@ -76,7 +76,7 @@ namespace My_Home
             Console.WriteLine("Add RealEstate's street name");
             address.StreetName = Console.ReadLine();
             Console.WriteLine("Add RealEstate's  house number");
-            address.HouseNumber = Int32.Parse(Console.ReadLine());
+            address.HouseNumber = int.Parse(Console.ReadLine());
             Console.WriteLine("Add RealEstate's  house extended number/letter");
             address.HouseNumberExtension = Console.ReadLine();
             Console.WriteLine("Add RealEstate's  city name");

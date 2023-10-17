@@ -1,12 +1,11 @@
-﻿using MyHome;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home
+namespace My_Home.models
 {
     public class UserProfile
     {
@@ -20,48 +19,48 @@ namespace My_Home
 
         private string _userName;
 
-		public string UserName
-		{
-			get { return _userName; }
-			set { _userName = value; }
-		}
+        public string UserName
+        {
+            get { return _userName; }
+            set { _userName = value; }
+        }
 
-		private string _email;
+        private string _email;
 
-		public string Email
-		{
-			get { return _email; }
-			set { _email = value; }
-		}
+        public string Email
+        {
+            get { return _email; }
+            set { _email = value; }
+        }
 
-		// password class will be added later
-		// not sure about this class here
+        // password class will be added later
+        // not sure about this class here
 
 
-		private List <RealEstate> _realEstate;
+        private List<RealEstate> _realEstate;
 
-		public List <RealEstate> RealEstates
-		{
-			get { return _realEstate; }
-			set { _realEstate = value; }
-		}
+        public List<RealEstate> RealEstates
+        {
+            get { return _realEstate; }
+            set { _realEstate = value; }
+        }
 
         public List<DeviceProfile> GetAllDevices()
-		{
-            List<DeviceProfile> allDevices = new List<DeviceProfile>();            
+        {
+            List<DeviceProfile> allDevices = new List<DeviceProfile>();
             var devices = RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
             foreach (DeviceProfile device in devices)
             {
                 allDevices.Add(device);
             }
             return allDevices;
-		}
+        }
 
 
 
         public override string ToString()
         {
-			return _email + " " + _userName;
+            return _email + " " + _userName;
         }
     }
 }

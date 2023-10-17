@@ -1,11 +1,10 @@
-﻿using MyHome;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home
+namespace My_Home.models
 {
     public class RealEstate
     {
@@ -33,9 +32,9 @@ namespace My_Home
             set { _address = value; }
         }
 
-        private List <DeviceProfile> _devicesProfile;
+        private List<DeviceProfile> _devicesProfile;
 
-        public List <DeviceProfile> DevicesProfiles
+        public List<DeviceProfile> DevicesProfiles
         {
             get { return _devicesProfile; }
             set { _devicesProfile = value; }

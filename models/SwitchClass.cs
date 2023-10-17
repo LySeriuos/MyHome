@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home
+namespace My_Home.models
 {
     public class GetEnumOfDeviceType
     {
         public static DeviceType SelectDeviceType(int Selection)
         {
-            
+
             switch (Selection)
             {
                 case 0:

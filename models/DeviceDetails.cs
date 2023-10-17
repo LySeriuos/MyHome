@@ -1,15 +1,14 @@
-﻿using My_Home;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyHome
+namespace My_Home.models
 {
     public class DeviceDetails
     {
-       
+
         public static List<string> GetDetails(DeviceType deviceType)
         {
             switch (deviceType)
@@ -37,12 +36,12 @@ namespace MyHome
 
                 case DeviceType.Cleaning:
                     return new List<string>() { "Washing Machine", "Drying Machine", "Robot Vacuum Cleaner" };
-                        
+
                 case DeviceType.Security:
                     return new List<string>() { "Security Cameras", "Security Sensors" };
 
                 case DeviceType.Other:
-                    return new List<string>() { "Navigation", "Home Lighting" };                    
+                    return new List<string>() { "Navigation", "Home Lighting" };
 
                 case DeviceType.MultiDevice:
                     return new List<string>() { "Something special" };
@@ -50,7 +49,7 @@ namespace MyHome
                     return new List<string>() { "Not Sorted Device" };
 
             }
-            
+
         }
     }
 }

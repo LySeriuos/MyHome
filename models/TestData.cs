@@ -1,6 +1,4 @@
-﻿using MyHome;
-
-namespace My_Home
+﻿namespace My_Home.models
 {
     public static class TestData
     {
@@ -19,7 +17,7 @@ namespace My_Home
                 RealEstates = new List<RealEstate>()
             };
             // missing pasword method
-           
+
 
             //Real Estate 1, Users can have more than one place
 

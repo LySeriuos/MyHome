@@ -1,5 +1,4 @@
-﻿using MyHome;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Security.Cryptography;
 using QRCoder;
+using My_Home.models;
 
 namespace My_Home
 {
@@ -144,7 +144,7 @@ namespace My_Home
             return foundDevice;
         }
 
-        public 
+        public
 
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices
