@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home.models
+namespace My_Home.Models
 {
 
     public class DeviceProfile

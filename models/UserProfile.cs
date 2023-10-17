@@ -5,7 +5,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home.models
+namespace My_Home.Models
 {
     public class UserProfile
     {

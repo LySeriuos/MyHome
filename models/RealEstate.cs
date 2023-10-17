@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home.models
+namespace My_Home.Models
 {
     public class RealEstate
     {

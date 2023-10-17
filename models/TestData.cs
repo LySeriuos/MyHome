@@ -1,4 +1,4 @@
-﻿namespace My_Home.models
+﻿namespace My_Home.Models
 {
     public static class TestData
     {

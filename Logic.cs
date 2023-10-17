@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Security.Cryptography;
 using QRCoder;
-using My_Home.models;
+using My_Home.Models;
 
 namespace My_Home
 {
