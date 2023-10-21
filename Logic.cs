@@ -67,19 +67,21 @@ namespace My_Home
         /// </summary>
         /// <param name="user">Users</param>
         /// <returns>List of devices warranties</returns>
-        public static DeviceWarranty GetUserDevicesWarranties(UserProfile user)
+        public static List<DeviceWarranty> GetUserDevicesWarranties(UserProfile user)
         {
-            List<RealEstate> house = user.RealEstates;
+            List<DeviceWarranty> devicesWarranties = new List<DeviceWarranty>();
+            List<RealEstate> realEstates = user.RealEstates;
             DeviceWarranty warranty = new DeviceWarranty();
-            foreach (RealEstate realestate in house)
+            foreach (RealEstate realestate in realEstates)
             {
                 List<DeviceProfile> devices = realestate.DevicesProfiles;
                 foreach (DeviceProfile device in devices)
                 {
                     warranty = device.DeviceWarranty; //TODO: WAT?`needs fix, add to list instead of overwriting
+                    devicesWarranties.Add(warranty);
                 }
             }
-            return warranty;
+            return devicesWarranties;
         }
 
         /// <summary>
