@@ -15,7 +15,7 @@ List<UserProfile> usersList = Data.GetUsersListFromXml(path);
 List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
 List<DeviceProfile> userDevices = Logic.GetAllUserDevices(usersList[1]);
 
-DeviceWarranty warranty = Logic.GetUserDevicesWarranties(usersList[0]);
+List<DeviceWarranty> devicesWarranties = Logic.GetUserDevicesWarranties(usersList[0]);
 
 
 // device selection by serial number for test purposes

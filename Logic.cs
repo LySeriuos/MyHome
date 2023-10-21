@@ -76,7 +76,7 @@ namespace My_Home
                 List<DeviceProfile> devices = realestate.DevicesProfiles;
                 foreach (DeviceProfile device in devices)
                 {
-                    warranty = device.DeviceWarranty;
+                    warranty = device.DeviceWarranty; //TODO: WAT?`needs fix, add to list instead of overwriting
                 }
             }
             return warranty;
@@ -144,7 +144,7 @@ namespace My_Home
             return foundDevice;
         }
 
-        public
+     
 
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices

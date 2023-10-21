@@ -8,7 +8,7 @@ using My_Home.Models;
 
 namespace My_Home
 {
-    public class Data
+    public static class Data
     {
         /// <summary>
         /// Save the list to the local memory
