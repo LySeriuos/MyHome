@@ -146,6 +146,12 @@ namespace MyHome
             return foundDevice;
         }
 
+        public static int GetUserMaxId(List<UserProfile> userProfiles)
+        {
+            int maxID = userProfiles.Max(u => u.UserID);
+            return maxID;
+        }
+
      
 
         /// <summary>
