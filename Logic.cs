@@ -152,7 +152,7 @@ namespace MyHome
             return maxID;
         }
 
-     
+        
 
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices
