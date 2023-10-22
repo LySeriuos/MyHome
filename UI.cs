@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Loader;
-using My_Home.Models;
+using MyHome.Models;
 
-namespace My_Home
+namespace MyHome
 {
     internal class UI
     {

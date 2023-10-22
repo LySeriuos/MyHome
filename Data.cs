@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using My_Home.Models;
+using MyHome.Models;
 
-namespace My_Home
+namespace MyHome
 {
     public static class Data
     {

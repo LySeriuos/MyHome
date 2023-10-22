@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace My_Home.Models
+namespace MyHome.Models
 {
     public class DeviceWarranty
     {

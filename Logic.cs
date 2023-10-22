@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Security.Cryptography;
 using QRCoder;
-using My_Home.Models;
+using MyHome.Models;
 
-namespace My_Home
+namespace MyHome
 {
     public class Logic
     {
