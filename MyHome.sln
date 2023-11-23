@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHome", "MyHome.csproj", "{96804BF9-24AC-4A05-907F-5ED9DBF09070}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHome", "MyHome/MyHome.csproj", "{96804BF9-24AC-4A05-907F-5ED9DBF09070}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHomeBlazorApp", "..\MyHomeBlazorApp\MyHomeBlazorApp.csproj", "{646EF90C-5679-4077-947B-ECCC2063AC3C}"
 EndProject
