@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,14 @@ namespace MyHome.Models
         {
             get { return _warrantyPeriod; }
             set { _warrantyPeriod = value; }
+        }
+
+        private int _years;
+
+        public int Years
+        {
+            get { return _years; }
+            set { _years = value; }
         }
 
         public DateTime WarrantyEnd
@@ -40,7 +49,10 @@ namespace MyHome.Models
             set { _shop = value; }
         }
 
-        private DateTime _purchaseDate;
+
+        [Required]  
+
+        private DateTime _purchaseDate = DateTime.Now;
 
         public DateTime PurchaseDate
         {
@@ -63,6 +75,15 @@ namespace MyHome.Models
             get { return _extendedWarranty; }
             set { _extendedWarranty = value; }
         }
+
+        private int _extendedWarrantyinYears;
+
+        public int ExtendedWarrantyinYears
+        {
+            get { return _extendedWarrantyinYears; }
+            set { _extendedWarrantyinYears = value; }
+        }
+
 
         public override string ToString()
         {

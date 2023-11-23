@@ -27,7 +27,9 @@ bool movedDevice = Logic.MoveDeviceToOtherRealEstate(usersList[1], searchID, use
 // variables for testing
 RealEstate realEstate = usersList[1].RealEstates[1];
 UserProfile currentUser = usersList[1];
-
+List<RealEstate> realEstates = currentUser.RealEstates;
+int maxRealEId = realEstates.Max(r => r.RealEstateID);
+Console.WriteLine($"{maxRealEId}");
 
 // Adding new ID for new Device
 //var newDevice = UI.AddNewDevice();

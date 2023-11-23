@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHome", "MyHome.csproj", "{96804BF9-24AC-4A05-907F-5ED9DBF09070}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHomeBlazorApp", "..\MyHomeBlazorApp\MyHomeBlazorApp.csproj", "{646EF90C-5679-4077-947B-ECCC2063AC3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHomeBlazorApp", "..\MyHomeBlazorApp\MyHomeBlazorApp.csproj", "{646EF90C-5679-4077-947B-ECCC2063AC3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

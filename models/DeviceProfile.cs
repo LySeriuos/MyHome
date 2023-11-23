@@ -20,6 +20,7 @@ namespace MyHome.Models
 
 
         private string _deviceName;
+
         public string DeviceName
         {
             get { return _deviceName; }

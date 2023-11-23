@@ -41,7 +41,7 @@ namespace MyHome
                     }
                 }
             }
-            expiringDevices = expiringDevices.OrderByDescending(d => d.DeviceWarranty.WarrantyEnd).ToList();
+            expiringDevices = expiringDevices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).ToList();
             return expiringDevices;
         }
 
@@ -77,7 +77,7 @@ namespace MyHome
                 List<DeviceProfile> devices = realestate.DevicesProfiles;
                 foreach (DeviceProfile device in devices)
                 {
-                    warranty = device.DeviceWarranty; //TODO: WAT?`needs fix, add to list instead of overwriting
+                    warranty = device.DeviceWarranty;
                     devicesWarranties.Add(warranty);
                 }
             }
@@ -152,7 +152,35 @@ namespace MyHome
             return maxID;
         }
 
-        
+        public static int GetRealEstateMaxId(List<RealEstate> realEstates)
+        {
+            int maxID;
+            if (realEstates.Count == null)
+            {
+                maxID = 0;
+            }
+            else
+            {
+                maxID = realEstates.Max(rE => rE.RealEstateID);
+            }
+            return maxID;
+        }
+
+        public static int GetDeviceMaxId(List<DeviceProfile> devices)
+        {
+            int maxID;
+            if (devices.Count == 0)
+            {
+                maxID = 1;
+            }
+            else
+            {
+                maxID = devices.Max(d => d.DeviceID);
+            }
+            return maxID;
+        }
+
+
 
         /// <summary>
         /// Created two new lists and one dictionary to assign IDs and devices

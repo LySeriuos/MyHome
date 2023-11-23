@@ -39,6 +39,7 @@ namespace MyHome.Models
             get { return _devicesProfile; }
             set { _devicesProfile = value; }
         }
+        
 
         public override string ToString()
         {
