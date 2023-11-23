@@ -1,0 +1,250 @@
+﻿@page "/mainDashboard"
+@using MyHome.Models;
+@using MyHomeBlazorApp.BlazorData;
+@using MyHome;
+@using MyHomeBlazorApp.Pages
+@inject NavigationManager uriHelper;
+@inject BlazorData.DataService DataService;
+
+<html>
+<head>
+
+    <style>
+        .grid-container {
+            display: flex;
+            grid-template-columns: auto auto auto;
+            background-color: #f7f9fc;
+            padding: 10px;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .grid-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            margin: 20px;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .body {
+            background-color: #ced4da;
+            color: #6c757d;
+        }
+
+        .th {
+            column-width: 100px;
+        }
+
+        .a {
+            width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 1px solid;
+            text-overflow: ellipsis;
+        }
+
+    </style>
+</head>
+<PageTitle>The Main Dashboard</PageTitle>
+
+<body>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!--Maybe it is better to use cards instead of grid elements-->
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <h4 align="left">Welcome Back, @DataService.CurrentUser.UserName!</h4>
+                        <h6 align="left">My House App</h6>
+                    </div>
+                    <div class="grid-item">
+                        <h4>My Real Estates </h4>
+                        <h6 align="left">Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h6>
+                    </div>
+                    <div class="grid-item align-left">
+                        <h4>My Devices </h4>
+                        <h6 align="left">Total Devices: @DataService.Devices.Count</h6>
+                    </div>
+                    <div class="grid-item">
+                        <h4 align="left"> Expiring Warranties </h4>
+                        <ul>
+                            @if (DataService.ExpiringDevices.Count == 0)
+                            {
+                                <li><h6 align="left">Warranties ends in more than 180 days!</h6></li>
+                            }
+                            else
+                            {
+                                @foreach (DeviceProfile d in DataService.ExpiringDevices)
+                                {
+                                    <li>
+                                        <h6 align="left">
+                                            ID:@d.DeviceID
+                                            <br>Name:@d.DeviceName
+                                            <br>Warranty Ends: @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
+                                        </h6>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <table width="100%">
+                    <tr>
+                        <th>Real Estate ID</th>
+                        <th>Real Estate Name</th>
+                        <th>Real Estate Street Name</th>
+                        <th>Real Estate House Number</th>
+                        <th>RealEstate Extended House Number/Letter</th>
+                        <th>Real Estate City</th>
+                        <th>Real Estate Country</th>
+                        <th>Devices</th>
+                    </tr>
+                    <tr>
+                        @foreach (RealEstate r in DataService.RealEstates)
+                        {
+                            <td>
+                                @r.RealEstateID
+                            </td>
+                            <td>
+                                @r.RealEstateName
+                            </td>
+                            <td>
+                                @r.Address.StreetName
+                            </td>
+                            <td>
+                                @r.Address.HouseNumber
+                            </td>
+                            <td>
+                                @r.Address.HouseNumberExtension
+                            </td>
+                            <td>
+                                @r.Address.City
+                            </td>
+                            <td>
+                                @r.Address.Country
+                            </td>
+                            <td>
+                                @DataService.Devices.Count
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+            <br>
+            <div class="row">
+                <table>
+                    <tr>
+                        <th>Real Estate ID</th>
+                        <th>Device ID</th>
+                        <th>Device Name</th>
+                        <th>Device Produser</th>
+                        <th>Device Type</th>
+                        <th>Device Serial Number</th>
+                        <th>Device Model Number</th>
+                        <th>Device IP Adrress</th>
+                        <th>Device MAC Adrress</th>
+                        <th>Device Link To Manual</th>
+                        <th>Device Warranty Expires</th>
+                    </tr>
+
+                    @foreach (RealEstate r in DataService.RealEstates)
+                    {
+                        @foreach (DeviceProfile d in DataService.Devices)
+                        {
+                            <tr>
+                                <td>
+                                    @r.RealEstateID
+                                </td>
+                                <td>
+                                    @d.DeviceID
+                                </td>
+                                <td>
+                                    @d.DeviceName
+                                </td>
+                                <td>
+                                    @d.DeviceProduser
+                                </td>
+                                <td>
+                                    @d.DeviceType
+                                </td>
+                                <td>
+                                    @d.DeviceSerialNumber
+                                </td>
+                                <td>
+                                    @d.DeviceModelNumber
+                                </td>
+                                <td>
+                                    @d.IpAddress
+                                </td>
+                                <td>
+                                    @d.MacAdrress
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
+                                </td>
+                            </tr>
+                        }}
+                </table>
+            </div>
+            <br>
+            <div class="row">
+                <table>
+                    <tr>
+                        <th>Device ID</th>
+                        <th>Purchase Date</th>
+                        <th>Warranty Length</th>
+                        <th>Extra Warranty/Insurance Length</th>
+                        <th>Warranty Ends</th>
+                        <th>Shop Name</th>
+                        <th>Shop Website Adrress</th>
+                        <th>Shop Phone Number</th>
+                    </tr>
+                    
+                    @foreach (RealEstate r in DataService.RealEstates)
+                    {
+                        @foreach (DeviceProfile d in DataService.Devices)
+                        {
+                            <tr>
+                                <td>
+                                    @d.DeviceID
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.PurchaseDate.ToShortDateString()
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.WarrantyPeriod.TotalDays
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.Shop.ShopName
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.Shop.ShopWebAddress
+                                </td>
+                                <td>
+                                    @d.DeviceWarranty.Shop.PhoneNumber
+                                </td>
+                            </tr>
+                        }}
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+@code {
+
+}

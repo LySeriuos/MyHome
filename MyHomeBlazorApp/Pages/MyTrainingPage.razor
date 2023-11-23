@@ -1,0 +1,46 @@
+﻿@page "/trainingpage"
+@using MyHome.Models;
+@using MyHome;
+@inject BlazorData.DataService DataRazor
+
+
+
+<PageTitle>My Training Page</PageTitle>
+<h1>Welcome to My House App!</h1>
+
+<p>Practising in a blazor</p>
+<br />
+<h3>First try in blazor</h3>
+<br />
+<br />
+<h4>Let's create a new user!'</h4>
+<p>Add your user name:</p>
+<p><input type="text" @bind="@userName" /></p>
+<p>Add your email address:</p>
+<input type="text" @bind="@userEmail" />
+<br />
+<br />
+<button class="btn btn-primary" @onclick="CreateNewUser">Create new User</button>
+
+@code {
+
+    private string inputValue = "";
+
+    private void PrintUserInput()
+    {
+        string getUserInput = inputValue;
+    }
+    private string userName = "";
+    private string userEmail = "";
+
+    public void CreateNewUser()
+    {
+        var user = new UserProfile();
+        user.UserID = DataRazor.UserMaxID(DataRazor.Users) + 1;
+        user.UserName = userName;
+        user.Email = userEmail;
+        DataRazor.AddUser(user);
+    }
+
+    
+}

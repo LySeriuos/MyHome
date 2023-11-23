@@ -1,0 +1,10 @@
+﻿@using MyHome.Models;
+<h3>WarrantyDisplay</h3>
+
+<h1>@DeviceWarranty.ReceiptLink</h1>
+<h1>Days Left: @DeviceWarranty.WarrantyPeriod.TotalDays</h1>
+@code {
+    [Parameter]
+    public DeviceWarranty DeviceWarranty { get; set; }
+
+}
