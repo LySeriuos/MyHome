@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\images\user-svgrepo-com.png" />
+    <None Include="wwwroot\images\user-svgrepo-com.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="1.10.4" />
   </ItemGroup>
 

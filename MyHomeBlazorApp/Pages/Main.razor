@@ -91,48 +91,55 @@
                     </div>
                 </div>
             </div>
+            <div class="row">                
+                <CardComponent Image="images\user-svgrepo-com.png" Li1="My House App" Li2="Today's date: " Li3="@DateNow.ToShortDateString()" Link1="Link to User Page" ><CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle> </CardComponent>
+                
+            </div>
             <div class="row">
-                <table width="100%">
-                    <tr>
-                        <th>Real Estate ID</th>
-                        <th>Real Estate Name</th>
-                        <th>Real Estate Street Name</th>
-                        <th>Real Estate House Number</th>
-                        <th>RealEstate Extended House Number/Letter</th>
-                        <th>Real Estate City</th>
-                        <th>Real Estate Country</th>
-                        <th>Devices</th>
-                    </tr>
-                    <tr>
-                        @foreach (RealEstate r in DataService.RealEstates)
-                        {
-                            <td>
-                                @r.RealEstateID
-                            </td>
-                            <td>
-                                @r.RealEstateName
-                            </td>
-                            <td>
-                                @r.Address.StreetName
-                            </td>
-                            <td>
-                                @r.Address.HouseNumber
-                            </td>
-                            <td>
-                                @r.Address.HouseNumberExtension
-                            </td>
-                            <td>
-                                @r.Address.City
-                            </td>
-                            <td>
-                                @r.Address.Country
-                            </td>
-                            <td>
-                                @DataService.Devices.Count
-                            </td>
-                        }
-                    </tr>
-                </table>
+                @if (_realestateVisible)
+                {
+                    <table width="100%">
+                        <tr>
+                            <th>Real Estate ID</th>
+                            <th>Real Estate Name</th>
+                            <th>Real Estate Street Name</th>
+                            <th>Real Estate House Number</th>
+                            <th>RealEstate Extended House Number/Letter</th>
+                            <th>Real Estate City</th>
+                            <th>Real Estate Country</th>
+                            <th>Devices</th>
+                        </tr>
+                        <tr>
+                            @foreach (RealEstate r in DataService.RealEstates)
+                            {
+                                <td>
+                                    @r.RealEstateID
+                                </td>
+                                <td>
+                                    @r.RealEstateName
+                                </td>
+                                <td>
+                                    @r.Address.StreetName
+                                </td>
+                                <td>
+                                    @r.Address.HouseNumber
+                                </td>
+                                <td>
+                                    @r.Address.HouseNumberExtension
+                                </td>
+                                <td>
+                                    @r.Address.City
+                                </td>
+                                <td>
+                                    @r.Address.Country
+                                </td>
+                                <td>
+                                    @DataService.Devices.Count
+                                </td>
+                            }
+                        </tr>
+                    </table>
+                }
             </div>
             <br>
             <div class="row">
@@ -246,5 +253,6 @@
 </body>
 </html>
 @code {
-
+    bool _realestateVisible = false;
+    public DateTime DateNow { get; set; } = DateTime.UtcNow;
 }

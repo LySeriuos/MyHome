@@ -1,0 +1,42 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+
+<Card Style="width:18rem;">
+    <img class="rounded-top" src=" @Image" alt="placeholder" />
+    <CardBody>
+        <CardTitle>@Title</CardTitle>
+        <CardTitle>@ChildContent</CardTitle>
+        <CardText>@Text</CardText>
+    </CardBody>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">@Li1</li>
+        <li class="list-group-item">@Li2</li>
+        <li class="list-group-item">@Li3</li>
+    </ul>
+    <CardBody>
+        <CardLink To="#">@Link1</CardLink>
+        <CardLink To="#">@Link2</CardLink>
+    </CardBody>
+</Card>
+    
+@code{
+    [Parameter]
+    public string? Image {get; set;}
+    [Parameter]
+    public string? Title {get; set;}
+    [Parameter]
+    public string? Text {get; set; }
+    [Parameter]
+    public string? Li1 {get; set;}
+    [Parameter]
+    public string? Li2 { get; set; }
+    [Parameter]
+    public string? Li3 { get; set; }
+    [Parameter]
+    public string? Link1 {get; set;}
+    [Parameter]
+    public string? Link2 { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
+
