@@ -126,6 +126,27 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         #endregion
+
+        #region Warranties
+
+        public DeviceProfile FirstExpiringWarranty()
+        {
+            List<DeviceProfile>? devices = new();
+            DeviceProfile? expiringDevice = new();
+            foreach(DeviceProfile d in devices)
+            {
+                string userDevice = d.DeviceName;
+                DeviceWarranty warranty = d.DeviceWarranty;
+                DateTime deviceWarranty = warranty.WarrantyEnd;
+                DateTime dateTime = DateTime.Now;
+                TimeSpan daysCounting = deviceWarranty.Subtract(dateTime);
+                devices.Add(d);
+            }
+            expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).FirstOrDefault();
+            return expiringDevice;
+        }
+
+        #endregion
         public DataService()
         {
             _users = Data.GetUsersListFromXml(_path);
@@ -141,6 +162,7 @@ namespace MyHomeBlazorApp.BlazorData
             CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
+            FirstExpiringDevice = FirstExpiringWarranty();
         }
 
 
@@ -159,6 +181,7 @@ namespace MyHomeBlazorApp.BlazorData
         public List<RealEstate> RealEstates { get; set; } = new List<RealEstate>();
         public Address Adrress { get; set; } = new Address();
         public DeviceWarranty DeviceWarranty { get; set; } = new DeviceWarranty();
+        public DeviceProfile FirstExpiringDevice { get; set; } = new DeviceProfile();
         public List<DeviceWarranty> DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile CurrentDevice { get; set; } = new DeviceProfile();
         public Shop Shop { get; set; } = new Shop();
