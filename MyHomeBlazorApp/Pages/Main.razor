@@ -91,9 +91,20 @@
                     </div>
                 </div>
             </div>
-            <div class="row">                
-                <CardComponent Image="images\user-svgrepo-com.png" Li1="My House App" Li2="Today's date: " Li3="@DateNow.ToShortDateString()" Link1="Link to User Page" ><CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle> </CardComponent>
+            <div class="row">
                 
+                <CardComponent Image="images\account-user-avatar-svgrepo-com.png" Li1="My House App" Link1="Go To User Account Details">
+                    <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
+                </CardComponent>
+                <CardComponent Image="images\building-estate-home-svgrepo-com.png" Li1="@DateNow.ToLongDateString()" Link1="Go To Real Estates Details">
+                    <CardTitle><h3>My Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
+                </CardComponent>
+                <CardComponent Image="images\phone-screen-capture-screen-svgrepo-com.png" Li1="Here should be Last Added Device" Link1="Go To Devices Details">
+                    <CardTitle><h3>My Total Devices: @DataService.Devices.Count</h3></CardTitle>                    
+                </CardComponent>
+                <CardComponent Image="images\manage-dashboard-analytic-svgrepo-com.png" Li1="Here should be first expiring warrantie device" Link1="Go To Warranties Details">
+                    <CardTitle><h3>My Expiring Warranties</h3></CardTitle>
+                </CardComponent>
             </div>
             <div class="row">
                 @if (_realestateVisible)
@@ -212,7 +223,7 @@
                         <th>Shop Website Adrress</th>
                         <th>Shop Phone Number</th>
                     </tr>
-                    
+
                     @foreach (RealEstate r in DataService.RealEstates)
                     {
                         @foreach (DeviceProfile d in DataService.Devices)
@@ -255,4 +266,5 @@
 @code {
     bool _realestateVisible = false;
     public DateTime DateNow { get; set; } = DateTime.UtcNow;
+    
 }

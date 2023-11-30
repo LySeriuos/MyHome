@@ -1,8 +1,8 @@
 ﻿@using BlazorBootstrap
 @inject BlazorData.DataService DataService
 
-<Card Style="width:18rem;">
-    <img class="rounded-top" src=" @Image" alt="placeholder" />
+<Card Style="width:18rem; ">
+    <img class="rounded-top" style="width:150px; height:150px; margin:auto;" src=" @Image" alt="placeholder" />
     <CardBody>
         <CardTitle>@Title</CardTitle>
         <CardTitle>@ChildContent</CardTitle>
@@ -10,8 +10,6 @@
     </CardBody>
     <ul class="list-group list-group-flush">
         <li class="list-group-item">@Li1</li>
-        <li class="list-group-item">@Li2</li>
-        <li class="list-group-item">@Li3</li>
     </ul>
     <CardBody>
         <CardLink To="#">@Link1</CardLink>
