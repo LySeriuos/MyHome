@@ -92,17 +92,17 @@
                 </div>
             </div>
             <div class="row">
-                
+
                 <CardComponent Image="images\account-user-avatar-svgrepo-com.png" Li1="My House App" Link1="Go To User Account Details">
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
                 </CardComponent>
-                <CardComponent Image="images\building-estate-home-svgrepo-com.png" Li1="@DateNow.ToLongDateString()" Link1="Go To Real Estates Details">
+                <CardComponent Image="images\building-estate-home-svgrepo-com.png" Li1="Date Today Is:" Li2="@DateNow.ToLongDateString()" Link1="Go To Real Estates Details">
                     <CardTitle><h3>My Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
-                <CardComponent Image="images\phone-screen-capture-screen-svgrepo-com.png" Li1="Here should be Last Added Device" Link1="Go To Devices Details">
+                <CardComponent Image="images\phone-screen-capture-screen-svgrepo-com.png" Li1="Last Added Device:" Li2="@GetLastAddedDevice()" Link1="Go To Devices Details">
                     <CardTitle><h3>My Total Devices: @DataService.Devices.Count</h3></CardTitle>                    
                 </CardComponent>
-                <CardComponent Image="images\manage-dashboard-analytic-svgrepo-com.png" Li1="Here should be first expiring warrantie device" Link1="Go To Warranties Details">
+                <CardComponent Image="images\manage-dashboard-analytic-svgrepo-com.png" Li1="Expiring Soon This Device:" Li2="@GetExpiringDevice()" Link1="Go To Warranties Details">
                     <CardTitle><h3>My Expiring Warranties</h3></CardTitle>
                 </CardComponent>
             </div>
@@ -207,7 +207,9 @@
                                     @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
                                 </td>
                             </tr>
-                        }}
+                        }
+
+                    }
                 </table>
             </div>
             <br>
@@ -254,7 +256,9 @@
                                     @d.DeviceWarranty.Shop.PhoneNumber
                                 </td>
                             </tr>
-                        }}
+                        }
+
+                    }
 
                 </table>
             </div>
@@ -266,5 +270,18 @@
 @code {
     bool _realestateVisible = false;
     public DateTime DateNow { get; set; } = DateTime.UtcNow;
-    
+    string GetExpiringDevice()
+    {
+        DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;
+        string deviceName = expiringWarranty.DeviceName;
+        string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
+        return deviceName +" " + deviceExpiringWarranty;
+    }
+    string GetLastAddedDevice()
+    {
+        DeviceProfile lastDevice = DataService.Device;
+        string deviceID = lastDevice.DeviceID.ToString();
+        string deviceName = lastDevice.DeviceName;
+        return "ID" + ":" + lastDevice.DeviceID.ToString() + " " + lastDevice.DeviceName;
+    }
 }
