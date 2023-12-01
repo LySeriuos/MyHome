@@ -80,7 +80,9 @@ namespace MyHomeBlazorApp.BlazorData
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
@@ -134,14 +136,14 @@ namespace MyHomeBlazorApp.BlazorData
             List<DeviceProfile>? devices = Devices;
             DeviceProfile? expiringDevice = new();            
             expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).FirstOrDefault();
-            return expiringDevice;
+            return expiringDevice; // this shouldn't be marked
         }
 
         public DeviceProfile LastAddedDevice()
         {
             List<DeviceProfile>? devices = Devices;
             DeviceProfile? device = devices.LastOrDefault();
-            return device;
+            return device; // this shouldn't be marked
         }
 
         #endregion
@@ -163,10 +165,6 @@ namespace MyHomeBlazorApp.BlazorData
             DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
             FirstExpiringDevice = FirstExpiringWarranty();
         }
-
-
-
-
 
         [Required(ErrorMessage = "This field is Required")]
         // I guess these should be as Parameters 
