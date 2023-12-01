@@ -51,48 +51,8 @@
 
 <body>
     <div class="content">
-        <div class="container-fluid">
+        <div class="container-fluid">            
             <div class="row">
-                <!--Maybe it is better to use cards instead of grid elements-->
-                <div class="grid-container">
-                    <div class="grid-item">
-                        <h4 align="left">Welcome Back, @DataService.CurrentUser.UserName!</h4>
-                        <h6 align="left">My House App</h6>
-                    </div>
-                    <div class="grid-item">
-                        <h4>My Real Estates </h4>
-                        <h6 align="left">Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h6>
-                    </div>
-                    <div class="grid-item align-left">
-                        <h4>My Devices </h4>
-                        <h6 align="left">Total Devices: @DataService.Devices.Count</h6>
-                    </div>
-                    <div class="grid-item">
-                        <h4 align="left"> Expiring Warranties </h4>
-                        <ul>
-                            @if (DataService.ExpiringDevices.Count == 0)
-                            {
-                                <li><h6 align="left">Warranties ends in more than 180 days!</h6></li>
-                            }
-                            else
-                            {
-                                @foreach (DeviceProfile d in DataService.ExpiringDevices)
-                                {
-                                    <li>
-                                        <h6 align="left">
-                                            ID:@d.DeviceID
-                                            <br>Name:@d.DeviceName
-                                            <br>Warranty Ends: @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
-                                        </h6>
-                                    </li>
-                                }
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-
                 <CardComponent Image="images\account-user-avatar-svgrepo-com.png" Li1="My House App" Link1="Go To User Account Details">
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
                 </CardComponent>
