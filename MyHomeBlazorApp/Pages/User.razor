@@ -45,17 +45,17 @@
 
 
 
-        @*<td>
+        @* <td>
         @for (int i = 1; i < @realEstate.DevicesProfiles.Count; i++)
         {
         <ol>
-        <li>@item</li>
+        <li>Item</li>
         <li>@realEstate.DevicesProfiles[@i].DeviceID</li>
         <li>@realEstate.DevicesProfiles[@i].DeviceType</li>
         <li>Item @i</li>
         </ol>
         }
-        </td>*@
+        </td> *@
         <td>
             <ul>
                 @foreach (DeviceProfile d in realEstate.DevicesProfiles)
