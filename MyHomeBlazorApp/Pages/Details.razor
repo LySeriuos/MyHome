@@ -62,7 +62,69 @@
     </div>
 </div>
 
-
+<div class="row">
+    <div class="col">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Real Estate ID</th>
+                    <th scope="col">Device ID</th>
+                    <th scope="col">Device Name</th>
+                    <th scope="col">Device Produser</th>
+                    <th scope="col">Device Type</th>
+                    <th scope="col">Device Serial Number</th>
+                    <th scope="col">Device Model Number</th>
+                    <th scope="col">Device IP Adrress</th>
+                    <th scope="col">Device MAC Adrress</th>
+                    <th scope="col">Device Link To Manual</th>
+                    <th scope="col">Device Warranty Expires</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (RealEstate r in DataService.RealEstates)
+                {
+                    @foreach (DeviceProfile d in DataService.Devices)
+                    {
+                        <tr>
+                            <td>
+                                @r.RealEstateID
+                            </td>
+                            <td>
+                                @d.DeviceID
+                            </td>
+                            <td>
+                                @d.DeviceName
+                            </td>
+                            <td>
+                                @d.DeviceProduser
+                            </td>
+                            <td>
+                                @d.DeviceType
+                            </td>
+                            <td>
+                                @d.DeviceSerialNumber
+                            </td>
+                            <td>
+                                @d.DeviceModelNumber
+                            </td>
+                            <td>
+                                @d.IpAddress
+                            </td>
+                            <td>
+                                @d.MacAdrress
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
 @code {
