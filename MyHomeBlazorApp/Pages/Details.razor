@@ -125,6 +125,77 @@
         </table>
     </div>
 </div>
+<div class="row">
+    <div class="col">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Real Estate ID</th>
+                    <th scope="col">Device ID</th>
+                    <th scope="col">Purchase Date</th>
+                    <th scope="col">Warranty Length In Days</th>
+                    <th scope="col">Extra Warranty/Insurance Length In Days</th>
+                    <th scope="col">Warranty Ends</th>
+                    <th scope="col">Link to Receipt</th>
+                    <th scope="col">Shop Name</th>
+                    <th scope="col">Shop Website Adrress</th>
+                    <th scope="col">Shop Phone Number</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (RealEstate r in DataService.RealEstates)
+                {
+                    @foreach (DeviceProfile d in DataService.Devices)
+                    {
+                        <tr>
+                            <td>
+                                @r.RealEstateID
+                            </td>
+                            <td>
+                                @d.DeviceID
+                            </td>
+                            <td>
+                                @d.DeviceWarranty.PurchaseDate.ToShortDateString()
+                            </td>
+                            <td>
+                                @d.DeviceWarranty.WarrantyPeriod.TotalDays
+                            </td>
+                            @if( @d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays == 0)
+                            {
+                            <td>
+                                There was no extra warranty or insurance added!
+                            </td>
+                            }
+                            else
+                            {
+                            <td>
+                                @d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays
+                            </td>
+                            }
+                            <td>
+                                @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
+                            </td>
+                            <td>
+                                @d.DeviceWarranty.ReceiptLink
+                            </td>
+                            <td>
+                                @d.DeviceWarranty.Shop.ShopName
+                            </td>
+                            <td>
+                                @d.DeviceWarranty.Shop.ShopWebAddress
+                            </td>
+                            <td>
+                                @d.DeviceWarranty.Shop.PhoneNumber
+                            </td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
 @code {
