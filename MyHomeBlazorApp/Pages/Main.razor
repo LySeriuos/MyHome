@@ -51,7 +51,7 @@
 
 <body>
     <div class="content">
-        <div class="container-fluid">            
+        <div class="container-fluid">
             <div class="row">
                 <CardComponent Image="images\account-user-avatar-svgrepo-com.png" Li1="My House App" Li2="Latest App News Maybe :)" Link1="Go To User Account Details">
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
@@ -60,167 +60,11 @@
                     <CardTitle><h3>My Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
                 <CardComponent Image="images\phone-screen-capture-screen-svgrepo-com.png" Li1="Last Added Device:" Li2="@GetLastAddedDevice()" Link1="Go To Devices Details">
-                    <CardTitle><h3>My Total Devices: @DataService.Devices.Count</h3></CardTitle>                    
+                    <CardTitle><h3>My Total Devices: @DataService.Devices.Count</h3></CardTitle>
                 </CardComponent>
                 <CardComponent Image="images\manage-dashboard-analytic-svgrepo-com.png" Li1="Expiring Soon This Device:" Li2="@GetExpiringDevice()" Link1="Go To Warranties Details">
                     <CardTitle><h3>My Expiring Warranties</h3></CardTitle>
                 </CardComponent>
-            </div>
-            <div class="row">
-                @if (_realestateVisible)
-                {
-                    <table width="100%">
-                        <tr>
-                            <th>Real Estate ID</th>
-                            <th>Real Estate Name</th>
-                            <th>Real Estate Street Name</th>
-                            <th>Real Estate House Number</th>
-                            <th>RealEstate Extended House Number/Letter</th>
-                            <th>Real Estate City</th>
-                            <th>Real Estate Country</th>
-                            <th>Devices</th>
-                        </tr>
-                        <tr>
-                            @foreach (RealEstate r in DataService.RealEstates)
-                            {
-                                <td>
-                                    @r.RealEstateID
-                                </td>
-                                <td>
-                                    @r.RealEstateName
-                                </td>
-                                <td>
-                                    @r.Address.StreetName
-                                </td>
-                                <td>
-                                    @r.Address.HouseNumber
-                                </td>
-                                <td>
-                                    @r.Address.HouseNumberExtension
-                                </td>
-                                <td>
-                                    @r.Address.City
-                                </td>
-                                <td>
-                                    @r.Address.Country
-                                </td>
-                                <td>
-                                    @DataService.Devices.Count
-                                </td>
-                            }
-                        </tr>
-                    </table>
-                }
-            </div>
-            <br>
-            <div class="row">
-                <table>
-                    <tr>
-                        <th>Real Estate ID</th>
-                        <th>Device ID</th>
-                        <th>Device Name</th>
-                        <th>Device Produser</th>
-                        <th>Device Type</th>
-                        <th>Device Serial Number</th>
-                        <th>Device Model Number</th>
-                        <th>Device IP Adrress</th>
-                        <th>Device MAC Adrress</th>
-                        <th>Device Link To Manual</th>
-                        <th>Device Warranty Expires</th>
-                    </tr>
-
-                    @foreach (RealEstate r in DataService.RealEstates)
-                    {
-                        @foreach (DeviceProfile d in DataService.Devices)
-                        {
-                            <tr>
-                                <td>
-                                    @r.RealEstateID
-                                </td>
-                                <td>
-                                    @d.DeviceID
-                                </td>
-                                <td>
-                                    @d.DeviceName
-                                </td>
-                                <td>
-                                    @d.DeviceProduser
-                                </td>
-                                <td>
-                                    @d.DeviceType
-                                </td>
-                                <td>
-                                    @d.DeviceSerialNumber
-                                </td>
-                                <td>
-                                    @d.DeviceModelNumber
-                                </td>
-                                <td>
-                                    @d.IpAddress
-                                </td>
-                                <td>
-                                    @d.MacAdrress
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
-                                </td>
-                            </tr>
-                        }
-
-                    }
-                </table>
-            </div>
-            <br>
-            <div class="row">
-                <table>
-                    <tr>
-                        <th>Device ID</th>
-                        <th>Purchase Date</th>
-                        <th>Warranty Length</th>
-                        <th>Extra Warranty/Insurance Length</th>
-                        <th>Warranty Ends</th>
-                        <th>Shop Name</th>
-                        <th>Shop Website Adrress</th>
-                        <th>Shop Phone Number</th>
-                    </tr>
-
-                    @foreach (RealEstate r in DataService.RealEstates)
-                    {
-                        @foreach (DeviceProfile d in DataService.Devices)
-                        {
-                            <tr>
-                                <td>
-                                    @d.DeviceID
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.PurchaseDate.ToShortDateString()
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.WarrantyPeriod.TotalDays
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.Shop.ShopName
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.Shop.ShopWebAddress
-                                </td>
-                                <td>
-                                    @d.DeviceWarranty.Shop.PhoneNumber
-                                </td>
-                            </tr>
-                        }
-
-                    }
-
-                </table>
             </div>
         </div>
     </div>
@@ -235,7 +79,7 @@
         DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;
         string deviceName = expiringWarranty.DeviceName;
         string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
-        return deviceName +" " + deviceExpiringWarranty;
+        return deviceName + " " + deviceExpiringWarranty;
     }
     string GetLastAddedDevice()
     {
