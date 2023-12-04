@@ -138,10 +138,6 @@
                     <th scope="col">Extra Warranty/Insurance Length In Days</th>
                     <th scope="col">Link To Extra Warranty/Insurance Reciept</th>
                     <th scope="col">Warranty Ends</th>
-                    <th scope="col">Shop Name</th>
-                    <th scope="col">Shop Website Adrress</th>
-                    <th scope="col">Shop Phone Number</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -184,15 +180,6 @@
                             </td>
                             <td>
                                 @d.DeviceWarranty.WarrantyEnd.ToShortDateString()
-                            </td>
-                            <td>
-                                @d.DeviceWarranty.Shop.ShopName
-                            </td>
-                            <td>
-                                @d.DeviceWarranty.Shop.ShopWebAddress
-                            </td>
-                            <td>
-                                @d.DeviceWarranty.Shop.PhoneNumber
                             </td>
                         </tr>
                     }
