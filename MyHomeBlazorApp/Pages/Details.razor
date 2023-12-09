@@ -1,8 +1,10 @@
 ﻿@page "/details"
+@using Microsoft.AspNetCore.Components.QuickGrid
 @using MyHome.Models;
 @using MyHomeBlazorApp.BlazorData;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
+
 @inject NavigationManager uriHelper;
 @inject BlazorData.DataService DataService;
 
@@ -252,7 +254,42 @@
     </div>
 </div>
 
+<div class="row">
+    <QuickGrid Items="@DataService.RealEstates.AsQueryable()">
+        @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+        <TemplateColumn>
+            <div>
+                <Button>Edit</Button>
+                <Button>Delete</Button>
+            </div>
+        </TemplateColumn>
+        <PropertyColumn Title="Real Estate ID" Property="@(r => r.RealEstateID)" Sortable="true" />
+        <PropertyColumn Title="Real Estate Name" Property="@(r => r.RealEstateName)" Sortable="true" />
+        <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" Sortable="true" />
+        <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" Sortable="true" />
+        @foreach (RealEstate r in DataService.RealEstates)
+        {
+            if (r.Address.HouseNumberExtension == null)
+            {
+                <TemplateColumn Title="House Number Extension">
+                    <div>
+                        <p>No Data</p>
+                    </div>
+                </TemplateColumn>
+            }
+            else
+            {
+                <PropertyColumn Title="House Number Extension" Property="@(r => r.Address.HouseNumberExtension)" Sortable="true" />
+            }
+        }
+        <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
+        <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
+        <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
+    </QuickGrid>
+</div>
+
 
 @code {
+
 
 }
