@@ -253,7 +253,14 @@
         </table>
     </div>
 </div>
-
+<div class="row">
+    <div class="col">
+    <Button>Real Estates Details</Button>
+    <Button>Devices Details</Button>
+    <Button>Warranties Details</Button>
+    <Button>Shops Details</Button>
+    </div>
+</div>
 <div class="row">
     <QuickGrid Items="@DataService.RealEstates.AsQueryable()">
         @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
