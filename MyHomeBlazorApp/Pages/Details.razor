@@ -126,6 +126,7 @@
 <div class="row">
     @if (_showShopsTableVisible)
     {
+        
         @foreach (RealEstate r in DataService.RealEstates)
         {
             <QuickGrid Items
@@ -167,18 +168,30 @@
     private void ShowRealEstatesTable()
     {
         _showRealEstatesTableVisible = !_showRealEstatesTableVisible;
+        _showDevicesTableVisible = false;
+        _showWarrantiesTableVisible = false;
+        _showShopsTableVisible = false;
     }
     private void ShowDevicesTable()
     {
         _showDevicesTableVisible = !_showDevicesTableVisible;
+        _showWarrantiesTableVisible = false;
+        _showShopsTableVisible = false;
+        _showRealEstatesTableVisible = false;
     }
     private void ShowWarrantiesTable()
     {
         _showWarrantiesTableVisible = !_showWarrantiesTableVisible;
+        _showShopsTableVisible = false;
+        _showRealEstatesTableVisible = false;
+        _showDevicesTableVisible = false;
     }
     private void ShowShopsTable()
     {
         _showShopsTableVisible = !_showShopsTableVisible;
+        _showRealEstatesTableVisible = false;
+        _showDevicesTableVisible = false;
+        _showWarrantiesTableVisible = false;
     }
 
 }
