@@ -2,37 +2,45 @@
 @inject BlazorData.DataService DataService
 
 <Card Style="width:18rem; margin-right:50px; margin-top:50px;">
+    <i class="@IconStyle"></i>
     <img class="rounded-top" style="width:150px; height:150px; margin:auto;" src=" @Image" alt="placeholder" />
     <CardBody>
         <CardTitle>@Title</CardTitle>
-        <CardTitle>@ChildContent</CardTitle>
-        <CardText>@Text</CardText>
-    </CardBody>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">@Li1</li>
-        <li class="list-group-item">@Li2</li>
-    </ul>
+            <CardTitle>@ChildContent</CardTitle>
+            <CardText>@Text</CardText>
+        </CardBody>
+@*         <ul class="list-group list-group-flush">
+            @foreach (var item in ListItems)
+        {
+            <li class="list-group-item">@item</li>
+        } 
+
+     </ul> *@
     <CardBody>
         <CardLink To="#">@Link1</CardLink>
-        <CardLink To="#">@Link2</CardLink>
-    </CardBody>
-</Card>
+            <CardLink To="#">@Link2</CardLink>
+        </CardBody>
+    </Card>
 
-@code{
+    @code {
     [Parameter]
-    public string? Image {get; set;}
+    public string? IconStyle { get; set; }
     [Parameter]
-    public string? Title {get; set;}
+    public string? Image { get; set; }
     [Parameter]
-    public string? Text {get; set; }
+    public string? Title { get; set; }
     [Parameter]
-    public string? Li1 {get; set;}
+    public string? Text { get; set; }
+    [Parameter]
+    public string? Li1 { get; set; }
     [Parameter]
     public string? Li2 { get; set; }
     [Parameter]
     public string? Li3 { get; set; }
     [Parameter]
-    public string? Link1 {get; set;}
+    public List<string?> ListItems { get; set; }
+    [Parameter]
+    public string? Link1 { get; set; }
     [Parameter]
     public string? Link2 { get; set; }
     [Parameter]

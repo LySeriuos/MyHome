@@ -1,21 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="wwwroot\images\user-svgrepo-com.png" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="1.10.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MyHome\MyHome.csproj" />
   </ItemGroup>
-
 </Project>

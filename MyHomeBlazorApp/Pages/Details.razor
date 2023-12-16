@@ -34,23 +34,9 @@
             <PropertyColumn Title="Real Estate Name" Property="@(r => r.RealEstateName)" Sortable="true" />
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" Sortable="true" />
             <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" Sortable="true" />
-            @foreach (RealEstate r in DataService.RealEstates)
-            {
-                if (r.Address.HouseNumberExtension == null)
-                {
-                    <TemplateColumn Title="House Number Extension">
-                        <div>
-                            <span>No Data</span>
-                        </div>
-                    </TemplateColumn>
-                }
-                else
-                {
-                    <PropertyColumn Title="House Number Extension" Property="@(r => r.Address.HouseNumberExtension)" Sortable="true" />
-                }
-
-            }
-
+            <TemplateColumn Title="House Number Extension">
+                <NoData Text="@context.Address.HouseNumberExtension"></NoData>
+            </TemplateColumn>
             <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
             <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
             <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
@@ -75,16 +61,19 @@
                     <span>@r.RealEstateID</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
-                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
-                <PropertyColumn Title="Device Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                <PropertyColumn Title="Device Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                <PropertyColumn Title="Device Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                <PropertyColumn Title="Device Serial Number" Property="@(d => d.DeviceSerialNumber)" Sortable="true" />
-                <PropertyColumn Title="Devcice Model Number" Property="@(d => d.DeviceModelNumber)" Sortable="true" />
+                <PropertyColumn Title="ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" Sortable="true" />
+                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" Sortable="true" />
                 <PropertyColumn Title="Ip Adrress" Property="@(d => d.IpAddress)" Sortable="true" />
                 <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)" Sortable="true" />
                 @* link to manual is not clickable, need to fix it! *@
                 <PropertyColumn Title="Link To Manual" Property="@(d => d.ManualBookLink)" Sortable="true" />
+                <TemplateColumn Title="Link">
+                    <Button class="btn btn-sm" href="@context.ManualBookLink">Link</Button>
+                </TemplateColumn>
                 <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
             </QuickGrid>
         }
@@ -180,7 +169,7 @@
             </label>
             <div class="col-sm-10">
                 <InputNumber id="realEstateHouseNumber" class="form-control" placeholder="Real Estate House Number"
-                           @bind-Value="DataService.CurrentRealEstate.Address.HouseNumber" />
+                             @bind-Value="DataService.CurrentRealEstate.Address.HouseNumber" />
             </div>
         </div>
         <div class="form-group row">
@@ -188,10 +177,10 @@
                 Real Estate House Number Extension
             </label>
             <div class="col-sm-10">
-                @if(DataService.CurrentRealEstate.Address.HouseNumberExtension == null)
+                @if (DataService.CurrentRealEstate.Address.HouseNumberExtension == null)
                 {
-                <InputText id="realEstateHouseNumberExtension" class="form-control" placeholder="No Data"
-                    @bind-Value="DataService.CurrentRealEstate.Address.HouseNumberExtension" />
+                    <InputText id="realEstateHouseNumberExtension" class="form-control" placeholder="No Data"
+                               @bind-Value="DataService.CurrentRealEstate.Address.HouseNumberExtension" />
                 }
                 else
                 {
@@ -223,7 +212,7 @@
     <div class="row">
         <div>
             <Button Color="ButtonColor.Primary">Save</Button>
-       
+
             <Button Color="ButtonColor.Primary">Cancel</Button>
         </div>
     </div>
@@ -231,6 +220,7 @@
 
 
 @code {
+
     bool _showRealEstatesTableVisible = true;
     bool _showDevicesTableVisible = false;
     bool _showWarrantiesTableVisible = false;

@@ -1,0 +1,14 @@
+﻿@if(Text == null)
+{
+    <span>No Data</span>
+}
+else
+{
+    <span>@Text</span>
+}
+
+
+@code {
+    [Parameter]
+    public string? Text { get; set; }
+}

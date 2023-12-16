@@ -74,6 +74,7 @@
 @code {
     bool _realestateVisible = false;
     public DateTime DateNow { get; set; } = DateTime.UtcNow;
+    public string curentDateStraing { get; set; }  = $"Date Today Is: { DateTime.UtcNow.ToLongDateString()}";
     string GetExpiringDevice()
     {
         DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;
