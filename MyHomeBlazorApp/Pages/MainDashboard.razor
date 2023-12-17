@@ -53,9 +53,11 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
-                <CardComponent Image="images\account-user-avatar-svgrepo-com.png" Li1="My House App" Li2="Latest App News Maybe :)" Link1="Go To User Account Details">
+                <CardComponent Image="images\account-user-avatar-svgrepo-com.png" ListItems="@myItemList" Li1="My House App" Li2="Latest App News Maybe :)" Link1="Go To User Account Details">
+                   
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
                 </CardComponent>
+
                 <CardComponent Image="images\building-estate-home-svgrepo-com.png" Li1="Date Today Is:" Li2="@DateNow.ToLongDateString()" Link1="Go To Real Estates Details">
                     <CardTitle><h3>My Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
@@ -65,6 +67,7 @@
                 <CardComponent Image="images\manage-dashboard-analytic-svgrepo-com.png" Li1="Expiring Soon This Device:" Li2="@GetExpiringDevice()" Link1="Go To Warranties Details">
                     <CardTitle><h3>My Expiring Warranties</h3></CardTitle>
                 </CardComponent>
+
             </div>
         </div>
     </div>
@@ -72,9 +75,15 @@
 </body>
 </html>
 @code {
+    List<string> myItemList = new List<string>()
+    {
+        "item1",
+        "item2"
+    };
     bool _realestateVisible = false;
     public DateTime DateNow { get; set; } = DateTime.UtcNow;
-    public string curentDateStraing { get; set; }  = $"Date Today Is: { DateTime.UtcNow.ToLongDateString()}";
+    public string curentDateStraing { get; set; } = $"Date Today Is: {DateTime.UtcNow.ToLongDateString()}";
+    private List<string> ListItems = new();
     string GetExpiringDevice()
     {
         DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;

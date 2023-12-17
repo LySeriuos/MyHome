@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\MyHomeBlazorApp\Pages\ColumnOptions.razor" Link="ColumnOptions.razor" />
+    <None Include="..\MyHomeBlazorApp\Pages\ListItems.razor" Link="ListItems.razor" />
     <None Include="..\MyHomeBlazorApp\Pages\QuickGrid.razor" Link="QuickGrid.razor" />
   </ItemGroup>
   <ItemGroup>
