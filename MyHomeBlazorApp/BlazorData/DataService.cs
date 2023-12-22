@@ -146,6 +146,12 @@ namespace MyHomeBlazorApp.BlazorData
             return device; // this shouldn't be marked
         }
 
+        public RealEstate LastAddedRealEstate()
+        {
+            RealEstate lastRealEstate = RealEstates.LastOrDefault();
+            return lastRealEstate;
+        }
+
         public string GetExpiringDevice()
         {
             DeviceProfile expiringWarranty = FirstExpiringDevice;
@@ -169,6 +175,7 @@ namespace MyHomeBlazorApp.BlazorData
             //List<DeviceProfile> _devices = currentUser.GetAllDevices();            
             Devices = Logic.GetAllUserDevices(CurrentUser);
             Device = LastAddedDevice();
+
             CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);

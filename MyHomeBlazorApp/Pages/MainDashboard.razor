@@ -56,7 +56,7 @@
                 <CardComponent IconStyle="bi bi-person-bounding-box"  IconPath="@userIconPath" ListItems="@userItemsList" Li1="My House App" Li2="Latest App News Maybe :)" Link1="Go To User Account Details">                    
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
                 </CardComponent>
-                <CardComponent ListItems="realEstateItemsList" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" Link1="Go To Real Estates Details">
+                <CardComponent ListItems="@GetLastAddedRealEstate()" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" Link1="Go To Real Estates Details">
                     <CardTitle><h3>My Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
                 <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" Link1="Go To Devices Details">
@@ -102,7 +102,16 @@
         deviceItemsList.Add(finalString);
         return deviceItemsList;
     }
-    
+
+    private List<string> GetLastAddedRealEstate()
+    {
+        RealEstate lastRealEstate = DataService.LastAddedRealEstate();
+        string lastRealEstateId = lastRealEstate.RealEstateID.ToString();
+        realEstateItemsList.Add("Last added Real Estate:");
+        realEstateItemsList.Add($"ID:{lastRealEstateId} {lastRealEstate.RealEstateName}");
+        return realEstateItemsList;
+    }
+
 
     List<string> userItemsList = new List<string>()
     {        
