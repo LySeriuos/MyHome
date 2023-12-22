@@ -57,7 +57,7 @@
                         <Button>Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="RealEstateID">
+                <TemplateColumn Title="Real Estate ID">
                     <span>@r.RealEstateID</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
@@ -93,7 +93,7 @@
                         <Button>Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="RealEstateID">
+                <TemplateColumn Title="Real Estate ID">
                     <span>@r.RealEstateID</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
@@ -125,7 +125,7 @@
                         <Button>Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="RealEstateID">
+                <TemplateColumn Title="Real Estate ID">
                     <span>@r.RealEstateID</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
@@ -196,16 +196,16 @@
                 Real Estate City
             </label>
             <div class="col-sm-10">
-                <InputText id="realEstateHouseCity" class="form-control" placeholder="City"
+                <InputText id="realEstateCity" class="form-control" placeholder="City"
                            @bind-Value="DataService.CurrentRealEstate.Address.City" />
             </div>
         </div>
         <div class="form-group row">
             <label for="realEstateCountry" class="col-sm-2 col-form-label">
-                Real Estate City
+                Real Estate Country
             </label>
             <div class="col-sm-10">
-                <InputText id="realEstateHouseCountry" class="form-control" placeholder="Country"
+                <InputText id="realEstateCountry" class="form-control" placeholder="Country"
                            @bind-Value="DataService.CurrentRealEstate.Address.Country" />
             </div>
         </div>

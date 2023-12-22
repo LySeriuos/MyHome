@@ -175,7 +175,6 @@ namespace MyHomeBlazorApp.BlazorData
             //List<DeviceProfile> _devices = currentUser.GetAllDevices();            
             Devices = Logic.GetAllUserDevices(CurrentUser);
             Device = LastAddedDevice();
-
             CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
