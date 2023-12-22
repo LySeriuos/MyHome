@@ -17,12 +17,11 @@
             @foreach (var item in ListItems)
         {
             <li class="list-group-item">@item</li>
-
         }
     </ul>
     <CardBody>
-        <CardLink To="#">@Link1</CardLink>
-            <CardLink To="#">@Link2</CardLink>
+        <CardLink To="@LinkTo">@Link1</CardLink>
+           
         </CardBody>
     </Card>
 
@@ -50,7 +49,7 @@
     [Parameter]
     public string? Link1 { get; set; }
     [Parameter]
-    public string? Link2 { get; set; }
+    public string? LinkTo { get; set; }
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 }

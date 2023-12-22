@@ -146,6 +146,15 @@ namespace MyHomeBlazorApp.BlazorData
             return device; // this shouldn't be marked
         }
 
+        public string GetExpiringDevice()
+        {
+            DeviceProfile expiringWarranty = FirstExpiringDevice;
+            string deviceName = expiringWarranty.DeviceName;
+            string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
+            string firstDevice = deviceName + " " + deviceExpiringWarranty;
+            return firstDevice;
+        }
+
         #endregion
         public DataService()
         {

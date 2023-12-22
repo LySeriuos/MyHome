@@ -52,22 +52,21 @@
 <body>
     <div class="content">
         <div class="container-fluid">
-            <div class="row">
-                <CardComponent IconStyle="bi bi-person-bounding-box" IconPath="@userIconPath" ListItems="@userItemsList" Li1="My House App" Li2="Latest App News Maybe :)" Link1="Go To User Account Details">
-                    
+            <div class="row" >
+                <CardComponent IconStyle="bi bi-person-bounding-box"  IconPath="@userIconPath" ListItems="@userItemsList" Li1="My House App" Li2="Latest App News Maybe :)" Link1="Go To User Account Details">                    
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
                 </CardComponent>
-
                 <CardComponent ListItems="realEstateItemsList" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" Link1="Go To Real Estates Details">
                     <CardTitle><h3>My Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
-                <CardComponent ListItems="deviceItemsList" IconStyle="bi bi-cpu"  IconPath="@deviceIconPath" Link1="Go To Devices Details">
+                <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" Link1="Go To Devices Details">
                     <CardTitle><h3>My Total Devices: @DataService.Devices.Count</h3></CardTitle>
                 </CardComponent>
-                <CardComponent ListItems="warrantyItemsList" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" Li1="Expiring Soon This Device:" Li2="@GetExpiringDevice()" Link1="Go To Warranties Details">
+                
+                <CardComponent LinkTo="@LinkToDetails" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" Link1="Go To Warranties Details">
                     <CardTitle><h3>My Expiring Warranties</h3></CardTitle>
+                    
                 </CardComponent>
-
             </div>
         </div>
     </div>
@@ -75,48 +74,46 @@
 </body>
 </html>
 @code {
+    string LinkToDetails = "details";
+    List<string> deviceItemsList = new List<string>();
+    List<string> warrantyItemsList = new List<string>();
+    List<string> realEstateItemsList = new List<string>();
+
+
+
+    private List<string> GetExpiringDevice()
+    {
+        DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;
+        string deviceName = expiringWarranty.DeviceName;
+        string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
+        warrantyItemsList.Add("Expires soonest:");
+        warrantyItemsList.Add(deviceName + " " + deviceExpiringWarranty);
+        return warrantyItemsList;
+    }
+
+
+    private List<string> GetLastAddedDevice()
+    {
+        DeviceProfile lastDevice = DataService.Device;
+        string deviceID = lastDevice.DeviceID.ToString();
+        string deviceName = lastDevice.DeviceName;
+        string finalString = "ID" + ":" + lastDevice.DeviceID.ToString() + " " + lastDevice.DeviceName;
+        deviceItemsList.Add("Last Added Device:");
+        deviceItemsList.Add(finalString);
+        return deviceItemsList;
+    }
+    
+
     List<string> userItemsList = new List<string>()
     {        
-        $"Date Today Is: {DateTime.UtcNow.ToLongDateString()}"
-    };
-
-    List<string> realEstateItemsList = new List<string>()
-    {
-        $"Last Added: "
-    };
-
-    //this looks comlicated to use list and add item to the list through method
-    List<string> deviceItemsList = new List<string>()
-    {
-        "Last Added Device:"
-    };
-    List<string> warrantyItemsList = new List<string>()
-    {
-        "Expires soonest:"
+        $"Today is: {DateTime.UtcNow.ToLongDateString()}"
     };
 
     bool _realestateVisible = false;
 
 
 
-    string GetExpiringDevice()
-    {
-        DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;
-        string deviceName = expiringWarranty.DeviceName;
-        string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
-        warrantyItemsList.Add(deviceName + " " + deviceExpiringWarranty);
-        return deviceName + " " + deviceExpiringWarranty;
-    }
-
-
-    string GetLastAddedDevice()
-    {
-        DeviceProfile lastDevice = DataService.Device;
-        string deviceID = lastDevice.DeviceID.ToString();
-        string deviceName = lastDevice.DeviceName;
-        deviceItemsList.Add("ID" + ":" + lastDevice.DeviceID.ToString() + " " + lastDevice.DeviceName);
-        return "ID" + ":" + lastDevice.DeviceID.ToString() + " " + lastDevice.DeviceName;
-    }
+   
 
     string userIconPath = "M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0";
     string realEstateIconPath = "M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z";
