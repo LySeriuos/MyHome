@@ -20,13 +20,12 @@
         }
     </ul>
     <CardBody>
-        <CardLink To="@LinkTo">@Link1</CardLink>
+        <CardLink To="@LinkTo">@LinkName</CardLink>
            
         </CardBody>
     </Card>
 
     @code {
-
 
     [Parameter]
     public string? IconStyle { get; set; }
@@ -37,17 +36,11 @@
     [Parameter]
     public string? Title { get; set; }
     [Parameter]
-    public string? Text { get; set; }
-    [Parameter]
-    public string? Li1 { get; set; }
-    [Parameter]
-    public string? Li2 { get; set; }
-    [Parameter]
-    public string? Li3 { get; set; }
+    public string? Text { get; set; }    
     [Parameter]
     public List<string?> ListItems { get; set; } = new List<string?>();
     [Parameter]
-    public string? Link1 { get; set; }
+    public string? LinkName { get; set; }
     [Parameter]
     public string? LinkTo { get; set; }
     [Parameter]

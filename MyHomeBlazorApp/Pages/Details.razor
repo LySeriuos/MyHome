@@ -116,7 +116,7 @@
 
         @foreach (RealEstate r in DataService.RealEstates)
         {
-            <QuickGrid Items="@DataService.Devices.AsQueryable()">
+            <QuickGrid tabindex="2" Items="@DataService.Devices.AsQueryable()">
 
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
