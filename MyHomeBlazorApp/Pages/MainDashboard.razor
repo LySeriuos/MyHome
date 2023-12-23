@@ -51,14 +51,14 @@
 <body>
     <div class="content">
         <div class="container-fluid">
-            <div class="row" >
-                <CardComponent IconStyle="bi bi-person-bounding-box"  IconPath="@userIconPath" ListItems="@userItemsList" LinkName="Go To User Account Details">                    
+            <div class="row" >                
+                <CardComponent IconStyle="bi bi-person-bounding-box" IconPath="@userIconPath" ListItems="@userItemsList" LinkName="Go To User Account Details">
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
                 </CardComponent>
-                <CardComponent ListItems="@GetLastAddedRealEstate()" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" Link1="Go To Real Estates Details">
+                <CardComponent ListItems="@GetLastAddedRealEstate()" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" LinkTo="@LinkToDetails" LinkName="Go To Real Estates Details">
                     <CardTitle><h3>My Total Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
-                <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkName="Go To Devices Details">
+                <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkTo="@LinkToDetails" LinkName="Go To Devices Details">
                     <CardTitle><h3>My Total Devices: @DataService.Devices.Count</h3></CardTitle>
                 </CardComponent>                
                 <CardComponent LinkTo="@LinkToDetails" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
@@ -71,7 +71,7 @@
 </body>
 </html>
 @code {
-    string LinkToDetails = "details";
+    string LinkToDetails = "details";    
     List<string> deviceItemsList = new List<string>();
     List<string> warrantyItemsList = new List<string>();
     List<string> realEstateItemsList = new List<string>();
