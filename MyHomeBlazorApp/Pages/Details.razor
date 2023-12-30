@@ -1,10 +1,12 @@
 ﻿@page "/details"
+
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using MyHome.Models;
 @using MyHomeBlazorApp.BlazorData;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
 @using MyHomeBlazorApp.Components
+@using BlazorBootstrap
 @inject NavigationManager uriHelper;
 @inject BlazorData.DataService DataService;
 
@@ -225,15 +227,36 @@
                           ForAndIdCountry="country"
                           LabelPlaceHolderCountry="Country" />
     </div>
+    <Modal @ref="modal" Title="Edit Real Estate Address">
+        <BodyTemplate>
+            <AddressComponent CurrentObject="@GetCurrentRealEstate()"
+                              ForAndIdStreetName="streetName"
+                              LabelPlaceHolderStreetName="Street Name"
+                              ForAndIdHouseNumber="houseNumber"
+                              LabelPlaceHolderHouseNumber="House Number"
+                              ForAndIdHouseNumberExtension="houseNumberExtension"
+                              LabelPlaceHolderHouseNumberExtension="House Number Extension"
+                              ForAndIdCity="city"
+                              LabelPlaceHolderCity="City"
+                              ForAndIdCountry="country"
+                              LabelPlaceHolderCountry="Country" />
+        </BodyTemplate>
+        <FooterTemplate>
+            <Button Color="ButtonColor.Primary" @onclick="OnHideModalClick">Close</Button>
+            <Button Color="ButtonColor.Primary">Save changes</Button>
+        </FooterTemplate>
+    </Modal>
+
+    <Button Color="ButtonColor.Primary" @onclick="OnShowModalClick">Show Modal</Button>
 </div>
 
 
 @code {
     private RealEstate realEstate;
-    
+
     private RealEstate GetCurrentRealEstate()
     {
-        realEstate = DataService.CurrentRealEstate;        
+        realEstate = DataService.CurrentRealEstate;
         return realEstate;
     }
 
@@ -270,6 +293,18 @@
         _showRealEstatesTableVisible = false;
         _showDevicesTableVisible = false;
         _showWarrantiesTableVisible = false;
+    }
+
+    private Modal modal = default!;
+
+    private async Task OnShowModalClick()
+    {
+        await modal.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await modal.HideAsync();
     }
 
 }
