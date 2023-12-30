@@ -214,19 +214,7 @@
             <Button Color="ButtonColor.Primary">Cancel</Button>
         </div>
     </div>
-    <div>
-        <AddressComponent CurrentObject="@GetCurrentRealEstate()"
-                          ForAndIdStreetName="streetName"
-                          LabelPlaceHolderStreetName="Street Name"
-                          ForAndIdHouseNumber="houseNumber"
-                          LabelPlaceHolderHouseNumber="House Number"
-                          ForAndIdHouseNumberExtension="houseNumberExtension"
-                          LabelPlaceHolderHouseNumberExtension="House Number Extension"
-                          ForAndIdCity="city"
-                          LabelPlaceHolderCity="City"
-                          ForAndIdCountry="country"
-                          LabelPlaceHolderCountry="Country" />
-    </div>
+    
     <Modal @ref="modal" Title="Edit Real Estate Address">
         <BodyTemplate>
             <AddressComponent CurrentObject="@GetCurrentRealEstate()"
