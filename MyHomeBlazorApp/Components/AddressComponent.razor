@@ -1,0 +1,84 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+
+<EditForm Model="@CurrentObject">
+    <div class="form-group row">
+        <label for="@ForAndIdStreetName" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderStreetName
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdStreetName" class="form-control" placeholder="@LabelPlaceHolderStreetName"
+                       @bind-Value="@CurrentObject.Address.StreetName" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdHouseNumber" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderHouseNumber
+        </label>
+        <div class="col-sm-10">
+            <InputNumber id="@ForAndIdHouseNumber" class="form-control" placeholder="@LabelPlaceHolderHouseNumber"
+                         @bind-Value="@CurrentObject.Address.HouseNumber" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdHouseNumberExtension" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderHouseNumberExtension
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdHouseNumberExtension" class="form-control" placeholder="@LabelPlaceHolderHouseNumberExtension"
+                       @bind-Value="@CurrentObject.Address.HouseNumberExtension" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="@ForAndIdCity" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderCity
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdCity" class="form-control" placeholder="@LabelPlaceHolderCity"
+                       @bind-Value="@CurrentObject.Address.City" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdCountry" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderCountry
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdCountry" class="form-control" placeholder="@LabelPlaceHolderCountry"
+                       @bind-Value="@CurrentObject.Address.Country" />
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+
+    Address? Address = new Address();
+
+    [Parameter]
+    public RealEstate? CurrentObject { get; set; }
+    [Parameter]
+    public string? ForAndIdStreetName { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderStreetName { get; set; }
+    [Parameter]
+    public string? ForAndIdHouseNumber { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderHouseNumber { get; set; }
+    [Parameter]
+    public string? ForAndIdHouseNumberExtension { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderHouseNumberExtension { get; set; }
+    [Parameter]
+    public string? ForAndIdCity { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderCity { get; set; }
+    [Parameter]
+    public string? ForAndIdCountry { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderCountry { get; set; }
+
+
+}
