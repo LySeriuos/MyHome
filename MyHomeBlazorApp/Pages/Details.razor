@@ -148,43 +148,37 @@
 
 
     <div class="row">
-        <div>
-            <Button Color="ButtonColor.Primary">Save</Button>
-
-            <Button Color="ButtonColor.Primary">Cancel</Button>
-        </div>
-    </div>
-    
-    <Modal @ref="modal" Title="Edit Real Estate Address">
-        <BodyTemplate>
-            <EditForm Model="DataService.RealEstates">
-                <div class="form-group row">
-                    <label for="realEstateName" class="col-sm-2 col-form-label">
-                        Real Estate Name
-                    </label>
-                    <div class="col-sm-10">
-                        <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                                   @bind-Value="DataService.CurrentRealEstate.RealEstateName" />
+        <Modal @ref="modal" Title="Edit Real Estate Address">
+            <BodyTemplate>
+                <EditForm Model="DataService.RealEstates">
+                    <div class="form-group row">
+                        <label for="realEstateName" class="col-sm-2 col-form-label">
+                            Real Estate Name
+                        </label>
+                        <div class="col-sm-10">
+                            <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
+                                       @bind-Value="DataService.CurrentRealEstate.RealEstateName" />
+                        </div>
                     </div>
-                </div>
-            </EditForm>
-            <AddressComponent CurrentObject="@GetCurrentRealEstate()"
-                              ForAndIdStreetName="streetName"
-                              LabelPlaceHolderStreetName="Street Name"
-                              ForAndIdHouseNumber="houseNumber"
-                              LabelPlaceHolderHouseNumber="House Number"
-                              ForAndIdHouseNumberExtension="houseNumberExtension"
-                              LabelPlaceHolderHouseNumberExtension="House Number Extension"
-                              ForAndIdCity="city"
-                              LabelPlaceHolderCity="City"
-                              ForAndIdCountry="country"
-                              LabelPlaceHolderCountry="Country" />
-        </BodyTemplate>
-        <FooterTemplate>
-            <Button Color="ButtonColor.Primary" @onclick="OnHideModalClick">Close</Button>
-            <Button Color="ButtonColor.Primary">Save changes</Button>
-        </FooterTemplate>
-    </Modal>
+                </EditForm>
+                <AddressComponent CurrentObject="@GetCurrentRealEstate()"
+                                  ForAndIdStreetName="streetName"
+                                  LabelPlaceHolderStreetName="Street Name"
+                                  ForAndIdHouseNumber="houseNumber"
+                                  LabelPlaceHolderHouseNumber="House Number"
+                                  ForAndIdHouseNumberExtension="houseNumberExtension"
+                                  LabelPlaceHolderHouseNumberExtension="House Number Extension"
+                                  ForAndIdCity="city"
+                                  LabelPlaceHolderCity="City"
+                                  ForAndIdCountry="country"
+                                  LabelPlaceHolderCountry="Country" />
+            </BodyTemplate>
+            <FooterTemplate>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalClick">Close</Button>
+                <Button Color="ButtonColor.Primary">Save changes</Button>
+            </FooterTemplate>
+        </Modal>
+    </div>
 </div>
 
 
