@@ -68,10 +68,10 @@
                 <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
                 <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
                 <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" Sortable="true" />
-                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" Sortable="true" />
-                <PropertyColumn Title="Ip Adrress" Property="@(d => d.IpAddress)" Sortable="true" />
-                <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)" Sortable="true" />               
+                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)"/>
+                <PropertyColumn Title="Ip Adrress" Property="@(d => d.IpAddress)"/>
+                <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)"/>               
                 <TemplateColumn Title="Manual">
                     <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
                 </TemplateColumn>
