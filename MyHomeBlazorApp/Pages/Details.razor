@@ -145,68 +145,8 @@
         }
 
     }
-    <EditForm Model="DataService.RealEstates">
-        <h3>Edit Real Estate Details</h3>
-        <hr />
-        <div class="form-group row">
-            <label for="realEstateName" class="col-sm-2 col-form-label">
-                Real Estate Name
-            </label>
-            <div class="col-sm-10">
-                <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                           @bind-Value="DataService.CurrentRealEstate.RealEstateName" />
-            </div>
-        </div>
-    </EditForm>
-    <EditForm Model="DataService.CurrentRealEstate">
-        <div class="form-group row">
-            <label for="realEstateStreetName" class="col-sm-2 col-form-label">
-                Real Estate Street Name
-            </label>
-            <div class="col-sm-10">
-                <InputText id="realEstateStreetName" class="form-control" placeholder="Real Estate Street Name"
-                           @bind-Value="DataService.CurrentRealEstate.Address.StreetName" />
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="realEstateHouseNumber" class="col-sm-2 col-form-label">
-                Real Estate House Number
-            </label>
-            <div class="col-sm-10">
-                <InputNumber id="realEstateHouseNumber" class="form-control" placeholder="Real Estate House Number"
-                             @bind-Value="DataService.CurrentRealEstate.Address.HouseNumber" />
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="realEstateHouseNumberExtension" class="col-sm-2 col-form-label">
-                Real Estate House Number Extension
-            </label>
-            <div class="col-sm-10">
 
-                <InputText id="realEstateHouseNumberExtension" class="form-control" placeholder="Real Estate House Number Extension"
-                           @bind-Value="DataService.CurrentRealEstate.Address.HouseNumberExtension" />
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="realEstateCity" class="col-sm-2 col-form-label">
-                Real Estate City
-            </label>
-            <div class="col-sm-10">
-                <InputText id="realEstateCity" class="form-control" placeholder="City"
-                           @bind-Value="DataService.CurrentRealEstate.Address.City" />
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="realEstateCountry" class="col-sm-2 col-form-label">
-                Real Estate Country
-            </label>
-            <div class="col-sm-10">
-                <InputText id="realEstateCountry" class="form-control" placeholder="Country"
-                           @bind-Value="DataService.CurrentRealEstate.Address.Country" />
-            </div>
-        </div>
 
-    </EditForm>
     <div class="row">
         <div>
             <Button Color="ButtonColor.Primary">Save</Button>
