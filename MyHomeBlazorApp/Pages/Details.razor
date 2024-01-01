@@ -33,10 +33,10 @@
                     <Button>Delete</Button>
                 </div>
             </TemplateColumn>
-            <PropertyColumn Title="Real Estate ID" Property="@(r => r.RealEstateID)" Sortable="true" />
-            <PropertyColumn Title="Real Estate Name" Property="@(r => r.RealEstateName)" Sortable="true" />
-            <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" Sortable="true" />
-            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" Sortable="true" />
+            <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
+            <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
+            <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
+            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)"/>
             <TemplateColumn Title="House Number Extension">
                 <NoData Text="@context.Address.HouseNumberExtension"></NoData>
             </TemplateColumn>
