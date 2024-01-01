@@ -36,7 +36,7 @@
             <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
-            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)"/>
+            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
             <TemplateColumn Title="House Number Extension">
                 <NoData Text="@context.Address.HouseNumberExtension"></NoData>
             </TemplateColumn>
@@ -69,9 +69,9 @@
                 <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
                 <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
                 <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)"/>
-                <PropertyColumn Title="Ip Adrress" Property="@(d => d.IpAddress)"/>
-                <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)"/>               
+                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                <PropertyColumn Title="Ip Adrress" Property="@(d => d.IpAddress)" />
+                <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)" />
                 <TemplateColumn Title="Manual">
                     <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
                 </TemplateColumn>
@@ -103,9 +103,14 @@
                 <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
                 <PropertyColumn Title="Warranty Length (Days)" Property="@(d => d.DeviceWarranty.WarrantyPeriod.TotalDays)" />
                 @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
-                <PropertyColumn Title="Receipt Link" Property="@(d => d.DeviceWarranty.ReceiptLink)" />
+                <TemplateColumn Title="Receipt">
+                    <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Receipt</Button>
+                </TemplateColumn>
                 <PropertyColumn Title="Extra Warranty/Insurance Length (Days)" Property="@(d => d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays)" Sortable="true" />
-                <PropertyColumn Title="Extra Warranty/Insurance Reciept Link" Property="@(d => d.DeviceWarranty.ExtraInsuranceWarrantyLink)" />
+                @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
+                <TemplateColumn Title="Extended Warranty/Insurance Receipt">
+                    <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Extended Warranty/Insurance Receipt</Button>
+                </TemplateColumn>
             </QuickGrid>
         }
 
