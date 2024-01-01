@@ -71,11 +71,9 @@
                 <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" Sortable="true" />
                 <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" Sortable="true" />
                 <PropertyColumn Title="Ip Adrress" Property="@(d => d.IpAddress)" Sortable="true" />
-                <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)" Sortable="true" />
-                @* link to manual is not clickable, need to fix it! *@
-                <PropertyColumn Title="Link To Manual" Property="@(d => d.ManualBookLink)" Sortable="true" />
-                <TemplateColumn Title="Link">
-                    <Button class="btn btn-sm" href="@context.ManualBookLink">Link</Button>
+                <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)" Sortable="true" />               
+                <TemplateColumn Title="Manual">
+                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
                 </TemplateColumn>
                 <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
             </QuickGrid>
