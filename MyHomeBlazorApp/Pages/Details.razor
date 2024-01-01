@@ -217,6 +217,17 @@
     
     <Modal @ref="modal" Title="Edit Real Estate Address">
         <BodyTemplate>
+            <EditForm Model="DataService.RealEstates">
+                <div class="form-group row">
+                    <label for="realEstateName" class="col-sm-2 col-form-label">
+                        Real Estate Name
+                    </label>
+                    <div class="col-sm-10">
+                        <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
+                                   @bind-Value="DataService.CurrentRealEstate.RealEstateName" />
+                    </div>
+                </div>
+            </EditForm>
             <AddressComponent CurrentObject="@GetCurrentRealEstate()"
                               ForAndIdStreetName="streetName"
                               LabelPlaceHolderStreetName="Street Name"
