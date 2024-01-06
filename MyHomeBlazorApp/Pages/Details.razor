@@ -37,7 +37,7 @@
             <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
             <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
-            <TemplateColumn Title="House Number Extension">
+            <TemplateColumn Title="Number's Extension">
                 <NoData Text="@context.Address.HouseNumberExtension"></NoData>
             </TemplateColumn>
             <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
@@ -70,8 +70,8 @@
                 <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
                 <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
                 <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                <PropertyColumn Title="Ip Adrress" Property="@(d => d.IpAddress)" />
-                <PropertyColumn Title="Mac Adrress" Property="@(d => d.MacAdrress)" />
+                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
                 <TemplateColumn Title="Manual">
                     <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
                 </TemplateColumn>
@@ -100,16 +100,16 @@
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
                 <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
                 <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
-                <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-                <PropertyColumn Title="Warranty Length (Days)" Property="@(d => d.DeviceWarranty.WarrantyPeriod.TotalDays)" />
+                <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+                <PropertyColumn Title="Length (Days)" Property="@(d => d.DeviceWarranty.WarrantyPeriod.TotalDays)" />
                 @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                 <TemplateColumn Title="Receipt">
                     <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Receipt</Button>
                 </TemplateColumn>                
-                <PropertyColumn Title="Extended Warranty Length(Days)" Property="@(d => d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays)" Sortable="true" />
+                <PropertyColumn Title="Extra Warranty Length (Days)" Property="@(d => d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays)" Sortable="true" />
                 @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
-                <TemplateColumn Title="Extended Warranty/Insurance Receipt">
-                    <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Extended Warranty/Insurance Receipt</Button>
+                <TemplateColumn Title="Extra's Receipt">
+                    <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Receipt</Button>
                 </TemplateColumn>
             </QuickGrid>
         }
@@ -141,7 +141,7 @@
                 <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
                 <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
                 <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
-                <PropertyColumn Title="Extended House Number/Letter" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
+                <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
                 <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
                 <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
             </QuickGrid>
