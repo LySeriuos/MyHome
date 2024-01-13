@@ -29,7 +29,7 @@
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
-                    <Button @onclick="OnShowModalClick">Edit</Button>
+                    <Button @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
                     <Button>Delete</Button>
                 </div>
             </TemplateColumn>
@@ -105,7 +105,7 @@
                 @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                 <TemplateColumn Title="Receipt">
                     <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Receipt</Button>
-                </TemplateColumn>                
+                </TemplateColumn>
                 <PropertyColumn Title="Extra Warranty Length (Days)" Property="@(d => d.DeviceWarranty.ExtraInsuranceWarrantyLenght.TotalDays)" Sortable="true" />
                 @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
                 <TemplateColumn Title="Extra's Receipt">
@@ -148,10 +148,10 @@
         }
 
     }
-
+    <!--#region Edit Form Modals  -->
 
     <div class="row">
-        <Modal @ref="modal" Title="Edit Real Estate Address">
+        <Modal @ref="modalRealEstate" Title="Edit Real Estate Address">
             <BodyTemplate>
                 <EditForm Model="DataService.RealEstates">
                     <div class="form-group row">
@@ -160,7 +160,7 @@
                         </label>
                         <div class="col-sm-10">
                             <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                                       @bind-Value="DataService.CurrentRealEstate.RealEstateName" />
+                                       @bind-Value="currentRealEstate.RealEstateName" />
                         </div>
                     </div>
                 </EditForm>
@@ -177,7 +177,7 @@
                                   LabelPlaceHolderCountry="Country" />
             </BodyTemplate>
             <FooterTemplate>
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalClick">Close</Button>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
             </FooterTemplate>
         </Modal>
@@ -185,8 +185,13 @@
 </div>
 
 
+<!--#endregion -->
 @code {
-    private RealEstate realEstate;
+    private RealEstate? realEstate;
+    DeviceProfile currentDevice = new();
+    RealEstate currentRealEstate = new();
+
+
 
     private RealEstate GetCurrentRealEstate()
     {
@@ -229,16 +234,29 @@
         _showWarrantiesTableVisible = false;
     }
 
-    private Modal modal = default!;
+    private Modal modalRealEstate = default!;
 
-    private async Task OnShowModalClick()
+    private async Task OnShowModalRealEstateClick(int id)
     {
-        await modal.ShowAsync();
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
+        await modalRealEstate.ShowAsync();
     }
 
-    private async Task OnHideModalClick()
+    private async Task OnHideModalRealEstateClick()
     {
-        await modal.HideAsync();
+        await modalRealEstate.HideAsync();
+    }
+
+    private Modal modalDevice = default!;
+
+    private async Task OnShowModalDeviceClick()
+    {
+        await modalDevice.ShowAsync();
+    }
+
+    private async Task OnHideModalDeviceClick()
+    {
+        await modalDevice.HideAsync();
     }
 
 }
