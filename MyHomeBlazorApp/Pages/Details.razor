@@ -164,7 +164,7 @@
                         </div>
                     </div>
                 </EditForm>
-                <AddressComponent CurrentObject="@GetCurrentRealEstate()"
+                <AddressComponent CurrentObject="@currentRealEstate"
                                   ForAndIdStreetName="streetName"
                                   LabelPlaceHolderStreetName="Street Name"
                                   ForAndIdHouseNumber="houseNumber"
@@ -188,17 +188,8 @@
 <!--#endregion -->
 @code {
     private RealEstate? realEstate;
-    DeviceProfile currentDevice = new();
-    RealEstate currentRealEstate = new();
-
-
-
-    private RealEstate GetCurrentRealEstate()
-    {
-        realEstate = DataService.CurrentRealEstate;
-        return realEstate;
-    }
-
+    private DeviceProfile currentDevice = new();
+    private RealEstate currentRealEstate = new();
 
     bool _showRealEstatesTableVisible = true;
     bool _showDevicesTableVisible = false;
