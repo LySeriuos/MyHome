@@ -61,6 +61,22 @@ namespace MyHomeBlazorApp.BlazorData
             CurrentRealEstate.Address = adrress;
             Data.SaveUsersListToXml(_users, _path);
         }
+        public int GetRealEstateByDeviceID(int deviceId)
+        {
+            RealEstate currentRealEstateTest = new();
+            foreach (RealEstate r in RealEstates)
+            {
+                foreach (DeviceProfile d in r.DevicesProfiles)
+                {
+                    if (d.DeviceID == deviceId)
+                    {
+                        currentRealEstateTest = r;
+                        break;
+                    }
+                }
+            }
+            return currentRealEstateTest.RealEstateID;
+        }
 
         #endregion
         #region Device
@@ -166,7 +182,7 @@ namespace MyHomeBlazorApp.BlazorData
         {
             _users = Data.GetUsersListFromXml(_path);
             // manually assigned test data
-            int userId = 1;
+            int userId = 2;
             int realEstateID = 1;
             int deviceId = 2;
             CurrentUser = GetUser(userId);

@@ -49,36 +49,35 @@
 <div class="row">
     @if (_showDevicesTableVisible)
     {
-        @foreach (RealEstate r in DataService.RealEstates)
-        {
-            <QuickGrid Items="@DataService.Devices.AsQueryable()">
 
-                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
-                <TemplateColumn>
-                    <div>
-                        <Button>Edit</Button>
-                        <Button>Delete</Button>
-                    </div>
-                </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID">
-                    <span>@r.RealEstateID</span>
-                </TemplateColumn>
-                @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
-                <PropertyColumn Title="ID" Property="@(d => d.DeviceID)" Sortable="true" />
-                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-                <TemplateColumn Title="Manual">
-                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
-                </TemplateColumn>
-                <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-            </QuickGrid>
-        }
+        <QuickGrid Items="@DataService.Devices.AsQueryable()">
+
+            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+            <TemplateColumn>
+                <div>
+                    <Button>Edit</Button>
+                    <Button>Delete</Button>
+                </div>
+            </TemplateColumn>
+            <TemplateColumn Title="Real Estate ID">
+                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+            </TemplateColumn>
+            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
+            <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+            <TemplateColumn Title="Manual">
+                <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+            </TemplateColumn>
+            <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+        </QuickGrid>
     }
+
 </div>
 <div class="row">
     @if (_showWarrantiesTableVisible)
@@ -122,7 +121,7 @@
 
         @foreach (RealEstate r in DataService.RealEstates)
         {
-            <QuickGrid tabindex="2" Items="@DataService.Devices.AsQueryable()">
+            <QuickGrid Items="@DataService.Devices.AsQueryable()">
 
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
@@ -187,6 +186,9 @@
 
 <!--#endregion -->
 @code {
+
+    
+
     private RealEstate? realEstate;
     private DeviceProfile currentDevice = new();
     private RealEstate currentRealEstate = new();
