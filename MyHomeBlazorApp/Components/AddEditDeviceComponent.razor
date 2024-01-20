@@ -1,0 +1,121 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+
+
+@* need to check before saving *@
+<EditForm Model=@Device>
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceName" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderDeviceName
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdDeviceName" @bind-Value="Device.DeviceName" placeholder="@LabelPlaceHolderDeviceName" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceProduser" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderDeviceProduser
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdDeviceProduser" @bind-Value="Device.DeviceProduser" placeholder="@LabelPlaceHolderDeviceProduser" />
+        </div>
+    </div>    
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceType" class="col-sm-2 col-form-label">@LabelPlaceHolderDeviceType</label>
+        <div class="col-sm-10">
+            <InputSelect id="@ForAndIdDeviceType" @bind-Value="Device.DeviceType" placeholder="@LabelPlaceHolderDeviceType">
+                @foreach (var type in Enum.GetValues(typeof(DeviceType)))
+                {
+                    <option value="@type">@type</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceSerialNumber" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderDeviceSerialNumber
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdDeviceSerialNumber" @bind-Value="Device.DeviceSerialNumber" placeholder="@LabelPlaceHolderDeviceSerialNumber" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceModelNumber" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderDeviceModelNumber
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdDeviceModelNumber" @bind-Value="Device.DeviceModelNumber" placeholder="@LabelPlaceHolderDeviceModelNumber" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceIpAddress" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderDeviceIpAddress
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdDeviceIpAddress" @bind-Value="Device.IpAddress" placeholder="@LabelPlaceHolderDeviceIpAddress" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceMacAddress" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderDeviceMacAddress
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdDeviceMacAddress" @bind-Value="Device.MacAdrress" placeholder="@LabelPlaceHolderDeviceMacAddress" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="@ForAndIdDeviceManualBookLink" class="col-sm-2 col-form-label">
+            @LabelPlaceHolderDeviceManualBookLink
+        </label>
+        <div class="col-sm-10">
+            <InputText id="@ForAndIdDeviceManualBookLink" @bind-Value="Device.ManualBookLink" placeholder="@LabelPlaceHolderDeviceManualBookLink" />
+        </div>
+    </div>
+    <input type="submit" class="btn btn-primary" value="Save" />
+</EditForm>
+
+
+
+@code {
+
+    [Parameter]
+    public DeviceProfile? Device { get; set; }
+    [Parameter]
+    public string? DeviceFormSubmittion { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderDeviceName { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceName { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderDeviceProduser { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceProduser { get; set; }   
+    [Parameter]
+    public string? LabelPlaceHolderDeviceType { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceType { get; set; }
+     [Parameter]
+    public string? LabelPlaceHolderDeviceModelNumber { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceModelNumber { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderDeviceSerialNumber { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceSerialNumber { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderDeviceIpAddress { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceIpAddress { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderDeviceMacAddress { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceMacAddress { get; set; }
+    [Parameter]
+    public string? LabelPlaceHolderDeviceManualBookLink { get; set; }
+    [Parameter]
+    public string? ForAndIdDeviceManualBookLink { get; set; }
+
+
+}
