@@ -7,7 +7,7 @@
     <div class="form-group row">
         <label for="devicePurchaseDate" class="col-sm-2 col-form-label">Add Purchase Date</label>
         <div class="col-sm-10">
-            <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="deviceWarranty.PurchaseDate">Add Purchase Date</InputDate>
+            <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="CurrentDevice.DeviceWarranty.PurchaseDate">Add Purchase Date</InputDate>
             <ValidationMessage For="@(() => CurrentDevice.DeviceWarranty.PurchaseDate)" />
         </div>
     </div>

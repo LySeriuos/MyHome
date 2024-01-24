@@ -84,7 +84,7 @@
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
-                    <Button>Edit</Button>
+                    <Button @onclick="() => OnShowModalmodalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
                     <Button>Delete</Button>
                 </div>
             </TemplateColumn>
@@ -173,6 +173,18 @@
             </FooterTemplate>
         </Modal>
     </div>
+    <div class="row">
+        @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
+        <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Device Warranty Details">
+            <BodyTemplate>
+                <AddEditWarrantyDetails CurrentDevice="@currentWarrantyDevice" />
+            </BodyTemplate>
+            <FooterTemplate>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalmodalEditAddDeviceWarrantyClick">Close</Button>
+                <Button Color="ButtonColor.Primary">Save changes</Button>
+            </FooterTemplate>
+        </Modal>
+    </div>
 </div>
 
 
@@ -181,6 +193,7 @@
 
     private RealEstate? realEstate;
     private DeviceProfile currentDevice = new();
+    private DeviceProfile currentWarrantyDevice = new();
     private RealEstate currentRealEstate = new();
 
     bool _showRealEstatesTableVisible = true;
@@ -241,6 +254,19 @@
     private async Task OnHideModalmodalEditAddDeviceClick()
     {
         await modalEditAddDevice.HideAsync();
+    }
+
+    private Modal modalEditAddDeviceWarranty = default!;
+
+    private async Task OnShowModalmodalEditAddDeviceWarrantyClick(int id)
+    {
+        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == id);
+        await modalEditAddDeviceWarranty.ShowAsync();
+    }
+
+    private async Task OnHideModalmodalEditAddDeviceWarrantyClick()
+    {
+        await modalEditAddDeviceWarranty.HideAsync();
     }
 
 }
