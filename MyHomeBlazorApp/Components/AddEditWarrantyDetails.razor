@@ -1,0 +1,44 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+
+<EditForm Model=@CurrentDevice>
+    <div class="form-group row">
+        <label for="devicePurchaseDate" class="col-sm-2 col-form-label">Add Purchase Date</label>
+        <div class="col-sm-10">
+            <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="deviceWarranty.PurchaseDate">Add Purchase Date</InputDate>
+            <ValidationMessage For="@(() => CurrentDevice.DeviceWarranty.PurchaseDate)" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="deviceWarrantyLength" class="col-sm-2 col-form-label">Add warranty lentgh in years</label>
+        <div class="col-sm-10">
+            <InputNumber id="deviceWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.Years">Add warranty lentgh in years</InputNumber>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="linkToReceipt" class="col-sm-2 col-form-label">Add link to purchase receipt</label>
+        <div class="col-sm-10">
+            <InputText id="linkToReceipt" @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink">Add link to purchase receipt</InputText>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="deviceExtendedWarrantyLength" class="col-sm-2 col-form-label">Add extended warranty lentgh in years</label>
+        <div class="col-sm-10">
+            <InputNumber id="deviceExtendedWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.ExtendedWarrantyinYears">Add extended warranty lentgh in years</InputNumber>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="extendedWarrantyLinkToReceipt" class="col-sm-2 col-form-label">Add Extended Warranty link to receipt</label>
+        <div class="col-sm-10">
+            <InputText id="extendedWarrantyLinkToReceipt" @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink">Add Extended Warranty link to receipt</InputText>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public DeviceProfile? CurrentDevice { get; set; }
+}
