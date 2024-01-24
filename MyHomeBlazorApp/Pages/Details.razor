@@ -53,7 +53,7 @@
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
-                    <Button>Edit</Button>
+                    <Button @onclick="() => OnShowModalmodalEditAddDeviceClick(context.DeviceID)">Edit</Button>
                     <Button>Delete</Button>
                 </div>
             </TemplateColumn>
@@ -171,13 +171,23 @@
             </FooterTemplate>
         </Modal>
     </div>
+    <div class="row">
+        @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
+        <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
+            <BodyTemplate>
+                <AddEditDeviceComponent Device="@currentDevice"/>
+                </BodyTemplate>
+            <FooterTemplate>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalmodalEditAddDeviceClick">Close</Button>
+                <Button Color="ButtonColor.Primary">Save changes</Button>
+            </FooterTemplate>
+        </Modal>
+    </div>
 </div>
 
 
 <!--#endregion -->
 @code {
-
-
 
     private RealEstate? realEstate;
     private DeviceProfile currentDevice = new();
@@ -230,16 +240,17 @@
         await modalRealEstate.HideAsync();
     }
 
-    private Modal modalDevice = default!;
+    private Modal modalEditAddDevice = default!;
 
-    private async Task OnShowModalDeviceClick()
+    private async Task OnShowModalmodalEditAddDeviceClick(int id)
     {
-        await modalDevice.ShowAsync();
+        currentDevice = DataService.Devices.First(d => d.DeviceID == id);
+        await modalEditAddDevice.ShowAsync();
     }
 
-    private async Task OnHideModalDeviceClick()
+    private async Task OnHideModalmodalEditAddDeviceClick()
     {
-        await modalDevice.HideAsync();
+        await modalEditAddDevice.HideAsync();
     }
 
 }
