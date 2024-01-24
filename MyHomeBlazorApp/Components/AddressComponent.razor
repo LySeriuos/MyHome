@@ -5,48 +5,48 @@
 
 <EditForm Model="@CurrentObject">
     <div class="form-group row">
-        <label for="@ForAndIdStreetName" class="col-sm-2 col-form-label">
-            @LabelPlaceHolderStreetName
+        <label for="streetName" class="col-sm-2 col-form-label">
+            Street Name
         </label>
         <div class="col-sm-10">
-            <InputText id="@ForAndIdStreetName" class="form-control" placeholder="@LabelPlaceHolderStreetName"
+            <InputText id="streetName" class="form-control" placeholder="Street Name"
                        @bind-Value="@CurrentObject.Address.StreetName" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="@ForAndIdHouseNumber" class="col-sm-2 col-form-label">
-            @LabelPlaceHolderHouseNumber
+        <label for="houseNumber" class="col-sm-2 col-form-label">
+            House Number
         </label>
         <div class="col-sm-10">
-            <InputNumber id="@ForAndIdHouseNumber" class="form-control" placeholder="@LabelPlaceHolderHouseNumber"
+            <InputNumber id="houseNumber" class="form-control" placeholder="House Number"
                          @bind-Value="@CurrentObject.Address.HouseNumber" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="@ForAndIdHouseNumberExtension" class="col-sm-2 col-form-label">
-            @LabelPlaceHolderHouseNumberExtension
+        <label for="houseNumberExtension" class="col-sm-2 col-form-label">
+            House Number Extension
         </label>
         <div class="col-sm-10">
-            <InputText id="@ForAndIdHouseNumberExtension" class="form-control" placeholder="@LabelPlaceHolderHouseNumberExtension"
+            <InputText id="houseNumberExtension" class="form-control" placeholder="House Number Extension"
                        @bind-Value="@CurrentObject.Address.HouseNumberExtension" />
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="@ForAndIdCity" class="col-sm-2 col-form-label">
-            @LabelPlaceHolderCity
+        <label for="city" class="col-sm-2 col-form-label">
+            City
         </label>
         <div class="col-sm-10">
-            <InputText id="@ForAndIdCity" class="form-control" placeholder="@LabelPlaceHolderCity"
+            <InputText id="city" class="form-control" placeholder="City"
                        @bind-Value="@CurrentObject.Address.City" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="@ForAndIdCountry" class="col-sm-2 col-form-label">
-            @LabelPlaceHolderCountry
+        <label for="country" class="col-sm-2 col-form-label">
+            Country
         </label>
         <div class="col-sm-10">
-            <InputText id="@ForAndIdCountry" class="form-control" placeholder="@LabelPlaceHolderCountry"
+            <InputText id="country" class="form-control" placeholder="Country"
                        @bind-Value="@CurrentObject.Address.Country" />
         </div>
     </div>
@@ -59,26 +59,6 @@
 
     [Parameter]
     public RealEstate? CurrentObject { get; set; }
-    [Parameter]
-    public string? ForAndIdStreetName { get; set; }
-    [Parameter]
-    public string? LabelPlaceHolderStreetName { get; set; }
-    [Parameter]
-    public string? ForAndIdHouseNumber { get; set; }
-    [Parameter]
-    public string? LabelPlaceHolderHouseNumber { get; set; }
-    [Parameter]
-    public string? ForAndIdHouseNumberExtension { get; set; }
-    [Parameter]
-    public string? LabelPlaceHolderHouseNumberExtension { get; set; }
-    [Parameter]
-    public string? ForAndIdCity { get; set; }
-    [Parameter]
-    public string? LabelPlaceHolderCity { get; set; }
-    [Parameter]
-    public string? ForAndIdCountry { get; set; }
-    [Parameter]
-    public string? LabelPlaceHolderCountry { get; set; }
 
 
 }

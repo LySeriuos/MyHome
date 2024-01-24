@@ -153,17 +153,7 @@
                         </div>
                     </div>
                 </EditForm>
-                <AddressComponent CurrentObject="@currentRealEstate"
-                                  ForAndIdStreetName="streetName"
-                                  LabelPlaceHolderStreetName="Street Name"
-                                  ForAndIdHouseNumber="houseNumber"
-                                  LabelPlaceHolderHouseNumber="House Number"
-                                  ForAndIdHouseNumberExtension="houseNumberExtension"
-                                  LabelPlaceHolderHouseNumberExtension="House Number Extension"
-                                  ForAndIdCity="city"
-                                  LabelPlaceHolderCity="City"
-                                  ForAndIdCountry="country"
-                                  LabelPlaceHolderCountry="Country" />
+                <AddressComponent CurrentObject="@currentRealEstate"/>
             </BodyTemplate>
             <FooterTemplate>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
