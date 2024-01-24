@@ -53,7 +53,7 @@
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
-                    <Button @onclick="() => OnShowModalmodalEditAddDeviceClick(context.DeviceID)">Edit</Button>
+                    <Button @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
                     <Button>Delete</Button>
                 </div>
             </TemplateColumn>
@@ -84,7 +84,7 @@
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
-                    <Button @onclick="() => OnShowModalmodalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
+                    <Button @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
                     <Button>Delete</Button>
                 </div>
             </TemplateColumn>
@@ -168,7 +168,7 @@
                 <AddEditDeviceComponent Device="@currentDevice"/>
                 </BodyTemplate>
             <FooterTemplate>
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalmodalEditAddDeviceClick">Close</Button>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
             </FooterTemplate>
         </Modal>
@@ -180,7 +180,7 @@
                 <AddEditWarrantyDetails CurrentDevice="@currentWarrantyDevice" />
             </BodyTemplate>
             <FooterTemplate>
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalmodalEditAddDeviceWarrantyClick">Close</Button>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
             </FooterTemplate>
         </Modal>
@@ -245,26 +245,26 @@
 
     private Modal modalEditAddDevice = default!;
 
-    private async Task OnShowModalmodalEditAddDeviceClick(int id)
+    private async Task OnShowModalEditAddDeviceClick(int id)
     {
         currentDevice = DataService.Devices.First(d => d.DeviceID == id);
         await modalEditAddDevice.ShowAsync();
     }
 
-    private async Task OnHideModalmodalEditAddDeviceClick()
+    private async Task OnHideModalEditAddDeviceClick()
     {
         await modalEditAddDevice.HideAsync();
     }
 
     private Modal modalEditAddDeviceWarranty = default!;
 
-    private async Task OnShowModalmodalEditAddDeviceWarrantyClick(int id)
+    private async Task OnShowModalEditAddDeviceWarrantyClick(int id)
     {
         currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == id);
         await modalEditAddDeviceWarranty.ShowAsync();
     }
 
-    private async Task OnHideModalmodalEditAddDeviceWarrantyClick()
+    private async Task OnHideModalEditAddDeviceWarrantyClick()
     {
         await modalEditAddDeviceWarranty.HideAsync();
     }
