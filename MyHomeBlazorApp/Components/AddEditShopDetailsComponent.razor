@@ -1,0 +1,31 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+
+<EditForm Model=@CurrentShop>
+    <div class="form-group row">
+        <label for="shopName" class="col-sm-2 col-form-label">Shop Name</label>
+        <div class="col-sm-10">
+            <InputText id="shopName" @bind-Value="CurrentShop.ShopName">Shop Name</InputText>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="shopWebAdrress" class="col-sm-2 col-form-label">Shop Web Adrress</label>
+        <div class="col-sm-10">
+            <InputText id="shopWebAdrress" @bind-Value="CurrentShop.ShopWebAddress">Shop Phone Number</InputText>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="shopPhoneNumber" class="col-sm-2 col-form-label">Shop Phone Number</label>
+        <div class="col-sm-10">
+            <InputNumber id="shopPhoneNumber" @bind-Value="CurrentShop.PhoneNumber">Shop Phone Number</InputNumber>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public Shop? CurrentShop { get; set; }
+}
