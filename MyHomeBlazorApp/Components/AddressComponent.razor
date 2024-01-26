@@ -3,14 +3,14 @@
 @using MyHome.Models
 
 
-<EditForm Model="@CurrentObject">
+<EditForm Model="@CurrentObjectAddress">
     <div class="form-group row">
         <label for="streetName" class="col-sm-2 col-form-label">
             Street Name
         </label>
         <div class="col-sm-10">
             <InputText id="streetName" class="form-control" placeholder="Street Name"
-                       @bind-Value="@CurrentObject.Address.StreetName" />
+                       @bind-Value="@CurrentObjectAddress.StreetName" />
         </div>
     </div>
     <div class="form-group row">
@@ -19,7 +19,7 @@
         </label>
         <div class="col-sm-10">
             <InputNumber id="houseNumber" class="form-control" placeholder="House Number"
-                         @bind-Value="@CurrentObject.Address.HouseNumber" />
+                         @bind-Value="@CurrentObjectAddress.HouseNumber" />
         </div>
     </div>
     <div class="form-group row">
@@ -28,7 +28,7 @@
         </label>
         <div class="col-sm-10">
             <InputText id="houseNumberExtension" class="form-control" placeholder="House Number Extension"
-                       @bind-Value="@CurrentObject.Address.HouseNumberExtension" />
+                       @bind-Value="@CurrentObjectAddress.HouseNumberExtension" />
         </div>
     </div>
 
@@ -38,7 +38,7 @@
         </label>
         <div class="col-sm-10">
             <InputText id="city" class="form-control" placeholder="City"
-                       @bind-Value="@CurrentObject.Address.City" />
+                       @bind-Value="@CurrentObjectAddress.City" />
         </div>
     </div>
     <div class="form-group row">
@@ -47,7 +47,7 @@
         </label>
         <div class="col-sm-10">
             <InputText id="country" class="form-control" placeholder="Country"
-                       @bind-Value="@CurrentObject.Address.Country" />
+                       @bind-Value="@CurrentObjectAddress.Country" />
         </div>
     </div>
 </EditForm>
@@ -55,10 +55,8 @@
 
 @code {
 
-    Address? Address = new Address();
-
     [Parameter]
-    public RealEstate? CurrentObject { get; set; }
-
+    public Address? CurrentObjectAddress { get; set; }
+    
 
 }

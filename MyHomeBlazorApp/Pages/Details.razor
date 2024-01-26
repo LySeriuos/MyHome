@@ -153,7 +153,7 @@
                         </div>
                     </div>
                 </EditForm>
-                <AddressComponent CurrentObject="@currentRealEstate"/>
+                <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" />
             </BodyTemplate>
             <FooterTemplate>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
@@ -190,6 +190,8 @@
         <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
             <BodyTemplate>
                 <AddEditShopDetailsComponent CurrentDevice="@currentShopDetails" />
+                <AddressComponent CurrentObjectAddress="@shopAddress" />
+                
             </BodyTemplate>
             <FooterTemplate>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
@@ -204,10 +206,12 @@
 @code {
 
     private RealEstate? realEstate;
+    private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
     private DeviceProfile currentWarrantyDevice = new();
     private DeviceProfile currentShopDetails = new();
     private RealEstate currentRealEstate = new();
+    private Address shopAddress = new();
 
     bool _showRealEstatesTableVisible = true;
     bool _showDevicesTableVisible = false;
@@ -248,6 +252,7 @@
     private async Task OnShowModalRealEstateClick(int id)
     {
         currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
+        currentRealEstateAddress = currentRealEstate.Address;
         await modalRealEstate.ShowAsync();
     }
 
@@ -287,6 +292,7 @@
     private async Task OnShowModalEditAddShopClick(int id)
     {
         currentShopDetails = DataService.Devices.First(d => d.DeviceID == id);
+        shopAddress = currentShopDetails.DeviceWarranty.Shop.Address;
         await modalEditAddShopDetails.ShowAsync();
     }
 
