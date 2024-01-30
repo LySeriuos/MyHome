@@ -156,6 +156,14 @@
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" />
             </BodyTemplate>
             <FooterTemplate>
+                @if (currentRealEstate.RealEstateID == DataService.RealEstates.Count)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
+                } 
+                else 
+                {                
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
+                }
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
             </FooterTemplate>
@@ -165,8 +173,8 @@
         @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
         <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
             <BodyTemplate>
-                <AddEditDeviceComponent Device="@currentDevice"/>
-                </BodyTemplate>
+                <AddEditDeviceComponent Device="@currentDevice" />
+            </BodyTemplate>
             <FooterTemplate>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
@@ -191,7 +199,7 @@
             <BodyTemplate>
                 <AddEditShopDetailsComponent CurrentDevice="@currentShopDetails" />
                 <AddressComponent CurrentObjectAddress="@shopAddress" />
-                
+
             </BodyTemplate>
             <FooterTemplate>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
@@ -299,6 +307,18 @@
     private async Task OnHideModalEditAddShopClick()
     {
         await modalEditAddShopDetails.HideAsync();
+    }
+
+    private async Task OnModalDeviceNext()
+    {
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
+        currentRealEstateAddress = currentRealEstate.Address;
+    }
+
+    private async Task OnModalDevicePreviuos()
+    {
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID - 1);
+        currentRealEstateAddress = currentRealEstate.Address;
     }
 
 }
