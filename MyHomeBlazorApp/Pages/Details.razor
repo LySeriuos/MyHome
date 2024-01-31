@@ -192,11 +192,20 @@
     </div>
     <div class="row">
         @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
-        <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Device Warranty Details">
+        <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
             <BodyTemplate>
                 <AddEditWarrantyDetails CurrentDevice="@currentWarrantyDevice" />
             </BodyTemplate>
             <FooterTemplate>
+                @if (currentWarrantyDevice.DeviceID != DataService.Devices.First().DeviceID)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceWarrantyPreviuos">Previuos</Button>
+                }
+
+                @if (currentWarrantyDevice.DeviceID != DataService.Devices.Last().DeviceID)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceWarrantyNext">Next</Button>
+                }
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
             </FooterTemplate>
@@ -208,9 +217,17 @@
             <BodyTemplate>
                 <AddEditShopDetailsComponent CurrentDevice="@currentShopDetails" />
                 <AddressComponent CurrentObjectAddress="@shopAddress" />
-
             </BodyTemplate>
             <FooterTemplate>
+                @if (currentShopDetails.DeviceID != DataService.Devices.First().DeviceID)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceShopPreviuos">Previuos</Button>
+                }
+
+                @if (currentShopDetails.DeviceID != DataService.Devices.Last().DeviceID)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceShopNext">Next</Button>
+                }
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
             </FooterTemplate>
@@ -221,7 +238,6 @@
 
 <!--#endregion -->
 @code {
-
     private RealEstate? realEstate;
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
@@ -229,7 +245,7 @@
     private DeviceProfile currentShopDetails = new();
     private RealEstate currentRealEstate = new();
     private Address shopAddress = new();    
-    
+
     bool _showRealEstatesTableVisible = true;
     bool _showDevicesTableVisible = false;
     bool _showWarrantiesTableVisible = false;
@@ -333,11 +349,34 @@
     private async Task OnModalDeviceNext()
     {
         currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+         
     }
 
     private async Task OnModalDevicePreviuos()
     {
         currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
     }
+
+    private async Task OnModalDeviceWarrantyNext()
+    {
+        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID + 1);
+    }
+
+    private async Task OnModalDeviceWarrantyPreviuos()
+    {
+        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID - 1);
+    }
+
+    private async Task OnModalDeviceShopNext()
+    {
+        currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID + 1);
+    }
+
+    private async Task OnModalDeviceShopPreviuos()
+    {
+        currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID - 1);
+    }
+
+
 
 }
