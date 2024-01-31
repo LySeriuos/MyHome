@@ -175,8 +175,7 @@
             <BodyTemplate>
                 <AddEditDeviceComponent Device="@currentDevice" />
             </BodyTemplate>
-            <FooterTemplate>
-                @* here could be better code,maybe with a bool *@
+            <FooterTemplate>               
                 @if (currentDevice.DeviceID != DataService.Devices.First().DeviceID)
                 {
                     <Button Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
