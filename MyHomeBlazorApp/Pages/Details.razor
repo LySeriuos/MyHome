@@ -1,4 +1,6 @@
-﻿@page "/details"
+﻿@page "/details/{Tab:int}"
+@page "/details"
+
 
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using MyHome.Models;
@@ -25,7 +27,7 @@
 <div class="row">
     @if (_showRealEstatesTableVisible)
     {
-        <QuickGrid Items="@DataService.RealEstates.AsQueryable()">
+        <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -49,7 +51,7 @@
 <div class="row">
     @if (_showDevicesTableVisible)
     {
-        <QuickGrid Items="@DataService.Devices.AsQueryable()">
+        <QuickGrid tabindex="2" Items="@DataService.Devices.AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -80,7 +82,7 @@
 <div class="row">
     @if (_showWarrantiesTableVisible)
     {
-        <QuickGrid Items="@DataService.Devices.AsQueryable()">
+        <QuickGrid tabindex="3" Items="@DataService.Devices.AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -112,7 +114,7 @@
 <div class="row">
     @if (_showShopsTableVisible)
     {
-        <QuickGrid Items="@DataService.Devices.AsQueryable()">
+        <QuickGrid tabindex="4"  Items="@DataService.Devices.AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -211,6 +213,8 @@
             </FooterTemplate>
         </Modal>
     </div>
+
+    
     <div class="row">
         @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
         <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
@@ -238,6 +242,9 @@
 
 <!--#endregion -->
 @code {
+    [Parameter]
+    public int Tab {get;set;}
+
     private RealEstate? realEstate;
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
@@ -278,6 +285,28 @@
         _showRealEstatesTableVisible = false;
         _showDevicesTableVisible = false;
         _showWarrantiesTableVisible = false;
+    }
+
+    private string? message;
+    protected override void OnParametersSet()
+    {
+        if (Tab == 1)
+        {
+            _showRealEstatesTableVisible = false;
+            ShowRealEstatesTable();
+        }
+        else if(Tab == 2)
+        {
+            ShowDevicesTable();
+        }
+        else if (Tab == 3)
+        {
+            ShowWarrantiesTable();
+        }
+        else
+        {
+            message = "There is no option";
+        }
     }
 
     private Modal modalRealEstate = default!;
