@@ -135,6 +135,29 @@ namespace MyHome
         }
 
         /// <summary>
+        /// Method to delete Device fromthe List
+        /// </summary>
+        /// <param name="deviceID">context Device ID</param>
+        /// <param name="user">Current User</param>
+        /// <returns>bool if it was removed true if not false</returns>
+        public static bool RemoveDevice(int deviceID, UserProfile user)
+        {
+            bool deviceHasBeenRemoved = false;
+            List<DeviceProfile> devices = user.GetAllDevices();
+            DeviceProfile foundDevice = devices.Where(d => d.DeviceID == deviceID).FirstOrDefault();
+            devices.Remove(foundDevice);
+            if (foundDevice != null)
+            {
+                deviceHasBeenRemoved = true;
+            }
+            else
+            {
+                deviceHasBeenRemoved = false;
+            }
+            return deviceHasBeenRemoved;
+        }
+
+        /// <summary>
         /// Method to get DeviceProfile by ID
         /// </summary>
         /// <param name="searchID">get device with this ID</param>
