@@ -1,0 +1,28 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+<Modal @ref="@Ref" Title="Are you sure you want to Delete this?">
+    <BodyTemplate>        
+        <Button @onclick="@Function">Yes</Button>
+        <Button >Cancel</Button>
+    </BodyTemplate>
+    <FooterTemplate>
+        <p>@CurrentObject @CurrentObjectName @CurrentObjectID</p>
+    </FooterTemplate>
+</Modal>
+
+@code {
+    [Parameter]
+    public Modal? Ref { get; set; }
+    [Parameter]
+    public EventCallback Function { get; set; }
+    [Parameter]
+    public Object? CurrentObject { get; set; }
+    [Parameter]
+    public string? CurrentObjectName { get; set; }
+    [Parameter]
+    public int? CurrentObjectID { get; set; }
+
+
+}
