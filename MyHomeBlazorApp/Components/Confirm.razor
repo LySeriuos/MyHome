@@ -1,0 +1,19 @@
+﻿@inherits ConfirmBase
+
+@if (ShowConfirmation)
+{
+    <Modal Title="@ConfirmationTitle" ShowCloseButton>
+     <BodyTemplate>
+         @ConfirmationMessage
+     </BodyTemplate>
+     <FooterTemplate>
+            <Button @onclick="() => OnConfirmationChange(false) ">Cancel</Button>
+            <Button @onclick="() => OnConfirmationChange(true)">Delete</Button>
+        </FooterTemplate>
+    </Modal>
+}
+
+@code {
+    [Parameter]
+    public bool ShowCloseButton { get; set; } = OnConfirmationChange(false)
+}
