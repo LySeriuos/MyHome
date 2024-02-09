@@ -177,12 +177,12 @@
             <BodyTemplate>
                 <AddEditDeviceComponent Device="@currentDevice" />
             </BodyTemplate>
-            <FooterTemplate>               
+            <FooterTemplate>
                 @if (currentDevice.DeviceID != DataService.Devices.First().DeviceID)
                 {
                     <Button Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
                 }
-                    
+
                 @if (currentDevice.DeviceID != DataService.Devices.Last().DeviceID)
                 {
                     <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
@@ -214,7 +214,7 @@
         </Modal>
     </div>
 
-    
+
     <div class="row">
         @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
         <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
@@ -251,7 +251,7 @@
     private DeviceProfile currentWarrantyDevice = new();
     private DeviceProfile currentShopDetails = new();
     private RealEstate currentRealEstate = new();
-    private Address shopAddress = new();    
+    private Address shopAddress = new();
 
     bool _showRealEstatesTableVisible = true;
     bool _showDevicesTableVisible = false;
@@ -378,7 +378,7 @@
     private async Task OnModalDeviceNext()
     {
         currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-         
+
     }
 
     private async Task OnModalDevicePreviuos()
