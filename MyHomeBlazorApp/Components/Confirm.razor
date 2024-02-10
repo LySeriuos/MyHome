@@ -1,4 +1,5 @@
-﻿@inherits ConfirmationBase
+﻿
+@inherits ConfirmationBase
 
 @if (ShowConfirmation)
 {
@@ -14,6 +15,6 @@
 }
 
 @code {
-    [Parameter]
-    public bool ShowCloseButton { get; set; } = OnConfirmationChange(false)
+    // [Parameter]
+    // public bool ShowCloseButton { get; set; } = OnConfirmationChange(false);
 }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
-namespace MyHomeBlazorApp.BlazorData
+namespace MyHomeBlazorApp.Components
 {
-    public class ConfirmationBase: ComponentBase
+
+    public class ConfirmationBase : ComponentBase
     {
         protected bool ShowConfirmation { get; set; }
 
