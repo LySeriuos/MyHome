@@ -140,21 +140,20 @@ namespace MyHome
         /// <param name="deviceID">context Device ID</param>
         /// <param name="user">Current User</param>
         /// <returns>bool if it was removed true if not false</returns>
-        public static bool RemoveDevice(int deviceID, UserProfile user)
+        public static void RemoveDevice(int deviceID, UserProfile user)
         {
-            bool deviceHasBeenRemoved = false;
             List<DeviceProfile> devices = user.GetAllDevices();
             DeviceProfile foundDevice = devices.Where(d => d.DeviceID == deviceID).FirstOrDefault();
             devices.Remove(foundDevice);
-            if (foundDevice != null)
-            {
-                deviceHasBeenRemoved = true;
-            }
-            else
-            {
-                deviceHasBeenRemoved = false;
-            }
-            return deviceHasBeenRemoved;
+            devices = user.GetAllDevices();
+        }
+
+        public static async void RemoveRealEstate(RealEstate realEstateToDelete, UserProfile user)
+        {
+            RealEstate realEstate = realEstateToDelete;
+            List<RealEstate> realEstates = user.RealEstates;
+            realEstates.Remove(realEstate);
+            
         }
 
         /// <summary>

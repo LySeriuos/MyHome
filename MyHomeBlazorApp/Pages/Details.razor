@@ -32,7 +32,7 @@
             <TemplateColumn>
                 <div>
                     <Button @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
-                    <Button>Delete</Button>
+                    <Button @onclick="() => OnShowModalDeleteRealEstate(context.RealEstateID)">Delete</Button>
                 </div>
             </TemplateColumn>
             <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
@@ -114,7 +114,7 @@
 <div class="row">
     @if (_showShopsTableVisible)
     {
-        <QuickGrid tabindex="4"  Items="@DataService.Devices.AsQueryable()">
+        <QuickGrid tabindex="4" Items="@DataService.Devices.AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -238,25 +238,93 @@
         </Modal>
     </div>
 </div>
+<div>
+    <Modal @ref="modalRealEstateDelete" Title="Confirm Delete" ShowCloseButton>
+        <BodyTemplate>
+            <p>Are you sure you want to delete @currentRealEstate.RealEstateName?</p>
+        </BodyTemplate>
+        <FooterTemplate>
+            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete</Button>
+            <Button @onclick="()=> OnHideModalCloseClick()">Cancel</Button>
+        </FooterTemplate>
+    </Modal>
+</div>
+
 
 
 <!--#endregion -->
 @code {
     [Parameter]
-    public int Tab {get;set;}
+    public int Tab { get; set; }
 
+    private const string V = "Details";
     private RealEstate? realEstate;
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
     private DeviceProfile currentWarrantyDevice = new();
     private DeviceProfile currentShopDetails = new();
     private RealEstate currentRealEstate = new();
+    private UserProfile currentUser = new();
     private Address shopAddress = new();
 
+    bool _pageReaload = true;
+    bool _confirmDeletion = false;
     bool _showRealEstatesTableVisible = true;
     bool _showDevicesTableVisible = false;
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
+    private static readonly string _path = @"C:\Temp\usersListTestData111.xml";
+    List<UserProfile> _users = new();
+    // protected ConfirmationBase? DeleteConfirmation { get; set; }
+    // private Confirm DeleteConfirmation = default!;
+    // private async Task Delete_Click(RealEstate realEstateToDelete)
+    // {
+    //     currentRealEstate = realEstateToDelete;
+    //     DeleteConfirmation.ShowAsync();
+    // }
+
+    
+
+    private async Task DeleteRealEstate_Click(bool _confirmDeletion)
+    {
+        if (_confirmDeletion == true)
+        {
+            _users = Data.GetUsersListFromXml(_path);
+            UserProfile? currentUser = _users.FirstOrDefault(u => u.UserID == DataService.CurrentUser.UserID);
+            if (currentUser != null)
+            {
+
+                RealEstate? realEstateToDelete = currentUser.RealEstates.FirstOrDefault(r => r.RealEstateID == currentRealEstate.RealEstateID);
+                Logic.RemoveRealEstate(realEstateToDelete, currentUser);
+                Data.SaveUsersListToXml(_users, _path);
+                _users = Data.GetUsersListFromXml(_path);
+                
+            }
+            
+            await OnHideModalCloseClick();
+
+        }
+        else
+        {
+            await OnHideModalCloseClick();
+        }
+    }
+
+
+    private Modal modalRealEstateDelete = default!;
+
+    private async Task OnShowModalDeleteRealEstate(int id)
+    {
+        currentUser = DataService.CurrentUser;
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
+        await modalRealEstateDelete.ShowAsync();
+    }
+
+    private async Task OnHideModalCloseClick()
+    {
+        await modalRealEstateDelete.HideAsync();
+    }
+
 
     private void ShowRealEstatesTable()
     {
@@ -295,7 +363,7 @@
             _showRealEstatesTableVisible = false;
             ShowRealEstatesTable();
         }
-        else if(Tab == 2)
+        else if (Tab == 2)
         {
             ShowDevicesTable();
         }
@@ -327,6 +395,7 @@
 
     private async Task OnShowModalEditAddDeviceClick(int id)
     {
+
         currentDevice = DataService.Devices.First(d => d.DeviceID == id);
         await modalEditAddDevice.ShowAsync();
     }

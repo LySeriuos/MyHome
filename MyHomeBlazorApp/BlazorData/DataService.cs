@@ -45,7 +45,7 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate GetRealEstate(int id)
         {
             RealEstate rE = new RealEstate();
-            rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == id);
+            rE = RealEstates.FirstOrDefault(RealEstates => RealEstates.RealEstateID == id);
             return rE;
         }
 
@@ -117,7 +117,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile GetDeviceById(int id)
         {
             DeviceProfile device = new DeviceProfile();
-            device = Devices.First(Device => Device.DeviceID == id);
+            device = Devices.FirstOrDefault(Device => Device.DeviceID == id);
             return device;
         }
 

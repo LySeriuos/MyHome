@@ -14,7 +14,7 @@ namespace MyHomeBlazorApp.Components
         [Parameter]
         public string ConfirmationMessage { get; set; } = "Are you sure you want to delete this";
 
-        public void Show()
+        public void ShowAsync()
         {
             ShowConfirmation = true;
             StateHasChanged();
