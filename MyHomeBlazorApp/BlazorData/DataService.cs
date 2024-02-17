@@ -168,6 +168,14 @@ namespace MyHomeBlazorApp.BlazorData
             return lastRealEstate;
         }
 
+        public void RemoveRealEstate(int id)
+        {
+            RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == id);
+            RealEstates.Remove(realEstateToDelete);
+            Data.SaveUsersListToXml(_users, _path);           
+            _users = Data.GetUsersListFromXml(_path);
+        }
+
         public string GetExpiringDevice()
         {
             DeviceProfile expiringWarranty = FirstExpiringDevice;
@@ -181,6 +189,8 @@ namespace MyHomeBlazorApp.BlazorData
         public DataService()
         {
             _users = Data.GetUsersListFromXml(_path);
+            // is it good practise to do like this?
+            Users = _users;
             // manually assigned test data
             int userId = 2;
             int realEstateID = 1;
@@ -188,7 +198,7 @@ namespace MyHomeBlazorApp.BlazorData
             CurrentUser = GetUser(userId);
             RealEstates = CurrentUser.RealEstates;
             CurrentRealEstate = GetRealEstate(realEstateID);
-            //List<DeviceProfile> _devices = currentUser.GetAllDevices();            
+            //List<DeviceProfile> _devices = currentUser.GetAllDevices();
             Devices = Logic.GetAllUserDevices(CurrentUser);
             Device = LastAddedDevice();
             CurrentDevice = GetDeviceById(deviceId);

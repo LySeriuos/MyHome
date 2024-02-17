@@ -274,42 +274,36 @@
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
     private static readonly string _path = @"C:\Temp\usersListTestData111.xml";
-    List<UserProfile> _users = new();
-    // protected ConfirmationBase? DeleteConfirmation { get; set; }
-    // private Confirm DeleteConfirmation = default!;
-    // private async Task Delete_Click(RealEstate realEstateToDelete)
-    // {
-    //     currentRealEstate = realEstateToDelete;
-    //     DeleteConfirmation.ShowAsync();
-    // }
 
-    
 
     private async Task DeleteRealEstate_Click(bool _confirmDeletion)
     {
         if (_confirmDeletion == true)
         {
-            _users = Data.GetUsersListFromXml(_path);
-            UserProfile? currentUser = _users.FirstOrDefault(u => u.UserID == DataService.CurrentUser.UserID);
-            if (currentUser != null)
+            // manualy assigned value!
+            UserProfile? currentUser = DataService.CurrentUser;
+            RealEstate? realEstateToDelete = new();
+            if (currentUser == null)
             {
-
-                RealEstate? realEstateToDelete = currentUser.RealEstates.FirstOrDefault(r => r.RealEstateID == currentRealEstate.RealEstateID);
-                Logic.RemoveRealEstate(realEstateToDelete, currentUser);
-                Data.SaveUsersListToXml(_users, _path);
-                _users = Data.GetUsersListFromXml(_path);
-                
+                // should be message that realEstate doesn't exist.
+                return;
             }
-            
-            await OnHideModalCloseClick();
+            else
+            {
+                realEstateToDelete = currentUser.RealEstates.FirstOrDefault(r => r.RealEstateID == currentRealEstate.RealEstateID);
+            }
 
+            if (realEstateToDelete == null)
+            {
+                return;
+            }
+            else
+            {
+                DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);                
+            }            
         }
-        else
-        {
-            await OnHideModalCloseClick();
-        }
+        await OnHideModalCloseClick();
     }
-
 
     private Modal modalRealEstateDelete = default!;
 
