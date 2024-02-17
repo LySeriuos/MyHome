@@ -301,10 +301,10 @@
 
     private Modal modalRealEstateDelete = default!;
 
-    private async Task OnShowModalDeleteRealEstate(int id)
+    private async Task OnShowModalDeleteRealEstate(int currentRealEstateID)
     {
         currentUser = DataService.CurrentUser;
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstateID);
         await modalRealEstateDelete.ShowAsync();
     }
 
