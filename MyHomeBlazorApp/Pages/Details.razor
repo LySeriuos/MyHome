@@ -257,8 +257,6 @@
     [Parameter]
     public int Tab { get; set; }
 
-    private const string V = "Details";
-    private RealEstate? realEstate;
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
     private DeviceProfile currentWarrantyDevice = new();
@@ -267,14 +265,10 @@
     private UserProfile currentUser = new();
     private Address shopAddress = new();
 
-    bool _pageReaload = true;
-    bool _confirmDeletion = false;
     bool _showRealEstatesTableVisible = true;
     bool _showDevicesTableVisible = false;
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
-    private static readonly string _path = @"C:\Temp\usersListTestData111.xml";
-
 
     private async Task DeleteRealEstate_Click(bool _confirmDeletion)
     {
@@ -318,7 +312,6 @@
     {
         await modalRealEstateDelete.HideAsync();
     }
-
 
     private void ShowRealEstatesTable()
     {
@@ -389,7 +382,6 @@
 
     private async Task OnShowModalEditAddDeviceClick(int id)
     {
-
         currentDevice = DataService.Devices.First(d => d.DeviceID == id);
         await modalEditAddDevice.ShowAsync();
     }
@@ -441,7 +433,6 @@
     private async Task OnModalDeviceNext()
     {
         currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-
     }
 
     private async Task OnModalDevicePreviuos()

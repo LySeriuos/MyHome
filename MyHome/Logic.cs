@@ -148,14 +148,6 @@ namespace MyHome
             devices = user.GetAllDevices();
         }
 
-        public static async void RemoveRealEstate(RealEstate realEstateToDelete, UserProfile user)
-        {
-            RealEstate realEstate = realEstateToDelete;
-            List<RealEstate> realEstates = user.RealEstates;
-            realEstates.Remove(realEstate);
-            
-        }
-
         /// <summary>
         /// Method to get DeviceProfile by ID
         /// </summary>
