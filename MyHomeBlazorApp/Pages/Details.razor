@@ -239,14 +239,43 @@
     </div>
 </div>
 <div>
-    <Modal @ref="modalRealEstateDelete" Title="Confirm Delete" ShowCloseButton>
+    <Modal @ref="modalRealEstateDelete" Title="Delete Confirm" ShowCloseButton>
         <BodyTemplate>
-            <p>Are you sure you want to delete @currentRealEstate.RealEstateName?</p>
+            <p class="text-danger">Attention! If you will delete this RealEsatate it´s devices will be removed too!</p>
+            <p>Are you sure you want to delete @currentRealEstate.RealEstateName together with Devices?</p>
+            @* <p>Two options for Devices: </p> *@
+            @* <div class="row">
+            <Button>Move Devices</Button>
+            </div>
+            <div class="row">
+            <Button>Keep Unassigned</Button>
+            </div> *@
         </BodyTemplate>
         <FooterTemplate>
+            <Button>Reassign Devices</Button>
             <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete</Button>
             <Button @onclick="()=> OnHideModalCloseClick()">Cancel</Button>
         </FooterTemplate>
+    </Modal>
+</div>
+<div>
+    <Modal Title="Devices reassigning Item">
+        <BodyTemplate>
+            <p>Choose RealEstate to move your devices:</p>
+            <Dropdown>
+                <DropdownToggleButton>
+                    RealEstates
+                </DropdownToggleButton>
+                <DropdownMenu>
+                   @*  @foreach (RealEstate r in currentUser.RealEstates)
+                    {
+                        RealEstate re = r;
+                        <DropdownItem>re.RealEstateName </DropdownItem>
+                        <DropdownDivider />
+                    } *@
+                </DropdownMenu>
+            </Dropdown>
+        </BodyTemplate>
     </Modal>
 </div>
 
@@ -293,8 +322,8 @@
             }
             else
             {
-                DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);                
-            }            
+                DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
+            }
         }
         await OnHideModalCloseClick();
     }
