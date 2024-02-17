@@ -168,9 +168,9 @@ namespace MyHomeBlazorApp.BlazorData
             return lastRealEstate;
         }
 
-        public void RemoveRealEstate(int id)
+        public void RemoveRealEstate(int contextChosedRealEstateID)
         {
-            RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == id);
+            RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
             RealEstates.Remove(realEstateToDelete);
             Data.SaveUsersListToXml(_users, _path);           
             _users = Data.GetUsersListFromXml(_path);
