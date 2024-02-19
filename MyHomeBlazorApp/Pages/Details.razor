@@ -252,29 +252,38 @@
             </div> *@
         </BodyTemplate>
         <FooterTemplate>
-            <Button>Reassign Devices</Button>
-            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete</Button>
+            <Button @onclick="()=> OnShowModalReasignDevices(currentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
+            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete With Devices</Button>
             <Button @onclick="()=> OnHideModalCloseClick()">Cancel</Button>
         </FooterTemplate>
     </Modal>
 </div>
 <div>
-    <Modal Title="Devices reassigning Item">
+    <Modal @ref="modalReasignDevices" Title="Devices Reassigning">
         <BodyTemplate>
-            <p>Choose RealEstate to move your devices:</p>
+            <p>Choose Real Estate to move your devices:</p>
             <Dropdown>
                 <DropdownToggleButton>
-                    RealEstates
+                    Real Estates
                 </DropdownToggleButton>
                 <DropdownMenu>
-                   @*  @foreach (RealEstate r in currentUser.RealEstates)
+                    @foreach (RealEstate r in currentUser.RealEstates)
                     {
-                        RealEstate re = r;
-                        <DropdownItem>re.RealEstateName </DropdownItem>
-                        <DropdownDivider />
-                    } *@
+                        if (r.RealEstateID == currentRealEstate.RealEstateID)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            <DropdownItem>@r.RealEstateName
+                            </DropdownItem>
+                            <DropdownDivider />
+                        }
+                    }
                 </DropdownMenu>
-            </Dropdown>
+            </Dropdown>            
+            <Button>Save</Button>
+            <Button>Cancel</Button>
         </BodyTemplate>
     </Modal>
 </div>
@@ -299,6 +308,18 @@
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
 
+    private Modal modalReasignDevices = default!;
+
+    private async Task OnShowModalReasignDevices(int currentRealEstateID)
+    {       
+        await modalReasignDevices.ShowAsync();
+    }
+
+    private async Task OnShowModalReasignDevicesClose()
+    {
+        await modalReasignDevices.HideAsync();
+    }
+
     private async Task DeleteRealEstate_Click(bool _confirmDeletion)
     {
         if (_confirmDeletion == true)
@@ -312,7 +333,7 @@
                 return;
             }
             else
-            {
+            {                
                 realEstateToDelete = currentUser.RealEstates.FirstOrDefault(r => r.RealEstateID == currentRealEstate.RealEstateID);
             }
 
@@ -322,6 +343,7 @@
             }
             else
             {
+                
                 DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
             }
         }
