@@ -251,7 +251,7 @@
             <Button>Keep Unassigned</Button>
             </div> *@
         </BodyTemplate>
-        <FooterTemplate>
+        <FooterTemplate>            
             <Button @onclick="()=> OnShowModalReasignDevices(currentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
             <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete With Devices</Button>
             <Button @onclick="()=> OnHideModalCloseClick()">Cancel</Button>
@@ -277,7 +277,8 @@
 
             </select>            
             <p>@SelectedRealEstateName</p>
-            <Button>Save</Button>
+            <Button>Keep Devices Unassigned</Button>
+            <Button>Move Devices</Button>
             <Button>Cancel</Button>
         </BodyTemplate>
     </Modal>
