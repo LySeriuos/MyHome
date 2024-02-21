@@ -262,26 +262,21 @@
     <Modal @ref="modalReasignDevices" Title="Devices Reassigning">
         <BodyTemplate>
             <p>Choose Real Estate to move your devices:</p>
-            <Dropdown>
-                <DropdownToggleButton>
-                    Real Estates
-                </DropdownToggleButton>
-                <DropdownMenu>
-                    @foreach (RealEstate r in currentUser.RealEstates)
+            <select class="form-control" @bind="@SelectedRealEstateName" >
+                @foreach (RealEstate r in currentUser.RealEstates)
+                {
+                    if (r.RealEstateID != currentRealEstate.RealEstateID)
                     {
-                        if (r.RealEstateID == currentRealEstate.RealEstateID)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            <DropdownItem>@r.RealEstateName
-                            </DropdownItem>
-                            <DropdownDivider />
-                        }
+                        <option value="@r.RealEstateID"> @r.RealEstateName </option>                        
                     }
-                </DropdownMenu>
-            </Dropdown>            
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+            </select>            
+            <p>@SelectedRealEstateName</p>
             <Button>Save</Button>
             <Button>Cancel</Button>
         </BodyTemplate>
@@ -294,7 +289,16 @@
 @code {
     [Parameter]
     public int Tab { get; set; }
+    
 
+    [Parameter]
+    public string? SelectedRealEstateName
+    {
+        get => selectedRealEstateID;
+        set { selectedRealEstateID = value; }
+    }
+    private string? selectedRealEstateID;
+    private RealEstate currentRealEstateToChoose = new();
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
     private DeviceProfile currentWarrantyDevice = new();
@@ -308,10 +312,16 @@
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
 
+    public static void GetTheValue(int id)
+    {
+        int selectedRealEstate = new();
+        selectedRealEstate = id;
+    }
+
     private Modal modalReasignDevices = default!;
 
     private async Task OnShowModalReasignDevices(int currentRealEstateID)
-    {       
+    {
         await modalReasignDevices.ShowAsync();
     }
 
@@ -333,7 +343,7 @@
                 return;
             }
             else
-            {                
+            {
                 realEstateToDelete = currentUser.RealEstates.FirstOrDefault(r => r.RealEstateID == currentRealEstate.RealEstateID);
             }
 
@@ -343,7 +353,7 @@
             }
             else
             {
-                
+
                 DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
             }
         }
