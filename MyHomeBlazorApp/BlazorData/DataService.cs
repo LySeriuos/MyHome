@@ -184,6 +184,22 @@ namespace MyHomeBlazorApp.BlazorData
             string firstDevice = deviceName + " " + deviceExpiringWarranty;
             return firstDevice;
         }
+        /// <summary>
+        /// Method to move devices list from one RealEstate to another
+        /// </summary>
+        /// <param name="realEstateID">RealEstate by ID to move</param>
+        /// <param name="currentRealEstate">RealEstate to move from</param>
+        public void MoveDeviceListToOtherRealEstate(int realEstateID, RealEstate currentRealEstate)
+        {
+            List<DeviceProfile> deviceProfilesMoveToRealEstate = CurrentUser.RealEstates.First(r => r.RealEstateID == realEstateID).DevicesProfiles;
+            foreach(DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
+            {
+                deviceProfilesMoveToRealEstate.Add(deviceProfile);
+                currentRealEstate.DevicesProfiles.Remove(deviceProfile);
+            }
+            Data.SaveUsersListToXml(_users, _path);
+            
+        }
 
         #endregion
         public DataService()

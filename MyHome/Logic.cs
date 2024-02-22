@@ -94,7 +94,6 @@ namespace MyHome
         public static bool MoveDeviceToOtherRealEstate(UserProfile user, int deviceID, RealEstate userChosedRealEstateToMoveDevice)
         {
             RealEstate targetRealEstate = userChosedRealEstateToMoveDevice;
-            Console.WriteLine(targetRealEstate);
             List<RealEstate> realEstateList = user.RealEstates;
             List<DeviceProfile> devices = new List<DeviceProfile>();
             DeviceProfile foundDevice = new();

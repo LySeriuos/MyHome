@@ -271,7 +271,7 @@
                     <p>Choose Real Estate to move your devices:</p>
                 </div>
                 <div class="row">
-                    <select class="form-control form-select" @bind="@SelectedRealEstateName">
+                    <select class="form-control form-select" @bind="@SelectedRealEstateID">
                         <Button data-toggle="dropdown"></Button>
                         <option selected disabled>Choose Real Estate</option>
                         @foreach (RealEstate r in currentUser.RealEstates)
@@ -288,7 +288,7 @@
                     </select>
                 </div>                
                 <div class="row">
-                    <Button>Move Devices</Button>
+                    <Button @onclick="()=>MoveDeviceToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
                 </div>
                 <br />
                 <div class="row">
@@ -303,7 +303,7 @@
                 </div>
                 <br />
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <p>@SelectedRealEstateName</p>
+                    <p>@SelectedRealEstateID</p>
                     <Button @onclick="OnShowModalReasignDevicesClose">Cancel</Button>
                 </div>
             </div>
@@ -319,13 +319,13 @@
     public int Tab { get; set; }
 
     [Parameter]
-    public string? SelectedRealEstateName
+    public int SelectedRealEstateID
     {
-        get => selectedRealEstateName;
-        set { selectedRealEstateName = value; }
+        get => selectedRealEstateID;
+        set { selectedRealEstateID = value; }
     }
 
-    private string? selectedRealEstateName;
+    private int selectedRealEstateID;
     private RealEstate currentRealEstateToChoose = new();
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
@@ -339,6 +339,15 @@
     bool _showDevicesTableVisible = false;
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
+
+    private async Task MoveDeviceToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
+    {
+        if (currentRealEstate != null)
+        {
+            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
+        }
+        await OnShowModalReasignDevicesClose();
+    }
 
     public static void GetTheValue(int id)
     {
@@ -521,12 +530,18 @@
 
     private async Task OnModalDeviceNext()
     {
-        currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+        if (currentDevice != null)
+        {
+            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+        }
     }
 
     private async Task OnModalDevicePreviuos()
     {
-        currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
+        if (currentDevice != null)
+        {
+            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
+        }
     }
 
     private async Task OnModalDeviceWarrantyNext()
