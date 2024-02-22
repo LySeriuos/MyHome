@@ -300,7 +300,6 @@
                 </div>
                 <div class="row">
                     <Button>Keep Devices Unassigned</Button>
-
                 </div>
                 <br />
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -322,10 +321,11 @@
     [Parameter]
     public string? SelectedRealEstateName
     {
-        get => selectedRealEstateID;
-        set { selectedRealEstateID = value; }
+        get => selectedRealEstateName;
+        set { selectedRealEstateName = value; }
     }
-    private string? selectedRealEstateID;
+
+    private string? selectedRealEstateName;
     private RealEstate currentRealEstateToChoose = new();
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
