@@ -251,7 +251,7 @@
             <Button>Keep Unassigned</Button>
             </div> *@
         </BodyTemplate>
-        <FooterTemplate>            
+        <FooterTemplate>
             <Button @onclick="()=> OnShowModalReasignDevices(currentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
             <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete With Devices</Button>
             <Button @onclick="()=> OnHideModalCloseClick()">Cancel</Button>
@@ -261,25 +261,49 @@
 <div>
     <Modal @ref="modalReasignDevices" Title="Devices Reassigning">
         <BodyTemplate>
-            <p>Choose Real Estate to move your devices:</p>
-            <select class="form-control" @bind="@SelectedRealEstateName" >
-                @foreach (RealEstate r in currentUser.RealEstates)
-                {
-                    if (r.RealEstateID != currentRealEstate.RealEstateID)
-                    {
-                        <option value="@r.RealEstateID"> @r.RealEstateName </option>                        
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
-            </select>            
-            <p>@SelectedRealEstateName</p>
-            <Button>Keep Devices Unassigned</Button>
-            <Button>Move Devices</Button>
-            <Button>Cancel</Button>
+            <div>
+                <div class="row">
+                    <ul>
+                        <li>
+                            This option will let you move all devices from removed Real Estate to another.
+                        </li>
+                    </ul>
+                    <p>Choose Real Estate to move your devices:</p>
+                </div>
+                <div class="row">
+                    <select class="form-control form-select" @bind="@SelectedRealEstateName">
+                        <Button data-toggle="dropdown"></Button>
+                        <option selected disabled>Choose Real Estate</option>
+                        @foreach (RealEstate r in currentUser.RealEstates)
+                        {
+                            if (r.RealEstateID != currentRealEstate.RealEstateID)
+                            {
+                                <option value="@r.RealEstateID"> @r.RealEstateName </option>
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="row">
+                    <Button>Move Devices</Button>
+                    <br />
+                    <br />
+                    <ul>
+                        <li>
+                            This option will let you leave unassignded devices and move them later to any Real Estate you have.
+                        </li>                        
+                    </ul>
+                    <Button>Keep Devices Unassigned</Button>
+                    <br />
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <p>@SelectedRealEstateName</p>
+                    <Button>Cancel</Button>
+                </div>
+            </div>
         </BodyTemplate>
     </Modal>
 </div>
@@ -290,7 +314,6 @@
 @code {
     [Parameter]
     public int Tab { get; set; }
-    
 
     [Parameter]
     public string? SelectedRealEstateName
