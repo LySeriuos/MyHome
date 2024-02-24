@@ -2,8 +2,10 @@
 using MyHome;
 using MyHome.Models;
 using MyHomeBlazorApp.Pages;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 
 
@@ -150,7 +152,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile FirstExpiringWarranty()
         {
             List<DeviceProfile>? devices = Devices;
-            DeviceProfile? expiringDevice = new();            
+            DeviceProfile? expiringDevice = new();
             expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).FirstOrDefault();
             return expiringDevice; // this shouldn't be marked
         }
@@ -172,7 +174,7 @@ namespace MyHomeBlazorApp.BlazorData
         {
             RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
             RealEstates.Remove(realEstateToDelete);
-            Data.SaveUsersListToXml(_users, _path);           
+            Data.SaveUsersListToXml(_users, _path);
             _users = Data.GetUsersListFromXml(_path);
         }
 
@@ -192,13 +194,34 @@ namespace MyHomeBlazorApp.BlazorData
         public void MoveDeviceListToOtherRealEstate(int realEstateID, RealEstate currentRealEstate)
         {
             List<DeviceProfile> deviceProfilesMoveToRealEstate = CurrentUser.RealEstates.First(r => r.RealEstateID == realEstateID).DevicesProfiles;
-            foreach(DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
+            foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
             {
                 deviceProfilesMoveToRealEstate.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
             Data.SaveUsersListToXml(_users, _path);
-            
+
+        }
+
+        public void LeaveDevicesUnassigned(RealEstate currentRealEstate)
+        {
+            List<RealEstate> allUsersRealEstates = RealEstates;
+            RealEstate defaultRealEstate = new();
+            bool realEstatesListHasRealEstate = allUsersRealEstates.Any(r => r.RealEstateID == 0);
+
+            if (realEstatesListHasRealEstate != true)
+            {
+                defaultRealEstate.RealEstateID = 0;
+                allUsersRealEstates.Add(defaultRealEstate);                
+            }
+            foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
+            {
+                defaultRealEstate.DevicesProfiles.Add(deviceProfile);
+                currentRealEstate.DevicesProfiles.Remove(deviceProfile);
+            }
+
+            Data.SaveUsersListToXml(_users, _path);
+
         }
 
         #endregion
