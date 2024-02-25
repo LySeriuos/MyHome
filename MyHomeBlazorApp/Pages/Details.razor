@@ -288,7 +288,7 @@
                     </select>
                 </div>                
                 <div class="row">
-                    <Button @onclick="()=>MoveDeviceToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
+                    <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
                 </div>
                 <br />
                 <div class="row">
@@ -340,7 +340,7 @@
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
 
-    private async Task MoveDeviceToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
+    private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
         if (currentRealEstate != null)
         {
