@@ -299,7 +299,7 @@
                     </ul>
                 </div>
                 <div class="row">
-                    <Button>Keep Devices Unassigned</Button>
+                    <Button @onclick="()=>LeaveDevicesUnassigned(currentRealEstate)">Keep Devices Unassigned</Button>
                 </div>
                 <br />
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -345,6 +345,15 @@
         if (currentRealEstate != null)
         {
             DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
+        }
+        await OnShowModalReasignDevicesClose();
+    }
+
+    private async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
+    {
+        if(currentRealEstate != null)
+        {
+            DataService.LeaveDevicesUnassigned(currentRealEstate);
         }
         await OnShowModalReasignDevicesClose();
     }
