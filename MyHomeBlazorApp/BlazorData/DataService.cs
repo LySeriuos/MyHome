@@ -203,25 +203,34 @@ namespace MyHomeBlazorApp.BlazorData
 
         }
 
+        /// <summary>
+        /// Main Idea is to create default Real Estate and use it to add unnasigned devices.
+        /// If real estate has ID = 0, show text = "unassigned" instead of ID number.
+        /// Do not use any values except ID
+        /// Need to work through methods MoveDevices and LeaveDevicesUnassigned to be more flexible.
+        /// </summary>
+        /// <param name="currentRealEstate">The Real Estate to be Removed</param>
         public void LeaveDevicesUnassigned(RealEstate currentRealEstate)
         {
-            List<RealEstate> allUsersRealEstates = RealEstates;
-            RealEstate defaultRealEstate = new();
-            bool realEstatesListHasRealEstate = allUsersRealEstates.Any(r => r.RealEstateID == 0);
-
-            if (realEstatesListHasRealEstate != true)
+            List<DeviceProfile> devicesToDelete = CurrentUser.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID).DevicesProfiles;
+            
+            if (RealEstates.Any(r => r.RealEstateID == 0) == false)
             {
-                defaultRealEstate.RealEstateID = 0;
-                allUsersRealEstates.Add(defaultRealEstate);                
+                DefaultRealEstate.RealEstateID = 0;
+                DefaultRealEstate.RealEstateName = "Unassigned";
+                DefaultRealEstate.DevicesProfiles = new List<DeviceProfile>();
+                RealEstates.Add(DefaultRealEstate);
             }
-            foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
-            {
-                defaultRealEstate.DevicesProfiles.Add(deviceProfile);
-                currentRealEstate.DevicesProfiles.Remove(deviceProfile);
-            }
+            
+            DefaultRealEstate.DevicesProfiles = devicesToDelete;
 
+            //foreach (DeviceProfile deviceProfile in devicesToDelete)
+            //{
+            //    currentRealEstate.DevicesProfiles.Remove(deviceProfile);
+                
+            //}
+            
             Data.SaveUsersListToXml(_users, _path);
-
         }
 
         #endregion
@@ -263,5 +272,6 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile CurrentDevice { get; set; } = new DeviceProfile();
         public Shop Shop { get; set; } = new Shop();
 
+        public RealEstate DefaultRealEstate { get; set; } = new RealEstate();
     }
 }

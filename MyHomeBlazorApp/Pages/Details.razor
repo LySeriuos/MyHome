@@ -45,6 +45,7 @@
             <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
             <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
             <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
+            
         </QuickGrid>
     }
 </div>
@@ -286,7 +287,7 @@
                             }
                         }
                     </select>
-                </div>                
+                </div>
                 <div class="row">
                     <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
                 </div>
@@ -351,7 +352,7 @@
 
     private async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
     {
-        if(currentRealEstate != null)
+        if (currentRealEstate != null)
         {
             DataService.LeaveDevicesUnassigned(currentRealEstate);
         }
