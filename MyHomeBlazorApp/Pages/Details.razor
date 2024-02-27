@@ -35,6 +35,8 @@
                     <Button @onclick="() => OnShowModalDeleteRealEstate(context.RealEstateID)">Delete</Button>
                 </div>
             </TemplateColumn>
+            @* getting error here, need if statement to check if value is not empty I can just add values to the address class but it is unnecessary *@
+
             <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
@@ -45,7 +47,7 @@
             <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
             <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
             <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
-            
+
         </QuickGrid>
     }
 </div>
