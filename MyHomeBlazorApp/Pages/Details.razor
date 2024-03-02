@@ -473,8 +473,7 @@
         }
     }
 
-    private Modal modalRealEstate = default!;
-
+    private Modal modalRealEstate = default!;    
     private async Task OnShowModalRealEstateClick(int id)
     {
         currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
@@ -527,19 +526,20 @@
         await modalEditAddShopDetails.HideAsync();
     }
 
-    private async Task OnModalRealEstateNext()
+    // Void or async Task?
+    private void OnModalRealEstateNext()
     {
         currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
         currentRealEstateAddress = currentRealEstate.Address;
     }
 
-    private async Task OnModalRealEstatePreviuos()
+    private void OnModalRealEstatePreviuos()
     {
         currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID - 1);
         currentRealEstateAddress = currentRealEstate.Address;
     }
 
-    private async Task OnModalDeviceNext()
+    private void OnModalDeviceNext()
     {
         if (currentDevice != null)
         {
@@ -547,7 +547,7 @@
         }
     }
 
-    private async Task OnModalDevicePreviuos()
+    private void OnModalDevicePreviuos()
     {
         if (currentDevice != null)
         {
@@ -555,22 +555,22 @@
         }
     }
 
-    private async Task OnModalDeviceWarrantyNext()
+    private void OnModalDeviceWarrantyNext()
     {
         currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID + 1);
     }
 
-    private async Task OnModalDeviceWarrantyPreviuos()
+    private void OnModalDeviceWarrantyPreviuos()
     {
         currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID - 1);
     }
 
-    private async Task OnModalDeviceShopNext()
+    private void OnModalDeviceShopNext()
     {
         currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID + 1);
     }
 
-    private async Task OnModalDeviceShopPreviuos()
+    private void OnModalDeviceShopPreviuos()
     {
         currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID - 1);
     }
