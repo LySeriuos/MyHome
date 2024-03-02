@@ -36,7 +36,13 @@ namespace MyHome.Models
         // password class will be added later
         // not sure about this class here
 
-        private List<DeviceProfile> _unassignedDevices = new();
+        private List<DeviceProfile> _unassignedDevices;
+
+        public List<DeviceProfile> UnassignedDevices
+        {
+            get { return _unassignedDevices; }
+            set { _unassignedDevices = value; }
+        }
 
         private List<RealEstate> _realEstate;
 
@@ -56,8 +62,6 @@ namespace MyHome.Models
             }
             return allDevices;
         }
-
-
 
         public override string ToString()
         {
