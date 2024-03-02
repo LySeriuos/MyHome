@@ -36,6 +36,7 @@ namespace MyHome.Models
         // password class will be added later
         // not sure about this class here
 
+        private List<DeviceProfile> _unassignedDevices = new();
 
         private List<RealEstate> _realEstate;
 

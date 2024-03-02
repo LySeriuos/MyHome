@@ -40,12 +40,12 @@
             <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
-            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
-            <TemplateColumn Title="Number's Extension">
-                <NoData Text="@context.Address.HouseNumberExtension"></NoData>
-            </TemplateColumn>
-            <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
-            <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
+        <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
+        <TemplateColumn Title="Number's Extension">
+        <NoData Text="@context.Address.HouseNumberExtension"></NoData>
+        </TemplateColumn>
+        <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
+        <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
             <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
 
         </QuickGrid>
@@ -276,7 +276,7 @@
                 <div class="row">
                     <select class="form-control form-select" @bind="@SelectedRealEstateID">
                         <Button data-toggle="dropdown"></Button>
-                        <option selected disabled>Choose Real Estate</option>
+                        <option selected disabled value="-1">Choose Real Estate</option>
                         @foreach (RealEstate r in currentUser.RealEstates)
                         {
                             if (r.RealEstateID != currentRealEstate.RealEstateID)
@@ -306,7 +306,6 @@
                 </div>
                 <br />
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <p>@SelectedRealEstateID</p>
                     <Button @onclick="OnShowModalReasignDevicesClose">Cancel</Button>
                 </div>
             </div>
@@ -328,7 +327,7 @@
         set { selectedRealEstateID = value; }
     }
 
-    private int selectedRealEstateID;
+    private int selectedRealEstateID = -1;
     private RealEstate currentRealEstateToChoose = new();
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();

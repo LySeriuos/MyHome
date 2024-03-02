@@ -24,7 +24,7 @@ namespace MyHome.Models
             set { _realEstateName = value; }
         }
 
-        private Address _address;
+        private Address _address = new();
 
         public Address Address
         {
@@ -32,14 +32,14 @@ namespace MyHome.Models
             set { _address = value; }
         }
 
-        private List<DeviceProfile> _devicesProfile;
+        private List<DeviceProfile> _devicesProfile = new();
 
         public List<DeviceProfile> DevicesProfiles
         {
             get { return _devicesProfile; }
             set { _devicesProfile = value; }
         }
-        
+
 
         public override string ToString()
         {
