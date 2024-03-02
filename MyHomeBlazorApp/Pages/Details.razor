@@ -27,7 +27,7 @@
 <div class="row">
     @if (_showRealEstatesTableVisible)
     {
-        <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
+        <QuickGrid tabindex="1" Items="@DataService.RealEstates.Where(r => r.RealEstateID>0).AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -40,14 +40,13 @@
             <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
-        <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
-        <TemplateColumn Title="Number's Extension">
-        <NoData Text="@context.Address.HouseNumberExtension"></NoData>
-        </TemplateColumn>
-        <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
-        <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
+            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
+            <TemplateColumn Title="Number's Extension">
+                <NoData Text="@context.Address.HouseNumberExtension"></NoData>
+            </TemplateColumn>
+            <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
+            <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
             <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
-
         </QuickGrid>
     }
 </div>
@@ -62,9 +61,18 @@
                     <Button>Delete</Button>
                 </div>
             </TemplateColumn>
+
             <TemplateColumn Title="Real Estate ID">
-                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                @if (DataService.GetRealEstateByDeviceID(context.DeviceID) == 0)
+                {
+                    <span>Unnasigned</span>
+                }
+                else
+                {
+                    <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                }
             </TemplateColumn>
+
             @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
             <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
@@ -473,7 +481,7 @@
         }
     }
 
-    private Modal modalRealEstate = default!;    
+    private Modal modalRealEstate = default!;
     private async Task OnShowModalRealEstateClick(int id)
     {
         currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
