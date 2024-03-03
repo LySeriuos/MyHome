@@ -59,7 +59,7 @@ namespace MyHome.Models
 
         private Unassigned _unassignedDevices;
 
-        public Unassigned Unassigned
+        public Unassigned UnassignedDevices
         {
             get { return _unassignedDevices; }
             set { _unassignedDevices = value; }

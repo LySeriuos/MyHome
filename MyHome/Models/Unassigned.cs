@@ -9,11 +9,11 @@ namespace My_Home.Models
 {
     public class Unassigned
     {
-        private string _unassignedDevice = "Unassigned";
-        public string UnassignedDevice
+        private string _unassignedDevicesStatus = "Unassigned";
+        public string UnassignedDeviceStatus
         {
-            get { return _unassignedDevice; }
-            set { _unassignedDevice = value; }
+            get { return _unassignedDevicesStatus; }
+            set { _unassignedDevicesStatus = value; }
         }
 
         private List<DeviceProfile> _unassignedDevicesList;
