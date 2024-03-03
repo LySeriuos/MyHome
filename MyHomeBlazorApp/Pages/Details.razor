@@ -284,19 +284,25 @@
                 <div class="row">
                     <select class="form-control form-select" @bind="@SelectedRealEstateID">
                         <Button data-toggle="dropdown"></Button>
-                        <option selected disabled value="-1">@chooseOptionValue</option>
+                        <option selected disabled value="-1">@_chooseOptionValue</option>
+
+                        @* check if this is good code *@
                         @foreach (RealEstate r in currentUser.RealEstates)
                         {
                             if (r.RealEstateID != currentRealEstate.RealEstateID && r.RealEstateID != 0)
                             {
                                 <option value="@r.RealEstateID"> @r.RealEstateName </option>
                             }
+                            else if (r.RealEstateID != currentRealEstate.RealEstateID && currentUser.RealEstates.Count() <= 2 && r.RealEstateID == 0)
+                            {
+                                _chooseOptionValue = "Nothing to choose!";
+                            }
                             else
                             {
-                                chooseOptionValue = "No Real Estate to choose!";
-                                continue;
+                                break;
                             }
                         }
+
                     </select>
                 </div>
                 <div class="row">
@@ -306,7 +312,7 @@
                     }
                     else
                     {
-                        <Button Disabled >Choose option under this</Button>
+                        <Button Disabled>Choose option under this</Button>
                     }
                 </div>
                 <br />
@@ -343,7 +349,7 @@
         set { selectedRealEstateID = value; }
     }
 
-    public string chooseOptionValue = "Choose Real Estate";
+    private string _chooseOptionValue = "Choose Real Estate";
 
 
     private int selectedRealEstateID = -1;
