@@ -293,26 +293,24 @@
                             {
                                 <option value="@r.RealEstateID"> @r.RealEstateName </option>
                             }
-                            else if (r.RealEstateID != currentRealEstate.RealEstateID && currentUser.RealEstates.Count() <= 2 && r.RealEstateID == 0)
-                            {
-                                _chooseOptionValue = "Nothing to choose!";
-                            }
                             else
                             {
-                                break;
+                                @* this overriding default value *@
+                                @* _chooseOptionValue = "Nothing to choose!"; *@
+                                continue;
                             }
                         }
 
                     </select>
                 </div>
-                <div class="row">
-                    @if (SelectedRealEstateID > 0)
+                <div class="row">                    
+                    @if (currentUser.RealEstates.Count >1)
                     {
                         <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
                     }
                     else
                     {
-                        <Button Disabled>Choose option under this</Button>
+                        <Button Disabled>Move Devices</Button>
                     }
                 </div>
                 <br />

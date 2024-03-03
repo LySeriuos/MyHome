@@ -1,4 +1,5 @@
-﻿using System;
+﻿using My_Home.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -35,14 +36,7 @@ namespace MyHome.Models
 
         // password class will be added later
         // not sure about this class here
-
-        private List<DeviceProfile> _unassignedDevices;
-
-        public List<DeviceProfile> UnassignedDevices
-        {
-            get { return _unassignedDevices; }
-            set { _unassignedDevices = value; }
-        }
+               
 
         private List<RealEstate> _realEstate;
 
@@ -61,6 +55,14 @@ namespace MyHome.Models
                 allDevices.Add(device);
             }
             return allDevices;
+        }
+
+        private Unassigned _unassignedDevices;
+
+        public Unassigned Unassigned
+        {
+            get { return _unassignedDevices; }
+            set { _unassignedDevices = value; }
         }
 
         public override string ToString()
