@@ -38,12 +38,12 @@ namespace MyHome.Models
         // not sure about this class here
                
 
-        private List<RealEstate> _realEstate;
+        private List<RealEstate> _realEstates;
 
         public List<RealEstate> RealEstates
         {
-            get { return _realEstate; }
-            set { _realEstate = value; }
+            get { return _realEstates; }
+            set { _realEstates = value; }
         }
 
         public List<DeviceProfile> GetAllDevices()
