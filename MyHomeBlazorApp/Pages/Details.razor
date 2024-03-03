@@ -355,6 +355,7 @@
         if (currentRealEstate != null)
         {
             DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
+            await DeleteRealEstate_Click(true);
         }
         await OnShowModalReasignDevicesClose();
     }
@@ -364,6 +365,7 @@
         if (currentRealEstate != null)
         {
             DataService.LeaveDevicesUnassigned(currentRealEstate);
+            await DeleteRealEstate_Click(true);
         }
         await OnShowModalReasignDevicesClose();
     }
@@ -409,7 +411,6 @@
             }
             else
             {
-
                 DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
             }
         }

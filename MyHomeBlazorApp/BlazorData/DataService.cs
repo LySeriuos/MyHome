@@ -224,12 +224,11 @@ namespace MyHomeBlazorApp.BlazorData
             
             DefaultRealEstate.DevicesProfiles = devicesToDelete;
 
-            //foreach (DeviceProfile deviceProfile in devicesToDelete)
-            //{
-            //    currentRealEstate.DevicesProfiles.Remove(deviceProfile);
-                
-            //}
-            
+            foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
+            {
+                currentRealEstate.DevicesProfiles.Remove(deviceProfile);
+            }
+
             Data.SaveUsersListToXml(_users, _path);
         }
 
