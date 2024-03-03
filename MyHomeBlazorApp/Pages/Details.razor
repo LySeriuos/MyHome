@@ -300,7 +300,14 @@
                     </select>
                 </div>
                 <div class="row">
-                    <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
+                    @if (SelectedRealEstateID > 0)
+                    {
+                        <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
+                    }
+                    else
+                    {
+                        <Button Disabled >Choose option under this</Button>
+                    }
                 </div>
                 <br />
                 <div class="row">
@@ -356,10 +363,14 @@
 
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
-        if (currentRealEstate != null)
+        if (currentRealEstate != null && SelectedRealEstateID > 0)
         {
             DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
             await DeleteRealEstate_Click(true);
+        }
+        else
+        {
+            return;
         }
         await OnShowModalReasignDevicesClose();
     }
