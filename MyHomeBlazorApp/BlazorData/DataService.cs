@@ -224,11 +224,15 @@ namespace MyHomeBlazorApp.BlazorData
             //}
             //DefaultRealEstate.DevicesProfiles = devicesToDelete;
             Unassigned unassigned = new Unassigned();
-            if (Unassigned.UnassignedDevicesList == null)
+            if (UnassignedProfile.UnassignedDevicesList == null)
             {                
                 unassigned.UnassignedDeviceStatus = "Unassigned";
                 unassigned.UnassignedDevicesList = new();
                 CurrentUser.UnassignedDevices = unassigned;
+            }
+            else
+            {
+                unassigned = UnassignedProfile;
             }
 
             foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
@@ -256,7 +260,7 @@ namespace MyHomeBlazorApp.BlazorData
             //List<DeviceProfile> _devices = currentUser.GetAllDevices();
             Devices = Logic.GetAllUserDevices(CurrentUser);
             Device = LastAddedDevice();
-            
+            UnassignedProfile = CurrentUser.UnassignedDevices;
             CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
@@ -280,7 +284,7 @@ namespace MyHomeBlazorApp.BlazorData
         public List<DeviceWarranty> DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile CurrentDevice { get; set; } = new DeviceProfile();
         public Shop Shop { get; set; } = new Shop();
-        public Unassigned Unassigned { get; set; } = new Unassigned();
+        public Unassigned UnassignedProfile { get; set; } = new Unassigned();
         public RealEstate DefaultRealEstate { get; set; } = new RealEstate();
     }
 }
