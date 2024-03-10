@@ -1,0 +1,91 @@
+﻿body {
+}
+
+.grid {
+    height: auto;
+    overflow-y: auto;
+}
+
+/* Sticky header while scrolling */
+::deep thead {
+    position: sticky;
+    top: 0;
+    background-color: rgb(0, 148, 255, 0.3);
+}
+
+/* Subtle stripe effect */
+::deep tr:nth-child(even) {
+    background: rgb(0, 148, 255, 0.1);
+}
+
+::deep .joinBtn {
+    align-items: center;
+    background-color: #0A66C2;
+    border: 0;
+    border-radius: 100px;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: center;
+    line-height: 20px;
+    max-width: 480px;
+    min-height: 40px;
+    min-width: 0px;
+    overflow: hidden;
+    padding: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    touch-action: manipulation;
+    transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: middle;
+}
+::deep.joinBtn:after {
+    background-clip: padding-box;
+    background-color: #1CB0F6;
+    border: solid transparent;
+    border-radius: 16px;
+    border-width: 0 0 4px;
+    bottom: -4px;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
+}
+
+    ::deep .joinBtn:focus, .btn:focus {
+        background-color: #16437E;
+        color: #ffffff;
+        border: none;
+        box-shadow:none;
+    }
+
+    ::deep .joinBtn:focus, .joinBtn:active:focus, .btn:focus {
+        background: #09223b;
+        color: rgb(255, 255, 255, .7);
+        border: none;
+        box-shadow: none;
+    }
+
+    ::deep .joinBtn:hover {
+        background-color: #16437E;
+        color: #ffffff;
+        border:none;
+    }
+::deep.joinBtn:disabled {
+    cursor: not-allowed;
+    background: rgba(0, 0, 0, .08);
+    color: rgba(0, 0, 0, .3);
+}
+
+
+
+
