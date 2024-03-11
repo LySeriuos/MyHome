@@ -50,11 +50,19 @@ namespace MyHome.Models
         {
             List<DeviceProfile> allDevices = new List<DeviceProfile>();
             var devices = RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
+            var unassignedDevices = UnassignedDevices.UnassignedDevicesList;
             foreach (DeviceProfile device in devices)
             {
                 allDevices.Add(device);
             }
-            return allDevices;
+            if(unassignedDevices != null)
+            {
+                foreach(DeviceProfile device in unassignedDevices)
+                {
+                    allDevices.Add(device);
+                }
+            }
+            return allDevices.OrderBy(id => id.DeviceID).ToList();
         }
 
         private Unassigned _unassignedDevices;
