@@ -168,7 +168,7 @@ namespace MyHome
         public static int GetRealEstateMaxId(List<RealEstate> realEstates)
         {
             int maxID;
-            if (realEstates.Count == null)
+            if (realEstates == null)
             {
                 maxID = 0;
             }

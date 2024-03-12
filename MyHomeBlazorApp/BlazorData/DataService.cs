@@ -48,7 +48,7 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate GetRealEstate(int id)
         {
             RealEstate rE = new RealEstate();
-            rE = RealEstates.FirstOrDefault(RealEstates => RealEstates.RealEstateID == id);
+            rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == id);
             return rE;
         }
 
@@ -120,7 +120,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile GetDeviceById(int id)
         {
             DeviceProfile device = new DeviceProfile();
-            device = Devices.FirstOrDefault(Device => Device.DeviceID == id);
+            device = Devices.First(Device => Device.DeviceID == id);
             return device;
         }
 
@@ -154,20 +154,20 @@ namespace MyHomeBlazorApp.BlazorData
         {
             List<DeviceProfile>? devices = Devices;
             DeviceProfile? expiringDevice = new();
-            expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).FirstOrDefault();
+            expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).First();
             return expiringDevice; // this shouldn't be marked
         }
 
         public DeviceProfile LastAddedDevice()
         {
             List<DeviceProfile>? devices = Devices;
-            DeviceProfile? device = devices.LastOrDefault();
+            DeviceProfile? device = devices.Last();
             return device; // this shouldn't be marked
         }
 
         public RealEstate LastAddedRealEstate()
         {
-            RealEstate lastRealEstate = RealEstates.LastOrDefault();
+            RealEstate lastRealEstate = RealEstates.Last();
             return lastRealEstate;
         }
 
