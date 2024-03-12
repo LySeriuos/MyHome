@@ -224,7 +224,7 @@ namespace MyHomeBlazorApp.BlazorData
             //}
             //DefaultRealEstate.DevicesProfiles = devicesToDelete;
             Unassigned unassigned = new Unassigned();
-            if (UnassignedProfile.UnassignedDevicesList == null)
+            if (UnassignedProfile == null)
             {                
                 unassigned.UnassignedDeviceStatus = "Unassigned";
                 unassigned.UnassignedDevicesList = new();

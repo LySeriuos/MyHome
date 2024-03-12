@@ -28,7 +28,7 @@
     @if (_showRealEstatesTableVisible)
     {
         <div class="grid">
-            <QuickGrid tabindex="1" Items="@DataService.RealEstates.Where(r => r.RealEstateID>0).AsQueryable()">
+            <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
