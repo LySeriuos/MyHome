@@ -22,6 +22,10 @@
         <Button Class="joinBtn" @onclick="ShowDevicesTable">Devices Details</Button>
         <Button Class="joinBtn" @onclick="ShowWarrantiesTable">Warranties Details</Button>
         <Button Class="joinBtn" @onclick="ShowShopsTable">Shops Details</Button>
+        @if (DataService.UnassignedProfile.UnassignedDevicesList.Count > 0)
+        {
+            <Button Class="joinBtn" @onclick="ShowUnassignedTable">Unassigned Devices</Button>
+        }
     </div>
 </div>
 
@@ -153,6 +157,41 @@
     </div>
 }
 
+@if (_showUnassignedTableVisible)
+{
+    <div class="grid">
+        @if (DataService.UnassignedProfile != null)
+        {
+            <QuickGrid tabindex="2" Items="@DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
+                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+            <TemplateColumn>
+                <div>
+                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
+                    <Button Class="btn btn-outline-danger">Delete</Button>
+                </div>
+            </TemplateColumn>
+            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
+            <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+            <TemplateColumn Title="Manual">
+                <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+            </TemplateColumn>
+            <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+            </QuickGrid>
+        }
+        else
+        {
+            <p>The list is empty!</p>
+        }
+    </div>
+}
+0
 
 <!--#region Edit Form Modals  -->
 
@@ -352,8 +391,6 @@
     }
 
     private string _chooseOptionValue = "Choose Real Estate";
-
-
     private int selectedRealEstateID = -1;
     private RealEstate currentRealEstateToChoose = new();
     private Address currentRealEstateAddress = new();
@@ -368,6 +405,7 @@
     bool _showDevicesTableVisible = false;
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
+    bool _showUnassignedTableVisible = false;
 
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
@@ -460,6 +498,7 @@
         _showDevicesTableVisible = false;
         _showWarrantiesTableVisible = false;
         _showShopsTableVisible = false;
+        _showUnassignedTableVisible = false;
     }
     private void ShowDevicesTable()
     {
@@ -467,6 +506,7 @@
         _showWarrantiesTableVisible = false;
         _showShopsTableVisible = false;
         _showRealEstatesTableVisible = false;
+        _showUnassignedTableVisible = false;
     }
     private void ShowWarrantiesTable()
     {
@@ -474,6 +514,7 @@
         _showShopsTableVisible = false;
         _showRealEstatesTableVisible = false;
         _showDevicesTableVisible = false;
+        _showUnassignedTableVisible = false;
     }
     private void ShowShopsTable()
     {
@@ -481,6 +522,16 @@
         _showRealEstatesTableVisible = false;
         _showDevicesTableVisible = false;
         _showWarrantiesTableVisible = false;
+        _showUnassignedTableVisible = false;
+    }
+
+    private void ShowUnassignedTable()
+    {
+        _showUnassignedTableVisible = !_showUnassignedTableVisible;
+        _showRealEstatesTableVisible = false;
+        _showDevicesTableVisible = false;
+        _showWarrantiesTableVisible = false;        
+        _showShopsTableVisible = false;
     }
 
     private string message = "";

@@ -225,7 +225,7 @@ namespace MyHomeBlazorApp.BlazorData
             //DefaultRealEstate.DevicesProfiles = devicesToDelete;
             Unassigned unassigned = new Unassigned();
             if (UnassignedProfile == null)
-            {                
+            {
                 unassigned.UnassignedDeviceStatus = "Unassigned";
                 unassigned.UnassignedDevicesList = new();
                 CurrentUser.UnassignedDevices = unassigned;
@@ -244,33 +244,45 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
-        #endregion
-        public DataService()
+        public Unassigned UnassignedDevices()
         {
-            _users = Data.GetUsersListFromXml(_path);
-            // is it good practise to do like this?
-            Users = _users;
-            // manually assigned test data
-            int userId = 2;
-            int realEstateID = 1;
-            int deviceId = 2;
-            CurrentUser = GetUser(userId);
-            RealEstates = CurrentUser.RealEstates;
-            CurrentRealEstate = GetRealEstate(realEstateID);
-            //List<DeviceProfile> _devices = currentUser.GetAllDevices();
-            Devices = Logic.GetAllUserDevices(CurrentUser);
-            Device = LastAddedDevice();
-            UnassignedProfile = CurrentUser.UnassignedDevices;
-            CurrentDevice = GetDeviceById(deviceId);
-            ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
-            DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
-            FirstExpiringDevice = FirstExpiringWarranty();
+            if (CurrentUser.UnassignedDevices == null)
+            {
+                Unassigned unassignedDevices = new();
+                unassignedDevices.UnassignedDevicesList = new();
+                CurrentUser.UnassignedDevices = unassignedDevices;
+            }
+            return CurrentUser.UnassignedDevices;
         }
 
-        [Required(ErrorMessage = "This field is Required")]
-        // I guess these should be as Parameters 
+            #endregion
+            public DataService()
+            {
+                _users = Data.GetUsersListFromXml(_path);
+                // is it good practise to do like this?
+                Users = _users;
+                // manually assigned test data
+                int userId = 2;
+                int realEstateID = 1;
+                int deviceId = 2;                
+                CurrentUser = GetUser(userId);
+                RealEstates = CurrentUser.RealEstates;
+                CurrentRealEstate = GetRealEstate(realEstateID);
+                //List<DeviceProfile> _devices = currentUser.GetAllDevices();
+                Devices = Logic.GetAllUserDevices(CurrentUser);
+                Device = LastAddedDevice();
+                //UnassignedDevicesList = UnassignedDevices();
+                UnassignedProfile = UnassignedDevices();
+                CurrentDevice = GetDeviceById(deviceId);
+                ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
+                DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
+                FirstExpiringDevice = FirstExpiringWarranty();
+            }
 
-        public List<UserProfile> Users { get; set; } = new List<UserProfile>();
+            [Required(ErrorMessage = "This field is Required")]
+            // I guess these should be as Parameters 
+
+            public List<UserProfile> Users { get; set; } = new List<UserProfile>();
         public List<DeviceProfile> Devices { get; set; } = new List<DeviceProfile>();
         public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile Device { get; set; } = new DeviceProfile();
@@ -285,6 +297,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile CurrentDevice { get; set; } = new DeviceProfile();
         public Shop Shop { get; set; } = new Shop();
         public Unassigned UnassignedProfile { get; set; } = new Unassigned();
+        public List<DeviceProfile> UnassignedDevicesList { get; } = new List<DeviceProfile>();
         public RealEstate DefaultRealEstate { get; set; } = new RealEstate();
     }
 }
