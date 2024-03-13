@@ -62,7 +62,7 @@ namespace MyHome.Models
                     allDevices.Add(device);
                 }
             }
-            return allDevices.OrderBy(id => id.DeviceID).ToList();
+            return allDevices;
         }
 
         private Unassigned _unassignedDevices;
