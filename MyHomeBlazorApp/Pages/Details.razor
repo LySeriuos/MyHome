@@ -60,7 +60,7 @@
 @if (_showDevicesTableVisible)
 {
     <div class="grid">
-        <QuickGrid tabindex="2" Items="@DataService.Devices.AsQueryable()">
+        <QuickGrid tabindex="2" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -70,29 +70,28 @@
             </TemplateColumn>
 
             <TemplateColumn Title="Real Estate ID">
-                @if (DataService.GetRealEstateByDeviceID(context.DeviceID) == 0)
-                {
-                    <span>Unnasigned</span>
-                }
-                else
+                @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
                 {
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 }
             </TemplateColumn>
 
-            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
-            <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-            <TemplateColumn Title="Manual">
-                <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
-            </TemplateColumn>
-            <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+            @* @if (DataService.CurrentUser.RealEstates.Find(r => r.RealEstateID == 0) == null)
+            { *@
+                @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
+                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+                <TemplateColumn Title="Manual">
+                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+                </TemplateColumn>
+                <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+            @* } *@
         </QuickGrid>
     </div>
 }
@@ -100,7 +99,7 @@
 @if (_showWarrantiesTableVisible)
 {
     <div class="grid">
-        <QuickGrid tabindex="3" Items="@DataService.Devices.AsQueryable()">
+        <QuickGrid tabindex="3" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
@@ -132,7 +131,7 @@
 @if (_showShopsTableVisible)
 {
     <div class="grid">
-        <QuickGrid tabindex="4" Items="@DataService.Devices.AsQueryable()">
+        <QuickGrid tabindex="4" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>

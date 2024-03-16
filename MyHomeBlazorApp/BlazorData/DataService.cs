@@ -238,6 +238,7 @@ namespace MyHomeBlazorApp.BlazorData
                 UnassignedProfile.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
+            CurrentUser.RealEstates.Remove(currentRealEstate);
 
             Data.SaveUsersListToXml(_users, _path);
         }
