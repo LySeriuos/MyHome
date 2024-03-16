@@ -46,24 +46,7 @@ namespace MyHome.Models
             set { _realEstates = value; }
         }
 
-        public List<DeviceProfile> GetAllDevices()
-        {
-            List<DeviceProfile> allDevices = new List<DeviceProfile>();
-            var devices = RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
-            var unassignedDevices = UnassignedDevices.UnassignedDevicesList;
-            foreach (DeviceProfile device in devices)
-            {
-                allDevices.Add(device);
-            }
-            if(unassignedDevices != null)
-            {
-                foreach(DeviceProfile device in unassignedDevices)
-                {
-                    allDevices.Add(device);
-                }
-            }
-            return allDevices;
-        }
+        
 
         private Unassigned _unassignedDevices;
 
@@ -71,6 +54,26 @@ namespace MyHome.Models
         {
             get { return _unassignedDevices; }
             set { _unassignedDevices = value; }
+        }
+
+        public List<DeviceProfile> GetAllDevices()
+        {
+            List<DeviceProfile> allDevices = new List<DeviceProfile>();
+            var devices = RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
+            if(UnassignedDevices != null )
+            {
+                var unassignedDevices = UnassignedDevices.UnassignedDevicesList;
+                foreach (DeviceProfile device in unassignedDevices)
+                {
+                    allDevices.Add(device);
+                }
+            }
+            
+            foreach (DeviceProfile device in devices)
+            {
+                allDevices.Add(device);
+            }
+            return allDevices;
         }
 
         public override string ToString()

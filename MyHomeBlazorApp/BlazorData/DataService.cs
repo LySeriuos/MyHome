@@ -158,6 +158,7 @@ namespace MyHomeBlazorApp.BlazorData
             return expiringDevice; // this shouldn't be marked
         }
 
+        /// last added device should be matched by highest ID
         public DeviceProfile LastAddedDevice()
         {
             List<DeviceProfile>? devices = Devices;
@@ -223,7 +224,7 @@ namespace MyHomeBlazorApp.BlazorData
             //    RealEstates.Add(DefaultRealEstate);
             //}
             //DefaultRealEstate.DevicesProfiles = devicesToDelete;
-                        
+
 
             foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
             {
@@ -235,44 +236,43 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         public Unassigned UnassignedDevices()
-        {
+        {            
             if (CurrentUser.UnassignedDevices == null)
             {
-                Unassigned unassignedDevices = new();
-                unassignedDevices.UnassignedDevicesList = new();
-                CurrentUser.UnassignedDevices = unassignedDevices;
+                CurrentUser.UnassignedDevices = new();
+                CurrentUser.UnassignedDevices.UnassignedDevicesList = new();
             }
             return CurrentUser.UnassignedDevices;
         }
 
-            #endregion
-            public DataService()
-            {
-                _users = Data.GetUsersListFromXml(_path);
-                // is it good practise to do like this?
-                Users = _users;
-                // manually assigned test data
-                int userId = 2;
-                int realEstateID = 1;
-                int deviceId = 2;                
-                CurrentUser = GetUser(userId);
-                RealEstates = CurrentUser.RealEstates;
-                CurrentRealEstate = GetRealEstate(realEstateID);
-                //List<DeviceProfile> _devices = currentUser.GetAllDevices();
-                Devices = Logic.GetAllUserDevices(CurrentUser);
-                Device = LastAddedDevice();
-                //UnassignedDevicesList = UnassignedDevices();
-                UnassignedProfile = UnassignedDevices();
-                CurrentDevice = GetDeviceById(deviceId);
-                ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
-                DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
-                FirstExpiringDevice = FirstExpiringWarranty();
-            }
+        #endregion
+        public DataService()
+        {
+            _users = Data.GetUsersListFromXml(_path);
+            // is it good practise to do like this?
+            Users = _users;
+            // manually assigned test data
+            int userId = 2;
+            int realEstateID = 1;
+            int deviceId = 2;
+            CurrentUser = GetUser(userId);
+            RealEstates = CurrentUser.RealEstates;
+            CurrentRealEstate = GetRealEstate(realEstateID);
+            //List<DeviceProfile> _devices = currentUser.GetAllDevices();
+            Devices = CurrentUser.GetAllDevices();
+            Device = LastAddedDevice();
+            //UnassignedDevicesList = UnassignedDevices();
+            UnassignedProfile = UnassignedDevices();
+            CurrentDevice = GetDeviceById(deviceId);
+            ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
+            DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
+            FirstExpiringDevice = FirstExpiringWarranty();
+        }
 
-            [Required(ErrorMessage = "This field is Required")]
-            // I guess these should be as Parameters 
+        [Required(ErrorMessage = "This field is Required")]
+        // I guess these should be as Parameters 
 
-            public List<UserProfile> Users { get; set; } = new List<UserProfile>();
+        public List<UserProfile> Users { get; set; } = new List<UserProfile>();
         public List<DeviceProfile> Devices { get; set; } = new List<DeviceProfile>();
         public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile Device { get; set; } = new DeviceProfile();
