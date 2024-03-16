@@ -48,7 +48,14 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate GetRealEstate(int id)
         {
             RealEstate rE = new RealEstate();
-            rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == id);
+            if (RealEstates.Count > 1)
+            {
+                rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == id);
+            }
+            else
+            {
+                rE = new();
+            }
             return rE;
         }
 
@@ -236,7 +243,7 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         public Unassigned UnassignedDevices()
-        {            
+        {
             if (CurrentUser.UnassignedDevices == null)
             {
                 CurrentUser.UnassignedDevices = new();
