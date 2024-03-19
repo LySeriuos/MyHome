@@ -64,7 +64,7 @@
             <TemplateColumn>
                 <div>
                     <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
-                    <Button Class="btn btn-outline-danger">Delete</Button>
+                    <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
                 </div>
             </TemplateColumn>
 
@@ -350,6 +350,17 @@
         </BodyTemplate>
     </Modal>
 </div>
+<div>
+    <Modal @ref="modalDeviceDelete">
+        <BodyTemplate>
+            <p>Are you sure you want To Delete @currentDevice.DeviceName?</p>
+        </BodyTemplate>
+        <FooterTemplate>
+            <Button @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
+            <Button @onclick="OnShowModalReasignDevicesClose">Cancel</Button>            
+        </FooterTemplate>
+    </Modal>
+</div>
 
 
 
@@ -460,6 +471,51 @@
         currentUser = DataService.CurrentUser;
         currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstateID);
         await modalRealEstateDelete.ShowAsync();
+    }
+
+    private Modal modalDeviceDelete = default!;
+
+    private async Task OnShowModalDeleteDeviceClick(int deviceId)
+    {
+        int RealEsatateHasChosedDeviceId = DataService.GetRealEstateByDeviceID(deviceId);
+        currentDevice = DataService.Devices.First(d => d.DeviceID == deviceId);
+        currentRealEstate = DataService.CurrentUser.RealEstates.First(r => r.RealEstateID == RealEsatateHasChosedDeviceId);
+        
+        await modalDeviceDelete.ShowAsync();
+    }
+
+    private async Task DeleteDevice_Click(bool _confirmDeletion)
+    {
+        if (_confirmDeletion == true)
+        {
+            // manualy assigned value!
+            List<DeviceProfile> allDevices = DataService.Devices;
+            DeviceProfile deviceToDelete = new();
+            if (allDevices == null)
+            {
+                // should be message that device doesn't exist.
+                return;
+            }
+            else
+            {
+                deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
+            }
+
+            if (deviceToDelete == null)
+            {
+                return;
+            }
+            else
+            {
+                Logic.RemoveDevice(currentRealEstate, deviceToDelete, allDevices, DataService.Users, DataService.XmlPath);
+            }
+        }
+        await OnHideModalDeleteDeviceConfirmationCloseClick();
+    }
+
+    private async Task OnHideModalDeleteDeviceConfirmationCloseClick()
+    {
+        await modalDeviceDelete.HideAsync();
     }
 
     private async Task OnHideModalCloseClick()
@@ -611,7 +667,7 @@
         {
             currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
         }
-    }
+    }    
 
     private void OnModalDeviceWarrantyNext()
     {

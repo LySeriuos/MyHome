@@ -259,6 +259,7 @@ namespace MyHomeBlazorApp.BlazorData
             _users = Data.GetUsersListFromXml(_path);
             // is it good practise to do like this?
             Users = _users;
+            XmlPath = _path;
             // manually assigned test data
             int userId = 2;
             int realEstateID = 1;
@@ -281,6 +282,7 @@ namespace MyHomeBlazorApp.BlazorData
         // I guess these should be as Parameters 
 
         public List<UserProfile> Users { get; set; } = new List<UserProfile>();
+        public string XmlPath { get; set; } = string.Empty;
         public List<DeviceProfile> Devices { get; set; } = new List<DeviceProfile>();
         public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile Device { get; set; } = new DeviceProfile();

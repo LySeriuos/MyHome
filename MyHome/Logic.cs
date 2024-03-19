@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Security.Cryptography;
 using QRCoder;
 using MyHome.Models;
+using System.IO;
 
 namespace MyHome
 {
@@ -139,12 +140,10 @@ namespace MyHome
         /// <param name="deviceID">context Device ID</param>
         /// <param name="user">Current User</param>
         /// <returns>bool if it was removed true if not false</returns>
-        public static void RemoveDevice(int deviceID, UserProfile user)
+        public static void RemoveDevice(RealEstate currentRealEstate, DeviceProfile deviceToDelete, List<DeviceProfile> devices, List<UserProfile> _users, string _path)
         {
-            List<DeviceProfile> devices = user.GetAllDevices();
-            DeviceProfile foundDevice = devices.Where(d => d.DeviceID == deviceID).FirstOrDefault();
-            devices.Remove(foundDevice);
-            devices = user.GetAllDevices();
+            currentRealEstate.DevicesProfiles.Remove(deviceToDelete);
+            Data.SaveUsersListToXml(_users, _path);
         }
 
         /// <summary>
