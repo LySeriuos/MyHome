@@ -47,7 +47,6 @@
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
             <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
             <TemplateColumn Title="Number's Extension">
-
                 <NoData Text="@context.Address.HouseNumberExtension"></NoData>
             </TemplateColumn>
             <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
@@ -74,11 +73,7 @@
                 {
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 }
-            </TemplateColumn>
-
-            @* @if (DataService.CurrentUser.RealEstates.Find(r => r.RealEstateID == 0) == null)
-            { *@
-                @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
+            </TemplateColumn>            
                 <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
                 <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
                 <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
@@ -90,8 +85,7 @@
                 <TemplateColumn Title="Manual">
                     <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
                 </TemplateColumn>
-                <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-            @* } *@
+                <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />            
         </QuickGrid>
     </div>
 }
@@ -159,7 +153,6 @@
 @if (_showUnassignedTableVisible)
 {
     <div class="grid">
-
         <QuickGrid tabindex="2" Items="@DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
@@ -182,11 +175,9 @@
             </TemplateColumn>
             <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
         </QuickGrid>
-
-
     </div>
 }
-0
+
 
 <!--#region Edit Form Modals  -->
 
@@ -292,13 +283,6 @@
         <BodyTemplate>
             <p class="text-danger">Attention! If you will delete this RealEsatate it´s devices will be removed too!</p>
             <p>Are you sure you want to delete @currentRealEstate.RealEstateName together with Devices?</p>
-            @* <p>Two options for Devices: </p> *@
-            @* <div class="row">
-            <Button>Move Devices</Button>
-            </div>
-            <div class="row">
-            <Button>Keep Unassigned</Button>
-            </div> *@
         </BodyTemplate>
         <FooterTemplate>
             <Button @onclick="()=> OnShowModalReasignDevices(currentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
@@ -323,8 +307,6 @@
                     <select class="form-control form-select" @bind="@SelectedRealEstateID">
                         <Button data-toggle="dropdown"></Button>
                         <option selected disabled value="-1">@_chooseOptionValue</option>
-
-                        @* check if this is good code *@
                         @foreach (RealEstate r in currentUser.RealEstates)
                         {
                             if (r.RealEstateID != currentRealEstate.RealEstateID && r.RealEstateID != 0)
@@ -333,8 +315,6 @@
                             }
                             else
                             {
-                                @* this overriding default value *@
-                                @* _chooseOptionValue = "Nothing to choose!"; *@
                                 continue;
                             }
                         }
