@@ -73,19 +73,19 @@
                 {
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 }
-            </TemplateColumn>            
-                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-                <TemplateColumn Title="Manual">
-                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
-                </TemplateColumn>
-                <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />            
+            </TemplateColumn>
+            <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+            <TemplateColumn Title="Manual">
+                <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+            </TemplateColumn>
+            <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
         </QuickGrid>
     </div>
 }
@@ -357,7 +357,7 @@
         </BodyTemplate>
         <FooterTemplate>
             <Button @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
-            <Button @onclick="OnShowModalReasignDevicesClose">Cancel</Button>            
+            <Button @onclick="()=>DeleteDevice_Click(false)">Cancel</Button>
         </FooterTemplate>
     </Modal>
 </div>
@@ -480,7 +480,6 @@
         int RealEsatateHasChosedDeviceId = DataService.GetRealEstateByDeviceID(deviceId);
         currentDevice = DataService.Devices.First(d => d.DeviceID == deviceId);
         currentRealEstate = DataService.CurrentUser.RealEstates.First(r => r.RealEstateID == RealEsatateHasChosedDeviceId);
-        
         await modalDeviceDelete.ShowAsync();
     }
 
@@ -490,24 +489,14 @@
         {
             // manualy assigned value!
             List<DeviceProfile> allDevices = DataService.Devices;
-            DeviceProfile deviceToDelete = new();
-            if (allDevices == null)
-            {
-                // should be message that device doesn't exist.
-                return;
-            }
-            else
-            {
-                deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
-            }
-
-            if (deviceToDelete == null)
-            {
-                return;
-            }
-            else
+            DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
+            if (allDevices != null && deviceToDelete != null)
             {
                 Logic.RemoveDevice(currentRealEstate, deviceToDelete, allDevices, DataService.Users, DataService.XmlPath);
+            }
+            else
+            {
+                return;
             }
         }
         await OnHideModalDeleteDeviceConfirmationCloseClick();
@@ -667,7 +656,7 @@
         {
             currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
         }
-    }    
+    }
 
     private void OnModalDeviceWarrantyNext()
     {
