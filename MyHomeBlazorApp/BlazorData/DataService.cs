@@ -127,7 +127,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile GetDeviceById(int id)
         {
             DeviceProfile device = new DeviceProfile();
-            device = Devices.First(Device => Device.DeviceID == id);
+            device = Devices.FirstOrDefault(Device => Device.DeviceID == id);
             return device;
         }
 
