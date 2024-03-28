@@ -194,8 +194,6 @@
                                    @bind-Value="currentRealEstate.RealEstateName"/>
                     </div>
                 </div>
-
-
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="true" />
             </EditForm>            
         </BodyTemplate>
@@ -255,13 +253,16 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
+            <EditForm Model="@currentDevice">
             <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
-            <AddressComponent CurrentObjectAddress="@shopAddress" />
+            <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
+                <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
+                <Button Color="ButtonColor.Primary">Save changes</Button>
+            </EditForm>
         </BodyTemplate>
         <FooterTemplate>
-            <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
-            <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
-            <Button Color="ButtonColor.Primary">Save changes</Button>
+            
         </FooterTemplate>
     </Modal>
 </div>
