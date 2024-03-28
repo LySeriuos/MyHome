@@ -184,8 +184,8 @@
 <div class="row">
     <Modal @ref="modalRealEstate" Title="Edit Real Estate Address">
         <BodyTemplate>
-            <EditForm id="realEstateForm" method="get" Model="DataService.RealEstates.AsQueryable()" OnValidSubmit=@ValidFormSubmitted OnInvalidSubmit=@InvalidFormSubmitted>
-                
+            <EditForm id="realEstateForm123" method="get" Model="DataService.RealEstates.AsQueryable()" OnValidSubmit="@ValidFormSubmitted" OnInvalidSubmit="@InvalidFormSubmitted">
+
                 <div class="form-group row">
                     <label for="realEstateName" class="col-sm-2 col-form-label">
                         Real Estate Name
@@ -216,7 +216,7 @@
             }
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
             @* The button to submit/update form *@
-            <Button form="realEstateForm123" Type="ButtonType.Submit" Color="ButtonColor.Primary"  @onclick="@FormSubmit">Save changes</Button>
+            <Button form="realEstateForm123" Type="ButtonType.Submit" Color="ButtonColor.Primary">Save changes</Button>
         </FooterTemplate>
     </Modal>
 </div>
@@ -375,48 +375,6 @@
         set { selectedRealEstateID = value; }
     }
 
-    // public RealEstate realEstate = new();
-    // public static EditContext editContext;
-    // public Details
-    // {
-    //     editContext = EditContext(realEstate);
-    // }
-
-    // Here is just different tests
-    public async Task FormSubmit()
-    {
-        await HandleValidSubmit();
-    }
-
-    // private Comment Model = new Comment();
-
-    public async Task HandleValidSubmit()
-    {
-        //  await Task.Delay(3000);
-
-        await Task.Run(() =>
-        {
-            // Console.WriteLine("Saving...");
-            // Console.WriteLine(Model.Name);
-            // Console.WriteLine(Model.Text);
-        });
-
-    }
-
-    void ValidFormSubmitted(EditContext editContext)
-    {
-
-        LastSubmitResult = "OnValidSubmit was executed";
-    }
-
-    void InvalidFormSubmitted(EditContext editContext)
-    {
-
-        LastSubmitResult = "OnInvalidSubmit was executed";
-    }
-
-
-
     private string _chooseOptionValue = "Choose Real Estate";
     private int selectedRealEstateID = -1;
     private RealEstate currentRealEstateToChoose = new();
@@ -434,6 +392,18 @@
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
     bool _showUnassignedTableVisible = false;
+
+    void ValidFormSubmitted(EditContext editContext)
+    {
+        DataService.SaveUpdatedRealEstate(currentRealEstate);
+        LastSubmitResult = "OnValidSubmit was executed";
+        modalRealEstate.HideAsync();
+    }
+
+    void InvalidFormSubmitted(EditContext editContext)
+    {
+        LastSubmitResult = "OnInvalidSubmit was executed";
+    }
 
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
@@ -465,7 +435,7 @@
         selectedRealEstate = id;
     }
 
-   
+
 
 
     private Modal modalReasignDevices = default!;
@@ -535,197 +505,192 @@
             // manualy assigned value!
             List<DeviceProfile>
     allDevices = DataService.Devices;
-    DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
-    if (allDevices != null && deviceToDelete != null)
-    {
-    Logic.RemoveDevice(currentRealEstate, deviceToDelete, allDevices, DataService.Users, DataService.XmlPath);
-    }
-    else
-    {
-    return;
-    }
-    }
-    await OnHideModalDeleteDeviceConfirmationCloseClick();
+            DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
+            if (allDevices != null && deviceToDelete != null)
+            {
+                Logic.RemoveDevice(currentRealEstate, deviceToDelete, allDevices, DataService.Users, DataService.XmlPath);
+            }
+            else
+            {
+                return;
+            }
+        }
+        await OnHideModalDeleteDeviceConfirmationCloseClick();
     }
 
     private async Task OnHideModalDeleteDeviceConfirmationCloseClick()
     {
-    await modalDeviceDelete.HideAsync();
+        await modalDeviceDelete.HideAsync();
     }
 
     private async Task OnHideModalCloseClick()
     {
-    await modalRealEstateDelete.HideAsync();
+        await modalRealEstateDelete.HideAsync();
     }
 
     private void ShowRealEstatesTable()
     {
-    _showRealEstatesTableVisible = !_showRealEstatesTableVisible;
-    _showDevicesTableVisible = false;
-    _showWarrantiesTableVisible = false;
-    _showShopsTableVisible = false;
-    _showUnassignedTableVisible = false;
+        _showRealEstatesTableVisible = !_showRealEstatesTableVisible;
+        _showDevicesTableVisible = false;
+        _showWarrantiesTableVisible = false;
+        _showShopsTableVisible = false;
+        _showUnassignedTableVisible = false;
     }
     private void ShowDevicesTable()
     {
-    _showDevicesTableVisible = !_showDevicesTableVisible;
-    _showWarrantiesTableVisible = false;
-    _showShopsTableVisible = false;
-    _showRealEstatesTableVisible = false;
-    _showUnassignedTableVisible = false;
+        _showDevicesTableVisible = !_showDevicesTableVisible;
+        _showWarrantiesTableVisible = false;
+        _showShopsTableVisible = false;
+        _showRealEstatesTableVisible = false;
+        _showUnassignedTableVisible = false;
     }
     private void ShowWarrantiesTable()
     {
-    _showWarrantiesTableVisible = !_showWarrantiesTableVisible;
-    _showShopsTableVisible = false;
-    _showRealEstatesTableVisible = false;
-    _showDevicesTableVisible = false;
-    _showUnassignedTableVisible = false;
+        _showWarrantiesTableVisible = !_showWarrantiesTableVisible;
+        _showShopsTableVisible = false;
+        _showRealEstatesTableVisible = false;
+        _showDevicesTableVisible = false;
+        _showUnassignedTableVisible = false;
     }
     private void ShowShopsTable()
     {
-    _showShopsTableVisible = !_showShopsTableVisible;
-    _showRealEstatesTableVisible = false;
-    _showDevicesTableVisible = false;
-    _showWarrantiesTableVisible = false;
-    _showUnassignedTableVisible = false;
+        _showShopsTableVisible = !_showShopsTableVisible;
+        _showRealEstatesTableVisible = false;
+        _showDevicesTableVisible = false;
+        _showWarrantiesTableVisible = false;
+        _showUnassignedTableVisible = false;
     }
 
     private void ShowUnassignedTable()
     {
-    _showUnassignedTableVisible = !_showUnassignedTableVisible;
-    _showRealEstatesTableVisible = false;
-    _showDevicesTableVisible = false;
-    _showWarrantiesTableVisible = false;
-    _showShopsTableVisible = false;
+        _showUnassignedTableVisible = !_showUnassignedTableVisible;
+        _showRealEstatesTableVisible = false;
+        _showDevicesTableVisible = false;
+        _showWarrantiesTableVisible = false;
+        _showShopsTableVisible = false;
     }
 
     private string message = "";
     protected override void OnParametersSet()
     {
-    if (Tab == 1)
-    {
-    _showRealEstatesTableVisible = false;
-    ShowRealEstatesTable();
-    }
-    else if (Tab == 2)
-    {
-    ShowDevicesTable();
-    }
-    else if (Tab == 3)
-    {
-    ShowWarrantiesTable();
-    }
-    else
-    {
-    message = "There is no option";
-    }
+        if (Tab == 1)
+        {
+            _showRealEstatesTableVisible = false;
+            ShowRealEstatesTable();
+        }
+        else if (Tab == 2)
+        {
+            ShowDevicesTable();
+        }
+        else if (Tab == 3)
+        {
+            ShowWarrantiesTable();
+        }
+        else
+        {
+            message = "There is no option";
+        }
     }
 
     private Modal modalRealEstate = default!;
     private async Task OnShowModalRealEstateClick(int id)
     {
-    currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
-    currentRealEstateAddress = currentRealEstate.Address;
-    await modalRealEstate.ShowAsync();
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
+        currentRealEstateAddress = currentRealEstate.Address;
+        await modalRealEstate.ShowAsync();
     }
 
     private async Task OnHideModalRealEstateClick()
     {
-    await modalRealEstate.HideAsync();
+        await modalRealEstate.HideAsync();
     }
 
     private Modal modalEditAddDevice = default!;
 
     private async Task OnShowModalEditAddDeviceClick(int id)
     {
-    currentDevice = DataService.Devices.First(d => d.DeviceID == id);
-    await modalEditAddDevice.ShowAsync();
+        currentDevice = DataService.Devices.First(d => d.DeviceID == id);
+        await modalEditAddDevice.ShowAsync();
     }
 
     private async Task OnHideModalEditAddDeviceClick()
     {
-    await modalEditAddDevice.HideAsync();
+        await modalEditAddDevice.HideAsync();
     }
 
     private Modal modalEditAddDeviceWarranty = default!;
 
     private async Task OnShowModalEditAddDeviceWarrantyClick(int id)
     {
-    currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == id);
-    await modalEditAddDeviceWarranty.ShowAsync();
+        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == id);
+        await modalEditAddDeviceWarranty.ShowAsync();
     }
 
     private async Task OnHideModalEditAddDeviceWarrantyClick()
     {
-    await modalEditAddDeviceWarranty.HideAsync();
+        await modalEditAddDeviceWarranty.HideAsync();
     }
 
     private Modal modalEditAddShopDetails = default!;
 
     private async Task OnShowModalEditAddShopClick(int id)
     {
-    currentShopDetails = DataService.Devices.First(d => d.DeviceID == id);
-    shopAddress = currentShopDetails.DeviceWarranty.Shop.Address;
-    await modalEditAddShopDetails.ShowAsync();
+        currentShopDetails = DataService.Devices.First(d => d.DeviceID == id);
+        shopAddress = currentShopDetails.DeviceWarranty.Shop.Address;
+        await modalEditAddShopDetails.ShowAsync();
     }
 
     private async Task OnHideModalEditAddShopClick()
     {
-    await modalEditAddShopDetails.HideAsync();
+        await modalEditAddShopDetails.HideAsync();
     }
 
     // Void or async Task?
     private void OnModalRealEstateNext()
     {
-    currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
-    currentRealEstateAddress = currentRealEstate.Address;
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
+        currentRealEstateAddress = currentRealEstate.Address;
     }
 
     private void OnModalRealEstatePreviuos()
     {
-    currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID - 1);
-    currentRealEstateAddress = currentRealEstate.Address;
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID - 1);
+        currentRealEstateAddress = currentRealEstate.Address;
     }
 
     private void OnModalDeviceNext()
     {
-    if (currentDevice != null)
-    {
-    currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-    }
+        if (currentDevice != null)
+        {
+            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+        }
     }
 
     private void OnModalDevicePreviuos()
     {
-    if (currentDevice != null)
-    {
-    currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
-    }
+        if (currentDevice != null)
+        {
+            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
+        }
     }
 
     private void OnModalDeviceWarrantyNext()
     {
-    currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID + 1);
+        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID + 1);
     }
 
     private void OnModalDeviceWarrantyPreviuos()
     {
-    currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID - 1);
+        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID - 1);
     }
 
     private void OnModalDeviceShopNext()
     {
-    currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID + 1);
+        currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID + 1);
     }
 
     private void OnModalDeviceShopPreviuos()
     {
-    currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID - 1);
+        currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID - 1);
     }
-
-
-
-
-
-    }
+}
