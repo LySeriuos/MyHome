@@ -1,0 +1,23 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+
+@if (@currentDevice.DeviceID != DataService.Devices.First().DeviceID)
+{
+    <Button Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
+}
+
+@if (@currentDevice.DeviceID != DataService.Devices.Last().DeviceID)
+{
+    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
+}
+
+@code{
+    [Parameter]
+    public DeviceProfile? currentDevice {get;set;}
+    [Parameter]
+    public EventCallback OnModalDevicePreviuos { get; set; }
+    [Parameter]
+    public EventCallback OnModalDeviceNext { get; set; }
+}

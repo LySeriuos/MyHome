@@ -227,15 +227,7 @@
         <BodyTemplate>
             <EditForm Model="@currentDevice">
             <AddEditDeviceComponent Device="@currentDevice" />
-                @if (currentDevice.DeviceID != DataService.Devices.First().DeviceID)
-                {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
-                }
-
-                @if (currentDevice.DeviceID != DataService.Devices.Last().DeviceID)
-                {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
-                }
+                <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary">Save changes</Button>
             </EditForm>
@@ -248,18 +240,10 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
         <BodyTemplate>
-            <AddEditWarrantyDetails CurrentDevice="@currentWarrantyDevice" />
+            <AddEditWarrantyDetails CurrentDevice="@currentDevice" />
         </BodyTemplate>
         <FooterTemplate>
-            @if (currentWarrantyDevice.DeviceID != DataService.Devices.First().DeviceID)
-            {
-                <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceWarrantyPreviuos">Previuos</Button>
-            }
-
-            @if (currentWarrantyDevice.DeviceID != DataService.Devices.Last().DeviceID)
-            {
-                <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceWarrantyNext">Next</Button>
-            }
+            <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
             <Button Color="ButtonColor.Primary">Save changes</Button>
         </FooterTemplate>
@@ -271,19 +255,11 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
-            <AddEditShopDetailsComponent CurrentDevice="@currentShopDetails" />
+            <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
             <AddressComponent CurrentObjectAddress="@shopAddress" />
         </BodyTemplate>
         <FooterTemplate>
-            @if (currentShopDetails.DeviceID != DataService.Devices.First().DeviceID)
-            {
-                <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceShopPreviuos">Previuos</Button>
-            }
-
-            @if (currentShopDetails.DeviceID != DataService.Devices.Last().DeviceID)
-            {
-                <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceShopNext">Next</Button>
-            }
+            <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
             <Button Color="ButtonColor.Primary">Save changes</Button>
         </FooterTemplate>
@@ -393,7 +369,7 @@
     private RealEstate currentRealEstateToChoose = new();
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
-    private DeviceProfile currentWarrantyDevice = new();
+    // private DeviceProfile currentWarrantyDevice = new();
     private DeviceProfile currentShopDetails = new();
     private RealEstate currentRealEstate = new();
     private UserProfile currentUser = new();
@@ -628,7 +604,7 @@
 
     private async Task OnShowModalEditAddDeviceWarrantyClick(int id)
     {
-        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == id);
+        currentDevice = DataService.Devices.First(d => d.DeviceID == id);
         await modalEditAddDeviceWarranty.ShowAsync();
     }
 
@@ -641,8 +617,8 @@
 
     private async Task OnShowModalEditAddShopClick(int id)
     {
-        currentShopDetails = DataService.Devices.First(d => d.DeviceID == id);
-        shopAddress = currentShopDetails.DeviceWarranty.Shop.Address;
+        currentDevice = DataService.Devices.First(d => d.DeviceID == id);
+        shopAddress = currentDevice.DeviceWarranty.Shop.Address;
         await modalEditAddShopDetails.ShowAsync();
     }
 
@@ -680,23 +656,23 @@
         }
     }
 
-    private void OnModalDeviceWarrantyNext()
-    {
-        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID + 1);
-    }
+    // private void OnModalDeviceWarrantyNext()
+    // {
+    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+    // }
 
-    private void OnModalDeviceWarrantyPreviuos()
-    {
-        currentWarrantyDevice = DataService.Devices.First(d => d.DeviceID == currentWarrantyDevice.DeviceID - 1);
-    }
+    // private void OnModalDeviceWarrantyPreviuos()
+    // {
+    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
+    // }
 
-    private void OnModalDeviceShopNext()
-    {
-        currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID + 1);
-    }
+    // private void OnModalDeviceShopNext()
+    // {
+    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+    // }
 
-    private void OnModalDeviceShopPreviuos()
-    {
-        currentShopDetails = DataService.Devices.First(d => d.DeviceID == currentShopDetails.DeviceID - 1);
-    }
+    // private void OnModalDeviceShopPreviuos()
+    // {
+    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
+    // }
 }
