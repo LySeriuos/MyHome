@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,9 +33,9 @@ namespace MyHome.Models
             set { _apartamentNumber = value; }
         }
 
-
+        // """bla@1domain.tld
         private string _houseNumberExtension;
-
+        [EmailAddress]
         public string HouseNumberExtension
         {
             get { return _houseNumberExtension; }

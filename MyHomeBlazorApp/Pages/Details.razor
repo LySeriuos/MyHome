@@ -191,10 +191,12 @@
                     </label>
                     <div class="col-sm-10">
                         <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                                   @bind-Value="currentRealEstate.RealEstateName" />
+                                   @bind-Value="currentRealEstate.RealEstateName"/>
                     </div>
                 </div>
-                <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" />
+
+
+                <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="true" />
             </EditForm>            
         </BodyTemplate>
         <FooterTemplate>
@@ -223,7 +225,20 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
+            <EditForm Model="@currentDevice">
             <AddEditDeviceComponent Device="@currentDevice" />
+                @if (currentDevice.DeviceID != DataService.Devices.First().DeviceID)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
+                }
+
+                @if (currentDevice.DeviceID != DataService.Devices.Last().DeviceID)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
+                }
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
+                <Button Color="ButtonColor.Primary">Save changes</Button>
+            </EditForm>
         </BodyTemplate>
         <FooterTemplate>
         </FooterTemplate>
@@ -393,6 +408,8 @@
 
     void ValidFormSubmitted(EditContext editContext)
     {
+
+        //call form validation
         DataService.SaveUpdatedRealEstate(currentRealEstate);
         LastSubmitResult = "OnValidSubmit was executed";
         modalRealEstate.HideAsync();
