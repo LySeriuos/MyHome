@@ -185,7 +185,6 @@
     <Modal @ref="modalRealEstate" Title="Edit Real Estate Address">
         <BodyTemplate>
             <EditForm id="realEstateForm123" method="get" Model="DataService.RealEstates.AsQueryable()" OnValidSubmit="@ValidFormSubmitted" OnInvalidSubmit="@InvalidFormSubmitted">
-
                 <div class="form-group row">
                     <label for="realEstateName" class="col-sm-2 col-form-label">
                         Real Estate Name
@@ -195,8 +194,8 @@
                                    @bind-Value="currentRealEstate.RealEstateName" />
                     </div>
                 </div>
-            </EditForm>
-            <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" />
+                <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" />
+            </EditForm>            
         </BodyTemplate>
         <FooterTemplate>
             @* This is just for test purposes *@
@@ -227,7 +226,6 @@
             <AddEditDeviceComponent Device="@currentDevice" />
         </BodyTemplate>
         <FooterTemplate>
-
         </FooterTemplate>
     </Modal>
 </div>
