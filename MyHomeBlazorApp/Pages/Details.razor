@@ -223,11 +223,12 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice">
-            <AddEditDeviceComponent Device="@currentDevice" />
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted">
+                @* Add eventcallback to the editform components to be able to save all updates *@
+                <AddEditDeviceComponent Device="@currentDevice" />
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
-                <Button Color="ButtonColor.Primary">Save changes</Button>
+                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
         <FooterTemplate>
@@ -238,13 +239,13 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
         <BodyTemplate>
-            <AddEditWarrantyDetails CurrentDevice="@currentDevice" />
+            <EditForm Model="@currentDevice">
+                <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
+                <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
+                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+            </EditForm>            
         </BodyTemplate>
-        <FooterTemplate>
-            <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
-            <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
-            <Button Color="ButtonColor.Primary">Save changes</Button>
-        </FooterTemplate>
     </Modal>
 </div>
 
@@ -258,7 +259,7 @@
             <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
-                <Button Color="ButtonColor.Primary">Save changes</Button>
+                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
         <FooterTemplate>
@@ -385,16 +386,19 @@
 
     void ValidFormSubmitted(EditContext editContext)
     {
-
         //call form validation
         DataService.SaveUpdatedRealEstate(currentRealEstate);
         LastSubmitResult = "OnValidSubmit was executed";
         modalRealEstate.HideAsync();
+        modalEditAddDevice.HideAsync();
+        modalEditAddShopDetails.HideAsync();
+        modalEditAddDeviceWarranty.HideAsync();
     }
 
     void InvalidFormSubmitted(EditContext editContext)
     {
         LastSubmitResult = "OnInvalidSubmit was executed";
+        
     }
 
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
