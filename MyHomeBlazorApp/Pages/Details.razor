@@ -239,7 +239,7 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice">
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted">
                 <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
@@ -254,7 +254,7 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice">
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted">
             <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
             <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
@@ -262,8 +262,7 @@
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
-        <FooterTemplate>
-            
+        <FooterTemplate>            
         </FooterTemplate>
     </Modal>
 </div>
