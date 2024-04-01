@@ -9,16 +9,19 @@ namespace MyHome.Models
 {
     public class DeviceWarranty
     {
-        private TimeSpan _warrantyPeriod;
+       public DateTime now = DateTime.Now;
 
+        private TimeSpan _warrantyPeriod;
         public TimeSpan WarrantyPeriod
-        {
-            get { return _warrantyPeriod; }
+        {           
+            get
+            {
+                return now.AddYears(_years) - now;
+            }
             set { _warrantyPeriod = value; }
         }
 
         private int _years;
-
         public int Years
         {
             get { return _years; }
@@ -29,7 +32,7 @@ namespace MyHome.Models
         {
             get
             {
-                return _purchaseDate + _warrantyPeriod + _extendedWarranty;
+                return _purchaseDate.AddYears(_years + _extendedWarrantyinYears);
             }
         }
 
@@ -49,9 +52,7 @@ namespace MyHome.Models
             set { _shop = value; }
         }
 
-
-        [Required]  
-
+        [Required]
         private DateTime _purchaseDate = DateTime.Now;
 
         public DateTime PurchaseDate
@@ -68,12 +69,12 @@ namespace MyHome.Models
             set { _extraDeviceInsuranceLink = value; }
         }
 
-        private TimeSpan _extendedWarranty;
+        private TimeSpan _extraInsuranceWarrantyLenght;
 
         public TimeSpan ExtraInsuranceWarrantyLenght
         {
-            get { return _extendedWarranty; }
-            set { _extendedWarranty = value; }
+            get { return now.AddYears(_extendedWarrantyinYears) - now; }
+            set { _extraInsuranceWarrantyLenght = value; }
         }
 
         private int _extendedWarrantyinYears;
@@ -87,7 +88,7 @@ namespace MyHome.Models
 
         public override string ToString()
         {
-            return _warrantyPeriod.ToString("%d") + " " + _purchaseDate.ToShortDateString() + " " + " " + _extendedWarranty.ToString("%d");
+            return _warrantyPeriod.ToString("%d") + " " + _purchaseDate.ToShortDateString() + " " + " " + _extraInsuranceWarrantyLenght.ToString("%d");
         }
 
 

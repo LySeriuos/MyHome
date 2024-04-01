@@ -382,7 +382,7 @@
     void ValidFormSubmitted(EditContext editContext)
     {
         //call form validation
-        DataService.SaveUpdatedRealEstate(currentRealEstate);
+        DataService.SaveUpdatedRealEstate();
         LastSubmitResult = "OnValidSubmit was executed";
         modalRealEstate.HideAsync();
         modalEditAddDevice.HideAsync();

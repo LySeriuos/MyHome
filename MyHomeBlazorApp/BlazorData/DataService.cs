@@ -187,11 +187,9 @@ namespace MyHomeBlazorApp.BlazorData
             _users = Data.GetUsersListFromXml(_path);
         }
 
-        public void SaveUpdatedRealEstate(RealEstate realEstate)
-        {
-            CurrentRealEstate = realEstate;
+        public void SaveUpdatedRealEstate()
+        {         
             Data.SaveUsersListToXml(_users, _path);
-            _users = Data.GetUsersListFromXml(_path);
         }
 
         public string GetExpiringDevice()
