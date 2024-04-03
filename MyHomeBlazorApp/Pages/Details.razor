@@ -32,8 +32,8 @@
 @if (_showRealEstatesTableVisible)
 {
     <div class="grid">
+        <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
         <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
-            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
                 <div>
                     <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
@@ -191,22 +191,32 @@
                     </label>
                     <div class="col-sm-10">
                         <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                                   @bind-Value="currentRealEstate.RealEstateName"/>
+                                   @bind-Value="currentRealEstate.RealEstateName" />
                     </div>
                 </div>
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="false" />
-                @if (currentRealEstate.RealEstateID != DataService.RealEstates.First().RealEstateID)
+                @if (CheckIfObjectIsEmpty() == false)
                 {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
-                }
-                @if (currentRealEstate.RealEstateID != DataService.RealEstates.Last().RealEstateID)
-                {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
+                    @if (currentRealEstate.RealEstateID != DataService.RealEstates.First().RealEstateID)
+                    {
+                        <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
+                    }
+                    @if (currentRealEstate.RealEstateID != DataService.RealEstates.Last().RealEstateID)
+                    {
+                        <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
+                    }
                 }
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
                 @* The button to submit/update form *@
+                @if(currentRealEstate == null || currentRealEstate.RealEstateID == 0)
+                {
+                    <Button form="realEstateForm123" Color="ButtonColor.Primary" @onclick="AddNewRealEstateOnClick">Save changes</Button>
+                }
+                else
+                {
                 <Button form="realEstateForm123" Type="ButtonType.Submit" Color="ButtonColor.Primary">Save changes</Button>
-            </EditForm>            
+                }
+            </EditForm>
         </BodyTemplate>
         <FooterTemplate>
             @* This is just for test purposes *@
@@ -242,19 +252,17 @@
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-            </EditForm>            
+            </EditForm>
         </BodyTemplate>
     </Modal>
 </div>
-
-
 <div class="row">
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
             <EditForm Model="@currentDevice" OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted">
-            <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
-            <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
+                <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
+                <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
@@ -262,7 +270,6 @@
         </BodyTemplate>
     </Modal>
 </div>
-
 <div>
     <Modal @ref="modalRealEstateDelete" Title="Delete Confirm" ShowCloseButton>
         <BodyTemplate>
@@ -378,6 +385,9 @@
     bool _showWarrantiesTableVisible = false;
     bool _showShopsTableVisible = false;
     bool _showUnassignedTableVisible = false;
+    bool _isNullOrHasNoProperties = false;
+
+
 
     void ValidFormSubmitted(EditContext editContext)
     {
@@ -393,7 +403,7 @@
     void InvalidFormSubmitted(EditContext editContext)
     {
         LastSubmitResult = "OnInvalidSubmit was executed";
-        
+
     }
 
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
@@ -485,8 +495,7 @@
         if (_confirmDeletion == true)
         {
             // manualy assigned value!
-            List<DeviceProfile>
-    allDevices = DataService.Devices;
+            List<DeviceProfile> allDevices = DataService.Devices;
             DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
             if (allDevices != null && deviceToDelete != null)
             {
@@ -582,6 +591,36 @@
         await modalRealEstate.ShowAsync();
     }
 
+    private async Task OnShowModalAddNewRealEstate()
+    {
+
+        currentRealEstate = new();
+        currentRealEstateAddress = new();
+        await modalRealEstate.ShowAsync();
+    }
+
+    public async Task AddNewRealEstateOnClick()
+    {
+        currentRealEstate.Address = currentRealEstateAddress;
+        DataService.AddNewRealEstate(currentRealEstate);
+        await modalRealEstate.HideAsync();
+        
+    }
+
+    public bool CheckIfObjectIsEmpty()
+    {
+        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
+    {
+            _isNullOrHasNoProperties = true;
+        }
+        else
+        {
+            _isNullOrHasNoProperties = false;
+        }
+
+        return _isNullOrHasNoProperties;
+    }
+
     private async Task OnHideModalRealEstateClick()
     {
         await modalRealEstate.HideAsync();
@@ -593,6 +632,7 @@
     {
         currentDevice = DataService.Devices.First(d => d.DeviceID == id);
         await modalEditAddDevice.ShowAsync();
+        
     }
 
     private async Task OnHideModalEditAddDeviceClick()
