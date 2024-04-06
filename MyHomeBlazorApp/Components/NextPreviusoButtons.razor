@@ -5,12 +5,12 @@
 
 @if (@currentDevice.DeviceID != DataService.Devices.First().DeviceID)
 {
-    <Button Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
+    <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
 }
 
 @if (@currentDevice.DeviceID != DataService.Devices.Last().DeviceID)
 {
-    <Button Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
+    <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
 }
 
 @code{

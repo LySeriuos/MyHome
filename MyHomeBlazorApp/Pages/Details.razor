@@ -59,6 +59,7 @@
 @if (_showDevicesTableVisible)
 {
     <div class="grid">
+        <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
         <QuickGrid tabindex="2" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
             <TemplateColumn>
@@ -184,7 +185,7 @@
 <div class="row">
     <Modal @ref="modalRealEstate" Title="Edit Real Estate Address">
         <BodyTemplate>
-            <EditForm id="realEstateForm123" method="get" Model="DataService.RealEstates.AsQueryable()" OnValidSubmit="@ValidFormSubmitted" OnInvalidSubmit="@InvalidFormSubmitted">
+            <EditForm id="realEstateForm123" method="get" Model="DataService.RealEstates.AsQueryable()" OnValidSubmit="@ValidRealEsatateFormSubmitted" OnInvalidSubmit="@InvalidRealEstateFormSubmitted">
                 <DataAnnotationsValidator />
                 <div class="form-group row">
                     <label for="realEstateName" class="col-sm-2 col-form-label">
@@ -228,11 +229,36 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted">
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted" OnInvalidSubmit="InvalidDeviceFormSubmitted">
                 @* Add eventcallback to the editform components to be able to save all updates *@
-                <AddEditDeviceComponent Device="@currentDevice" />
+                <AddEditDeviceComponent Device="@currentDevice" />  
+                @if (currentDevice == null || currentDevice.DeviceID == 0)
+                {
+                    <div class="row">
+                        <label for="realEstateToAddDevice" class="col-4 col-form-label">Add Device To:</label>
+                        <select id="realEstateToAddDevice" class="form-control form-select col-8" style="width: 250px;" @bind="@SelectedRealEstateID">
+                            <Button data-toggle="dropdown"></Button>
+                            <option selected disabled value="-1">@_chooseOptionValue</option>
+                            @foreach (RealEstate r in currentUser.RealEstates)
+                            {
+                                if (r.RealEstateID != currentRealEstate.RealEstateID && r.RealEstateID != 0)
+                                {
+                                    <option value="@r.RealEstateID"> @r.RealEstateName </option>
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                        </select>
+                    </div>
+                    <br>
+                }
+                else
+                {
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
+                }
+                <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
@@ -242,7 +268,7 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted">
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted" OnInvalidSubmit="InvalidDeviceFormSubmitted">
                 <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
@@ -255,7 +281,7 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted">
+            <EditForm Model="@currentDevice" @* OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted" *@>
                 <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
                 <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
@@ -386,7 +412,7 @@
 
 
 
-    void ValidFormSubmitted(EditContext editContext)
+    void ValidRealEsatateFormSubmitted(EditContext editContext)
     {
         //call form validation
         if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
@@ -396,9 +422,9 @@
         }
         else
         {
-            DataService.SaveUpdatedRealEstate();
+            DataService.SaveUpdatedObject();
         }
-        
+
         LastSubmitResult = "OnValidSubmit was executed";
         modalRealEstate.HideAsync();
         modalEditAddDevice.HideAsync();
@@ -406,10 +432,32 @@
         modalEditAddDeviceWarranty.HideAsync();
     }
 
-    void InvalidFormSubmitted(EditContext editContext)
+    void InvalidRealEstateFormSubmitted(EditContext editContext)
     {
         LastSubmitResult = "OnInvalidSubmit was executed";
+    }
 
+    void ValidDeviceFormSubmitted(EditContext editContext)
+    {
+        //call form validation
+        if (currentDevice == null || currentDevice.DeviceID == 0)
+        {            
+            DataService.AddNewDevice(currentDevice, SelectedRealEstateID);
+        }
+        else
+        {
+            DataService.SaveUpdatedObject();
+        }
+
+        LastSubmitResult = "OnValidSubmit was executed";
+        modalEditAddDevice.HideAsync();
+        modalEditAddShopDetails.HideAsync();
+        modalEditAddDeviceWarranty.HideAsync();
+    }
+
+    void InvalidDeviceFormSubmitted(EditContext editContext)
+    {
+        LastSubmitResult = "OnInvalidSubmit was executed";
     }
 
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
@@ -453,7 +501,7 @@
         if (_confirmDeletion == true)
         {
             // manualy assigned value!
-            UserProfile? currentUser = DataService.CurrentUser;
+            currentUser = DataService.CurrentUser;
             RealEstate? realEstateToDelete = new();
             if (currentUser == null)
             {
@@ -602,7 +650,6 @@
 
     private async Task OnShowModalAddNewRealEstate()
     {
-
         currentRealEstate = new();
         currentRealEstateAddress = new();
         await modalRealEstate.ShowAsync();
@@ -637,6 +684,13 @@
     }
 
     // // // // // // // //
+
+    private async Task OnShowModalAddNewDevice()
+    {
+        currentUser = DataService.CurrentUser;
+        currentDevice = new();
+        await modalEditAddDevice.ShowAsync();
+    }
 
     private async Task OnHideModalRealEstateClick()
     {

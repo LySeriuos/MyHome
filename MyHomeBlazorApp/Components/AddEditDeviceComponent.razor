@@ -7,24 +7,24 @@
 @* need to check before saving *@
 <EditForm Model=@Device>
     <div class="form-group row">
-        <label for="deviceName" class="col-sm-2 col-form-label">
+        <label for="deviceName" class="col-sm-4 col-form-label">
             Name
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <InputText id="deviceName" @bind-Value="Device.DeviceName" placeholder="Device Name" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="deviceProduser" class="col-sm-2 col-form-label">
+        <label for="deviceProduser" class="col-sm-4 col-form-label">
             Produser
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <InputText id="deviceProduser" @bind-Value="Device.DeviceProduser" placeholder="Device Produser" />
         </div>
     </div>    
     <div class="form-group row">
-        <label for="deviceType" class="col-sm-2 col-form-label">Type</label>
-        <div class="col-sm-10">
+        <label for="deviceType" class="col-sm-4 col-form-label">Type</label>
+        <div class="col-sm-8">
             <InputSelect id="deviceType" @bind-Value="Device.DeviceType" placeholder="Device Type">
                 @foreach (var type in Enum.GetValues(typeof(DeviceType)))
                 {
@@ -34,42 +34,42 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="deviceSerialNumber" class="col-sm-2 col-form-label">
+        <label for="deviceSerialNumber" class="col-sm-4 col-form-label">
             Serial Number
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <InputText id="deviceSerialNumber" @bind-Value="Device.DeviceSerialNumber" placeholder="Device Serial Number" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="deviceModelNumber" class="col-sm-2 col-form-label">
+        <label for="deviceModelNumber" class="col-sm-4 col-form-label">
             Model Number
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <InputText id="deviceModelNumber" @bind-Value="Device.DeviceModelNumber" placeholder="Device Model Number" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="deviceIpAddress" class="col-sm-2 col-form-label">
+        <label for="deviceIpAddress" class="col-sm-4 col-form-label">
             IP Address
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <InputText id="deviceIpAddress" @bind-Value="Device.IpAddress" placeholder="Device Ip Address" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="deviceMacAddress" class="col-sm-2 col-form-label">
+        <label for="deviceMacAddress" class="col-sm-4 col-form-label">
             Mac Address
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <InputText id="deviceMacAddress" @bind-Value="Device.MacAdrress" placeholder="Mac Address" />
         </div>
     </div>
     <div class="form-group row">
-        <label for="deviceManualBookLink" class="col-sm-2 col-form-label">
+        <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
             Manual Link
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <InputText id="deviceManualBookLink" @bind-Value="Device.ManualBookLink" placeholder="Device Manual Book Link" />
         </div>
     </div>    

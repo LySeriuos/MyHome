@@ -95,13 +95,14 @@ namespace MyHomeBlazorApp.BlazorData
             int maxID = devices.Max(d => d.DeviceID);
             return maxID;
         }
-        public bool AddNewDevice(DeviceProfile device)
+        public bool AddNewDevice(DeviceProfile device, int chosedRealEstateID)
         {
             //validation code (duplicates etc)
             if (true)
             {
                 device.DeviceID = Logic.GetDeviceMaxId(Devices) + 1;
-                CurrentRealEstate.DevicesProfiles.Add(device);
+                RealEstate realEstateToAddDevice = GetRealEstate(chosedRealEstateID);
+                realEstateToAddDevice.DevicesProfiles.Add(device);
                 Data.SaveUsersListToXml(_users, _path);
                 return true;
             }
@@ -187,7 +188,7 @@ namespace MyHomeBlazorApp.BlazorData
             _users = Data.GetUsersListFromXml(_path);
         }
 
-        public void SaveUpdatedRealEstate()
+        public void SaveUpdatedObject()
         {         
             Data.SaveUsersListToXml(_users, _path);
         }
