@@ -62,10 +62,17 @@
                 </CardComponent>
                 <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkTo="/details/2" LinkName="Go To Devices Details">
                     <CardTitle><h3>Devices: @DataService.Devices.Count</h3></CardTitle>
-                </CardComponent>                
+                </CardComponent>
+                @* @if(GetExpiringDevice != null)
+                {
                 <CardComponent LinkTo="/details/3" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
                     <CardTitle><h3>Warranties</h3></CardTitle>                    
-                </CardComponent>
+                    </CardComponent>
+                }
+                else
+                {
+                    DataService.CurrentUser.GetAllDevices().Last();
+                } *@
             </div>
         </div>
     </div>
@@ -78,7 +85,7 @@
 </body>
 </html>
 @code {
-    
+
     List<string> deviceItemsList = new List<string>();
     List<string> warrantyItemsList = new List<string>();
     List<string> realEstateItemsList = new List<string>();
@@ -87,9 +94,17 @@
     {
         DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;
         string deviceName = expiringWarranty.DeviceName;
-        string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
-        warrantyItemsList.Add("Expires soonest:");
-        warrantyItemsList.Add(deviceName + " " + deviceExpiringWarranty);
+        string deviceExpiringWarranty;
+        if (expiringWarranty == null)
+        {
+            deviceExpiringWarranty = "No Data";
+        }
+        else
+        {
+            deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
+            warrantyItemsList.Add("Expires soonest:");
+            warrantyItemsList.Add(deviceName + " " + deviceExpiringWarranty);
+        }
         return warrantyItemsList;
     }
 

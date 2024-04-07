@@ -32,17 +32,20 @@ namespace MyHome
                 {
                     string userDevice = device.DeviceName;
                     DeviceWarranty warranty = device.DeviceWarranty;
-                    DateTime deviceWarranty = warranty.WarrantyEnd;
-                    DateTime dateTime = DateTime.Now;
-                    TimeSpan daysCounting = deviceWarranty.Subtract(dateTime);
-
-                    if (daysCounting.Days < daysTillEnd)
+                    if(warranty != null) 
                     {
-                        expiringDevices.Add(device);
-                    }
+                        DateTime deviceWarranty = warranty.WarrantyEnd;
+                        DateTime dateTime = DateTime.Now;
+                        TimeSpan daysCounting = deviceWarranty.Subtract(dateTime);
+                        if (daysCounting.Days < daysTillEnd)
+                        {
+                            expiringDevices.Add(device);
+                        }
+                        expiringDevices = expiringDevices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).ToList();
+                    }                    
                 }
             }
-            expiringDevices = expiringDevices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).ToList();
+            
             return expiringDevices;
         }
 

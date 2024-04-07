@@ -8,7 +8,7 @@ namespace MyHome.Models
 {
     public class Shop
     {
-        private string _shopName;
+        private string _shopName = "No Data";
 
         public string ShopName
         {
@@ -16,7 +16,7 @@ namespace MyHome.Models
             set { _shopName = value; }
         }
 
-        private string _shopWebAdrress;
+        private string _shopWebAdrress = "No Data";
 
         public string ShopWebAddress
         {
@@ -31,7 +31,7 @@ namespace MyHome.Models
             set { _address = value; }
         }
 
-        private long _phoneNumber;
+        private long _phoneNumber = 00000000;
 
         public long PhoneNumber
         {

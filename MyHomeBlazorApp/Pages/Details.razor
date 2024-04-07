@@ -155,7 +155,7 @@
 {
     <div class="grid">
         <QuickGrid tabindex="2" Items="@DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
-            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form
             <TemplateColumn>
                 <div>
                     <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
@@ -163,6 +163,7 @@
                 </div>
             </TemplateColumn>
             @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
+            
             <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
             <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
@@ -281,7 +282,7 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" @* OnValidSubmit="ValidFormSubmitted" OnInvalidSubmit="InvalidFormSubmitted" *@>
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
                 <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
                 <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
@@ -451,11 +452,23 @@
 
         LastSubmitResult = "OnValidSubmit was executed";
         modalEditAddDevice.HideAsync();
-        modalEditAddShopDetails.HideAsync();
+
         modalEditAddDeviceWarranty.HideAsync();
     }
 
     void InvalidDeviceFormSubmitted(EditContext editContext)
+    {
+        LastSubmitResult = "OnInvalidSubmit was executed";
+    }
+
+    void ValidShopDetailsFormSubmitted(EditContext editcontext)
+    {
+        DataService.SaveUpdatedObject();
+        LastSubmitResult = "OnValidSubmit was executed";
+        modalEditAddShopDetails.HideAsync();
+    }
+
+    void InvalidShopDetailsFormSubmitted(EditContext editContext)
     {
         LastSubmitResult = "OnInvalidSubmit was executed";
     }
@@ -701,7 +714,7 @@
 
     private async Task OnShowModalEditAddDeviceClick(int id)
     {
-        currentDevice = DataService.Devices.First(d => d.DeviceID == id);
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
         await modalEditAddDevice.ShowAsync();
 
     }
@@ -715,7 +728,7 @@
 
     private async Task OnShowModalEditAddDeviceWarrantyClick(int id)
     {
-        currentDevice = DataService.Devices.First(d => d.DeviceID == id);
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
         await modalEditAddDeviceWarranty.ShowAsync();
     }
 
@@ -727,8 +740,9 @@
     private Modal modalEditAddShopDetails = default!;
 
     private async Task OnShowModalEditAddShopClick(int id)
-    {
-        currentDevice = DataService.Devices.First(d => d.DeviceID == id);
+    {        
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
+        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine 
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
         await modalEditAddShopDetails.ShowAsync();
     }

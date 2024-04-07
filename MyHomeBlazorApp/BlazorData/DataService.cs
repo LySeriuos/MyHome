@@ -6,6 +6,7 @@ using MyHomeBlazorApp.Pages;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 
@@ -95,21 +96,29 @@ namespace MyHomeBlazorApp.BlazorData
             int maxID = devices.Max(d => d.DeviceID);
             return maxID;
         }
-        public bool AddNewDevice(DeviceProfile device, int chosedRealEstateID)
+        public void AddNewDevice(DeviceProfile device, int chosedRealEstateID)
         {
             //validation code (duplicates etc)
-            if (true)
-            {
-                device.DeviceID = Logic.GetDeviceMaxId(Devices) + 1;
+         
+                
+                //DeviceWarranty currentWarranty = CurrentDevice.DeviceWarranty;
+                //currentWarranty.Shop = shop;
+                //Data.SaveUsersListToXml(_users, _path);
+
+                //Shop shop = CurrentDevice.DeviceWarranty.Shop;
+                //shop.Address = address;
+                Address address = new Address();
+                device.DeviceID = CurrentUser.GetAllDevices().Max(d => d.DeviceID) + 1;
+                //device.DeviceID = Logic.GetDeviceMaxId(Devices) + 1;
+                device.DeviceWarranty = new();
+                device.DeviceWarranty.Shop = new();
+                device.DeviceWarranty.Shop.Address = address;
+                //shopDetails.Address = new Address();
+                
                 RealEstate realEstateToAddDevice = GetRealEstate(chosedRealEstateID);
                 realEstateToAddDevice.DevicesProfiles.Add(device);
                 Data.SaveUsersListToXml(_users, _path);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+               
         }
 
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
@@ -162,7 +171,15 @@ namespace MyHomeBlazorApp.BlazorData
         {
             List<DeviceProfile>? devices = Devices;
             DeviceProfile? expiringDevice = new();
-            expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).First();
+            bool deviceIsNull = devices.Where(device => device.DeviceWarranty == null).Any();
+            if (deviceIsNull == true)
+            {
+                expiringDevice = new();
+            }
+            else
+            {
+                //expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).FirstOrDefault();
+            }
             return expiringDevice; // this shouldn't be marked
         }
 
@@ -195,10 +212,19 @@ namespace MyHomeBlazorApp.BlazorData
 
         public string GetExpiringDevice()
         {
-            DeviceProfile expiringWarranty = FirstExpiringDevice;
-            string deviceName = expiringWarranty.DeviceName;
-            string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
-            string firstDevice = deviceName + " " + deviceExpiringWarranty;
+            string firstDevice = "";
+            if (Device.DeviceWarranty == null)
+            {
+                Device.DeviceWarranty = new();
+            }
+            else
+            {
+                DeviceProfile expiringWarranty = FirstExpiringDevice;
+                string deviceName = expiringWarranty.DeviceName;
+                string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
+                firstDevice = deviceName + " " + deviceExpiringWarranty;
+                
+            }
             return firstDevice;
         }
         /// <summary>
