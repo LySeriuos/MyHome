@@ -7,22 +7,28 @@
 @using MyHomeBlazorApp.BlazorData;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
-@using MyHomeBlazorApp.Components
 @using BlazorBootstrap
+@using MyHomeBlazorApp.Components.TabComponents
 @inject NavigationManager uriHelper;
 @inject BlazorData.DataService DataService;
 
 
 <TabControl>
-  <TabPage Text="Tab 1">
-    <h1>The first tab</h1>
-  </TabPage>
-  <TabPage Text="Tab 2">
-    <h1>The second tab</h1>
-  </TabPage>
-  <TabPage Text="Tab 3">
-    <h1>The third tab</h1>
-  </TabPage>
+    <TabPage Text="Tab 1">
+        <h1>The first tab</h1>
+    </TabPage>
+    <TabPage Text="Tab 2">
+        <h1>The second tab</h1>
+    </TabPage>
+    <TabPage Text="Tab 3">
+        <h1>The third tab</h1>
+    </TabPage>
+    <TabPage Text="Tab 4">
+        <h1>The fourth tab</h1>
+    </TabPage>
+    <TabPage Text="Tab 5">
+        <h1>The fifth tab</h1>
+    </TabPage>
 </TabControl>
 
 
@@ -42,7 +48,6 @@
 </div>
 
 <div class="row">
-
 </div>
 
 @if (_showRealEstatesTableVisible)
@@ -172,14 +177,14 @@
     <div class="grid">
         <QuickGrid tabindex="2" Items="@DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
             @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form
-            <TemplateColumn>
-                <div>
-                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
-                    <Button Class="btn btn-outline-danger">Delete</Button>
-                </div>
-            </TemplateColumn>
-            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
-            
+        <TemplateColumn>
+        <div>
+        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
+        <Button Class="btn btn-outline-danger">Delete</Button>
+        </div>
+        </TemplateColumn>
+        @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
+
             <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
             <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
@@ -248,7 +253,7 @@
         <BodyTemplate>
             <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted" OnInvalidSubmit="InvalidDeviceFormSubmitted">
                 @* Add eventcallback to the editform components to be able to save all updates *@
-                <AddEditDeviceComponent Device="@currentDevice" />  
+                <AddEditDeviceComponent Device="@currentDevice" />
                 @if (currentDevice == null || currentDevice.DeviceID == 0)
                 {
                     <div class="row">
@@ -273,7 +278,7 @@
                 }
                 else
                 {
-                <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
+                    <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
                 }
                 <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
@@ -458,7 +463,7 @@
     {
         //call form validation
         if (currentDevice == null || currentDevice.DeviceID == 0)
-        {            
+        {
             DataService.AddNewDevice(currentDevice, SelectedRealEstateID);
         }
         else
@@ -689,7 +694,7 @@
     //     if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
     //     {
     //         currentRealEstate.Address = currentRealEstateAddress;
-    //         DataService.AddNewRealEstate(currentRealEstate);            
+    //         DataService.AddNewRealEstate(currentRealEstate);
     //     }
     //     else
     //     {
@@ -756,9 +761,9 @@
     private Modal modalEditAddShopDetails = default!;
 
     private async Task OnShowModalEditAddShopClick(int id)
-    {        
+    {
         currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
-        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine 
+        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
         await modalEditAddShopDetails.ShowAsync();
     }

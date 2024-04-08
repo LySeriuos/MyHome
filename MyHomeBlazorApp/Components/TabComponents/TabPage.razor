@@ -1,26 +1,23 @@
-﻿@using Microsoft.AspNetCore.Components.QuickGrid
-@using MyHome.Models;
-@using MyHomeBlazorApp.BlazorData;
-@using MyHome;
-@using MyHomeBlazorApp.Pages
+﻿@using BlazorBootstrap
 
 
-
-<div>This is a TabPage</div>
-@ChildContent
+@if (Parent.ActivePage == this)
+{
+    @ChildContent
+}
 
 
 
 @code {
 
     [CascadingParameter]
-    private TabControl? Parent { get; set; }    
+    private TabControl Parent { get; set; }    
 
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment ChildContent { get; set; }
     
     [Parameter]
-    string Text { get; set; }
+    public string Text { get; set; }
 
     
 
@@ -28,7 +25,8 @@
     {
         if (Parent == null)
             throw new ArgumentNullException(nameof(Parent), "TabPage must exist within a TabControl");
-        base.OnInitialized();
         Parent.AddPage(this);
+        base.OnInitialized();
+        
     }
 }
