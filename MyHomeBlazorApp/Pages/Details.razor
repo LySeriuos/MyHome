@@ -7,11 +7,23 @@
 @using MyHomeBlazorApp.BlazorData;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
-
+@using MyHomeBlazorApp.Components
 @using BlazorBootstrap
 @inject NavigationManager uriHelper;
 @inject BlazorData.DataService DataService;
 
+
+<TabControl>
+  <TabPage Text="Tab 1">
+    <h1>The first tab</h1>
+  </TabPage>
+  <TabPage Text="Tab 2">
+    <h1>The second tab</h1>
+  </TabPage>
+  <TabPage Text="Tab 3">
+    <h1>The third tab</h1>
+  </TabPage>
+</TabControl>
 
 
 <h3>Details</h3>
