@@ -359,9 +359,9 @@
     private Modal modalRealEstate = default!;
     private Modal modalRealEstateDelete = default!;
 
-    private async Task OnShowModalRealEstateClick(int id)
+    private async Task OnShowModalRealEstateClick(int realEstateID)
     {
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == realEstateID);
         currentRealEstateAddress = currentRealEstate.Address;
         await modalRealEstate.ShowAsync();
     }
@@ -538,9 +538,9 @@
         await modalEditAddDevice.ShowAsync();
     }    
 
-    private async Task OnShowModalEditDeviceClick(int id)
+    private async Task OnShowModalEditDeviceClick(int deviceID)
     {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == deviceID);
         await modalEditAddDevice.ShowAsync();
 
     }
@@ -602,9 +602,9 @@
 
     private Modal modalEditAddDeviceWarranty = default!;
 
-    private async Task OnShowModalEditAddDeviceWarrantyClick(int id)
+    private async Task OnShowModalEditAddDeviceWarrantyClick(int deviceID)
     {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == deviceID);
         await modalEditAddDeviceWarranty.ShowAsync();
     }
 
@@ -631,9 +631,9 @@
 
     private Modal modalEditAddShopDetails = default!;
     
-    private async Task OnShowModalEditAddShopClick(int id)
+    private async Task OnShowModalEditAddShopClick(int deviceID)
     {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == deviceID);
         //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
         await modalEditAddShopDetails.ShowAsync();
