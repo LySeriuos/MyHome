@@ -28,7 +28,7 @@
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteRealEstate(context.RealEstateID)">Delete</Button>
+                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalChooseOptionDeleteRealEstate(context.RealEstateID)">Delete</Button>
                     </div>
                 </TemplateColumn>
                 <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
@@ -153,12 +153,10 @@
                 </div>
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="false" />
                 @if (CheckIfRealEstateObjectIsEmpty() == false)
-                {
-                    @if (currentRealEstate.RealEstateID != DataService.RealEstates.FirstOrDefault()?.RealEstateID)
                     {
                         <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
                     }
-                    @if (currentRealEstate.RealEstateID != DataService.RealEstates.LastOrDefault()?.RealEstateID)
+                    @if (currentRealEstate.RealEstateID != DataService.RealEstates.Last()?.RealEstateID)
                     {
                         <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
                     }
@@ -381,28 +379,19 @@
     private async Task DeleteRealEstate_Click(bool _confirmDeletion)
     {
         if (_confirmDeletion == true)
-        {
-            // manualy assigned value!
-            currentUser = DataService.CurrentUser;
-            RealEstate? realEstateToDelete = new();
-            if (currentUser == null)
-            {
-                // should be message that realEstate doesn't exist.
-                return;
-            }
-            else
-            {
-                realEstateToDelete = currentUser.RealEstates.FirstOrDefault(r => r.RealEstateID == currentRealEstate.RealEstateID);
-            }
+        {          
+            //cuold be passed directly in to method to avoid unneseccary code
 
-            if (realEstateToDelete == null)
-            {
-                return;
-            }
-            else
-            {
-                DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
-            }
+            DataService.RemoveRealEstate(currentRealEstate.RealEstateID);
+
+            // if (realEstateToDelete == null)
+            // {
+            //     return;
+            // }
+            // else
+            // {
+            //     DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
+            // }
         }
         await OnHideModalDeleteRealEstateCloseClick();
     }
@@ -412,10 +401,10 @@
         await modalRealEstateDelete.HideAsync();
     }
 
-    private async Task OnShowModalDeleteRealEstate(int currentRealEstateID)
+    private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
     {
         currentUser = DataService.CurrentUser;
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstateID);
+        currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
         await modalRealEstateDelete.ShowAsync();
     }
 
@@ -435,8 +424,13 @@
 
     private void OnModalRealEstateNext()
     {
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
-        currentRealEstateAddress = currentRealEstate.Address;
+        // currentRealEstate = DataService.GetRealEstate(currentRealEstate.RealEstateID);
+        if (currentRealEstate != null)
+        {
+            currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
+            currentRealEstateAddress = currentRealEstate.Address;
+        }
+        
     }
 
     private void OnModalRealEstatePreviuos()
