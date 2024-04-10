@@ -222,7 +222,7 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted" OnInvalidSubmit="InvalidDeviceFormSubmitted">
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
                 <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
                 <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
@@ -613,25 +613,24 @@
         await modalEditAddDeviceWarranty.HideAsync();
     }
 
-    #endregion
-
-    #region Shops
-
-    void ValidShopDetailsFormSubmitted(EditContext editcontext)
+    void ValidWarrantyDetailsFormSubmitted(EditContext editcontext)
     {
-        
         DataService.SaveUpdatedObject();
         LastSubmitResult = "OnValidSubmit was executed";
-        modalEditAddShopDetails.HideAsync();
+        modalEditAddDeviceWarranty.HideAsync();
     }
 
-    void InvalidShopDetailsFormSubmitted(EditContext editContext)
+    void InvalidWarrantyDetailsFormSubmitted(EditContext editContext)
     {
         LastSubmitResult = "OnInvalidSubmit was executed";
     }
 
-    private Modal modalEditAddShopDetails = default!;
+    #endregion
 
+    #region Shops
+
+    private Modal modalEditAddShopDetails = default!;
+    
     private async Task OnShowModalEditAddShopClick(int id)
     {
         currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
@@ -643,6 +642,19 @@
     private async Task OnHideModalEditAddShopClick()
     {
         await modalEditAddShopDetails.HideAsync();
+    }
+
+    void ValidShopDetailsFormSubmitted(EditContext editcontext)
+    {
+
+        DataService.SaveUpdatedObject();
+        LastSubmitResult = "OnValidSubmit was executed";
+        modalEditAddShopDetails.HideAsync();
+    }
+
+    void InvalidShopDetailsFormSubmitted(EditContext editContext)
+    {
+        LastSubmitResult = "OnInvalidSubmit was executed";
     }
 
     #endregion
