@@ -8,52 +8,22 @@
 @using MyHome;
 @using MyHomeBlazorApp.Pages
 @using BlazorBootstrap
+@using MyHomeBlazorApp.Components
 @using MyHomeBlazorApp.Components.TabComponents
 @inject NavigationManager uriHelper;
 @inject BlazorData.DataService DataService;
 
 
-<TabControl>
-    <TabPage Text="Tab 1">
-        <h1>The first tab</h1>
-    </TabPage>
-    <TabPage Text="Tab 2">
-        <h1>The second tab</h1>
-    </TabPage>
-    <TabPage Text="Tab 3">
-        <h1>The third tab</h1>
-    </TabPage>
-    <TabPage Text="Tab 4">
-        <h1>The fourth tab</h1>
-    </TabPage>
-    <TabPage Text="Tab 5">
-        <h1>The fifth tab</h1>
-    </TabPage>
-</TabControl>
+
 
 
 <h3>Details</h3>
 
-<div class="row">
-    <div class="col mb-3">
-        <Button Class="joinBtn" @onclick="ShowRealEstatesTable">Real Estates Details</Button>
-        <Button Class="joinBtn" @onclick="ShowDevicesTable">Devices Details</Button>
-        <Button Class="joinBtn" @onclick="ShowWarrantiesTable">Warranties Details</Button>
-        <Button Class="joinBtn" @onclick="ShowShopsTable">Shops Details</Button>
-        @if (DataService.UnassignedProfile.UnassignedDevicesList.Count > 0)
-        {
-            <Button Class="joinBtn" @onclick="ShowUnassignedTable">Unassigned Devices</Button>
-        }
-    </div>
-</div>
 
-<div class="row">
-</div>
-
-@if (_showRealEstatesTableVisible)
-{
-    <div class="grid">
-        <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
+    <TabControl>
+    <TabPage Text="Real Estates">
+        <div class="grid">
+            <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
         <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
             <TemplateColumn>
                 <div>
@@ -61,8 +31,6 @@
                     <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteRealEstate(context.RealEstateID)">Delete</Button>
                 </div>
             </TemplateColumn>
-            @* getting error here, need if statement to check if value is not empty I can just add values to the address class but it is unnecessary *@
-
             <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
             <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
             <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
@@ -74,138 +42,103 @@
             <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
             <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
         </QuickGrid>
-    </div>
-}
-
-@if (_showDevicesTableVisible)
-{
-    <div class="grid">
-        <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
-        <QuickGrid tabindex="2" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
-            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
-            <TemplateColumn>
-                <div>
-                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
-                    <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
-                </div>
-            </TemplateColumn>
-
-            <TemplateColumn Title="Real Estate ID">
-                @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
-                {
-                    <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
-                }
-            </TemplateColumn>
-            <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-            <TemplateColumn Title="Manual">
-                <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
-            </TemplateColumn>
-            @* <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" /> *@
-        </QuickGrid>
-    </div>
-}
-
-@if (_showWarrantiesTableVisible)
-{
-    <div class="grid">
-        <QuickGrid tabindex="3" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
-            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
-            <TemplateColumn>
-                <div>
-                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
-                    <Button Class="btn btn-outline-danger">Delete</Button>
-                </div>
-            </TemplateColumn>
-            <TemplateColumn Title="Real Estate ID">
-                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
-            </TemplateColumn>
-            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
-            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
-            <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
-            <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-            <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
-            @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
-            <TemplateColumn Title="Receipt">
-                <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Receipt</Button>
-            </TemplateColumn>
-            <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
-            @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
-            <TemplateColumn Title="Extra's Receipt">
-                <Button class="btn btn-outline-info" href="@context.DeviceWarranty.ReceiptLink">Open Receipt</Button>
-            </TemplateColumn>
-        </QuickGrid>
-    </div>
-}
-
-@if (_showShopsTableVisible)
-{
-    <div class="grid">
-        <QuickGrid tabindex="4" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
-            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
-            <TemplateColumn>
-                <div>
-                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)">Edit</Button>
-                    <Button Class="btn btn-outline-danger">Delete</Button>
-                </div>
-            </TemplateColumn>
-            <TemplateColumn Title="Real Estate ID">
-                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
-            </TemplateColumn>
-            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
-            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
-            <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
-            <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
-            <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
-            <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
-            <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
-            <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
-            <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
-            <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
-        </QuickGrid>
-    </div>
-}
-
-@if (_showUnassignedTableVisible)
-{
-    <div class="grid">
-        <QuickGrid tabindex="2" Items="@DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
-            @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form
-        <TemplateColumn>
-        <div>
-        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
-        <Button Class="btn btn-outline-danger">Delete</Button>
         </div>
-        </TemplateColumn>
-        @* how to make output "no data" if user didn't put in details for alomst each part. Some will be   *@
-
-            <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-            <TemplateColumn Title="Manual">
-                <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
-            </TemplateColumn>
-            <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-        </QuickGrid>
-    </div>
-}
-
-
+    </TabPage>
+    <TabPage Text="Devices">
+        <div class="grid">
+            <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
+            <QuickGrid tabindex="2" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
+                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+                <TemplateColumn>
+                    <div>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
+                    </div>
+                </TemplateColumn>
+                <TemplateColumn Title="Real Estate ID">
+                    @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
+                    {
+                        <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                    }
+                </TemplateColumn>
+                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+                <TemplateColumn Title="Manual">
+                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+                </TemplateColumn>
+                @* I do not knowif I need this linein devices details *@
+                @* <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" /> *@
+            </QuickGrid>
+        </div>
+    </TabPage>
+    <TabPage Text="Devices Warranties">
+        <div class="grid">
+            <QuickGrid tabindex="3" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
+                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+                <TemplateColumn>
+                    <div>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-danger">Delete</Button>
+                    </div>
+                </TemplateColumn>
+                <TemplateColumn Title="Real Estate ID">
+                    <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                </TemplateColumn>
+                @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
+                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
+                <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+                <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
+                @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
+                <TemplateColumn Title="Receipt">
+                    <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Receipt</Button>
+                </TemplateColumn>
+                <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
+                @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
+                <TemplateColumn Title="Extra's Receipt">
+                    <Button class="btn btn-outline-info" href="@context.DeviceWarranty.ReceiptLink">Open Receipt</Button>
+                </TemplateColumn>
+            </QuickGrid>
+        </div>
+    </TabPage>
+    <TabPage Text="Shops Details">
+        <div class="grid">
+            <QuickGrid tabindex="4" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
+                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+                <TemplateColumn>
+                    <div>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-danger">Delete</Button>
+                    </div>
+                </TemplateColumn>
+                <TemplateColumn Title="Real Estate ID">
+                    <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                </TemplateColumn>
+                @* how to make output "no data" if user didn't put in details for alomst each part. Some will be empty *@
+                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
+                <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
+                <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
+                <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
+                <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
+                <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
+                <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
+                <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
+            </QuickGrid>
+        </div>
+    </TabPage>
+    </TabControl>
+    
 <!--#region Edit Form Modals  -->
 @* Here is the EditForm with button outside the form *@
 <div class="row">
-    <Modal @ref="modalRealEstate" Title="Edit Real Estate Address">
+    <Modal @ref="modalRealEstate" Title="Edit Real Estate Details">
         <BodyTemplate>
             <EditForm id="realEstateForm123" method="get" Model="DataService.RealEstates.AsQueryable()" OnValidSubmit="@ValidRealEsatateFormSubmitted" OnInvalidSubmit="@InvalidRealEstateFormSubmitted">
                 <DataAnnotationsValidator />
@@ -303,7 +236,7 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
+            <EditForm Model="@currentDevice" Context="ShopDetails" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
                 <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
                 <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
                 <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
@@ -411,27 +344,15 @@
         set { selectedRealEstateID = value; }
     }
 
-
     private string _chooseOptionValue = "Choose Real Estate";
     private int selectedRealEstateID = -1;
-    private RealEstate currentRealEstateToChoose = new();
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
-    // private DeviceProfile currentWarrantyDevice = new();
-    private DeviceProfile currentShopDetails = new();
     private RealEstate currentRealEstate = new();
     private UserProfile currentUser = new();
     private Address shopAddress = new();
-    string LastSubmitResult = "";
-    string _modalTitle = "";
-
-    bool _showRealEstatesTableVisible = true;
-    bool _showDevicesTableVisible = false;
-    bool _showWarrantiesTableVisible = false;
-    bool _showShopsTableVisible = false;
-    bool _showUnassignedTableVisible = false;
+    string LastSubmitResult = "";    string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
-
 
 
     void ValidRealEsatateFormSubmitted(EditContext editContext)
@@ -449,9 +370,6 @@
 
         LastSubmitResult = "OnValidSubmit was executed";
         modalRealEstate.HideAsync();
-        modalEditAddDevice.HideAsync();
-        modalEditAddShopDetails.HideAsync();
-        modalEditAddDeviceWarranty.HideAsync();
     }
 
     void InvalidRealEstateFormSubmitted(EditContext editContext)
@@ -473,8 +391,6 @@
 
         LastSubmitResult = "OnValidSubmit was executed";
         modalEditAddDevice.HideAsync();
-
-        modalEditAddDeviceWarranty.HideAsync();
     }
 
     void InvalidDeviceFormSubmitted(EditContext editContext)
@@ -484,6 +400,7 @@
 
     void ValidShopDetailsFormSubmitted(EditContext editcontext)
     {
+        
         DataService.SaveUpdatedObject();
         LastSubmitResult = "OnValidSubmit was executed";
         modalEditAddShopDetails.HideAsync();
@@ -608,69 +525,27 @@
         await modalRealEstateDelete.HideAsync();
     }
 
-    private void ShowRealEstatesTable()
-    {
-        _showRealEstatesTableVisible = !_showRealEstatesTableVisible;
-        _showDevicesTableVisible = false;
-        _showWarrantiesTableVisible = false;
-        _showShopsTableVisible = false;
-        _showUnassignedTableVisible = false;
-    }
-    private void ShowDevicesTable()
-    {
-        _showDevicesTableVisible = !_showDevicesTableVisible;
-        _showWarrantiesTableVisible = false;
-        _showShopsTableVisible = false;
-        _showRealEstatesTableVisible = false;
-        _showUnassignedTableVisible = false;
-    }
-    private void ShowWarrantiesTable()
-    {
-        _showWarrantiesTableVisible = !_showWarrantiesTableVisible;
-        _showShopsTableVisible = false;
-        _showRealEstatesTableVisible = false;
-        _showDevicesTableVisible = false;
-        _showUnassignedTableVisible = false;
-    }
-    private void ShowShopsTable()
-    {
-        _showShopsTableVisible = !_showShopsTableVisible;
-        _showRealEstatesTableVisible = false;
-        _showDevicesTableVisible = false;
-        _showWarrantiesTableVisible = false;
-        _showUnassignedTableVisible = false;
-    }
-
-    private void ShowUnassignedTable()
-    {
-        _showUnassignedTableVisible = !_showUnassignedTableVisible;
-        _showRealEstatesTableVisible = false;
-        _showDevicesTableVisible = false;
-        _showWarrantiesTableVisible = false;
-        _showShopsTableVisible = false;
-    }
-
     private string message = "";
-    protected override void OnParametersSet()
-    {
-        if (Tab == 1)
-        {
-            _showRealEstatesTableVisible = false;
-            ShowRealEstatesTable();
-        }
-        else if (Tab == 2)
-        {
-            ShowDevicesTable();
-        }
-        else if (Tab == 3)
-        {
-            ShowWarrantiesTable();
-        }
-        else
-        {
-            message = "There is no option";
-        }
-    }
+    // protected override void OnParametersSet()
+    // {
+    //     if (Tab == 1)
+    //     {
+    //         _showRealEstatesTableVisible = false;
+    //         ShowRealEstatesTable();
+    //     }
+    //     else if (Tab == 2)
+    //     {
+    //         ShowDevicesTable();
+    //     }
+    //     else if (Tab == 3)
+    //     {
+    //         ShowWarrantiesTable();
+    //     }
+    //     else
+    //     {
+    //         message = "There is no option";
+    //     }
+    // }
 
     // // // // // // // //
 
@@ -763,7 +638,7 @@
     private async Task OnShowModalEditAddShopClick(int id)
     {
         currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
-        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine
+        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
         await modalEditAddShopDetails.ShowAsync();
     }
