@@ -51,7 +51,7 @@
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
                     </div>
                 </TemplateColumn>
@@ -152,7 +152,7 @@
                     </div>
                 </div>
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="false" />
-                @if (CheckIfObjectIsEmpty() == false)
+                @if (CheckIfRealEstateObjectIsEmpty() == false)
                 {
                     @if (currentRealEstate.RealEstateID != DataService.RealEstates.FirstOrDefault()?.RealEstateID)
                     {
@@ -165,7 +165,6 @@
                 }
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
                 @* The button to submit/update form *@
-
                 <Button form="realEstateForm123" Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
@@ -211,9 +210,9 @@
                 }
                 else
                 {
-                    <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
+                    <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
                 }
-                <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceClick">Close</Button>
+                <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
@@ -225,7 +224,7 @@
         <BodyTemplate>
             <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted" OnInvalidSubmit="InvalidDeviceFormSubmitted">
                 <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
-                <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
+                <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
@@ -239,7 +238,7 @@
             <EditForm Model="@currentDevice" Context="ShopDetails" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
                 <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
                 <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
-                <NextPreviusoButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviusoButtons>
+                <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
@@ -255,7 +254,7 @@
         <FooterTemplate>
             <Button @onclick="()=> OnShowModalReasignDevices(currentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
             <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete With Devices</Button>
-            <Button @onclick="()=> OnHideModalCloseClick()">Cancel</Button>
+            <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button>
         </FooterTemplate>
     </Modal>
 </div>
@@ -312,7 +311,7 @@
                 </div>
                 <br />
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <Button @onclick="OnShowModalReasignDevicesClose">Cancel</Button>
+                    <Button @onclick="OnHideModalReasignDevicesClick">Cancel</Button>
                 </div>
             </div>
         </BodyTemplate>
@@ -351,100 +350,32 @@
     private RealEstate currentRealEstate = new();
     private UserProfile currentUser = new();
     private Address shopAddress = new();
-    string LastSubmitResult = "";    string _modalTitle = "";
+    string LastSubmitResult = "";    
+    string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
 
+    #region Real Estate
 
-    void ValidRealEsatateFormSubmitted(EditContext editContext)
+    private Modal modalRealEstate = default!;
+    private Modal modalRealEstateDelete = default!;
+
+    private async Task OnShowModalRealEstateClick(int id)
     {
-        //call form validation
-        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
-        {
-            currentRealEstate.Address = currentRealEstateAddress;
-            DataService.AddNewRealEstate(currentRealEstate);
-        }
-        else
-        {
-            DataService.SaveUpdatedObject();
-        }
-
-        LastSubmitResult = "OnValidSubmit was executed";
-        modalRealEstate.HideAsync();
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
+        currentRealEstateAddress = currentRealEstate.Address;
+        await modalRealEstate.ShowAsync();
     }
 
-    void InvalidRealEstateFormSubmitted(EditContext editContext)
+    private async Task OnShowModalAddNewRealEstate()
     {
-        LastSubmitResult = "OnInvalidSubmit was executed";
+        currentRealEstate = new();
+        currentRealEstateAddress = new();
+        await modalRealEstate.ShowAsync();
     }
 
-    void ValidDeviceFormSubmitted(EditContext editContext)
+    private async Task OnHideModalRealEstateClick()
     {
-        //call form validation
-        if (currentDevice == null || currentDevice.DeviceID == 0)
-        {
-            DataService.AddNewDevice(currentDevice, SelectedRealEstateID);
-        }
-        else
-        {
-            DataService.SaveUpdatedObject();
-        }
-
-        LastSubmitResult = "OnValidSubmit was executed";
-        modalEditAddDevice.HideAsync();
-    }
-
-    void InvalidDeviceFormSubmitted(EditContext editContext)
-    {
-        LastSubmitResult = "OnInvalidSubmit was executed";
-    }
-
-    void ValidShopDetailsFormSubmitted(EditContext editcontext)
-    {
-        
-        DataService.SaveUpdatedObject();
-        LastSubmitResult = "OnValidSubmit was executed";
-        modalEditAddShopDetails.HideAsync();
-    }
-
-    void InvalidShopDetailsFormSubmitted(EditContext editContext)
-    {
-        LastSubmitResult = "OnInvalidSubmit was executed";
-    }
-
-    private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
-    {
-        if (currentRealEstate != null && SelectedRealEstateID > 0)
-        {
-            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
-            await DeleteRealEstate_Click(true);
-        }
-        else
-        {
-            return;
-        }
-        await OnShowModalReasignDevicesClose();
-    }
-
-    private async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
-    {
-        if (currentRealEstate != null)
-        {
-            DataService.LeaveDevicesUnassigned(currentRealEstate);
-            await DeleteRealEstate_Click(true);
-        }
-        await OnShowModalReasignDevicesClose();
-    }
-
-    private Modal modalReasignDevices = default!;
-
-    private async Task OnShowModalReasignDevices(int currentRealEstateID)
-    {
-        await modalReasignDevices.ShowAsync();
-    }
-
-    private async Task OnShowModalReasignDevicesClose()
-    {
-        await modalReasignDevices.HideAsync();
+        await modalRealEstate.HideAsync();
     }
 
     private async Task DeleteRealEstate_Click(bool _confirmDeletion)
@@ -473,10 +404,13 @@
                 DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
             }
         }
-        await OnHideModalCloseClick();
-    }
+        await OnHideModalDeleteRealEstateCloseClick();
+    }    
 
-    private Modal modalRealEstateDelete = default!;
+    private async Task OnHideModalDeleteRealEstateCloseClick()
+    {
+        await modalRealEstateDelete.HideAsync();
+    }
 
     private async Task OnShowModalDeleteRealEstate(int currentRealEstateID)
     {
@@ -485,6 +419,59 @@
         await modalRealEstateDelete.ShowAsync();
     }
 
+    private bool CheckIfRealEstateObjectIsEmpty()
+    {
+        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
+        {
+            _isNullOrHasNoProperties = true;
+        }
+        else
+        {
+            _isNullOrHasNoProperties = false;
+        }
+
+        return _isNullOrHasNoProperties;
+    }   
+
+    private void OnModalRealEstateNext()
+    {
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
+        currentRealEstateAddress = currentRealEstate.Address;
+    }
+
+    private void OnModalRealEstatePreviuos()
+    {
+        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID - 1);
+        currentRealEstateAddress = currentRealEstate.Address;
+    }
+
+    void ValidRealEsatateFormSubmitted(EditContext editContext)
+    {
+        //call form validation
+        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
+        {
+            currentRealEstate.Address = currentRealEstateAddress;
+            DataService.AddNewRealEstate(currentRealEstate);
+        }
+        else
+        {
+            DataService.SaveUpdatedObject();
+        }
+
+        LastSubmitResult = "OnValidSubmit was executed";
+        modalRealEstate.HideAsync();
+    }
+
+    void InvalidRealEstateFormSubmitted(EditContext editContext)
+    {
+        LastSubmitResult = "OnInvalidSubmit was executed";
+    }
+    #endregion
+    
+    #region Devices
+
+    private Modal modalReasignDevices = default!;
+    private Modal modalEditAddDevice = default!;
     private Modal modalDeviceDelete = default!;
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
@@ -518,12 +505,149 @@
     private async Task OnHideModalDeleteDeviceConfirmationCloseClick()
     {
         await modalDeviceDelete.HideAsync();
+    }    
+
+    private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
+    {
+        if (currentRealEstate != null && SelectedRealEstateID > 0)
+        {
+            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
+            await DeleteRealEstate_Click(true);
+        }
+        else
+        {
+            return;
+        }
+        await OnHideModalReasignDevicesClick();
     }
 
-    private async Task OnHideModalCloseClick()
+    private async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
     {
-        await modalRealEstateDelete.HideAsync();
+        if (currentRealEstate != null)
+        {
+            DataService.LeaveDevicesUnassigned(currentRealEstate);
+            await DeleteRealEstate_Click(true);
+        }
+        await OnHideModalReasignDevicesClick();
     }
+
+    private async Task OnShowModalAddNewDevice()
+    {
+        currentUser = DataService.CurrentUser;
+        currentDevice = new();
+        await modalEditAddDevice.ShowAsync();
+    }    
+
+    private async Task OnShowModalEditDeviceClick(int id)
+    {
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
+        await modalEditAddDevice.ShowAsync();
+
+    }
+
+    private async Task OnHideModalEditDeviceClick()
+    {
+        await modalEditAddDevice.HideAsync();
+    }
+
+    private async Task OnShowModalReasignDevices(int currentRealEstateID)
+    {
+        await modalReasignDevices.ShowAsync();
+    }
+
+    private async Task OnHideModalReasignDevicesClick()
+    {
+        await modalReasignDevices.HideAsync();
+    }
+
+    private void OnModalDeviceNext()
+    {
+        if (currentDevice != null)
+        {
+            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+        }
+    }
+
+    private void OnModalDevicePreviuos()
+    {
+        if (currentDevice != null)
+        {
+            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
+        }
+    }
+
+    void ValidDeviceFormSubmitted(EditContext editContext)
+    {
+        //call form validation
+        if (currentDevice == null || currentDevice.DeviceID == 0)
+        {
+            DataService.AddNewDevice(currentDevice, SelectedRealEstateID);
+        }
+        else
+        {
+            DataService.SaveUpdatedObject();
+        }
+
+        LastSubmitResult = "OnValidSubmit was executed";
+        modalEditAddDevice.HideAsync();
+    }
+
+    void InvalidDeviceFormSubmitted(EditContext editContext)
+    {
+        LastSubmitResult = "OnInvalidSubmit was executed";
+    }
+    #endregion
+    
+    #region Warranties
+
+    private Modal modalEditAddDeviceWarranty = default!;
+
+    private async Task OnShowModalEditAddDeviceWarrantyClick(int id)
+    {
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
+        await modalEditAddDeviceWarranty.ShowAsync();
+    }
+
+    private async Task OnHideModalEditAddDeviceWarrantyClick()
+    {
+        await modalEditAddDeviceWarranty.HideAsync();
+    }
+
+    #endregion
+
+    #region Shops
+
+    void ValidShopDetailsFormSubmitted(EditContext editcontext)
+    {
+        
+        DataService.SaveUpdatedObject();
+        LastSubmitResult = "OnValidSubmit was executed";
+        modalEditAddShopDetails.HideAsync();
+    }
+
+    void InvalidShopDetailsFormSubmitted(EditContext editContext)
+    {
+        LastSubmitResult = "OnInvalidSubmit was executed";
+    }
+
+    private Modal modalEditAddShopDetails = default!;
+
+    private async Task OnShowModalEditAddShopClick(int id)
+    {
+        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
+        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
+        shopAddress = currentDevice.DeviceWarranty.Shop.Address;
+        await modalEditAddShopDetails.ShowAsync();
+    }
+
+    private async Task OnHideModalEditAddShopClick()
+    {
+        await modalEditAddShopDetails.HideAsync();
+    }
+
+    #endregion
+
+    
 
     private string message = "";
     // protected override void OnParametersSet()
@@ -549,20 +673,7 @@
 
     // // // // // // // //
 
-    private Modal modalRealEstate = default!;
-    private async Task OnShowModalRealEstateClick(int id)
-    {
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == id);
-        currentRealEstateAddress = currentRealEstate.Address;
-        await modalRealEstate.ShowAsync();
-    }
-
-    private async Task OnShowModalAddNewRealEstate()
-    {
-        currentRealEstate = new();
-        currentRealEstateAddress = new();
-        await modalRealEstate.ShowAsync();
-    }
+    
     // moved to validation method to keep one button
     // public async Task AddOrSave()
     // {
@@ -578,105 +689,8 @@
     //     await modalRealEstate.HideAsync();
     // }
 
-    public bool CheckIfObjectIsEmpty()
-    {
-        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
-        {
-            _isNullOrHasNoProperties = true;
-        }
-        else
-        {
-            _isNullOrHasNoProperties = false;
-        }
-
-        return _isNullOrHasNoProperties;
-    }
-
-    // // // // // // // //
-
-    private async Task OnShowModalAddNewDevice()
-    {
-        currentUser = DataService.CurrentUser;
-        currentDevice = new();
-        await modalEditAddDevice.ShowAsync();
-    }
-
-    private async Task OnHideModalRealEstateClick()
-    {
-        await modalRealEstate.HideAsync();
-    }
-
-    private Modal modalEditAddDevice = default!;
-
-    private async Task OnShowModalEditAddDeviceClick(int id)
-    {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
-        await modalEditAddDevice.ShowAsync();
-
-    }
-
-    private async Task OnHideModalEditAddDeviceClick()
-    {
-        await modalEditAddDevice.HideAsync();
-    }
-
-    private Modal modalEditAddDeviceWarranty = default!;
-
-    private async Task OnShowModalEditAddDeviceWarrantyClick(int id)
-    {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
-        await modalEditAddDeviceWarranty.ShowAsync();
-    }
-
-    private async Task OnHideModalEditAddDeviceWarrantyClick()
-    {
-        await modalEditAddDeviceWarranty.HideAsync();
-    }
-
-    private Modal modalEditAddShopDetails = default!;
-
-    private async Task OnShowModalEditAddShopClick(int id)
-    {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == id);
-        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
-        shopAddress = currentDevice.DeviceWarranty.Shop.Address;
-        await modalEditAddShopDetails.ShowAsync();
-    }
-
-    private async Task OnHideModalEditAddShopClick()
-    {
-        await modalEditAddShopDetails.HideAsync();
-    }
-
     // Void or async Task?
-    private void OnModalRealEstateNext()
-    {
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
-        currentRealEstateAddress = currentRealEstate.Address;
-    }
-
-    private void OnModalRealEstatePreviuos()
-    {
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID - 1);
-        currentRealEstateAddress = currentRealEstate.Address;
-    }
-
-    private void OnModalDeviceNext()
-    {
-        if (currentDevice != null)
-        {
-            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-        }
-    }
-
-    private void OnModalDevicePreviuos()
-    {
-        if (currentDevice != null)
-        {
-            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
-        }
-    }
-
+    
     // private void OnModalDeviceWarrantyNext()
     // {
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
