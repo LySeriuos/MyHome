@@ -20,28 +20,28 @@
 <h3>Details</h3>
 
 
-    <TabControl>
+<TabControl>
     <TabPage Text="Real Estates">
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
-        <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
-            <TemplateColumn>
-                <div>
-                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
-                    <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteRealEstate(context.RealEstateID)">Delete</Button>
-                </div>
-            </TemplateColumn>
-            <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
-            <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
-            <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
-            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
-            <TemplateColumn Title="Number's Extension">
-                <NoData Text="@context.Address.HouseNumberExtension"></NoData>
-            </TemplateColumn>
-            <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
-            <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
-            <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
-        </QuickGrid>
+            <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
+                <TemplateColumn>
+                    <div>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
+                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteRealEstate(context.RealEstateID)">Delete</Button>
+                    </div>
+                </TemplateColumn>
+                <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
+                <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
+                <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
+                <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
+                <TemplateColumn Title="Number's Extension">
+                    <NoData Text="@context.Address.HouseNumberExtension"></NoData>
+                </TemplateColumn>
+                <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
+                <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
+                <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
+            </QuickGrid>
         </div>
     </TabPage>
     <TabPage Text="Devices">
@@ -133,8 +133,8 @@
             </QuickGrid>
         </div>
     </TabPage>
-    </TabControl>
-    
+</TabControl>
+
 <!--#region Edit Form Modals  -->
 @* Here is the EditForm with button outside the form *@
 <div class="row">
@@ -350,7 +350,7 @@
     private RealEstate currentRealEstate = new();
     private UserProfile currentUser = new();
     private Address shopAddress = new();
-    string LastSubmitResult = "";    
+    string LastSubmitResult = "";
     string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
 
@@ -361,7 +361,7 @@
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
-        currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == realEstateID);
+        currentRealEstate = DataService.GetRealEstate(realEstateID);
         currentRealEstateAddress = currentRealEstate.Address;
         await modalRealEstate.ShowAsync();
     }
@@ -405,7 +405,7 @@
             }
         }
         await OnHideModalDeleteRealEstateCloseClick();
-    }    
+    }
 
     private async Task OnHideModalDeleteRealEstateCloseClick()
     {
@@ -431,7 +431,7 @@
         }
 
         return _isNullOrHasNoProperties;
-    }   
+    }
 
     private void OnModalRealEstateNext()
     {
@@ -467,7 +467,7 @@
         LastSubmitResult = "OnInvalidSubmit was executed";
     }
     #endregion
-    
+
     #region Devices
 
     private Modal modalReasignDevices = default!;
@@ -505,7 +505,7 @@
     private async Task OnHideModalDeleteDeviceConfirmationCloseClick()
     {
         await modalDeviceDelete.HideAsync();
-    }    
+    }
 
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
@@ -536,7 +536,7 @@
         currentUser = DataService.CurrentUser;
         currentDevice = new();
         await modalEditAddDevice.ShowAsync();
-    }    
+    }
 
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
@@ -597,7 +597,7 @@
         LastSubmitResult = "OnInvalidSubmit was executed";
     }
     #endregion
-    
+
     #region Warranties
 
     private Modal modalEditAddDeviceWarranty = default!;
@@ -630,7 +630,7 @@
     #region Shops
 
     private Modal modalEditAddShopDetails = default!;
-    
+
     private async Task OnShowModalEditAddShopClick(int deviceID)
     {
         currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == deviceID);
@@ -659,7 +659,7 @@
 
     #endregion
 
-    
+
 
     private string message = "";
     // protected override void OnParametersSet()
@@ -685,7 +685,7 @@
 
     // // // // // // // //
 
-    
+
     // moved to validation method to keep one button
     // public async Task AddOrSave()
     // {
@@ -702,7 +702,7 @@
     // }
 
     // Void or async Task?
-    
+
     // private void OnModalDeviceWarrantyNext()
     // {
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);

@@ -46,12 +46,12 @@ namespace MyHomeBlazorApp.BlazorData
 
         #endregion
         #region Real Estate
-        public RealEstate GetRealEstate(int id)
+        public RealEstate GetRealEstate(int realEstateID)
         {
             RealEstate rE = new RealEstate();
             if (RealEstates.Count > 1)
             {
-                rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == id);
+                rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
             }
             else
             {
