@@ -425,6 +425,7 @@
     private void OnModalRealEstateNext()
     {
         // currentRealEstate = DataService.GetRealEstate(currentRealEstate.RealEstateID);
+        // error, doesn't work if IDs is not continiuos number, need to fix it.
         if (currentRealEstate != null)
         {
             currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
@@ -435,6 +436,7 @@
 
     private void OnModalRealEstatePreviuos()
     {
+        // same error here
         currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID - 1);
         currentRealEstateAddress = currentRealEstate.Address;
     }
@@ -470,10 +472,11 @@
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
-        int RealEsatateHasChosedDeviceId = DataService.GetRealEstateByDeviceID(deviceId);
-        currentDevice = DataService.Devices.First(d => d.DeviceID == deviceId);
+        int ChosedRealEsatateID = DataService.GetRealEstateByDeviceID(deviceId);
+        currentDevice = DataService.GetDeviceById(deviceId);
         //move these lines to DataService method
-        currentRealEstate = DataService.CurrentUser.RealEstates.First(r => r.RealEstateID == RealEsatateHasChosedDeviceId);
+        
+        currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         await modalDeviceDelete.ShowAsync();
     }
 
@@ -534,7 +537,7 @@
 
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == deviceID);
+        currentDevice = DataService.GetDeviceById(deviceID);
         await modalEditAddDevice.ShowAsync();
 
     }
@@ -554,6 +557,7 @@
         await modalReasignDevices.HideAsync();
     }
 
+    // error with the sequences
     private void OnModalDeviceNext()
     {
         if (currentDevice != null)
@@ -598,7 +602,7 @@
 
     private async Task OnShowModalEditAddDeviceWarrantyClick(int deviceID)
     {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == deviceID);
+        currentDevice = DataService.GetDeviceById(deviceID);
         await modalEditAddDeviceWarranty.ShowAsync();
     }
 
@@ -627,7 +631,7 @@
 
     private async Task OnShowModalEditAddShopClick(int deviceID)
     {
-        currentDevice = DataService.Devices.FirstOrDefault(d => d.DeviceID == deviceID);
+        currentDevice = DataService.GetDeviceById(deviceID);
         //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
         await modalEditAddShopDetails.ShowAsync();
