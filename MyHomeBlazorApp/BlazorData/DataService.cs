@@ -223,6 +223,19 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
+        public void OnModalDeviceNext(DeviceProfile currentDevice)
+        {
+            int currentDeviceIndex = 0;
+            List<DeviceProfile> allDevices = Devices;
+            if (currentDevice != null)
+            {
+                currentDeviceIndex = allDevices.IndexOf(currentDevice);
+                currentDevice = allDevices[currentDeviceIndex + 1];
+                //one line code with linq
+                // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];            
+            }
+        }
+
         public string GetExpiringDevice()
         {
             string firstDevice = "";
@@ -313,7 +326,7 @@ namespace MyHomeBlazorApp.BlazorData
             RealEstates = CurrentUser.RealEstates;
             CurrentRealEstate = GetRealEstate(realEstateID);
             //List<DeviceProfile> _devices = currentUser.GetAllDevices();
-            Devices = CurrentUser.GetAllDevices();
+            Devices = Logic.GetAllUserDevices(CurrentUser);
             Device = LastAddedDevice();
             //UnassignedDevicesList = UnassignedDevices();
             UnassignedProfile = UnassignedDevices();

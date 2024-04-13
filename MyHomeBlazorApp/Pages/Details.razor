@@ -333,13 +333,6 @@
 
 <!--#endregion -->
 @code {
-    InputModel model = new();
-    
-    public class InputModel
-    {
-        [Required]
-        public string RealEstateName { get; set; }
-    }
 
     [Parameter]
     public int Tab { get; set; }
@@ -350,10 +343,6 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
-
- 
-
-
     private string _chooseOptionValue = "Choose Real Estate";
     private int selectedRealEstateID = -1;
     private Address currentRealEstateAddress = new();
@@ -444,7 +433,7 @@
             currentRealEstate = DataService.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID + 1);
             currentRealEstateAddress = currentRealEstate.Address;
         }
-        
+
     }
 
     private void OnModalRealEstatePreviuos()
@@ -488,7 +477,7 @@
         int ChosedRealEsatateID = DataService.GetRealEstateByDeviceID(deviceId);
         currentDevice = DataService.GetDeviceById(deviceId);
         //move these lines to DataService method
-        
+
         currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         await modalDeviceDelete.ShowAsync();
     }
@@ -498,11 +487,10 @@
         if (_confirmDeletion == true)
         {
             // manualy assigned value!
-            List<DeviceProfile> allDevices = DataService.Devices;
             DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
-            if (allDevices != null && deviceToDelete != null)
-            {
-                Logic.RemoveDevice(currentRealEstate, deviceToDelete, allDevices, DataService.Users, DataService.XmlPath);
+            if (deviceToDelete != null)
+            {                
+                Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
             }
             else
             {
@@ -573,17 +561,29 @@
     // error with the sequences
     private void OnModalDeviceNext()
     {
+        // this should be moved to DataService and to the next-previuos buttons component should be 
+        // passed currentDevice [Parameter] to use method in one place instead of changing in every copied component.
+        int currentDeviceIndex = 0;
+        List<DeviceProfile> allDevices = DataService.Devices;
         if (currentDevice != null)
-        {
-            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
+        {           
+            currentDeviceIndex = allDevices.IndexOf(currentDevice);
+            currentDevice = allDevices[currentDeviceIndex+1];
+            //one line code with linq
+            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];            
         }
     }
 
     private void OnModalDevicePreviuos()
     {
+        int currentDeviceIndex = 0;
+        List<DeviceProfile> allDevices = DataService.Devices;
         if (currentDevice != null)
         {
-            currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
+            currentDeviceIndex = allDevices.IndexOf(currentDevice);
+            currentDevice = allDevices[currentDeviceIndex -1];
+            //one line code with linq
+            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
         }
     }
 

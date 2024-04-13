@@ -143,7 +143,7 @@ namespace MyHome
         /// <param name="deviceID">context Device ID</param>
         /// <param name="user">Current User</param>
         /// <returns>bool if it was removed true if not false</returns>
-        public static void RemoveDevice(RealEstate currentRealEstate, DeviceProfile deviceToDelete, List<DeviceProfile> devices, List<UserProfile> _users, string _path)
+        public static void RemoveDevice(RealEstate currentRealEstate, DeviceProfile deviceToDelete, List<UserProfile> _users, string _path)
         {
             currentRealEstate.DevicesProfiles.Remove(deviceToDelete);
             Data.SaveUsersListToXml(_users, _path);
