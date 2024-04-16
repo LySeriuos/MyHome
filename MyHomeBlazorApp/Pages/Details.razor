@@ -578,6 +578,8 @@
     {
         int currentDeviceIndex = 0;
         List<DeviceProfile> allDevices = DataService.Devices;
+        //maybe need to sort list first by ID and then use indexing.
+        allDevices.Sort();
         if (currentDevice != null)
         {
             currentDeviceIndex = allDevices.IndexOf(currentDevice);

@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Xml;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace MyHomeBlazorApp.BlazorData
@@ -182,18 +183,24 @@ namespace MyHomeBlazorApp.BlazorData
 
         public DeviceProfile FirstExpiringWarranty()
         {
-            List<DeviceProfile>? devices = Devices;
-            DeviceProfile? expiringDevice = new();
-            bool deviceIsNull = devices.Where(device => device.DeviceWarranty == null).Any();
-            if (deviceIsNull == true)
-            {
-                expiringDevice = new();
+            List<DeviceProfile>? devicesList = RealEstates.SelectMany(d => d.DevicesProfiles).ToList();
+            //List<DeviceWarranty> warranties = DevicesWarranties;
+            List<DeviceProfile> validWarrantiesList = new();
+            var counting = 0;
+            DateTime date = DateTime.Now;
+
+            foreach (DeviceProfile device in devicesList)
+            {                
+                counting = date.CompareTo(device.DeviceWarranty.WarrantyEnd);
+                if (counting < 0)
+                {
+                    validWarrantiesList.Add(device);
+                }                
             }
-            else
-            {
-                //expiringDevice = devices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).FirstOrDefault();
-            }
-            return expiringDevice; // this shouldn't be marked
+
+            var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
+            DeviceProfile firstExpiringDevice = sortedList.First();
+            return firstExpiringDevice; // this shouldn't be marked
         }
 
         /// last added device should be matched by highest ID

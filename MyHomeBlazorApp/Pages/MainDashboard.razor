@@ -51,7 +51,7 @@
 <body>
     <div class="content">
         <div class="container-fluid">
-            <div class="row" >
+            <div class="row">
                 @* 1. link to user account details will be added later, there is no user account page yet!
                 2. All other links should be directed to exact data table! Importnant!
                 3. Updating the code here doubles the same items in the lists*@
@@ -64,16 +64,16 @@
                 <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkTo="/details/2" LinkName="Go To Devices Details">
                     <CardTitle><h3>Devices: @DataService.Devices.Count</h3></CardTitle>
                 </CardComponent>
-                @* @if(GetExpiringDevice != null)
+                @if (GetExpiringDevice != null)
                 {
-                <CardComponent LinkTo="/details/3" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
-                    <CardTitle><h3>Warranties</h3></CardTitle>                    
+                    <CardComponent LinkTo="/details/3" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
+                        <CardTitle><h3>Warranties</h3></CardTitle>
                     </CardComponent>
                 }
                 else
                 {
                     DataService.CurrentUser.GetAllDevices().Last();
-                } *@
+                }
             </div>
         </div>
     </div>
@@ -94,18 +94,19 @@
     private List<string> GetExpiringDevice()
     {
         DeviceProfile expiringWarranty = DataService.FirstExpiringDevice;
-        string deviceName = expiringWarranty.DeviceName;
-        string deviceExpiringWarranty;
-        if (expiringWarranty == null)
-        {
-            deviceExpiringWarranty = "No Data";
-        }
-        else
-        {
-            deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
-            warrantyItemsList.Add("Expires soonest:");
-            warrantyItemsList.Add(deviceName + " " + deviceExpiringWarranty);
-        }
+        // string deviceName = expiringWarranty.DeviceName;
+        // string deviceExpiringWarranty;
+        // if (expiringWarranty == null)
+        // {
+        //     deviceExpiringWarranty = "No Data";
+        // }
+        // else
+        // {
+
+        // deviceExpiringWarranty = sortedList.First().WarrantyEnd.ToShortDateString();
+        warrantyItemsList.Add("Expires soonest:");
+        warrantyItemsList.Add(expiringWarranty.DeviceName + " " + expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString());
+        // }
         return warrantyItemsList;
     }
 
@@ -130,9 +131,9 @@
     }
 
     List<string> userItemsList = new List<string>()
-    {        
+    {
         $"Today is: {DateTime.UtcNow.ToLongDateString()}"
-    }; 
+    };
 
     string userIconPath = "M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0";
     string realEstateIconPath = "M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z";
