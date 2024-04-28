@@ -184,9 +184,9 @@ namespace MyHome
         public static int GetDeviceMaxId(List<DeviceProfile> devices)
         {
             int maxID;
-            if (devices.Count == 0)
+            if (devices == null)
             {
-                maxID = 1;
+                maxID = 0;
             }
             else
             {

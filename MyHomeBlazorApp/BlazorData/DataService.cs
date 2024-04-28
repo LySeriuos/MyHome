@@ -97,29 +97,28 @@ namespace MyHomeBlazorApp.BlazorData
             int maxID = devices.Max(d => d.DeviceID);
             return maxID;
         }
-        public void AddNewDevice(DeviceProfile device, int chosedRealEstateID)
+        public void AddNewDevice(DeviceProfile deviceToAdd, int chosedRealEstateID)
         {
             //validation code (duplicates etc)
-         
-                
-                //DeviceWarranty currentWarranty = CurrentDevice.DeviceWarranty;
-                //currentWarranty.Shop = shop;
-                //Data.SaveUsersListToXml(_users, _path);
+            List<DeviceProfile> devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            int maxId = Logic.GetDeviceMaxId(devicesList);
+            deviceToAdd.DeviceID = maxId+1;
+            deviceToAdd.DeviceWarranty = new();
+            deviceToAdd.DeviceWarranty.Shop = new();
+            deviceToAdd.DeviceWarranty.Shop.Address = new();
+            RealEstate? chosedRealEstate = RealEstates.FirstOrDefault(r => r.RealEstateID == chosedRealEstateID);
+            
+            if (Devices.Any(d => d.DeviceID == deviceToAdd.DeviceID))
+            {
+                return;
+            }
+            else
+            {
+                chosedRealEstate.DevicesProfiles.Add(deviceToAdd);                
+            }
 
-                //Shop shop = CurrentDevice.DeviceWarranty.Shop;
-                //shop.Address = address;
-                Address address = new Address();
-                device.DeviceID = CurrentUser.GetAllDevices().Max(d => d.DeviceID) + 1;
-                //device.DeviceID = Logic.GetDeviceMaxId(Devices) + 1;
-                device.DeviceWarranty = new();
-                device.DeviceWarranty.Shop = new();
-                device.DeviceWarranty.Shop.Address = address;
-                //shopDetails.Address = new Address();
-                
-                RealEstate realEstateToAddDevice = GetRealEstate(chosedRealEstateID);
-                realEstateToAddDevice.DevicesProfiles.Add(device);
-                Data.SaveUsersListToXml(_users, _path);
-               
+            Data.SaveUsersListToXml(_users, _path);
+            deviceToAdd = new();
         }
 
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
@@ -136,12 +135,12 @@ namespace MyHomeBlazorApp.BlazorData
             return interval;
         }
         public DeviceProfile GetDeviceById(int id)
-        {            
+        {
             DeviceProfile currentDevice = new DeviceProfile();
             List<DeviceProfile> devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
-            foreach(DeviceProfile device in devicesList)
+            foreach (DeviceProfile device in devicesList)
             {
-                if(device.DeviceID == id)
+                if (device.DeviceID == id)
                 {
                     currentDevice = device;
                     break;
@@ -190,12 +189,12 @@ namespace MyHomeBlazorApp.BlazorData
             DateTime date = DateTime.Now;
 
             foreach (DeviceProfile device in devicesList)
-            {                
+            {
                 counting = date.CompareTo(device.DeviceWarranty.WarrantyEnd);
                 if (counting < 0)
                 {
                     validWarrantiesList.Add(device);
-                }                
+                }
             }
 
             var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
@@ -226,7 +225,7 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         public void SaveUpdatedObject()
-        {         
+        {
             Data.SaveUsersListToXml(_users, _path);
         }
 
@@ -256,7 +255,7 @@ namespace MyHomeBlazorApp.BlazorData
                 string deviceName = expiringWarranty.DeviceName;
                 string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
                 firstDevice = deviceName + " " + deviceExpiringWarranty;
-                
+
             }
             return firstDevice;
         }
@@ -333,7 +332,9 @@ namespace MyHomeBlazorApp.BlazorData
             RealEstates = CurrentUser.RealEstates;
             CurrentRealEstate = GetRealEstate(realEstateID);
             //List<DeviceProfile> _devices = currentUser.GetAllDevices();
-            Devices = Logic.GetAllUserDevices(CurrentUser);
+            //Devices = Logic.GetAllUserDevices(CurrentUser);
+            //Devices = CurrentUser.GetAllDevices();
+            Devices = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
             Device = LastAddedDevice();
             //UnassignedDevicesList = UnassignedDevices();
             UnassignedProfile = UnassignedDevices();
