@@ -23,6 +23,8 @@
 
 
 <TabControl>
+    @* itemref="@_tabControl" *@
+    @* itemref="@_realEstatePage" *@
     <TabPage Text="Real Estates">
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
@@ -49,7 +51,7 @@
     <TabPage Text="Devices">
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
-            <QuickGrid tabindex="2" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
+            <QuickGrid tabindex="2" Items="_testItems">
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
@@ -135,6 +137,7 @@
             </QuickGrid>
         </div>
     </TabPage>
+
 </TabControl>
 
 <!--#region Edit Form Modals  -->
@@ -155,13 +158,13 @@
                 </div>
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="false" />
                 @if (CheckIfRealEstateObjectIsEmpty() == false)
-                    {
-                        <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
-                    }
-                    @if (currentRealEstate.RealEstateID != DataService.RealEstates.Last()?.RealEstateID)
-                    {
-                        <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
-                    }
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
+                }
+                @if (currentRealEstate.RealEstateID != DataService.RealEstates.Last()?.RealEstateID)
+                {
+                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
+                }
                 }
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
                 @* The button to submit/update form *@
@@ -183,8 +186,9 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted" OnInvalidSubmit="InvalidDeviceFormSubmitted">
+            <EditForm Model="realEstateTest55" OnSubmit="DeviceFormSubmitted">
                 @* Add eventcallback to the editform components to be able to save all updates *@
+                <DataAnnotationsValidator />
                 <AddEditDeviceComponent Device="@currentDevice" />
                 @if (currentDevice == null || currentDevice.DeviceID == 0)
                 {
@@ -192,6 +196,7 @@
                         <label for="realEstateToAddDevice" class="col-4 col-form-label">Add Device To:</label>
                         <select id="realEstateToAddDevice" class="form-control form-select col-8" style="width: 250px;" @bind="@SelectedRealEstateID">
                             <Button data-toggle="dropdown"></Button>
+                            <ValidationMessage For="() => SelectedRealEstateID" />
                             <option selected disabled value="-1">@_chooseOptionValue</option>
                             @foreach (RealEstate r in currentUser.RealEstates)
                             {
@@ -205,7 +210,22 @@
                                 }
                             }
                         </select>
+                        <div class="form-group">
+                            <label class="form-label">Choose Real Estate</label>
+                            <InputSelect @bind-Value="realEstateTest55.RealEstateID" class="form-select">
+                                <option selected disabled value="-1">Select Real Estate...</option>
+                                @foreach (var realEstate in currentUser.RealEstates)
+                                {
+                                    <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
+                                }
+                            </InputSelect>
+                            <ValidationSummary />
+                            <ValidationMessage For="() =>realEstateTest55.RealEstateID" class="text-danger d-block" />
+                        </div>
                     </div>
+                    <p>@dropdownModel.RealEstateIdNew</p>
+                    <p>@SelectedRealEstateID</p>
+
                     <br>
                 }
                 else
@@ -329,21 +349,44 @@
     </Modal>
 </div>
 
+<Button @onclick="SortByID">DANGER</Button>
 
 
 <!--#endregion -->
 @code {
+    public RealEstate RealEstateToChose { get; set; } = new();
+
+    public class RealEstatessss
+    {
+        [Required(ErrorMessage = "Please select your country.")]
+        public int RealEstateID { get; set; }
+    }
 
     [Parameter]
     public int Tab { get; set; }
+    [Required]
+    public int? deviceID { get; set; }
+    [Required]
+    public int chosedRealEstateId { get; set; }
+
+    private DropdownModel dropdownModel = new DropdownModel();
+
+    public class DropdownModel
+    {
+        [Required(ErrorMessage = "Please select your country.")]
+        public int RealEstateIdNew { get; set; }
+    }
 
     [Parameter]
+    [Required]
     public int SelectedRealEstateID
     {
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
     private string _chooseOptionValue = "Choose Real Estate";
+    [Required]
+    RealEstate currentChosedRealEsate = new();
     private int selectedRealEstateID = -1;
     private Address currentRealEstateAddress = new();
     private DeviceProfile currentDevice = new();
@@ -353,11 +396,82 @@
     string LastSubmitResult = "";
     string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
+    IQueryable<DeviceProfile> _testItems;
+    TabControl _tabControl;
+    TabPage _realEstatePage;
+
+
+    EditContext editContext;
+    ValidationMessageStore validationMessages;
+    RealEstate realEstateTest55 { get; set; } = new();
+    bool valid;
+    void DeviceFormSubmitted(EditContext editContext)
+    {
+        //vaidate with annotations
+        valid = editContext.Validate();
+        string realEstateIdToString = dropdownModel.RealEstateIdNew.ToString();
+        var realEstateIdField = editContext.Field(nameof(realEstateTest55.RealEstateID));
+        if (realEstateTest55.RealEstateID <= 0)
+        {
+            validationMessages.Add(realEstateIdField, "You must provide a postal code");
+        }
+
+        else
+        {
+            if (currentDevice == null || currentDevice.DeviceID == 0)
+            {
+                var selectedRealEstate = currentUser.RealEstates.First(x => x.RealEstateID == realEstateTest55.RealEstateID);
+                validationMessages.Clear(realEstateIdField);
+                valid = editContext.Validate();
+                DataService.AddNewDevice(currentDevice, realEstateTest55.RealEstateID);
+            }
+            else
+            {
+                DataService.SaveUpdatedObject();
+            }
+            modalEditAddDevice.HideAsync();
+        }
+       
+
+
+
+        //check if real estate was selected
+        // bool formIsValid = false;
+        // if (currentDevice == null || currentDevice.DeviceID == 0)
+        // {
+        //     if (SelectedRealEstateID == -1)
+        //     {
+        //         formIsValid = false;
+        //         return;
+        //     }
+        //     else
+        //     {
+        //         formIsValid = editContext.Validate();
+        //         DataService.AddNewDevice(currentDevice, SelectedRealEstateID);
+        //     }
+        // }
+        // else
+        // {
+        //     formIsValid = editContext.Validate();
+        //     DataService.SaveUpdatedObject();
+        // }
+        // modalEditAddDevice.HideAsync();
+    }
+
 
     #region Real Estate
 
     private Modal modalRealEstate = default!;
     private Modal modalRealEstateDelete = default!;
+    //example
+    void SortByID()
+    {
+        _testItems = _testItems.OrderBy(i => i.DeviceID);
+    }
+    void FilterDevices(string query)
+    {
+        _testItems = _testItems.Where(i => i.DeviceName.Contains(query));
+    }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
@@ -381,7 +495,7 @@
     private async Task DeleteRealEstate_Click(bool _confirmDeletion)
     {
         if (_confirmDeletion == true)
-        {          
+        {
             //cuold be passed directly in to method to avoid unneseccary code
 
             DataService.RemoveRealEstate(currentRealEstate.RealEstateID);
@@ -475,10 +589,10 @@
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
         int ChosedRealEsatateID = DataService.GetRealEstateByDeviceID(deviceId);
+        currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         currentDevice = DataService.GetDeviceById(deviceId);
         //move these lines to DataService method
 
-        currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         await modalDeviceDelete.ShowAsync();
     }
 
@@ -489,7 +603,7 @@
             // manualy assigned value!
             DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
             if (deviceToDelete != null)
-            {                
+            {
                 Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
             }
             else
@@ -561,16 +675,16 @@
     // error with the sequences
     private void OnModalDeviceNext()
     {
-        // this should be moved to DataService and to the next-previuos buttons component should be 
+        // this should be moved to DataService and to the next-previuos buttons component should be
         // passed currentDevice [Parameter] to use method in one place instead of changing in every copied component.
         int currentDeviceIndex = 0;
         List<DeviceProfile> allDevices = DataService.Devices;
         if (currentDevice != null)
-        {           
+        {
             currentDeviceIndex = allDevices.IndexOf(currentDevice);
-            currentDevice = allDevices[currentDeviceIndex+1];
+            currentDevice = allDevices[currentDeviceIndex + 1];
             //one line code with linq
-            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];            
+            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
         }
     }
 
@@ -583,11 +697,13 @@
         if (currentDevice != null)
         {
             currentDeviceIndex = allDevices.IndexOf(currentDevice);
-            currentDevice = allDevices[currentDeviceIndex -1];
+            currentDevice = allDevices[currentDeviceIndex - 1];
             //one line code with linq
             // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
         }
     }
+
+
 
     void ValidDeviceFormSubmitted(EditContext editContext)
     {
@@ -672,29 +788,35 @@
 
     #endregion
 
-
+    protected override void OnInitialized()
+    {
+        _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        editContext = new(realEstateTest55);
+        validationMessages = new(editContext);
+        base.OnInitialized();
+    }
 
     private string message = "";
-    // protected override void OnParametersSet()
-    // {
-    //     if (Tab == 1)
-    //     {
-    //         _showRealEstatesTableVisible = false;
-    //         ShowRealEstatesTable();
-    //     }
-    //     else if (Tab == 2)
-    //     {
-    //         ShowDevicesTable();
-    //     }
-    //     else if (Tab == 3)
-    //     {
-    //         ShowWarrantiesTable();
-    //     }
-    //     else
-    //     {
-    //         message = "There is no option";
-    //     }
-    // }
+    protected override void OnParametersSet()
+    {
+        if (Tab == 1)
+        {
+            _tabControl.ActivePage = _realEstatePage;
+
+        }
+        else if (Tab == 2)
+        {
+
+        }
+        else if (Tab == 3)
+        {
+
+        }
+        else
+        {
+            message = "There is no option";
+        }
+    }
 
     // // // // // // // //
 
@@ -735,4 +857,5 @@
     // {
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
     // }
+}
 }
