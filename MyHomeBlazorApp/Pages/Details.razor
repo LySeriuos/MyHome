@@ -186,10 +186,9 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-            <EditForm Model="realEstateTest55" OnSubmit="@ValidDeviceFormSubmitted">
+            <EditForm Model="realEsatateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
                 @* Add eventcallback to the editform components to be able to save all updates *@
                 <DataAnnotationsValidator />
-
                 <AddEditDeviceComponent Device="@currentDevice" />
                 @if (currentDevice == null || currentDevice.DeviceID == 0)
                 {
@@ -213,18 +212,18 @@
                         </select> *@
                         <div class="form-group">
                             <label class="form-label">Choose Real Estate</label>
-                            <InputSelect @bind-Value="realEstateTest55.RealEstateID" class="form-select">
+                            <InputSelect @bind-Value="realEsatateToAddDevice.RealEstateID" class="form-select">
                                 <option selected disabled value="-1">Select Real Estate...</option>
                                 @foreach (var realEstate in currentUser.RealEstates)
                                 {
                                     <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
                                 }
                             </InputSelect>
-                            @* <ValidationSummary /> *@
-                            @* <ValidationMessage For="() =>realEstateTest55.RealEstateID" class="text-danger d-block" /> *@
+                            <ValidationSummary />
+                            <ValidationMessage For="() =>realEsatateToAddDevice.RealEstateID" class="text-danger d-block" />
                         </div>
                     </div>
-                    <p>@realEstateTest55.RealEstateID</p>
+                    <p>@realEsatateToAddDevice.RealEstateID</p>
                     <p>@SelectedRealEstateID</p>
 
                     <br>
@@ -240,7 +239,7 @@
     </Modal>
 </div>
 <div class="row">
-    @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
+    @* Maybe it is good to do two separate modals, one for new device and other for device editing
     <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
         <BodyTemplate>
             <EditForm Model="@currentDevice" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
@@ -381,21 +380,27 @@
     IQueryable<DeviceProfile> _testItems;
     TabControl _tabControl;
     TabPage _realEstatePage;
-    ValidationMessageStore? validationMessages;
     EditContext editContext;
-    private RealEstate realEstateTest55 { get; set; } = new();
-    public int SelectedRealEstateTestID
+    bool valid;
+
+
+    private RealEstate realEsatateToAddDevice { get; set; } = new();
+    public int realEsatateIdToAddDevice
     {
-        get => realEstateTest55.RealEstateID;
-        set { realEstateTest55.RealEstateID = value; }
+        get => realEsatateToAddDevice.RealEstateID;
+        set { realEsatateToAddDevice.RealEstateID = value; }
     }
 
-    bool valid;
-    void ValidDeviceFormSubmitted()
+    
+    void ValidDeviceFormSubmitted(EditContext editContext)
     {
-        DataService.AddNewDevice(currentDevice, SelectedRealEstateTestID);
-        currentDevice = new();
-        modalEditAddDevice.HideAsync();
+        valid = editContext.Validate();
+        if (realEsatateToAddDevice.RealEstateID != 0)
+        {
+            valid = editContext.Validate();
+            DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);
+            modalEditAddDevice.HideAsync();
+        }
     }
 
 
@@ -587,7 +592,7 @@
     private async Task OnShowModalAddNewDevice()
     {
         currentUser = DataService.CurrentUser;
-        // currentDevice = new();
+        currentDevice = new();
         await modalEditAddDevice.ShowAsync();
     }
 
@@ -714,6 +719,7 @@
     protected override void OnInitialized()
     {
         // _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        editContext = new(realEsatateToAddDevice);
         base.OnInitialized();
     }
 

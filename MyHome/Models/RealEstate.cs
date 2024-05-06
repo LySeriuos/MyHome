@@ -9,19 +9,19 @@ namespace MyHome.Models
 {
     public class RealEstate
     {
-        [Required(ErrorMessage = "Please select your country......")]
+        [Required(ErrorMessage = "Please select Real Estate to Add Device......")]
+        [Range (1, int.MaxValue)]
         private int _realEstateID;
 
-        [Required(ErrorMessage = "Please select your country.")]
         public int RealEstateID
         {
             get { return _realEstateID; }
             set { _realEstateID = value; }
         }
 
-        [Required(ErrorMessage = "Please select your country.")]
+        [Required(ErrorMessage = "Please add name for your Real Estate.")]
         private string _realEstateName;
-        [Required(ErrorMessage = "Please select your country....")]
+        [Required(ErrorMessage = "Please add name for your Real Estate.....")]
         public string RealEstateName
         {
             get { return _realEstateName; }
