@@ -13,15 +13,15 @@ namespace MyHome.Models
         [Range (1, int.MaxValue)]
         private int _realEstateID;
 
+        [Required(ErrorMessage = "Please select your country.")]
         public int RealEstateID
         {
             get { return _realEstateID; }
             set { _realEstateID = value; }
         }
 
-        [Required(ErrorMessage = "Please add name for your Real Estate.")]
         private string _realEstateName;
-        [Required(ErrorMessage = "Please add name for your Real Estate.....")]
+
         public string RealEstateName
         {
             get { return _realEstateName; }
