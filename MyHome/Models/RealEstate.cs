@@ -12,8 +12,6 @@ namespace MyHome.Models
         [Required(ErrorMessage = "Please select Real Estate to Add Device......")]
         [Range (1, int.MaxValue)]
         private int _realEstateID;
-
-        [Required(ErrorMessage = "Please select your country.")]
         public int RealEstateID
         {
             get { return _realEstateID; }
