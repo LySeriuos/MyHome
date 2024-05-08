@@ -415,23 +415,8 @@
         set { realEsatateToAddDevice.RealEstateID = value; }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
+    
     void ValidDeviceFormSubmitted(EditContext editContext)
-=======
-    
-    void ValidRealEstateToAddFormSubmitted(EditContext editContext)
->>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
-=======
-    
-    void ValidRealEstateToAddFormSubmitted(EditContext editContext)
->>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
-=======
-    
-    void ValidRealEstateToAddFormSubmitted(EditContext editContext)
->>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
     {
         valid = editContext.Validate();
         if (realEsatateToAddDevice.RealEstateID != 0)
@@ -689,17 +674,6 @@
         }
     }
 
-    void ValidDeviceFormSubmitted(EditContext editContext)
-    {
-        //call form validation
-        if (currentDevice == null || currentDevice.DeviceID == 0)
-        {
-            DataService.AddNewDevice(currentDevice, SelectedRealEstateID);
-        }
-        else
-        {
-            DataService.SaveUpdatedObject();
-        }
 
 
     #endregion
@@ -772,28 +746,27 @@
         base.OnInitialized();
     }
 
-
     private string message = "";
-    // protected override void OnParametersSet()
-    // {
-    //     if (Tab == 1)
-    //     {
-    //         _showRealEstatesTableVisible = false;
-    //         ShowRealEstatesTable();
-    //     }
-    //     else if (Tab == 2)
-    //     {
-    //         ShowDevicesTable();
-    //     }
-    //     else if (Tab == 3)
-    //     {
-    //         ShowWarrantiesTable();
-    //     }
-    //     else
-    //     {
-    //         message = "There is no option";
-    //     }
-    // }
+    protected override void OnParametersSet()
+    {
+        if (Tab == 1)
+        {
+            _tabControl.ActivePage = _realEstatePage;
+
+        }
+        else if (Tab == 2)
+        {
+
+        }
+        else if (Tab == 3)
+        {
+
+        }
+        else
+        {
+            message = "There is no option";
+        }
+    }
 
     // // // // // // // //
 
