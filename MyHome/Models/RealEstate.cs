@@ -9,9 +9,10 @@ namespace MyHome.Models
 {
     public class RealEstate
     {
-        [Required(ErrorMessage = "Please select Real Estate to Add Device......")]
-        [Range(1, int.MaxValue, ErrorMessage = "Please select Real Estate to Add Device......")]
+        
         private int _realEstateID;
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select Real Estate to Add Device.")]
         public int RealEstateID
         {
             get { return _realEstateID; }

@@ -186,36 +186,13 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted">
-                <EditForm Model="realEsatateToAddDevice" OnSubmit="@ValidRealEstateToAddFormSubmitted">
+            <EditForm Model="realEsatateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
                 @* Add eventcallback to the editform components to be able to save all updates *@
                 <DataAnnotationsValidator />
                 <AddEditDeviceComponent Device="@currentDevice" />
                 @if (currentDevice == null || currentDevice.DeviceID == 0)
                 {
                     <div class="row">
-<<<<<<< HEAD
-=======
-                        @* <label for="realEstateToAddDevice" class="col-4 col-form-label">Add Device To:</label>
-                        <select id="realEstateToAddDevice" class="form-control form-select col-8" style="width: 250px;" @bind="@SelectedRealEstateID">
-                            <Button data-toggle="dropdown"></Button>
-                            <ValidationMessage For="() => SelectedRealEstateID" />
-                            <option selected disabled value="-1">@_chooseOptionValue</option>
-                            @foreach (RealEstate r in currentUser.RealEstates)
-                            {
-                                if (r.RealEstateID != 0)
-                                {
-                                    <option value="@r.RealEstateID"> @r.RealEstateName </option>
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-                        </select>
-                    </div>
-                        </select> *@
->>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
                         <div class="form-group">
                             <label class="form-label">Choose Real Estate</label>
                             <InputSelect @bind-Value="realEsatateToAddDevice.RealEstateID" class="form-select">
@@ -360,28 +337,9 @@
 
 <!--#endregion -->
 @code {
-    public RealEstate RealEstateToChose { get; set; } = new();
-
-    public class RealEstatessss
-    {
-        [Required(ErrorMessage = "Please select your country.")]
-        public int RealEstateID { get; set; }
-    }
 
     [Parameter]
     public int Tab { get; set; }
-    [Required]
-    public int? deviceID { get; set; }
-    [Required]
-    public int chosedRealEstateId { get; set; }
-
-    private DropdownModel dropdownModel = new DropdownModel();
-
-    public class DropdownModel
-    {
-        [Required(ErrorMessage = "Please select your country.")]
-        public int RealEstateIdNew { get; set; }
-    }
 
     [Parameter]
     [Required]
@@ -415,7 +373,7 @@
         set { realEsatateToAddDevice.RealEstateID = value; }
     }
 
-    
+
     void ValidDeviceFormSubmitted(EditContext editContext)
     {
         valid = editContext.Validate();
@@ -676,6 +634,7 @@
 
 
 
+
     #endregion
 
     #region Warranties
@@ -808,3 +767,4 @@
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
     // }
 }
+        }
