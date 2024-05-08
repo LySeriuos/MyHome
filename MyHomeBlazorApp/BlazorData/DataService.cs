@@ -344,7 +344,7 @@ namespace MyHomeBlazorApp.BlazorData
             FirstExpiringDevice = FirstExpiringWarranty();
         }
 
-        [Required(ErrorMessage = "This field is Required")]
+        
         // I guess these should be as Parameters 
 
         public List<UserProfile> Users { get; set; } = new List<UserProfile>();

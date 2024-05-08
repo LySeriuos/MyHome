@@ -186,13 +186,16 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-            <EditForm Model="realEsatateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
+            <EditForm Model="@currentDevice" OnValidSubmit="ValidDeviceFormSubmitted">
+                <EditForm Model="realEsatateToAddDevice" OnSubmit="@ValidRealEstateToAddFormSubmitted">
                 @* Add eventcallback to the editform components to be able to save all updates *@
                 <DataAnnotationsValidator />
                 <AddEditDeviceComponent Device="@currentDevice" />
                 @if (currentDevice == null || currentDevice.DeviceID == 0)
                 {
                     <div class="row">
+<<<<<<< HEAD
+=======
                         @* <label for="realEstateToAddDevice" class="col-4 col-form-label">Add Device To:</label>
                         <select id="realEstateToAddDevice" class="form-control form-select col-8" style="width: 250px;" @bind="@SelectedRealEstateID">
                             <Button data-toggle="dropdown"></Button>
@@ -209,7 +212,10 @@
                                     continue;
                                 }
                             }
+                        </select>
+                    </div>
                         </select> *@
+>>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
                         <div class="form-group">
                             <label class="form-label">Choose Real Estate</label>
                             <InputSelect @bind-Value="realEsatateToAddDevice.RealEstateID" class="form-select">
@@ -241,17 +247,17 @@
 <div class="row">
     @* Maybe it is good to do two separate modals, one for new device and other for device editing
     <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
-        <BodyTemplate>
-            <EditForm Model="@currentDevice" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
-                <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
-                <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
-                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-            </EditForm>
-        </BodyTemplate>
+    <BodyTemplate>
+    <EditForm Model="@currentDevice" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
+    <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
+    <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
+    <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
+    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+    </EditForm>
+    </BodyTemplate>
     </Modal>
-</div>
-<div class="row">
+    </div>
+    <div class="row">
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
@@ -354,9 +360,28 @@
 
 <!--#endregion -->
 @code {
+    public RealEstate RealEstateToChose { get; set; } = new();
+
+    public class RealEstatessss
+    {
+        [Required(ErrorMessage = "Please select your country.")]
+        public int RealEstateID { get; set; }
+    }
 
     [Parameter]
     public int Tab { get; set; }
+    [Required]
+    public int? deviceID { get; set; }
+    [Required]
+    public int chosedRealEstateId { get; set; }
+
+    private DropdownModel dropdownModel = new DropdownModel();
+
+    public class DropdownModel
+    {
+        [Required(ErrorMessage = "Please select your country.")]
+        public int RealEstateIdNew { get; set; }
+    }
 
     [Parameter]
     [Required]
@@ -366,7 +391,6 @@
         set { selectedRealEstateID = value; }
     }
     private string _chooseOptionValue = "Choose Real Estate";
-    [Required]
     RealEstate currentChosedRealEsate = new();
     private int selectedRealEstateID = -1;
     private Address currentRealEstateAddress = new();
@@ -391,8 +415,23 @@
         set { realEsatateToAddDevice.RealEstateID = value; }
     }
 
-    
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+
     void ValidDeviceFormSubmitted(EditContext editContext)
+=======
+    
+    void ValidRealEstateToAddFormSubmitted(EditContext editContext)
+>>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
+=======
+    
+    void ValidRealEstateToAddFormSubmitted(EditContext editContext)
+>>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
+=======
+    
+    void ValidRealEstateToAddFormSubmitted(EditContext editContext)
+>>>>>>> a6f11312501b7ea176428d716d3886e3b058e475
     {
         valid = editContext.Validate();
         if (realEsatateToAddDevice.RealEstateID != 0)
@@ -650,7 +689,17 @@
         }
     }
 
-
+    void ValidDeviceFormSubmitted(EditContext editContext)
+    {
+        //call form validation
+        if (currentDevice == null || currentDevice.DeviceID == 0)
+        {
+            DataService.AddNewDevice(currentDevice, SelectedRealEstateID);
+        }
+        else
+        {
+            DataService.SaveUpdatedObject();
+        }
 
 
     #endregion
@@ -723,27 +772,28 @@
         base.OnInitialized();
     }
 
+
     private string message = "";
-    protected override void OnParametersSet()
-    {
-        if (Tab == 1)
-        {
-            _tabControl.ActivePage = _realEstatePage;
-
-        }
-        else if (Tab == 2)
-        {
-
-        }
-        else if (Tab == 3)
-        {
-
-        }
-        else
-        {
-            message = "There is no option";
-        }
-    }
+    // protected override void OnParametersSet()
+    // {
+    //     if (Tab == 1)
+    //     {
+    //         _showRealEstatesTableVisible = false;
+    //         ShowRealEstatesTable();
+    //     }
+    //     else if (Tab == 2)
+    //     {
+    //         ShowDevicesTable();
+    //     }
+    //     else if (Tab == 3)
+    //     {
+    //         ShowWarrantiesTable();
+    //     }
+    //     else
+    //     {
+    //         message = "There is no option";
+    //     }
+    // }
 
     // // // // // // // //
 
@@ -785,4 +835,3 @@
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
     // }
 }
-        }
