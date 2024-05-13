@@ -275,6 +275,22 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
 
         }
+        /// <summary>
+        /// method to move DeviceProfile from one Real Estate to Another
+        /// </summary>
+        /// <param name="deviceToMoveID">DeviceProfile by ID to change real estates</param>
+        /// <param name="currentUser">Indentified user</param>
+        /// <param name="realEstateIdToAddDevice">Real Estate ID to move DeviceProfile in</param>
+        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, UserProfile currentUser, int realEstateIdToAddDevice)
+        {
+            int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
+            DeviceProfile deviceToMove = Devices.First(d => d.DeviceID == deviceToMoveID);
+            RealEstate realEstateToMoveFrom = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToMoveFrom);
+            RealEstate realEstateToAddDevice = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
+            realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
+            realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
+            Data.SaveUsersListToXml(_users, _path);
+        }
 
         /// <summary>
         /// Main Idea is to create default Real Estate and use it to add unnasigned devices.

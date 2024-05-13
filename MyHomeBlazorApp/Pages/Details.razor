@@ -190,31 +190,31 @@
                 @* Add eventcallback to the editform components to be able to save all updates *@
                 <DataAnnotationsValidator />
                 <AddEditDeviceComponent Device="@currentDevice" />
-                @if (currentDevice == null || currentDevice.DeviceID == 0)
-                {
-                    <div class="row">
-                        <div class="form-group">
-                            <label class="form-label">Choose Real Estate</label>
-                            <InputSelect @bind-Value="realEsatateToAddDevice.RealEstateID" class="form-select">
-                                <option selected disabled value="-1">Select Real Estate...</option>
-                                @foreach (var realEstate in currentUser.RealEstates)
-                                {
-                                    <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
-                                }
-                            </InputSelect>
-                            @* <ValidationSummary /> *@
-                            <ValidationMessage For="() =>realEsatateToAddDevice.RealEstateID" class="text-danger d-block" />
-                        </div>
+                @* @if (currentDevice == null || currentDevice.DeviceID == 0)
+                { *@
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label">Choose Real Estate</label>
+                        <InputSelect @bind-Value="realEsatateToAddDevice.RealEstateID" class="form-select">
+                            <option selected disabled value="-1">Select Real Estate...</option>
+                            @foreach (var realEstate in currentUser.RealEstates)
+                            {
+                                <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
+                            }
+                        </InputSelect>
+                        @* <ValidationSummary /> *@
+                        <ValidationMessage For="() =>realEsatateToAddDevice.RealEstateID" class="text-danger d-block" />
                     </div>
-                    <p>@realEsatateToAddDevice.RealEstateID</p>
-                    <p>@SelectedRealEstateID</p>
+                </div>
+                <p>@realEsatateToAddDevice.RealEstateID</p>
+                <p>@SelectedRealEstateID</p>
 
-                    <br>
-                }
+                <br>
+                @*  }
                 else
-                {
-                    <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
-                }
+                { *@
+                <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
+                @* } *@
                 <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
@@ -377,10 +377,16 @@
     void ValidDeviceFormSubmitted(EditContext editContext)
     {
         valid = editContext.Validate();
-        if (realEsatateToAddDevice.RealEstateID != 0)
+        if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice == null)
         {
             valid = editContext.Validate();
             DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);
+            modalEditAddDevice.HideAsync();
+        }
+        else if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice != null)
+        {
+            valid = editContext.Validate();
+            DataService.MoveDeviceToOtherRealEstate(currentDevice.DeviceID, currentUser, realEsatateIdToAddDevice);
             modalEditAddDevice.HideAsync();
         }
     }
@@ -580,7 +586,9 @@
 
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
-        currentDevice = DataService.GetDeviceById(deviceID);
+        realEsatateIdToAddDevice = DataService.GetRealEstateByDeviceID(deviceID);
+        currentUser = DataService.CurrentUser;
+        currentDevice = DataService.GetDeviceById(deviceID);        
         await modalEditAddDevice.ShowAsync();
 
     }
