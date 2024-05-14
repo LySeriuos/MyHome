@@ -5,7 +5,8 @@
 
 
 @* need to check before saving *@
-<EditForm Model=@Device>
+<EditForm Model=@Device OnSubmit="@Submition">
+    <DataAnnotationsValidator />
     <div class="form-group row">
         <label for="deviceName" class="col-sm-4 col-form-label">
             Name
@@ -13,6 +14,7 @@
         <div class="col-sm-8">
             <InputText id="deviceName" @bind-Value="Device.DeviceName" placeholder="Device Name" />
         </div>
+        <ValidationSummary />
     </div>
     <div class="form-group row">
         <label for="deviceProduser" class="col-sm-4 col-form-label">
@@ -81,5 +83,6 @@
 
     [Parameter]
     public DeviceProfile? Device { get; set; }
-
+    [Parameter]
+    public EventCallback<EditContext> Submition { get; set; }
 }

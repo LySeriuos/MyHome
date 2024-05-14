@@ -189,7 +189,7 @@
             <EditForm Model="realEsatateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
                 @* Add eventcallback to the editform components to be able to save all updates *@
                 <DataAnnotationsValidator />
-                <AddEditDeviceComponent Device="@currentDevice" />
+                <AddEditDeviceComponent Device="@currentDevice" Submition="@ValidDeviceNameFormSubmitted"/>
                 @* @if (currentDevice == null || currentDevice.DeviceID == 0)
                 { *@
                 <div class="row">
@@ -202,8 +202,8 @@
                                 <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
                             }
                         </InputSelect>
-                        @* <ValidationSummary /> *@
-                        <ValidationMessage For="() =>realEsatateToAddDevice.RealEstateID" class="text-danger d-block" />
+                        <ValidationSummary />
+                        @* <ValidationMessage For="() =>realEsatateToAddDevice.RealEstateID" class="text-danger d-block" /> *@
                     </div>
                 </div>
                 <p>@realEsatateToAddDevice.RealEstateID</p>
@@ -363,29 +363,44 @@
     TabControl _tabControl;
     TabPage _realEstatePage;
     EditContext editContext;
+    EditContext editDeviceContext;
     bool valid;
+    bool validRealEstate;
+    bool validDevice;
+
 
 
     private RealEstate realEsatateToAddDevice { get; set; } = new();
+    private DeviceProfile deviceToAdd { get; set; } = new();
     public int realEsatateIdToAddDevice
     {
         get => realEsatateToAddDevice.RealEstateID;
         set { realEsatateToAddDevice.RealEstateID = value; }
     }
 
+    public string deviceName
+    {
+        get => currentDevice.DeviceName;
+        set { currentDevice.DeviceName = value; }
+    }
+
+    
 
     void ValidDeviceFormSubmitted(EditContext editContext)
     {
-        valid = editContext.Validate();
-        if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice == null)
+        validRealEstate = editContext.Validate();
+        validDevice = editDeviceContext.Validate();
+        if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID == 0 && deviceName != null)
         {
-            valid = editContext.Validate();
+            validDevice = editDeviceContext.Validate();
+            validRealEstate = editContext.Validate();
             DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);
             modalEditAddDevice.HideAsync();
         }
-        else if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice != null)
+        else if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID != 0 && deviceName != null)
         {
-            valid = editContext.Validate();
+            validDevice = editDeviceContext.Validate();
+            validRealEstate = editContext.Validate();
             DataService.MoveDeviceToOtherRealEstate(currentDevice.DeviceID, currentUser, realEsatateIdToAddDevice);
             modalEditAddDevice.HideAsync();
         }
@@ -710,6 +725,7 @@
     {
         // _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         editContext = new(realEsatateToAddDevice);
+        editDeviceContext = new(deviceToAdd);
         base.OnInitialized();
     }
 

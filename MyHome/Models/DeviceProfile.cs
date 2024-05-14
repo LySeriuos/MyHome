@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -20,7 +21,7 @@ namespace MyHome.Models
 
 
         private string _deviceName;
-
+        [Required(ErrorMessage = "Please select Real Estate to Add Device.")]
         public string DeviceName
         {
             get { return _deviceName; }
