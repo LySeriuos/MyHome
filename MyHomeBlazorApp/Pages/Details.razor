@@ -186,16 +186,16 @@
     @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-            <EditForm Model="realEsatateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
-                @* Add eventcallback to the editform components to be able to save all updates *@
+
+            <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
                 <DataAnnotationsValidator />
-                <AddEditDeviceComponent Device="@currentDevice" Submition="@ValidDeviceNameFormSubmitted"/>
+                <AddEditDeviceComponent Device="@currentDevice" EditContext="@editDeviceContext"/>
                 @* @if (currentDevice == null || currentDevice.DeviceID == 0)
                 { *@
                 <div class="row">
                     <div class="form-group">
                         <label class="form-label">Choose Real Estate</label>
-                        <InputSelect @bind-Value="realEsatateToAddDevice.RealEstateID" class="form-select">
+                        <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select">
                             <option selected disabled value="-1">Select Real Estate...</option>
                             @foreach (var realEstate in currentUser.RealEstates)
                             {
@@ -203,10 +203,10 @@
                             }
                         </InputSelect>
                         <ValidationSummary />
-                        @* <ValidationMessage For="() =>realEsatateToAddDevice.RealEstateID" class="text-danger d-block" /> *@
+                        @* <ValidationMessage For="() =>realEstateToAddDevice.RealEstateID" class="text-danger d-block" /> *@
                     </div>
                 </div>
-                <p>@realEsatateToAddDevice.RealEstateID</p>
+                <p>@realEstateToAddDevice.RealEstateID</p>
                 <p>@SelectedRealEstateID</p>
 
                 <br>
@@ -370,12 +370,12 @@
 
 
 
-    private RealEstate realEsatateToAddDevice { get; set; } = new();
+    private RealEstate realEstateToAddDevice { get; set; } = new();
     private DeviceProfile deviceToAdd { get; set; } = new();
     public int realEsatateIdToAddDevice
     {
-        get => realEsatateToAddDevice.RealEstateID;
-        set { realEsatateToAddDevice.RealEstateID = value; }
+        get => realEstateToAddDevice.RealEstateID;
+        set { realEstateToAddDevice.RealEstateID = value; }
     }
 
     public string deviceName
@@ -384,20 +384,18 @@
         set { currentDevice.DeviceName = value; }
     }
 
-    
-
     void ValidDeviceFormSubmitted(EditContext editContext)
     {
         validRealEstate = editContext.Validate();
         validDevice = editDeviceContext.Validate();
-        if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID == 0 && deviceName != null)
+        if (realEstateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID == 0 && deviceName != null)
         {
             validDevice = editDeviceContext.Validate();
             validRealEstate = editContext.Validate();
             DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);
             modalEditAddDevice.HideAsync();
         }
-        else if (realEsatateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID != 0 && deviceName != null)
+        else if (realEstateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID != 0 && deviceName != null)
         {
             validDevice = editDeviceContext.Validate();
             validRealEstate = editContext.Validate();
@@ -724,7 +722,7 @@
     protected override void OnInitialized()
     {
         // _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        editContext = new(realEsatateToAddDevice);
+        editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
         base.OnInitialized();
     }

@@ -3,9 +3,9 @@
 @using MyHome.Models
 
 
-
+@* Model="@Device" *@
 @* need to check before saving *@
-<EditForm Model=@Device OnSubmit="@Submition">
+<EditForm EditContext="@EditContext" OnSubmit="@Submition">
     <DataAnnotationsValidator />
     <div class="form-group row">
         <label for="deviceName" class="col-sm-4 col-form-label">
@@ -84,5 +84,7 @@
     [Parameter]
     public DeviceProfile? Device { get; set; }
     [Parameter]
-    public EventCallback<EditContext> Submition { get; set; }
+    public EventCallback Submition { get; set; }
+    [Parameter]
+    public EditContext EditContext { get; set; }
 }
