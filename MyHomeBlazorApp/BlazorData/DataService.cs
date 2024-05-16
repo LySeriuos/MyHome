@@ -284,7 +284,7 @@ namespace MyHomeBlazorApp.BlazorData
         public void MoveDeviceToOtherRealEstate(int deviceToMoveID, UserProfile currentUser, int realEstateIdToAddDevice)
         {
             int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
-            DeviceProfile deviceToMove = Devices.First(d => d.DeviceID == deviceToMoveID);
+            DeviceProfile deviceToMove = Devices.FirstOrDefault(d => d.DeviceID == deviceToMoveID);
             RealEstate realEstateToMoveFrom = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToMoveFrom);
             RealEstate realEstateToAddDevice = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
             realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);

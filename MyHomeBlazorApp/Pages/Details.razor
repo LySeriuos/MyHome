@@ -49,7 +49,7 @@
     <TabPage Text="Devices">
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
-            <QuickGrid tabindex="2" Items="DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
+            <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
@@ -81,7 +81,7 @@
     </TabPage>
     <TabPage Text="Devices Warranties">
         <div class="grid">
-            <QuickGrid tabindex="3" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
+            <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
@@ -111,7 +111,7 @@
     </TabPage>
     <TabPage Text="Shops Details">
         <div class="grid">
-            <QuickGrid tabindex="4" Items="@DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable()">
+            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
@@ -340,7 +340,6 @@
     public int Tab { get; set; }
 
     [Parameter]
-    [Required]
     public int SelectedRealEstateID
     {
         get => selectedRealEstateID;
@@ -357,7 +356,7 @@
     string LastSubmitResult = "";
     string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
-    IQueryable<DeviceProfile> _testItems;
+    IQueryable<DeviceProfile> _devicesListAsQueryable;
     IQueryable<RealEstate> _testItemsRealEstate;
     TabControl _tabControl;
     TabPage _realEstatePage;
@@ -366,8 +365,6 @@
     bool valid;
     bool validRealEstate;
     bool validDevice;
-
-    private GridSort<DeviceProfile> OrderByID;
 
     private RealEstate realEstateToAddDevice { get; set; } = new();
     private DeviceProfile deviceToAdd { get; set; } = new();
@@ -391,7 +388,7 @@
         {
             validDevice = editDeviceContext.Validate();
             validRealEstate = editContext.Validate();
-            DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);
+            DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);            
             modalEditAddDevice.HideAsync();
         }
         else if (realEstateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID != 0 && deviceName != null)
@@ -401,6 +398,8 @@
             DataService.MoveDeviceToOtherRealEstate(currentDevice.DeviceID, currentUser, realEsatateIdToAddDevice);
             modalEditAddDevice.HideAsync();
         }
+
+        OnInitialized();       
     }
 
     void SortRealEstateByID()
@@ -408,7 +407,7 @@
         _testItemsRealEstate = DataService.CurrentUser.RealEstates.AsQueryable();
         _testItemsRealEstate = _testItemsRealEstate.OrderBy(i => i.RealEstateID);
     }
-
+    
     #region Real Estate
 
     private Modal modalRealEstate = default!;
@@ -416,14 +415,11 @@
     //example
     void SortByID()
     {
-        
-        _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _testItems = _testItems.OrderBy(i => i.DeviceID);
+        _devicesListAsQueryable = _devicesListAsQueryable.OrderBy(i => i.DeviceID);
     }
     void FilterDevices(string query)
     {
-        _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _testItems = _testItems.Where(i => i.DeviceName.Contains(query));
+        _devicesListAsQueryable = _devicesListAsQueryable.Where(i => i.DeviceName.Contains(query));
     }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
@@ -564,6 +560,7 @@
                 return;
             }
         }
+        OnInitialized();
         await OnHideModalDeleteDeviceConfirmationCloseClick();
     }
 
@@ -727,10 +724,10 @@
 
     protected override void OnInitialized()
     {
-         _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();        
         editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
-        base.OnInitialized();
+        base.OnInitialized();        
     }
 
     private string message = "";
