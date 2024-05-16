@@ -17,8 +17,6 @@
 
 
 
-
-
 <h3>Details</h3>
 
 
@@ -59,7 +57,7 @@
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID">
+                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID))">
                     @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
                     {
                         <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
@@ -360,6 +358,7 @@
     string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
     IQueryable<DeviceProfile> _testItems;
+    IQueryable<RealEstate> _testItemsRealEstate;
     TabControl _tabControl;
     TabPage _realEstatePage;
     EditContext editContext;
@@ -368,7 +367,7 @@
     bool validRealEstate;
     bool validDevice;
 
-
+    private GridSort<DeviceProfile> OrderByID;
 
     private RealEstate realEstateToAddDevice { get; set; } = new();
     private DeviceProfile deviceToAdd { get; set; } = new();
@@ -404,7 +403,11 @@
         }
     }
 
-
+    void SortRealEstateByID()
+    {
+        _testItemsRealEstate = DataService.CurrentUser.RealEstates.AsQueryable();
+        _testItemsRealEstate = _testItemsRealEstate.OrderBy(i => i.RealEstateID);
+    }
 
     #region Real Estate
 
@@ -413,10 +416,13 @@
     //example
     void SortByID()
     {
+        
+        _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         _testItems = _testItems.OrderBy(i => i.DeviceID);
     }
     void FilterDevices(string query)
     {
+        _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         _testItems = _testItems.Where(i => i.DeviceName.Contains(query));
     }
 
@@ -721,7 +727,7 @@
 
     protected override void OnInitialized()
     {
-        // _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+         _testItems = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
         base.OnInitialized();
