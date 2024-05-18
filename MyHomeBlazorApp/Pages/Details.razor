@@ -89,7 +89,7 @@
                         <Button Class="btn btn-outline-danger">Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID">
+                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID))">
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
@@ -119,7 +119,7 @@
                         <Button Class="btn btn-outline-danger">Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID">
+                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID))">
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be empty *@
