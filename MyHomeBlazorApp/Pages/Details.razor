@@ -88,7 +88,7 @@
                         <Button Class="btn btn-outline-danger">Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID))">
+                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
@@ -118,7 +118,7 @@
                         <Button Class="btn btn-outline-danger">Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID))">
+                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 </TemplateColumn>
                 @* how to make output "no data" if user didn't put in details for alomst each part. Some will be empty *@
@@ -134,7 +134,6 @@
             </QuickGrid>
         </div>
     </TabPage>
-
 </TabControl>
 
 <!--#region Edit Form Modals  -->
@@ -162,7 +161,7 @@
                 {
                     <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
                 }
-                }
+                
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
                 @* The button to submit/update form *@
                 <Button form="realEstateForm123" Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
@@ -788,4 +787,4 @@
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
     // }
 }
-        }
+        
