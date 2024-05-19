@@ -20,9 +20,7 @@
 <h3>Details</h3>
 
 
-<TabControl>
-    @* itemref="@_tabControl" *@
-    @* itemref="@_realEstatePage" *@
+<TabControl TabID="TabID">
     <TabPage Text="Real Estates">
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
@@ -344,6 +342,8 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
+
+    private int TabID = 0;
     private string _chooseOptionValue = "Choose Real Estate";
     RealEstate currentChosedRealEsate = new();
     private int selectedRealEstateID = -1;
@@ -359,6 +359,7 @@
     IQueryable<RealEstate> _testItemsRealEstate;
     TabControl _tabControl;
     TabPage _realEstatePage;
+    TabPage _devicePage;
     EditContext editContext;
     EditContext editDeviceContext;
     bool valid;
@@ -407,7 +408,7 @@
     private Modal modalRealEstateDelete = default!;
     //example
 
-    
+
 
     // void SortByID()
     // {
@@ -731,16 +732,15 @@
     {
         if (Tab == 1)
         {
-            _tabControl.ActivePage = _realEstatePage;
-
+            TabID = 1;
         }
         else if (Tab == 2)
         {
-
+            TabID = 2;
         }
         else if (Tab == 3)
         {
-
+            TabID = 3;
         }
         else
         {

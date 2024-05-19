@@ -23,11 +23,32 @@
     public TabPage? ActivePage { get; set; }
     List<TabPage> Pages = new List<TabPage>();
 
+    [Parameter]
+    public int? TabID { get; set; }
+
+
     internal void AddPage(TabPage tabPage)
     {
         Pages.Add(tabPage);
         if (Pages.Count == 1)
+        {           
             ActivePage = tabPage;
+        }
+        else if (TabID != 0 && Pages.Count == 4)
+        {
+            if (TabID == 1)
+            {
+                ActivePage = Pages[0];
+            }
+            else if (TabID == 2)
+            {
+                ActivePage = Pages[1];
+            }
+            else if (TabID == 3)
+            {
+                ActivePage = Pages[2];
+            }
+        }
         StateHasChanged();
     }
 
