@@ -57,12 +57,13 @@
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID))">
+                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
                     @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
                     {
                         <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                     }
                 </TemplateColumn>
+
                 <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
                 <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
                 <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
@@ -330,8 +331,6 @@
     </Modal>
 </div>
 
-<Button @onclick="SortByID">DANGER</Button>
-
 
 <!--#endregion -->
 @code {
@@ -402,25 +401,22 @@
         OnInitialized();       
     }
 
-    void SortRealEstateByID()
-    {
-        _testItemsRealEstate = DataService.CurrentUser.RealEstates.AsQueryable();
-        _testItemsRealEstate = _testItemsRealEstate.OrderBy(i => i.RealEstateID);
-    }
-    
     #region Real Estate
 
     private Modal modalRealEstate = default!;
     private Modal modalRealEstateDelete = default!;
     //example
-    void SortByID()
-    {
-        _devicesListAsQueryable = _devicesListAsQueryable.OrderBy(i => i.DeviceID);
-    }
-    void FilterDevices(string query)
-    {
-        _devicesListAsQueryable = _devicesListAsQueryable.Where(i => i.DeviceName.Contains(query));
-    }
+
+    
+
+    // void SortByID()
+    // {
+    //     _devicesListAsQueryable = _devicesListAsQueryable.OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID);
+    // }
+    // void FilterDevices(string query)
+    // {
+    //     _devicesListAsQueryable = _devicesListAsQueryable.Where(i => i.DeviceName.Contains(query));
+    // }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
