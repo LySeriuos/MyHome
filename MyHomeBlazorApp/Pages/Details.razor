@@ -179,15 +179,11 @@
     </Modal>
 </div>
 <div class="row">
-    @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
         <BodyTemplate>
-
             <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
                 <DataAnnotationsValidator />
                 <AddEditDeviceComponent Device="@currentDevice" EditContext="@editDeviceContext"/>
-                @* @if (currentDevice == null || currentDevice.DeviceID == 0)
-                { *@
                 <div class="row">
                     <div class="form-group">
                         <label class="form-label">Choose Real Estate</label>
@@ -202,15 +198,11 @@
                         @* <ValidationMessage For="() =>realEstateToAddDevice.RealEstateID" class="text-danger d-block" /> *@
                     </div>
                 </div>
-                <p>@realEstateToAddDevice.RealEstateID</p>
-                <p>@SelectedRealEstateID</p>
-
                 <br>
-                @*  }
-                else
-                { *@
+                @if (currentDevice.DeviceID != 0)
+                {
                 <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
-                @* } *@
+                }
                 <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
@@ -218,20 +210,6 @@
     </Modal>
 </div>
 <div class="row">
-    @* Maybe it is good to do two separate modals, one for new device and other for device editing
-    <Modal @ref="modalEditAddDeviceWarranty" Title="Edit Warranty Details">
-    <BodyTemplate>
-    <EditForm Model="@currentDevice" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
-    <AddEditWarrantyDetails CurrentDevice="@currentDevice"></AddEditWarrantyDetails>
-    <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
-    <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddDeviceWarrantyClick">Close</Button>
-    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-    </EditForm>
-    </BodyTemplate>
-    </Modal>
-    </div>
-    <div class="row">
-    @* Maybe it is good to do two separate modals, one for new device and other for device editing *@
     <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
             <EditForm Model="@currentDevice" Context="ShopDetails" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
@@ -284,7 +262,6 @@
                                 continue;
                             }
                         }
-
                     </select>
                 </div>
                 <div class="row">
@@ -639,8 +616,7 @@
     private void OnModalDevicePreviuos()
     {
         int currentDeviceIndex = 0;
-        List<DeviceProfile>
-            allDevices = DataService.Devices;
+        List<DeviceProfile> allDevices = DataService.Devices;
         //maybe need to sort list first by ID and then use indexing.
         allDevices.Sort();
         if (currentDevice != null)
