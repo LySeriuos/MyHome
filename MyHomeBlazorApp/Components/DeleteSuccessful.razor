@@ -1,0 +1,26 @@
+﻿<Modal @ref="deleteSuccess" Title="Deleted successfully">
+    <BodyTemplate>
+        @ObjectName was deleted successfully!
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
+    </FooterTemplate>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public Object? ObjectName {get; set; }
+    [Parameter]
+    public Modal deleteSuccess { get; set; }
+    public async Task OnHideModalClick()
+    {
+        await deleteSuccess.HideAsync();
+    }
+
+    public async Task OnShowModalClick()
+    {
+        await deleteSuccess.ShowAsync();
+    }
+
+}

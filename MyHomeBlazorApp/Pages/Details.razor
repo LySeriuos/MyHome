@@ -161,7 +161,7 @@
                 {
                     <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
                 }
-                
+
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
                 @* The button to submit/update form *@
                 <Button form="realEstateForm123" Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
@@ -183,7 +183,7 @@
         <BodyTemplate>
             <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
                 <DataAnnotationsValidator />
-                <AddEditDeviceComponent Device="@currentDevice" EditContext="@editDeviceContext"/>
+                <AddEditDeviceComponent Device="@currentDevice" EditContext="@editDeviceContext" />
                 <div class="row">
                     <div class="form-group">
                         <label class="form-label">Choose Real Estate</label>
@@ -201,7 +201,7 @@
                 <br>
                 @if (currentDevice.DeviceID != 0)
                 {
-                <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
+                    <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
                 }
                 <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
@@ -304,6 +304,19 @@
         </FooterTemplate>
     </Modal>
 </div>
+<div>
+    <MyHomeBlazorApp.Components.DeleteSuccessful deleteSuccess="@deleteSuccess123" ObjectName="@try123"></MyHomeBlazorApp.Components.DeleteSuccessful>
+    
+    <Modal @ref="deleteSuccess" Title="Deleted successfully">
+        <BodyTemplate>
+            @_objectName was deleted successfully!
+        </BodyTemplate>
+        <FooterTemplate>
+            <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
+        </FooterTemplate>
+    </Modal>
+
+</div>
 
 
 <!--#endregion -->
@@ -318,7 +331,11 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
+    private Object? _objectName = new ();
+    private Object? ObjectName = new();
+    private Object? try123 = new();
 
+    // private Object deletedObject = new();
     private int TabID = 0;
     private string _chooseOptionValue = "Choose Real Estate";
     RealEstate currentChosedRealEsate = new();
@@ -364,7 +381,7 @@
         {
             validDevice = editDeviceContext.Validate();
             validRealEstate = editContext.Validate();
-            DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);            
+            DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);
             modalEditAddDevice.HideAsync();
         }
         else if (realEstateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID != 0 && deviceName != null)
@@ -375,7 +392,7 @@
             modalEditAddDevice.HideAsync();
         }
 
-        OnInitialized();       
+        OnInitialized();
     }
 
     #region Real Estate
@@ -507,6 +524,8 @@
     private Modal modalReasignDevices = default!;
     private Modal modalEditAddDevice = default!;
     private Modal modalDeviceDelete = default!;
+    private Modal deleteSuccess = default!;
+    private Modal deleteSuccess123 = default!;
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
@@ -526,7 +545,11 @@
             DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
             if (deviceToDelete != null)
             {
+                _objectName = deviceToDelete.DeviceName;
+                try123 = deviceToDelete.DeviceName;
                 Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
+                // await deleteSuccess.ShowAsync();
+                await OnShowModalClick123();
             }
             else
             {
@@ -577,7 +600,7 @@
     {
         realEsatateIdToAddDevice = DataService.GetRealEstateByDeviceID(deviceID);
         currentUser = DataService.CurrentUser;
-        currentDevice = DataService.GetDeviceById(deviceID);        
+        currentDevice = DataService.GetDeviceById(deviceID);
         await modalEditAddDevice.ShowAsync();
 
     }
@@ -595,6 +618,20 @@
     private async Task OnHideModalReasignDevicesClick()
     {
         await modalReasignDevices.HideAsync();
+    }
+    private async Task OnShowModalClick()
+    {
+        await deleteSuccess.ShowAsync();
+    }
+
+    private async Task OnShowModalClick123()
+    {
+        await deleteSuccess123.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await deleteSuccess.HideAsync();
     }
 
     // error with the sequences
@@ -696,10 +733,10 @@
 
     protected override void OnInitialized()
     {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();        
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
-        base.OnInitialized();        
+        base.OnInitialized();
     }
 
     private string message = "";
@@ -763,4 +800,4 @@
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
     // }
 }
-        
+
