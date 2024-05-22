@@ -11,6 +11,7 @@
 @using MyHomeBlazorApp.Components
 @using MyHomeBlazorApp.Components.TabComponents
 @using MyHomeBlazorApp.Shared
+@using MyHomeBlazorApp.Components.Modals
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager uriHelper;
 @inject BlazorData.DataService DataService;
@@ -305,17 +306,7 @@
     </Modal>
 </div>
 <div>
-    <MyHomeBlazorApp.Components.DeleteSuccessful @ref="deleteSuccessModal" ObjectName="@_deletedObjectName"></MyHomeBlazorApp.Components.DeleteSuccessful>
-    
-   @*  <Modal @ref="deleteSuccess" Title="Deleted successfully">
-        <BodyTemplate>
-            @_objectName was deleted successfully!
-        </BodyTemplate>
-        <FooterTemplate>
-            <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
-        </FooterTemplate>
-    </Modal> *@
-
+    <DeleteSuccessfulModal @ref="deleteSuccessModal" ObjectName="@_deletedObjectName"></DeleteSuccessfulModal>
 </div>
 
 
@@ -331,7 +322,7 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
-    
+
     private int TabID = 0;
     private string _chooseOptionValue = "Choose Real Estate";
     RealEstate currentChosedRealEsate = new();
