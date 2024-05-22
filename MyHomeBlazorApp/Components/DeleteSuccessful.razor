@@ -1,4 +1,4 @@
-﻿<Modal @ref="deleteSuccess" Title="Deleted successfully">
+﻿<Modal @ref="deleteSuccessModal" Title="Deleted successfully">
     <BodyTemplate>
         @ObjectName was deleted successfully!
     </BodyTemplate>
@@ -11,16 +11,16 @@
 
     [Parameter]
     public Object? ObjectName {get; set; }
-    [Parameter]
-    public Modal deleteSuccess { get; set; }
-    public async Task OnHideModalClick()
+    private Modal? deleteSuccessModal { get; set; }
+
+    private async Task OnHideModalClick()
     {
-        await deleteSuccess.HideAsync();
+        await deleteSuccessModal.HideAsync();
     }
 
     public async Task OnShowModalClick()
     {
-        await deleteSuccess.ShowAsync();
+        await deleteSuccessModal.ShowAsync();
     }
 
 }

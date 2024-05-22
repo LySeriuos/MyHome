@@ -305,16 +305,16 @@
     </Modal>
 </div>
 <div>
-    <MyHomeBlazorApp.Components.DeleteSuccessful deleteSuccess="@deleteSuccess123" ObjectName="@try123"></MyHomeBlazorApp.Components.DeleteSuccessful>
+    <MyHomeBlazorApp.Components.DeleteSuccessful @ref="deleteSuccessModal" ObjectName="@_deletedObjectName"></MyHomeBlazorApp.Components.DeleteSuccessful>
     
-    <Modal @ref="deleteSuccess" Title="Deleted successfully">
+   @*  <Modal @ref="deleteSuccess" Title="Deleted successfully">
         <BodyTemplate>
             @_objectName was deleted successfully!
         </BodyTemplate>
         <FooterTemplate>
             <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
         </FooterTemplate>
-    </Modal>
+    </Modal> *@
 
 </div>
 
@@ -331,11 +331,7 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
-    private Object? _objectName = new ();
-    private Object? ObjectName = new();
-    private Object? try123 = new();
-
-    // private Object deletedObject = new();
+    
     private int TabID = 0;
     private string _chooseOptionValue = "Choose Real Estate";
     RealEstate currentChosedRealEsate = new();
@@ -345,6 +341,7 @@
     private RealEstate currentRealEstate = new();
     private UserProfile currentUser = new();
     private Address shopAddress = new();
+    private Object? _deletedObjectName = new();
     string LastSubmitResult = "";
     string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
@@ -524,8 +521,7 @@
     private Modal modalReasignDevices = default!;
     private Modal modalEditAddDevice = default!;
     private Modal modalDeviceDelete = default!;
-    private Modal deleteSuccess = default!;
-    private Modal deleteSuccess123 = default!;
+    private DeleteSuccessful deleteSuccessModal = default!;
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
@@ -545,11 +541,9 @@
             DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
             if (deviceToDelete != null)
             {
-                _objectName = deviceToDelete.DeviceName;
-                try123 = deviceToDelete.DeviceName;
+                _deletedObjectName = deviceToDelete.DeviceName;
                 Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
-                // await deleteSuccess.ShowAsync();
-                await OnShowModalClick123();
+                await deleteSuccessModal.OnShowModalClick();
             }
             else
             {
@@ -619,20 +613,15 @@
     {
         await modalReasignDevices.HideAsync();
     }
-    private async Task OnShowModalClick()
-    {
-        await deleteSuccess.ShowAsync();
-    }
 
-    private async Task OnShowModalClick123()
-    {
-        await deleteSuccess123.ShowAsync();
-    }
-
-    private async Task OnHideModalClick()
-    {
-        await deleteSuccess.HideAsync();
-    }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     if(firstRender)
+    //     {
+    //         successful.OnShowModalClick();
+    //     }
+    //     base.OnAfterRender(firstRender);
+    // }
 
     // error with the sequences
     private void OnModalDeviceNext()
