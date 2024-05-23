@@ -306,12 +306,14 @@
     </Modal>
 </div>
 <div>
-    <DeleteSuccessfulModal @ref="deleteSuccessModal" ObjectName="@_deletedObjectName"></DeleteSuccessfulModal>
+    
+    <ModalDeleteSuccessful @ref="refModalDeleteSuccess" ObjectName="@_deletedObjectName"></ModalDeleteSuccessful>
 </div>
 
 
 <!--#endregion -->
 @code {
+   
 
     [Parameter]
     public int Tab { get; set; }
@@ -332,7 +334,7 @@
     private RealEstate currentRealEstate = new();
     private UserProfile currentUser = new();
     private Address shopAddress = new();
-    private Object? _deletedObjectName = new();
+    private String? _deletedObjectName;
     string LastSubmitResult = "";
     string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
@@ -512,7 +514,7 @@
     private Modal modalReasignDevices = default!;
     private Modal modalEditAddDevice = default!;
     private Modal modalDeviceDelete = default!;
-    private DeleteSuccessfulModal deleteSuccessModal = default!;
+    private ModalDeleteSuccessful refModalDeleteSuccess = default!;
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
@@ -534,7 +536,7 @@
             {
                 _deletedObjectName = deviceToDelete.DeviceName;
                 Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
-                await deleteSuccessModal.OnShowModalClick();
+                await refModalDeleteSuccess.OnShowModalClick();
             }
             else
             {

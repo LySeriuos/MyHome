@@ -8,9 +8,8 @@
 </Modal>
 
 @code {
-
     [Parameter]
-    public Object? ObjectName {get; set; }
+    public String? ObjectName { get; set; }
     private Modal? deleteSuccessModal { get; set; }
 
     private async Task OnHideModalClick()

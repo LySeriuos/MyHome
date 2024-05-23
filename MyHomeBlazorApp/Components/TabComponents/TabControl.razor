@@ -48,6 +48,10 @@
             {
                 ActivePage = Pages[2];
             }
+            else
+            {
+                throw new ArgumentException("Invalid Tab ID");
+            }
         }
         StateHasChanged();
     }
