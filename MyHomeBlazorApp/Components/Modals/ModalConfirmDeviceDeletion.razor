@@ -1,0 +1,64 @@
+﻿@using MyHome.Models;
+@using MyHome;
+@using MyHomeBlazorApp.Pages
+@inject BlazorData.DataService DataService
+
+
+<Modal @ref="refModalConfirmDeviceDeletion">
+    <BodyTemplate>
+        <p>Are you sure you want To Delete @currentDeviceToDelete.DeviceName?</p>
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
+        <Button @onclick="()=>DeleteDevice_Click(false)">Cancel</Button>
+    </FooterTemplate>
+</Modal>
+@code {
+    [Parameter]
+    public DeviceProfile? currentDeviceToDelete { get; set; }
+    [Parameter]
+    public RealEstate? currentRealEstateToDeleteFrom { get; set; }
+    [Parameter]
+    public ModalDeleteSuccessful? refModalDeleteSuccess { get; set; }
+    private Modal? refModalConfirmDeviceDeletion { get; set; }
+    private String? _deletedDeviceName;
+    [Parameter]
+    public IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
+    private bool _listStatusHasChanged;
+    public bool changedData { get; set; }
+
+    private async Task DeleteDevice_Click(bool _confirmDeletion)
+    {
+        if (_confirmDeletion == true)
+        {
+            // manualy assigned value!
+            DeviceProfile deviceToDelete = currentRealEstateToDeleteFrom.DevicesProfiles.First(d => d.DeviceID == currentDeviceToDelete.DeviceID);
+            if (deviceToDelete != null)
+            {
+                _deletedDeviceName = deviceToDelete.DeviceName;
+                Logic.RemoveDevice(currentRealEstateToDeleteFrom, deviceToDelete, DataService.Users, DataService.XmlPath);
+                _listStatusHasChanged = true;
+                await refModalDeleteSuccess.OnShowModalClick();
+            }
+            else
+            {
+                return;
+            }
+        }        
+        await InvokeAsync(StateHasChanged);
+        await refModalConfirmDeviceDeletion.HideAsync();
+    }
+    public async Task OnShowModalClick()
+    {
+        await refModalConfirmDeviceDeletion.ShowAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+
+        if (_listStatusHasChanged == true)
+        {
+            changedData = _listStatusHasChanged;
+        }
+    }
+}

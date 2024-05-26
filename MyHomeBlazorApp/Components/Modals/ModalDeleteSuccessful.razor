@@ -1,4 +1,4 @@
-﻿<Modal @ref="deleteSuccessModal" Title="Deletion Confirmation">
+﻿<Modal @ref="refModalDeleteSuccess" Title="Deletion Confirmation">
     <BodyTemplate>
         @ObjectName was deleted successfully!
     </BodyTemplate>
@@ -10,16 +10,20 @@
 @code {
     [Parameter]
     public String? ObjectName { get; set; }
-    private Modal? deleteSuccessModal { get; set; }
+    private Modal? refModalDeleteSuccess { get; set; }
 
     private async Task OnHideModalClick()
     {
-        await deleteSuccessModal.HideAsync();
+        await refModalDeleteSuccess.HideAsync();
     }
 
     public async Task OnShowModalClick()
     {
-        await deleteSuccessModal.ShowAsync();
+        await refModalDeleteSuccess.ShowAsync();
     }
+
+
+
+
 
 }

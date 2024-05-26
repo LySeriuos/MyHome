@@ -294,7 +294,7 @@
         </BodyTemplate>
     </Modal>
 </div>
-<div>
+@* <div>
     <Modal @ref="modalDeviceDelete">
         <BodyTemplate>
             <p>Are you sure you want To Delete @currentDevice.DeviceName?</p>
@@ -304,16 +304,20 @@
             <Button @onclick="()=>DeleteDevice_Click(false)">Cancel</Button>
         </FooterTemplate>
     </Modal>
-</div>
+</div> *@
 <div>
-    
+    <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion" 
+        currentDeviceToDelete="@currentDevice" 
+        currentRealEstateToDeleteFrom="@currentRealEstate" 
+        refModalDeleteSuccess="@refModalDeleteSuccess">
+    </ModalConfirmDeviceDeletion>
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess" ObjectName="@_deletedObjectName"></ModalDeleteSuccessful>
 </div>
 
 
 <!--#endregion -->
 @code {
-   
+
 
     [Parameter]
     public int Tab { get; set; }
@@ -324,7 +328,6 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
-
     private int TabID = 0;
     private string _chooseOptionValue = "Choose Real Estate";
     RealEstate currentChosedRealEsate = new();
@@ -510,11 +513,18 @@
     #endregion
 
     #region Devices
-   
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+
+        base.OnAfterRender(firstRender);
+    }
+
     private Modal modalReasignDevices = default!;
     private Modal modalEditAddDevice = default!;
     private Modal modalDeviceDelete = default!;
     private ModalDeleteSuccessful refModalDeleteSuccess = default!;
+    private ModalConfirmDeviceDeletion refModalConfirmDeviceDeletion = default!;
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
@@ -522,30 +532,37 @@
         currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         currentDevice = DataService.GetDeviceById(deviceId);
         //move these lines to DataService method
-
-        await modalDeviceDelete.ShowAsync();
+        await refModalConfirmDeviceDeletion.OnShowModalClick();
+        DataHasChanged();
     }
-
-    private async Task DeleteDevice_Click(bool _confirmDeletion)
+    private void DataHasChanged()
     {
-        if (_confirmDeletion == true)
+        if (refModalConfirmDeviceDeletion.changedData == true)
         {
-            // manualy assigned value!
-            DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
-            if (deviceToDelete != null)
-            {
-                _deletedObjectName = deviceToDelete.DeviceName;
-                Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
-                await refModalDeleteSuccess.OnShowModalClick();
-            }
-            else
-            {
-                return;
-            }
+            OnInitialized();
         }
-        OnInitialized();
-        await OnHideModalDeleteDeviceConfirmationCloseClick();
     }
+
+    // private async Task DeleteDevice_Click(bool _confirmDeletion)
+    // {
+    //     if (_confirmDeletion == true)
+    //     {
+    //         // manualy assigned value!
+    //         DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
+    //         if (deviceToDelete != null)
+    //         {
+    //             _deletedObjectName = deviceToDelete.DeviceName;
+    //             Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
+    //             await refModalDeleteSuccess.OnShowModalClick();
+    //         }
+    //         else
+    //         {
+    //             return;
+    //         }
+    //     }
+    //     OnInitialized();
+    //     await OnHideModalDeleteDeviceConfirmationCloseClick();
+    // }
 
     private async Task OnHideModalDeleteDeviceConfirmationCloseClick()
     {
@@ -717,7 +734,7 @@
     {
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         editContext = new(realEstateToAddDevice);
-        editDeviceContext = new(deviceToAdd);
+        editDeviceContext = new(deviceToAdd);        
         base.OnInitialized();
     }
 
