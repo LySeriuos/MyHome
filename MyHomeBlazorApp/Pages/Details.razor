@@ -25,7 +25,7 @@
     <TabPage Text="Real Estates">
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
-            <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
+            <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()" >
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
@@ -49,6 +49,7 @@
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
+                @* _devicesListAsQueryable = DataService.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable(); *@
                 @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
@@ -384,9 +385,58 @@
             DataService.MoveDeviceToOtherRealEstate(currentDevice.DeviceID, currentUser, realEsatateIdToAddDevice);
             modalEditAddDevice.HideAsync();
         }
-
+        ///////////////
+        //Updating quickgrid only if I use OnInitialized, otherwise it rerender and change only if I change Tab or page.
+        //QuickGrid for RealEstates Details do not need this, so I can imagine that the problem is in SelectMany, maybe? :)
+        //////////////
         OnInitialized();
     }
+
+    // This method getting bool value from component if the item was deleted. But there is no way to activate thsi method to use OnInitialized().
+    private void DataHasChanged()
+    {
+        if (refModalConfirmDeviceDeletion.changedData == true)
+        {
+            OnInitialized();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        // It does not change nothing if I assign QuickGrid item directly to DataService.
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        editContext = new(realEstateToAddDevice);
+        editDeviceContext = new(deviceToAdd);
+        base.OnInitialized();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Tab == 1)
+        {
+            TabID = 1;
+        }
+        else if (Tab == 2)
+        {
+            TabID = 2;
+        }
+        else if (Tab == 3)
+        {
+            TabID = 3;
+        }
+        else
+        {
+            message = "There is no option";
+        }
+    }
+
 
     #region Real Estate
 
@@ -514,11 +564,7 @@
 
     #region Devices
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-
-        base.OnAfterRender(firstRender);
-    }
+    
 
     private Modal modalReasignDevices = default!;
     private Modal modalEditAddDevice = default!;
@@ -533,15 +579,8 @@
         currentDevice = DataService.GetDeviceById(deviceId);
         //move these lines to DataService method
         await refModalConfirmDeviceDeletion.OnShowModalClick();
-        DataHasChanged();
     }
-    private void DataHasChanged()
-    {
-        if (refModalConfirmDeviceDeletion.changedData == true)
-        {
-            OnInitialized();
-        }
-    }
+   
 
     // private async Task DeleteDevice_Click(bool _confirmDeletion)
     // {
@@ -563,7 +602,13 @@
     //     OnInitialized();
     //     await OnHideModalDeleteDeviceConfirmationCloseClick();
     // }
-
+    private void AnotherTry()
+    {
+        if (refModalConfirmDeviceDeletion.changedData == true)
+        {
+            OnInitialized();
+        }
+    }
     private async Task OnHideModalDeleteDeviceConfirmationCloseClick()
     {
         await modalDeviceDelete.HideAsync();
@@ -730,34 +775,10 @@
 
     #endregion
 
-    protected override void OnInitialized()
-    {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        editContext = new(realEstateToAddDevice);
-        editDeviceContext = new(deviceToAdd);        
-        base.OnInitialized();
-    }
+    
 
     private string message = "";
-    protected override void OnParametersSet()
-    {
-        if (Tab == 1)
-        {
-            TabID = 1;
-        }
-        else if (Tab == 2)
-        {
-            TabID = 2;
-        }
-        else if (Tab == 3)
-        {
-            TabID = 3;
-        }
-        else
-        {
-            message = "There is no option";
-        }
-    }
+    
 
     // // // // // // // //
 

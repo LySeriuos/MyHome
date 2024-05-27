@@ -37,6 +37,8 @@
             {
                 _deletedDeviceName = deviceToDelete.DeviceName;
                 Logic.RemoveDevice(currentRealEstateToDeleteFrom, deviceToDelete, DataService.Users, DataService.XmlPath);
+                _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+                StateHasChanged();
                 _listStatusHasChanged = true;
                 await refModalDeleteSuccess.OnShowModalClick();
             }
@@ -55,9 +57,10 @@
 
     protected override void OnParametersSet()
     {
-
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         if (_listStatusHasChanged == true)
         {
+            
             changedData = _listStatusHasChanged;
         }
     }
