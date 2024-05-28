@@ -2,8 +2,10 @@
 using MyHome;
 
 
-// saved Test Data to local file
+// For testing console
 string path = @"C:\Temp\usersListTestData111.xml";
+string saveQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
+//
 
 List<UserProfile> usersList = Data.GetUsersListFromXml(path);
 List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
@@ -40,6 +42,7 @@ Console.WriteLine($"{maxRealEId}");
 DeviceProfile foundedDevice = Logic.GetDeviceInfoByID(searchID, currentUser);
 Console.WriteLine(foundedDevice.ToString());//creating Qr code for device 
 string idNumber = userDevices[0].DeviceID.ToString();
-Logic.CreateQRCodeForDevice(idNumber);
+
+Logic.CreateQRCodeForDevice(idNumber, saveQRCodeLink);
 // saved updated userDevices profile
 //Data.SaveUsersListToXml(usersList, path);

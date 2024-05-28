@@ -126,14 +126,14 @@ namespace MyHome
         /// Method to create QrCode for devices 
         /// </summary>
         /// <param name="idNumber">Device's ID number</param>
-        public static void CreateQRCodeForDevice(string idNumber)
+        public static void CreateQRCodeForDevice(string idNumber, string saveQrCodeLink)
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode($"Device ID number: {idNumber}", QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(20);
 #pragma warning disable CA1416 // Validate platform compatibility
-            qrCodeImage.Save("C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png");
+            qrCodeImage.Save(saveQrCodeLink);
 #pragma warning restore CA1416 // Validate platform compatibility
         }
 
