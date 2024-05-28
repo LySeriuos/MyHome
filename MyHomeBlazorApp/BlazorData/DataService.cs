@@ -18,11 +18,7 @@ namespace MyHomeBlazorApp.BlazorData
 
     public class DataService
     {
-        // this is for fast tests 
-        #region User
-        private static readonly string _path = @"C:\Temp\usersListTestData111.xml";
-
-        private List<UserProfile> _users;
+        #region User        
 
         // all the method to create a new user
         public void AddUser(UserProfile u)
@@ -337,9 +333,6 @@ namespace MyHomeBlazorApp.BlazorData
         public DataService()
         {
             _users = Data.GetUsersListFromXml(_path);
-            // is it good practise to do like this?
-            Users = _users;
-            XmlPath = _path;
             // manually assigned test data
             int userId = 2;
             int realEstateID = 1;
@@ -360,11 +353,12 @@ namespace MyHomeBlazorApp.BlazorData
             FirstExpiringDevice = FirstExpiringWarranty();
         }
 
-        
-        // I guess these should be as Parameters 
 
-        public List<UserProfile> Users { get; set; } = new List<UserProfile>();
-        public string XmlPath { get; set; } = string.Empty;
+        // I guess these should be as Parameters 
+        private static readonly string _path = Program.Constants.XML_DATA_PATH;
+        private static List<UserProfile>? _users;
+        public List<UserProfile>? Users => _users;
+        public string XmlPath => _path;
         public List<DeviceProfile> Devices { get; set; } = new List<DeviceProfile>();
         public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile Device { get; set; } = new DeviceProfile();

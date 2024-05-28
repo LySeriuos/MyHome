@@ -1,11 +1,17 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MyHomeBlazorApp.BlazorData;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MyHomeBlazorApp
 {
     public class Program
     {
+        public class Constants
+        {
+            public const string XML_DATA_PATH = @"C:\Temp\usersListTestData111.xml";
+            public const string SAVE_QR_CODE_PATH = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
+        }
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +22,7 @@ namespace MyHomeBlazorApp
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddSingleton<DataService>();
             builder.Services.AddBlazorBootstrap();
-
+            
 
             var app = builder.Build();
 
