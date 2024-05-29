@@ -1,0 +1,53 @@
+﻿@using MyHome.Models;
+@using MyHome;
+@using MyHomeBlazorApp.Pages
+@inject BlazorData.DataService DataService
+
+
+<Modal @ref="refModalRealEstateDelete" Title="Delete Confirm" ShowCloseButton>
+    <BodyTemplate>
+        <p class="text-danger">Attention! If you will delete this RealEsatate it´s devices will be removed too!</p>
+        <p>Are you sure you want to delete @CurrentRealEstate.RealEstateName together with Devices?</p>
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button @onclick="()=> RefModalReassignDevices.OnShowModalReasignDevices(CurrentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
+        <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete With Devices</Button>
+        <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button>
+    </FooterTemplate>
+</Modal>
+
+@code {
+    [Parameter]
+    public ModalReassignDevices? RefModalReassignDevices { get; set; }
+    private Modal? refModalRealEstateDelete { get; set; }
+    [Parameter]
+    public RealEstate? CurrentRealEstate { get; set; }
+
+
+    public async Task DeleteRealEstate_Click(bool _confirmDeletion)
+    {
+        if (_confirmDeletion == true)
+        {
+            if (CurrentRealEstate != null)
+            {
+                DataService.RemoveRealEstate(CurrentRealEstate.RealEstateID);
+            }
+            else
+            {
+                throw new ArgumentException("Real Estate doesn't exist!");                
+            }
+        }
+
+        await OnHideModalDeleteRealEstateCloseClick();
+    }
+
+    private async Task OnHideModalDeleteRealEstateCloseClick()
+    {
+        await refModalRealEstateDelete.HideAsync();
+    }
+
+    public async Task OnShowModalDeleteRealEstateClick()
+    {
+        await refModalRealEstateDelete.ShowAsync();
+    }
+}

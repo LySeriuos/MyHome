@@ -225,93 +225,30 @@
     </Modal>
 </div>
 <div>
-    <Modal @ref="modalRealEstateDelete" Title="Delete Confirm" ShowCloseButton>
-        <BodyTemplate>
-            <p class="text-danger">Attention! If you will delete this RealEsatate it´s devices will be removed too!</p>
-            <p>Are you sure you want to delete @currentRealEstate.RealEstateName together with Devices?</p>
-        </BodyTemplate>
-        <FooterTemplate>
-            <Button @onclick="()=> OnShowModalReasignDevices(currentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
-            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete With Devices</Button>
-            <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button>
-        </FooterTemplate>
-    </Modal>
 </div>
 <div>
-    <Modal @ref="modalReasignDevices" Title="Devices Reassigning">
-        <BodyTemplate>
-            <div>
-                <div class="row">
-                    <ul>
-                        <li>
-                            This option will let you move all devices from removed Real Estate to another.
-                        </li>
-                    </ul>
-                    <p>Choose Real Estate to move your devices:</p>
-                </div>
-                <div class="row">
-                    <select class="form-control form-select" @bind="@SelectedRealEstateID">
-                        <Button data-toggle="dropdown"></Button>
-                        <option selected disabled value="-1">@_chooseOptionValue</option>
-                        @foreach (RealEstate r in currentUser.RealEstates)
-                        {
-                            if (r.RealEstateID != currentRealEstate.RealEstateID && r.RealEstateID != 0)
-                            {
-                                <option value="@r.RealEstateID"> @r.RealEstateName </option>
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                    </select>
-                </div>
-                <div class="row">
-                    @if (currentUser.RealEstates.Count > 1)
-                    {
-                        <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate)">Move Devices</Button>
-                    }
-                    else
-                    {
-                        <Button Disabled>Move Devices</Button>
-                    }
-                </div>
-                <br />
-                <div class="row">
-                    <ul>
-                        <li>
-                            This option will let you leave unassignded devices and move them later to any Real Estate you have.
-                        </li>
-                    </ul>
-                </div>
-                <div class="row">
-                    <Button @onclick="()=>LeaveDevicesUnassigned(currentRealEstate)">Keep Devices Unassigned</Button>
-                </div>
-                <br />
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <Button @onclick="OnHideModalReasignDevicesClick">Cancel</Button>
-                </div>
-            </div>
-        </BodyTemplate>
-    </Modal>
+    <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
+                           CurrentRealEstate="@currentRealEstate"
+                           RefModalReassignDevices="@refModalReasignDevices">
+    </ModalDeleteRealEstate>
 </div>
-@* <div>
-    <Modal @ref="modalDeviceDelete">
-        <BodyTemplate>
-            <p>Are you sure you want To Delete @currentDevice.DeviceName?</p>
-        </BodyTemplate>
-        <FooterTemplate>
-            <Button @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
-            <Button @onclick="()=>DeleteDevice_Click(false)">Cancel</Button>
-        </FooterTemplate>
-    </Modal>
-</div> *@
+<div>
+    <ModalReassignDevices @ref="@refModalReasignDevices"
+                          SelectedRealEstateID="@SelectedRealEstateID"
+                          CurrentUser="@currentUser"
+                          CurrentRealEstate="currentRealEstate"
+                          RefDeleteRealEsatate="refModalRealEstateDelete">
+
+    </ModalReassignDevices>
+</div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
                                 currentDeviceToDelete="@currentDevice"
                                 currentRealEstateToDeleteFrom="@currentRealEstate"
                                 refModalDeleteSuccess="@refModalDeleteSuccess">
     </ModalConfirmDeviceDeletion>
+</div>
+<div>
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess" ObjectName="@_deletedObjectName"></ModalDeleteSuccessful>
 </div>
 
@@ -439,7 +376,8 @@
     #region Real Estate
 
     private Modal modalRealEstate = default!;
-    private Modal modalRealEstateDelete = default!;
+    private ModalDeleteRealEstate refModalRealEstateDelete = default!;
+    private ModalReassignDevices refModalReasignDevices = default!;
     //example
 
 
@@ -470,38 +408,13 @@
     private async Task OnHideModalRealEstateClick()
     {
         await modalRealEstate.HideAsync();
-    }
-
-    private async Task DeleteRealEstate_Click(bool _confirmDeletion)
-    {
-        if (_confirmDeletion == true)
-        {
-            //cuold be passed directly in to method to avoid unneseccary code
-
-            DataService.RemoveRealEstate(currentRealEstate.RealEstateID);
-
-            // if (realEstateToDelete == null)
-            // {
-            //     return;
-            // }
-            // else
-            // {
-            //     DataService.RemoveRealEstate(realEstateToDelete.RealEstateID);
-            // }
-        }
-        await OnHideModalDeleteRealEstateCloseClick();
-    }
-
-    private async Task OnHideModalDeleteRealEstateCloseClick()
-    {
-        await modalRealEstateDelete.HideAsync();
-    }
+    }   
 
     private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
     {
         currentUser = DataService.CurrentUser;
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
-        await modalRealEstateDelete.ShowAsync();
+        await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
 
     private bool CheckIfRealEstateObjectIsEmpty()
@@ -577,58 +490,7 @@
         currentDevice = DataService.GetDeviceById(deviceId);
         //move these lines to DataService method
         await refModalConfirmDeviceDeletion.OnShowModalClick();
-    }
-
-
-    // private async Task DeleteDevice_Click(bool _confirmDeletion)
-    // {
-    //     if (_confirmDeletion == true)
-    //     {
-    //         // manualy assigned value!
-    //         DeviceProfile deviceToDelete = currentRealEstate.DevicesProfiles.First(d => d.DeviceID == currentDevice.DeviceID);
-    //         if (deviceToDelete != null)
-    //         {
-    //             _deletedObjectName = deviceToDelete.DeviceName;
-    //             Logic.RemoveDevice(currentRealEstate, deviceToDelete, DataService.Users, DataService.XmlPath);
-    //             await refModalDeleteSuccess.OnShowModalClick();
-    //         }
-    //         else
-    //         {
-    //             return;
-    //         }
-    //     }
-    //     OnInitialized();
-    //     await OnHideModalDeleteDeviceConfirmationCloseClick();
-    // }
-
-    private async Task OnHideModalDeleteDeviceConfirmationCloseClick()
-    {
-        await modalDeviceDelete.HideAsync();
-    }
-
-    private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
-    {
-        if (currentRealEstate != null && SelectedRealEstateID > 0)
-        {
-            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
-            await DeleteRealEstate_Click(true);
-        }
-        else
-        {
-            return;
-        }
-        await OnHideModalReasignDevicesClick();
-    }
-
-    private async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
-    {
-        if (currentRealEstate != null)
-        {
-            DataService.LeaveDevicesUnassigned(currentRealEstate);
-            await DeleteRealEstate_Click(true);
-        }
-        await OnHideModalReasignDevicesClick();
-    }
+    }      
 
     private async Task OnShowModalAddNewDevice()
     {
@@ -660,15 +522,6 @@
     {
         await modalReasignDevices.HideAsync();
     }
-
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     if(firstRender)
-    //     {
-    //         successful.OnShowModalClick();
-    //     }
-    //     base.OnAfterRender(firstRender);
-    // }
 
     // error with the sequences
     private void OnModalDeviceNext()
