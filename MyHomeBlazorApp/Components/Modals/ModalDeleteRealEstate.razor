@@ -10,19 +10,29 @@
         <p>Are you sure you want to delete @CurrentRealEstate.RealEstateName together with Devices?</p>
     </BodyTemplate>
     <FooterTemplate>
-        <Button @onclick="()=> RefModalReassignDevices.OnShowModalReasignDevices(CurrentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
-        <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete With Devices</Button>
+        @if (CurrentRealEstate.DevicesProfiles.Count > 0)
+        {
+            <Button @onclick="()=> onRequestReassignDevicesListToOtherRealEstate(CurrentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
+            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate With Devices</Button>
+        }
+        else
+        {
+        <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate</Button>
+        }
         <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button>
     </FooterTemplate>
 </Modal>
 
-@code {
-    [Parameter]
-    public ModalReassignDevices? RefModalReassignDevices { get; set; }
+    @code {
+    // [Parameter]
+    // public ModalReassignDevices? RefModalReassignDevices { get; set; }
     private Modal? refModalRealEstateDelete { get; set; }
     [Parameter]
     public RealEstate? CurrentRealEstate { get; set; }
 
+    public Action onDataChanged;
+
+    public Action<int> onRequestReassignDevicesListToOtherRealEstate;
 
     public async Task DeleteRealEstate_Click(bool _confirmDeletion)
     {
@@ -31,6 +41,7 @@
             if (CurrentRealEstate != null)
             {
                 DataService.RemoveRealEstate(CurrentRealEstate.RealEstateID);
+                onDataChanged();
             }
             else
             {
@@ -41,7 +52,7 @@
         await OnHideModalDeleteRealEstateCloseClick();
     }
 
-    private async Task OnHideModalDeleteRealEstateCloseClick()
+    public async Task OnHideModalDeleteRealEstateCloseClick()
     {
         await refModalRealEstateDelete.HideAsync();
     }

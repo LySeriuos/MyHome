@@ -25,7 +25,7 @@
     <TabPage Text="Real Estates">
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
-            <QuickGrid tabindex="1" Items="@DataService.RealEstates.AsQueryable()">
+            <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
@@ -228,18 +228,18 @@
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
-                           CurrentRealEstate="@currentRealEstate"
-                           RefModalReassignDevices="@refModalReasignDevices">
+                           CurrentRealEstate="@currentRealEstate">
     </ModalDeleteRealEstate>
 </div>
 <div>
+
     <ModalReassignDevices @ref="@refModalReasignDevices"
                           SelectedRealEstateID="@SelectedRealEstateID"
                           CurrentUser="@currentUser"
-                          CurrentRealEstate="currentRealEstate"
-                          RefDeleteRealEsatate="refModalRealEstateDelete">
+                          CurrentRealEstate="@currentRealEstate">
 
     </ModalReassignDevices>
+
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
@@ -280,7 +280,7 @@
     string _modalTitle = "";
     bool _isNullOrHasNoProperties = false;
     IQueryable<DeviceProfile> _devicesListAsQueryable;
-    IQueryable<RealEstate> _testItemsRealEstate;
+    IQueryable<RealEstate> _realEstatesListAsQueryable;
     TabControl _tabControl;
     TabPage _realEstatePage;
     TabPage _devicePage;
@@ -289,7 +289,7 @@
     bool valid;
     bool validRealEstate;
     bool validDevice;
-
+    public Action onDataChanged;
     private RealEstate realEstateToAddDevice { get; set; } = new();
     private DeviceProfile deviceToAdd { get; set; } = new();
     public int realEsatateIdToAddDevice
@@ -330,9 +330,15 @@
     }
 
     // This method getting bool value from component if the item was deleted. But there is no way to activate thsi method to use OnInitialized().
-    private void DataHasChanged()
+    private void DeviceDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        StateHasChanged();
+    }
+
+    private void RealEstateDataHasChanged()
+    {
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         StateHasChanged();
     }
 
@@ -340,6 +346,7 @@
     {
         // It does not change nothing if I assign QuickGrid item directly to DataService.
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
         base.OnInitialized();
@@ -347,9 +354,27 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
-        refModalConfirmDeviceDeletion.onDataChanged += DataHasChanged;
-
+        refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
+        refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
+        refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
+        refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
+        refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
         base.OnAfterRender(firstRender);
+    }
+
+    private void OnModalReassignDevicesRequest(int realEstateID)
+    {
+        refModalReasignDevices.OnShowModalReasignDevices(realEstateID);
+    }
+
+    private void OnModalRealEstateDeleteRequest()
+    {
+        refModalRealEstateDelete.DeleteRealEstate_Click(true);
+    }
+
+    private void OnModalRealEstateDeleteClose()
+    {
+        refModalRealEstateDelete.OnHideModalDeleteRealEstateCloseClick();
     }
 
     protected override void OnParametersSet()
@@ -408,7 +433,7 @@
     private async Task OnHideModalRealEstateClick()
     {
         await modalRealEstate.HideAsync();
-    }   
+    }
 
     private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
     {
@@ -461,8 +486,9 @@
         else
         {
             DataService.SaveUpdatedObject();
-        }
 
+        }
+        OnInitialized();
         LastSubmitResult = "OnValidSubmit was executed";
         modalRealEstate.HideAsync();
     }
@@ -490,7 +516,7 @@
         currentDevice = DataService.GetDeviceById(deviceId);
         //move these lines to DataService method
         await refModalConfirmDeviceDeletion.OnShowModalClick();
-    }      
+    }
 
     private async Task OnShowModalAddNewDevice()
     {

@@ -67,20 +67,21 @@
     public UserProfile? CurrentUser { get; set; }
     [Parameter]
     public RealEstate? CurrentRealEstate { get; set; }
-    [Parameter]
-    public ModalDeleteRealEstate? RefDeleteRealEsatate { get; set; }
 
+    public Action onDeleteRealEstate;
+    public Action onDataChanged;
     private string ChooseOptionValue { get; set; } = "Choose Real Estate";
     public Modal? refModalReasignDevices { get; set; }
-    
-    
 
+
+    // deleting first before devicesList had been moved
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
         if (currentRealEstate != null && SelectedRealEstateID > 0)
         {
-            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
-            await RefDeleteRealEsatate.DeleteRealEstate_Click(true);
+            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);            
+            onDeleteRealEstate();
+            onDataChanged();
         }
         else
         {
@@ -94,8 +95,10 @@
         if (currentRealEstate != null)
         {
             DataService.LeaveDevicesUnassigned(currentRealEstate);
-            await RefDeleteRealEsatate.DeleteRealEstate_Click(true);
+            
+            onDataChanged();
         }
+        onDeleteRealEstate();
         await OnHideModalReasignDevicesCloseClick();
     }
 
