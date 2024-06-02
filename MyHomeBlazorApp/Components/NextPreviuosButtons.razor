@@ -3,17 +3,21 @@
 @using MyHome.Models
 
 
-@if (currentDevice != null && currentDevice.DeviceID != DataService.Devices.First().DeviceID)
+@if (currentDevice != null && currentDevice.DeviceID != @FirstListItemID)
 {
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
 }
 
-@if (currentDevice != null && currentDevice.DeviceID != DataService.Devices.Last().DeviceID)
+@if (currentDevice != null && currentDevice.DeviceID != LastListItemID)
 {
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
 }
 
 @code{
+    [Parameter]
+    public int FirstListItemID { get; set; }
+    [Parameter]
+    public int LastListItemID { get; set; }
     [Parameter]
     public DeviceProfile? currentDevice {get;set;}
     [Parameter]

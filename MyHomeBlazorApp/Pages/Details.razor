@@ -155,7 +155,7 @@
                     </div>
                 </div>
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="false" />
-                @if (CheckIfRealEstateObjectIsEmpty() == false)
+                @if (currentRealEstate.RealEstateID != DataService.RealEstates.First()?.RealEstateID)
                 {
                     <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
                 }
@@ -203,7 +203,11 @@
                 <br>
                 @if (currentDevice.DeviceID != 0)
                 {
-                    <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
+                    <NextPreviuosButtons currentDevice="@currentDevice"
+                                         OnModalDevicePreviuos="OnModalDevicePreviuos"
+                                         OnModalDeviceNext="OnModalDeviceNext"
+                                         FirstListItemID="_devicesListAsQueryable.First().DeviceID"
+                                         LastListItemID="_devicesListAsQueryable.Last().DeviceID"></NextPreviuosButtons>
                 }
                 <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
@@ -225,21 +229,16 @@
     </Modal>
 </div>
 <div>
-</div>
-<div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
                            CurrentRealEstate="@currentRealEstate">
     </ModalDeleteRealEstate>
 </div>
 <div>
-
     <ModalReassignDevices @ref="@refModalReasignDevices"
                           SelectedRealEstateID="@SelectedRealEstateID"
                           CurrentUser="@currentUser"
                           CurrentRealEstate="@currentRealEstate">
-
     </ModalReassignDevices>
-
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
@@ -345,7 +344,7 @@
     protected override void OnInitialized()
     {
         // It does not change nothing if I assign QuickGrid item directly to DataService.
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
@@ -555,7 +554,7 @@
         // this should be moved to DataService and to the next-previuos buttons component should be
         // passed currentDevice [Parameter] to use method in one place instead of changing in every copied component.
         int currentDeviceIndex = 0;
-        List<DeviceProfile> allDevices = DataService.Devices;
+        List<DeviceProfile> allDevices = _devicesListAsQueryable.ToList();
         if (currentDevice != null)
         {
             currentDeviceIndex = allDevices.IndexOf(currentDevice);
@@ -568,9 +567,11 @@
     private void OnModalDevicePreviuos()
     {
         int currentDeviceIndex = 0;
-        List<DeviceProfile> allDevices = DataService.Devices;
+        List<DeviceProfile> allDevices = _devicesListAsQueryable.ToList();
         //maybe need to sort list first by ID and then use indexing.
-        allDevices.Sort();
+        // allDevices.Sort();
+        // List<DeviceProfile> query = allDevices.OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).ToList();
+
         if (currentDevice != null)
         {
             currentDeviceIndex = allDevices.IndexOf(currentDevice);
