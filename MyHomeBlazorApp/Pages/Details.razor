@@ -87,7 +87,6 @@
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
-                        <Button Class="btn btn-outline-danger">Delete</Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
@@ -117,7 +116,6 @@
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)">Edit</Button>
-                        <Button Class="btn btn-outline-danger">Delete</Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
@@ -155,7 +153,7 @@
                     </div>
                 </div>
                 <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="false" />
-                
+
                 @if (currentRealEstate.RealEstateID != _realEstatesListAsQueryable.First().RealEstateID && currentRealEstate.RealEstateID != 0)
                 {
                     <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
@@ -205,12 +203,22 @@
                 @if (currentDevice.DeviceID != 0)
                 {
                     <NextPreviuosButtons currentDevice="@currentDevice"
-                                         OnModalDevicePreviuos="OnModalDevicePreviuos"
-                                         OnModalDeviceNext="OnModalDeviceNext"
-                                         FirstListItemID="_devicesListAsQueryable.First().DeviceID"
-                                         LastListItemID="_devicesListAsQueryable.Last().DeviceID"></NextPreviuosButtons>
+                                         DevicesListAsQueryable="_devicesListAsQueryable">
+                    </NextPreviuosButtons>
                 }
                 <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
+                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+            </EditForm>
+        </BodyTemplate>
+    </Modal>
+</div>
+<div class="row">
+    <Modal @ref="modalEditWarrantyDetails" Title="Edit Warranty Details">
+        <BodyTemplate>
+            <EditForm Model="@currentDevice" Context="WarrantyDetails" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
+                <AddEditWarrantyDetails CurrentDevice="@currentDevice" />
+                <NextPreviuosButtons currentDevice="@currentDevice" DevicesListAsQueryable="_devicesListAsQueryable"></NextPreviuosButtons>
+                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditWarrantyClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
@@ -222,7 +230,7 @@
             <EditForm Model="@currentDevice" Context="ShopDetails" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
                 <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
                 <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
-                <NextPreviuosButtons currentDevice="@currentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
+                <NextPreviuosButtons currentDevice="@currentDevice" DevicesListAsQueryable="_devicesListAsQueryable"></NextPreviuosButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
@@ -271,7 +279,7 @@
     RealEstate currentChosedRealEsate = new();
     private int selectedRealEstateID = -1;
     private Address currentRealEstateAddress = new();
-    public DeviceProfile? currentDevice { get; set; } = new();
+    private DeviceProfile? currentDevice { get; set; } = new();
     private RealEstate currentRealEstate = new();
     private UserProfile currentUser = new();
     private Address shopAddress = new();
@@ -471,7 +479,7 @@
     }
 
     private void OnModalRealEstatePreviuos()
-    {        
+    {
         int currentRealEstateIndex = 0;
         List<RealEstate> allRealEstates = _realEstatesListAsQueryable.ToList();
         if (currentRealEstate != null)
@@ -597,24 +605,24 @@
 
     #region Warranties
 
-    private Modal modalEditAddDeviceWarranty = default!;
+    private Modal modalEditWarrantyDetails = default!;
 
     private async Task OnShowModalEditAddDeviceWarrantyClick(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
-        await modalEditAddDeviceWarranty.ShowAsync();
+        await modalEditWarrantyDetails.ShowAsync();
     }
 
-    private async Task OnHideModalEditAddDeviceWarrantyClick()
+    private async Task OnHideModalEditWarrantyClick()
     {
-        await modalEditAddDeviceWarranty.HideAsync();
+        await modalEditWarrantyDetails.HideAsync();
     }
 
     void ValidWarrantyDetailsFormSubmitted(EditContext editcontext)
     {
         DataService.SaveUpdatedObject();
         LastSubmitResult = "OnValidSubmit was executed";
-        modalEditAddDeviceWarranty.HideAsync();
+        modalEditWarrantyDetails.HideAsync();
     }
 
     void InvalidWarrantyDetailsFormSubmitted(EditContext editContext)

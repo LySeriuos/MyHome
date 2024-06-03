@@ -1,0 +1,34 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+<Modal @ref="refModalEditShopDetails" Title="Edit Shop Details">
+    <BodyTemplate>
+        <EditForm Model="@CurrentDevice" Context="ShopDetails" OnSubmit="ShopDetailsFormSubmitted">
+            <AddEditShopDetailsComponent CurrentDevice="@CurrentDevice" />
+            <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@ShopAddress" />
+            <NextPreviuosButtons currentDevice="@CurrentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
+            <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
+            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+        </EditForm>
+    </BodyTemplate>
+</Modal>
+
+@code {
+    private Modal? refModalEditShopDetails { get; set; }
+    [Parameter]
+    public DeviceProfile? CurrentDevice { get; set; }
+    [Parameter]
+    public Address? ShopAddress { get; set; }
+
+    private async Task OnHideModalEditAddShopClick()
+    {
+        await refModalEditShopDetails.HideAsync();
+    }
+
+    private void ShopDetailsFormSubmitted(EditContext editcontext)
+    {
+        DataService.SaveUpdatedObject();
+        refModalEditShopDetails.HideAsync();
+    }
+}
