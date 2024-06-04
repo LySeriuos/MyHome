@@ -7,7 +7,7 @@
         <EditForm Model="@CurrentDevice" Context="ShopDetails" OnSubmit="ShopDetailsFormSubmitted">
             <AddEditShopDetailsComponent CurrentDevice="@CurrentDevice" />
             <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@ShopAddress" />
-            <NextPreviuosButtons currentDevice="@CurrentDevice" OnModalDevicePreviuos="OnModalDevicePreviuos" OnModalDeviceNext="OnModalDeviceNext"></NextPreviuosButtons>
+            <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"></NextPreviuosButtons>
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
         </EditForm>
@@ -20,13 +20,20 @@
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public Address? ShopAddress { get; set; }
+    [Parameter]
+    public EditContext? Context { get; set; }
 
-    private async Task OnHideModalEditAddShopClick()
+    public async Task OnHideModalEditAddShopClick()
     {
         await refModalEditShopDetails.HideAsync();
     }
 
-    private void ShopDetailsFormSubmitted(EditContext editcontext)
+    public async Task OnShowModalEditAddShopClick()
+    {
+        await refModalEditShopDetails.ShowAsync();
+    }
+
+    private void ShopDetailsFormSubmitted(EditContext Context)
     {
         DataService.SaveUpdatedObject();
         refModalEditShopDetails.HideAsync();

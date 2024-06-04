@@ -226,7 +226,7 @@
         </BodyTemplate>
     </Modal>
 </div>
-<div class="row">
+@* <div class="row">
     <Modal @ref="refModalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
             <EditForm Model="@currentDevice" Context="ShopDetails" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
@@ -240,6 +240,12 @@
             </EditForm>
         </BodyTemplate>
     </Modal>
+</div> *@
+<div>
+    <ModalEditShopDetails @ref="refModalEditShopDetails"
+        CurrentDevice="@currentDevice"
+                          Context="@editShopContextDevice">
+    </ModalEditShopDetails>
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
@@ -298,6 +304,7 @@
     TabPage _devicePage;
     EditContext editContext;
     EditContext editDeviceContext;
+    EditContext editShopContextDevice;
     bool valid;
     bool validRealEstate;
     bool validDevice;
@@ -361,8 +368,8 @@
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         editContext = new(realEstateToAddDevice);
-        nextPreviuosButtons = new();
         editDeviceContext = new(deviceToAdd);
+        editShopContextDevice = new(currentDevice);
         base.OnInitialized();
     }
 
@@ -645,19 +652,20 @@
     #region Shops
 
     private Modal refModalEditAddShopDetails = default!;
+    private ModalEditShopDetails refModalEditShopDetails = default!;
 
     private async Task OnShowModalEditAddShopClick(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
-        await refModalEditAddShopDetails.ShowAsync();
+        await refModalEditShopDetails.OnShowModalEditAddShopClick();
     }
 
-    private async Task OnHideModalEditAddShopClick()
-    {
-        await refModalEditAddShopDetails.HideAsync();
-    }
+    // private async Task OnHideModalEditAddShopClick()
+    // {
+    //     await refModalEditAddShopDetails.HideAsync();
+    // }
 
     void ValidShopDetailsFormSubmitted(EditContext editcontext)
     {
