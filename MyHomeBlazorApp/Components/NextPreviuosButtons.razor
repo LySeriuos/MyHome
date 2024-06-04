@@ -8,7 +8,6 @@
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
 }
 
-@* Should be Action buttons!!!!! *@
 @if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.Last().DeviceID)
 {
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
@@ -21,15 +20,14 @@
     public DeviceProfile? CurrentDevice {get;set;}
     [Parameter]
     public EventCallback<DeviceProfile> CurrentDeviceChanged { get; set; }
+    private int CurrentDeviceIndex = 0;
 
     private async Task OnModalDeviceNext()
     {
-        int CurrentDeviceIndex = 0;
-        List<DeviceProfile> allDevices = DevicesListAsQueryable.ToList();
         if (CurrentDevice != null)
         {
-            CurrentDeviceIndex = allDevices.IndexOf(CurrentDevice);
-            CurrentDevice = allDevices[CurrentDeviceIndex + 1];
+            CurrentDeviceIndex = DevicesListAsQueryable.ToList().IndexOf(CurrentDevice);
+            CurrentDevice = DevicesListAsQueryable.ToList()[CurrentDeviceIndex + 1];
             await CurrentDeviceChanged.InvokeAsync(CurrentDevice);
             //one line code with linq
             // CurrentDevice = allDevices[(allDevices.IndexOf(CurrentDevice) + 1) % allDevices.Count];
@@ -38,12 +36,10 @@
 
     private async Task OnModalDevicePreviuos()
     {
-        int CurrentDeviceIndex = 0;
-        List<DeviceProfile> allDevices = DevicesListAsQueryable.ToList();
         if (CurrentDevice != null)
         {
-            CurrentDeviceIndex = allDevices.IndexOf(CurrentDevice);
-            CurrentDevice = allDevices[CurrentDeviceIndex - 1];
+            CurrentDeviceIndex = DevicesListAsQueryable.ToList().IndexOf(CurrentDevice);
+            CurrentDevice = DevicesListAsQueryable.ToList()[CurrentDeviceIndex - 1];
             await CurrentDeviceChanged.InvokeAsync(CurrentDevice);
         }
     }
