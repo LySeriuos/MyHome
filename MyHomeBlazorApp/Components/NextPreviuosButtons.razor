@@ -3,13 +3,13 @@
 @using MyHome.Models
 
 
-@if (currentDevice != null && currentDevice.DeviceID != DevicesListAsQueryable.First().DeviceID)
+@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.First().DeviceID)
 {
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
 }
 
-//Should be Action buttons!!!!!
-@if (currentDevice != null && currentDevice.DeviceID != DevicesListAsQueryable.Last().DeviceID)
+@* Should be Action buttons!!!!! *@
+@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.Last().DeviceID)
 {
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
 }
@@ -18,36 +18,33 @@
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
     [Parameter]
-    public int FirstListItemID { get; set; }
+    public DeviceProfile? CurrentDevice {get;set;}
     [Parameter]
-    public int LastListItemID { get; set; }
-    [Parameter]
-    public DeviceProfile? currentDevice {get;set;}
-    
+    public EventCallback<DeviceProfile> CurrentDeviceChanged { get; set; }
 
-    private void OnModalDeviceNext()
+    private async Task OnModalDeviceNext()
     {
-        int currentDeviceIndex = 0;
+        int CurrentDeviceIndex = 0;
         List<DeviceProfile> allDevices = DevicesListAsQueryable.ToList();
-        if (currentDevice != null)
+        if (CurrentDevice != null)
         {
-            currentDeviceIndex = allDevices.IndexOf(currentDevice);
-            currentDevice = allDevices[currentDeviceIndex + 1];
+            CurrentDeviceIndex = allDevices.IndexOf(CurrentDevice);
+            CurrentDevice = allDevices[CurrentDeviceIndex + 1];
+            await CurrentDeviceChanged.InvokeAsync(CurrentDevice);
             //one line code with linq
-            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
+            // CurrentDevice = allDevices[(allDevices.IndexOf(CurrentDevice) + 1) % allDevices.Count];
         }
     }
 
-    private void OnModalDevicePreviuos()
+    private async Task OnModalDevicePreviuos()
     {
-        int currentDeviceIndex = 0;
+        int CurrentDeviceIndex = 0;
         List<DeviceProfile> allDevices = DevicesListAsQueryable.ToList();
-        if (currentDevice != null)
+        if (CurrentDevice != null)
         {
-            currentDeviceIndex = allDevices.IndexOf(currentDevice);
-            currentDevice = allDevices[currentDeviceIndex - 1];
-            //one line code with linq
-            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
+            CurrentDeviceIndex = allDevices.IndexOf(CurrentDevice);
+            CurrentDevice = allDevices[CurrentDeviceIndex - 1];
+            await CurrentDeviceChanged.InvokeAsync(CurrentDevice);
         }
     }
 }

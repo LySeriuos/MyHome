@@ -202,7 +202,7 @@
                 <br>
                 @if (currentDevice.DeviceID != 0)
                 {
-                    <NextPreviuosButtons currentDevice="@currentDevice"
+                    <NextPreviuosButtons @bind-CurrentDevice="@currentDevice"
                                          DevicesListAsQueryable="_devicesListAsQueryable">
                     </NextPreviuosButtons>
                 }
@@ -217,7 +217,9 @@
         <BodyTemplate>
             <EditForm Model="@currentDevice" Context="WarrantyDetails" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
                 <AddEditWarrantyDetails CurrentDevice="@currentDevice" />
-                <NextPreviuosButtons currentDevice="@currentDevice" DevicesListAsQueryable="_devicesListAsQueryable"></NextPreviuosButtons>
+                <NextPreviuosButtons @bind-CurrentDevice="@currentDevice"
+                                     DevicesListAsQueryable="_devicesListAsQueryable">
+                </NextPreviuosButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditWarrantyClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
@@ -225,12 +227,14 @@
     </Modal>
 </div>
 <div class="row">
-    <Modal @ref="modalEditAddShopDetails" Title="Edit Shop Details">
+    <Modal @ref="refModalEditAddShopDetails" Title="Edit Shop Details">
         <BodyTemplate>
             <EditForm Model="@currentDevice" Context="ShopDetails" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
                 <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
                 <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
-                <NextPreviuosButtons currentDevice="@currentDevice" DevicesListAsQueryable="_devicesListAsQueryable"></NextPreviuosButtons>
+                <NextPreviuosButtons @bind-CurrentDevice="@currentDevice"
+                                     DevicesListAsQueryable="_devicesListAsQueryable">
+                </NextPreviuosButtons>
                 <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
                 <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
@@ -297,7 +301,8 @@
     bool valid;
     bool validRealEstate;
     bool validDevice;
-    public Action onDataChanged;
+    public Action? onDataChanged;
+    public NextPreviuosButtons? nextPreviuosButtons;
     private RealEstate realEstateToAddDevice { get; set; } = new();
     private DeviceProfile deviceToAdd { get; set; } = new();
     public int realEsatateIdToAddDevice
@@ -356,6 +361,7 @@
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         editContext = new(realEstateToAddDevice);
+        nextPreviuosButtons = new();
         editDeviceContext = new(deviceToAdd);
         base.OnInitialized();
     }
@@ -367,6 +373,8 @@
         refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
         refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+        // nextPreviuosButtons.OnDevicePreviuos += OnModalDevicePreviuos;
+        // nextPreviuosButtons.OnDeviceNext += OnModalDeviceNext;
         base.OnAfterRender(firstRender);
     }
 
@@ -566,7 +574,7 @@
     }
 
     // error with the sequences
-    private void OnModalDeviceNext()
+    public void OnModalDeviceNext()
     {
         // this should be moved to DataService and to the next-previuos buttons component should be
         // passed currentDevice [Parameter] to use method in one place instead of changing in every copied component.
@@ -576,12 +584,13 @@
         {
             currentDeviceIndex = allDevices.IndexOf(currentDevice);
             currentDevice = allDevices[currentDeviceIndex + 1];
+            StateHasChanged();
             //one line code with linq
             // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
         }
     }
 
-    private void OnModalDevicePreviuos()
+    public void OnModalDevicePreviuos()
     {
         int currentDeviceIndex = 0;
         List<DeviceProfile> allDevices = _devicesListAsQueryable.ToList();
@@ -593,6 +602,7 @@
         {
             currentDeviceIndex = allDevices.IndexOf(currentDevice);
             currentDevice = allDevices[currentDeviceIndex - 1];
+            StateHasChanged();
             //one line code with linq
             // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
         }
@@ -634,19 +644,19 @@
 
     #region Shops
 
-    private Modal modalEditAddShopDetails = default!;
+    private Modal refModalEditAddShopDetails = default!;
 
     private async Task OnShowModalEditAddShopClick(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
-        await modalEditAddShopDetails.ShowAsync();
+        await refModalEditAddShopDetails.ShowAsync();
     }
 
     private async Task OnHideModalEditAddShopClick()
     {
-        await modalEditAddShopDetails.HideAsync();
+        await refModalEditAddShopDetails.HideAsync();
     }
 
     void ValidShopDetailsFormSubmitted(EditContext editcontext)
@@ -654,7 +664,7 @@
 
         DataService.SaveUpdatedObject();
         LastSubmitResult = "OnValidSubmit was executed";
-        modalEditAddShopDetails.HideAsync();
+        refModalEditAddShopDetails.HideAsync();
     }
 
     void InvalidShopDetailsFormSubmitted(EditContext editContext)
