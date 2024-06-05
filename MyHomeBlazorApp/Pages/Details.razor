@@ -243,8 +243,9 @@
 </div> *@
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
-        CurrentDevice="@currentDevice"
-                          Context="@editShopContextDevice">
+                          CurrentDevice="@currentDevice"
+                          ShopAddress="@shopAddress"
+                          DevicesListAsQueryable="_devicesListAsQueryable">
     </ModalEditShopDetails>
 </div>
 <div>
@@ -380,6 +381,7 @@
         refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
         refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+        refModalEditShopDetails.ShopDataHasChanged += DeviceDataHasChanged;
         // nextPreviuosButtons.OnDevicePreviuos += OnModalDevicePreviuos;
         // nextPreviuosButtons.OnDeviceNext += OnModalDeviceNext;
         base.OnAfterRender(firstRender);
@@ -651,33 +653,14 @@
 
     #region Shops
 
-    private Modal refModalEditAddShopDetails = default!;
     private ModalEditShopDetails refModalEditShopDetails = default!;
 
-    private async Task OnShowModalEditAddShopClick(int deviceID)
+    private void OnShowModalEditAddShopClick(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
-        await refModalEditShopDetails.OnShowModalEditAddShopClick();
-    }
-
-    // private async Task OnHideModalEditAddShopClick()
-    // {
-    //     await refModalEditAddShopDetails.HideAsync();
-    // }
-
-    void ValidShopDetailsFormSubmitted(EditContext editcontext)
-    {
-
-        DataService.SaveUpdatedObject();
-        LastSubmitResult = "OnValidSubmit was executed";
-        refModalEditAddShopDetails.HideAsync();
-    }
-
-    void InvalidShopDetailsFormSubmitted(EditContext editContext)
-    {
-        LastSubmitResult = "OnInvalidSubmit was executed";
+        refModalEditShopDetails.OnShowModalEditAddShopClick();
     }
 
     #endregion

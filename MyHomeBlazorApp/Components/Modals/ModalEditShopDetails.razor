@@ -5,9 +5,27 @@
 <Modal @ref="refModalEditShopDetails" Title="Edit Shop Details">
     <BodyTemplate>
         <EditForm Model="@CurrentDevice" Context="ShopDetails" OnSubmit="ShopDetailsFormSubmitted">
+            <div class="form-group row">
+                <label for="shopName" class="col-sm-2 col-form-label">Shop Name</label>
+                <div class="col-sm-10">
+                    <InputText id="shopName" @bind-Value="CurrentDevice.DeviceWarranty.Shop.ShopName">Shop Name</InputText>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="shopWebAdrress" class="col-sm-2 col-form-label">Shop Web Adrress</label>
+                <div class="col-sm-10">
+                    <InputText id="shopWebAdrress" @bind-Value="CurrentDevice.DeviceWarranty.Shop.ShopWebAddress">Shop Phone Number</InputText>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="shopPhoneNumber" class="col-sm-2 col-form-label">Shop Phone Number</label>
+                <div class="col-sm-10">
+                    <InputNumber id="shopPhoneNumber" @bind-Value="CurrentDevice.DeviceWarranty.Shop.PhoneNumber">Shop Phone Number</InputNumber>
+                </div>
+            </div>
             <AddEditShopDetailsComponent CurrentDevice="@CurrentDevice" />
             <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@ShopAddress" />
-            <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"></NextPreviuosButtons>
+            <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice" DevicesListAsQueryable="@DevicesListAsQueryable"></NextPreviuosButtons>
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
         </EditForm>
@@ -15,13 +33,15 @@
 </Modal>
 
 @code {
-    private Modal? refModalEditShopDetails { get; set; }
+    
     [Parameter]
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public Address? ShopAddress { get; set; }
     [Parameter]
-    public EditContext? Context { get; set; }
+    public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
+    public Action? ShopDataHasChanged;
+    private Modal? refModalEditShopDetails { get; set; }
 
     public async Task OnHideModalEditAddShopClick()
     {
@@ -35,7 +55,11 @@
 
     private void ShopDetailsFormSubmitted(EditContext Context)
     {
+        // await OnSubmit.InvokeAsync(CurrentDevice);
         DataService.SaveUpdatedObject();
+        ShopDataHasChanged();
         refModalEditShopDetails.HideAsync();
     }
+
+
 }
