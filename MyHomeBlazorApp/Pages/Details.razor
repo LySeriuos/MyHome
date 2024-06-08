@@ -212,35 +212,11 @@
         </BodyTemplate>
     </Modal>
 </div>
-<div class="row">
-    <Modal @ref="modalEditWarrantyDetails" Title="Edit Warranty Details">
-        <BodyTemplate>
-            <EditForm Model="@currentDevice" Context="WarrantyDetails" OnValidSubmit="ValidWarrantyDetailsFormSubmitted" OnInvalidSubmit="InvalidWarrantyDetailsFormSubmitted">
-                <AddEditWarrantyDetails CurrentDevice="@currentDevice" />
-                <NextPreviuosButtons @bind-CurrentDevice="@currentDevice"
-                                     DevicesListAsQueryable="_devicesListAsQueryable">
-                </NextPreviuosButtons>
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditWarrantyClick">Close</Button>
-                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-            </EditForm>
-        </BodyTemplate>
-    </Modal>
+<div>
+    <ModalEditWarrantyDetails @ref="refModalEditWarrantyDetails"
+        CurrentDevice="@currentDevice"
+    DevicesListAsQueryable="_devicesListAsQueryable"></ModalEditWarrantyDetails>
 </div>
-@* <div class="row">
-    <Modal @ref="refModalEditAddShopDetails" Title="Edit Shop Details">
-        <BodyTemplate>
-            <EditForm Model="@currentDevice" Context="ShopDetails" OnValidSubmit="ValidShopDetailsFormSubmitted" OnInvalidSubmit="InvalidShopDetailsFormSubmitted">
-                <AddEditShopDetailsComponent CurrentDevice="@currentDevice" />
-                <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@shopAddress" />
-                <NextPreviuosButtons @bind-CurrentDevice="@currentDevice"
-                                     DevicesListAsQueryable="_devicesListAsQueryable">
-                </NextPreviuosButtons>
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>
-                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-            </EditForm>
-        </BodyTemplate>
-    </Modal>
-</div> *@
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
                           CurrentDevice="@currentDevice"
@@ -363,6 +339,18 @@
         StateHasChanged();
     }
 
+    private void ShopDataHasChanged()
+    {
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        StateHasChanged();
+    }
+
+    private void WarrantyDataHasChanged()
+    {
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        StateHasChanged();
+    }
+
     protected override void OnInitialized()
     {
         // It does not change nothing if I assign QuickGrid item directly to DataService.
@@ -381,9 +369,8 @@
         refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
         refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
-        refModalEditShopDetails.ShopDataHasChanged += DeviceDataHasChanged;
-        // nextPreviuosButtons.OnDevicePreviuos += OnModalDevicePreviuos;
-        // nextPreviuosButtons.OnDeviceNext += OnModalDeviceNext;
+        refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
+        refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
         base.OnAfterRender(firstRender);
     }
 
@@ -624,30 +611,30 @@
 
     #region Warranties
 
-    private Modal modalEditWarrantyDetails = default!;
+    private ModalEditWarrantyDetails refModalEditWarrantyDetails = default!;
 
     private async Task OnShowModalEditAddDeviceWarrantyClick(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
-        await modalEditWarrantyDetails.ShowAsync();
+        await refModalEditWarrantyDetails.OnShowModalEditWarrantyClick();
     }
 
-    private async Task OnHideModalEditWarrantyClick()
-    {
-        await modalEditWarrantyDetails.HideAsync();
-    }
+    // private async Task OnHideModalEditWarrantyClick()
+    // {
+    //     await modalEditWarrantyDetails.HideAsync();
+    // }
 
-    void ValidWarrantyDetailsFormSubmitted(EditContext editcontext)
-    {
-        DataService.SaveUpdatedObject();
-        LastSubmitResult = "OnValidSubmit was executed";
-        modalEditWarrantyDetails.HideAsync();
-    }
+    // void ValidWarrantyDetailsFormSubmitted(EditContext editcontext)
+    // {
+    //     DataService.SaveUpdatedObject();
+    //     LastSubmitResult = "OnValidSubmit was executed";
+    //     modalEditWarrantyDetails.HideAsync();
+    // }
 
-    void InvalidWarrantyDetailsFormSubmitted(EditContext editContext)
-    {
-        LastSubmitResult = "OnInvalidSubmit was executed";
-    }
+    // void InvalidWarrantyDetailsFormSubmitted(EditContext editContext)
+    // {
+    //     LastSubmitResult = "OnInvalidSubmit was executed";
+    // }
 
     #endregion
 
@@ -655,12 +642,11 @@
 
     private ModalEditShopDetails refModalEditShopDetails = default!;
 
-    private void OnShowModalEditAddShopClick(int deviceID)
+    private async Task OnShowModalEditAddShopClick(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
-        //getting null reference for device if i'm trying to edit shop details directly after I added new device. It works fine after I reload app
         shopAddress = currentDevice.DeviceWarranty.Shop.Address;
-        refModalEditShopDetails.OnShowModalEditAddShopClick();
+        await refModalEditShopDetails.OnShowModalEditAddShopClick();
     }
 
     #endregion
