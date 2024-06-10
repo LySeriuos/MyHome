@@ -134,19 +134,20 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile GetDeviceById(int id)
         {
             DeviceProfile currentDevice = new DeviceProfile();
-            List<DeviceProfile> devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
-            foreach (DeviceProfile device in devicesList)
-            {
-                if (device.DeviceID == id)
-                {
-                    currentDevice = device;
-                    break;
-                }
-                else
-                {
-                    currentDevice = new DeviceProfile();
-                }
-            }
+            currentDevice = CurrentUser.GetAllDevices().FirstOrDefault(d => d.DeviceID == id);
+            //List<DeviceProfile> devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            //foreach (DeviceProfile device in devicesList)
+            //{
+            //    if (device.DeviceID == id)
+            //    {
+            //        currentDevice = device;
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        currentDevice = new DeviceProfile();
+            //    }
+            //}
             //device = Devices.FirstOrDefault(Device => Device.DeviceID == id);
             return currentDevice;
         }

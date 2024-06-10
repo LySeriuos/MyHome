@@ -134,6 +134,37 @@
             </QuickGrid>
         </div>
     </TabPage>
+    @if (DataService.UnassignedProfile.UnassignedDevicesList.Count > 0)
+    {
+        <TabPage Text = "Unassigned Devices">
+            <div class="grid">
+            <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
+            <QuickGrid tabindex="2" Items="DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
+                @* _devicesListAsQueryable = DataService.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable(); *@
+                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+                <TemplateColumn>
+                    <div>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
+                    </div>
+                </TemplateColumn>
+                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+                <TemplateColumn Title="Manual">
+                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+                </TemplateColumn>
+                @* I do not knowif I need this linein devices details *@
+                @* <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" /> *@
+            </QuickGrid>
+        </div>
+    </TabPage>
+    }
 </TabControl>
 
 <!--#region Edit Form Modals  -->
@@ -187,6 +218,9 @@
                 <AddEditDeviceComponent Device="@currentDevice" EditContext="@editDeviceContext" />
                 <div class="row">
                     <div class="form-group">
+                        @* ////// *@
+                        @* There is no option to edit unassigned device without moving to other RealEstate *@
+                        @* /////// *@
                         <label class="form-label">Choose Real Estate</label>
                         <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select">
                             <option selected disabled value="-1">Select Real Estate...</option>
@@ -549,7 +583,11 @@
 
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
-        realEsatateIdToAddDevice = DataService.GetRealEstateByDeviceID(deviceID);
+        currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(deviceID);
+        if(currentRealEstate.RealEstateID == 0)
+        {
+            _devicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
+        }
         currentUser = DataService.CurrentUser;
         currentDevice = DataService.GetDeviceById(deviceID);
         await modalEditAddDevice.ShowAsync();
