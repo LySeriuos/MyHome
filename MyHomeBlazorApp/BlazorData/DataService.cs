@@ -300,23 +300,11 @@ namespace MyHomeBlazorApp.BlazorData
         {
             List<DeviceProfile> devicesToDelete = CurrentUser.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID).DevicesProfiles;
 
-            //if (RealEstates.Any(r => r.RealEstateID == 0) == false)
-            //{
-            //    DefaultRealEstate.RealEstateID = 0;
-            //    DefaultRealEstate.RealEstateName = "Unassigned";
-            //    DefaultRealEstate.DevicesProfiles = new List<DeviceProfile>();
-            //    RealEstates.Add(DefaultRealEstate);
-            //}
-            //DefaultRealEstate.DevicesProfiles = devicesToDelete;
-
-
             foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
             {
                 UnassignedProfile.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-            CurrentUser.RealEstates.Remove(currentRealEstate);
-
             Data.SaveUsersListToXml(_users, _path);
         }
 

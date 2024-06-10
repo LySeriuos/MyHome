@@ -95,10 +95,9 @@
         if (currentRealEstate != null)
         {
             DataService.LeaveDevicesUnassigned(currentRealEstate);
-            
+            onDeleteRealEstate();
             onDataChanged();
         }
-        onDeleteRealEstate();
         await OnHideModalReasignDevicesCloseClick();
     }
 
