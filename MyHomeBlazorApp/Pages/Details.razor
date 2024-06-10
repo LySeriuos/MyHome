@@ -238,9 +238,8 @@
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-                                currentDeviceToDelete="@currentDevice"
-                                currentRealEstateToDeleteFrom="@currentRealEstate"
-                                refModalDeleteSuccess="@refModalDeleteSuccess">
+                                CurrentDeviceToDelete="@currentDevice"
+                                CurrentRealEstateToDeleteFrom="@currentRealEstate">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
@@ -365,8 +364,10 @@
     protected override void OnAfterRender(bool firstRender)
     {
         refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
+        refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
         refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
+        refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
         refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
         refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
         refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
@@ -384,9 +385,9 @@
         refModalRealEstateDelete.DeleteRealEstate_Click(true);
     }
 
-    private void OnModalRealEstateDeleteClose()
+    private void OnModalDeleteSuccess()
     {
-        refModalRealEstateDelete.OnHideModalDeleteRealEstateCloseClick();
+        refModalDeleteSuccess.OnShowModalClick();
     }
 
     protected override void OnParametersSet()
@@ -451,22 +452,23 @@
     {
         currentUser = DataService.CurrentUser;
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
+        _deletedObjectName = currentRealEstate.RealEstateName;
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
 
-    private bool CheckIfRealEstateObjectIsEmpty()
-    {
-        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
-        {
-            _isNullOrHasNoProperties = true;
-        }
-        else
-        {
-            _isNullOrHasNoProperties = false;
-        }
+    // private bool CheckIfRealEstateObjectIsEmpty()
+    // {
+    //     if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
+    //     {
+    //         _isNullOrHasNoProperties = true;
+    //     }
+    //     else
+    //     {
+    //         _isNullOrHasNoProperties = false;
+    //     }
 
-        return _isNullOrHasNoProperties;
-    }
+    //     return _isNullOrHasNoProperties;
+    // }
 
     private void OnModalRealEstateNext()
     {
@@ -534,7 +536,7 @@
         int ChosedRealEsatateID = DataService.GetRealEstateByDeviceID(deviceId);
         currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         currentDevice = DataService.GetDeviceById(deviceId);
-        //move these lines to DataService method
+        _deletedObjectName = currentDevice.DeviceName;
         await refModalConfirmDeviceDeletion.OnShowModalClick();
     }
 

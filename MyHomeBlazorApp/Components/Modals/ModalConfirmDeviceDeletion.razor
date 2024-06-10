@@ -6,7 +6,7 @@
 
 <Modal @ref="refModalConfirmDeviceDeletion">
     <BodyTemplate>
-        <p>Are you sure you want To Delete @currentDeviceToDelete.DeviceName?</p>
+        <p>Are you sure you want To Delete @CurrentDeviceToDelete.DeviceName?</p>
     </BodyTemplate>
     <FooterTemplate>
         <Button @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
@@ -15,15 +15,13 @@
 </Modal>
 @code {
     [Parameter]
-    public DeviceProfile? currentDeviceToDelete { get; set; }
+    public DeviceProfile? CurrentDeviceToDelete { get; set; }
     [Parameter]
-    public RealEstate? currentRealEstateToDeleteFrom { get; set; }
-    [Parameter]
-    public ModalDeleteSuccessful? refModalDeleteSuccess { get; set; }
-    private Modal? refModalConfirmDeviceDeletion { get; set; }
-    private String? _deletedDeviceName;
+    public RealEstate? CurrentRealEstateToDeleteFrom { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
+    private Modal? refModalConfirmDeviceDeletion { get; set; }
+    private String? _deletedDeviceName;
 
     public Action onDataChanged;
 
@@ -32,12 +30,11 @@
         if (_confirmDeletion == true)
         {
             // manualy assigned value!
-            DeviceProfile deviceToDelete = currentRealEstateToDeleteFrom.DevicesProfiles.First(d => d.DeviceID == currentDeviceToDelete.DeviceID);
+            DeviceProfile deviceToDelete = CurrentRealEstateToDeleteFrom.DevicesProfiles.First(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
             if (deviceToDelete != null)
             {
                 _deletedDeviceName = deviceToDelete.DeviceName;
-                Logic.RemoveDevice(currentRealEstateToDeleteFrom, deviceToDelete, DataService.Users, DataService.XmlPath);
-                await refModalDeleteSuccess.OnShowModalClick();
+                Logic.RemoveDevice(CurrentRealEstateToDeleteFrom, deviceToDelete, DataService.Users, DataService.XmlPath);
                 onDataChanged();
             }
             else
