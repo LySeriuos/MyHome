@@ -1,0 +1,115 @@
+﻿@using MyHome.Models;
+@using MyHome;
+@using MyHomeBlazorApp.Pages
+@inject BlazorData.DataService DataService
+
+
+
+<Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
+    <BodyTemplate>
+        <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
+            <DataAnnotationsValidator />
+            <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext" />
+            <div class="row">
+                <div class="form-group">
+                    @* ////// *@
+                    @* There is no option to edit unassigned device without moving to other RealEstate *@
+                    @* /////// *@
+                    <label class="form-label">Choose Real Estate</label>
+                    <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select">
+                        <option selected disabled value="-1">Select Real Estate...</option>
+                        @foreach (var realEstate in CurrentUser.RealEstates)
+                        {
+                            <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
+                        }
+                    </InputSelect>
+                    <ValidationSummary />
+                    @* <ValidationMessage For="() =>realEstateToAddDevice.RealEstateID" class="text-danger d-block" /> *@
+                </div>
+            </div>
+            <br>
+            @if (CurrentDevice.DeviceID != 0)
+            {
+                <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                     DevicesListAsQueryable="DevicesListAsQueryable">
+                </NextPreviuosButtons>
+            }
+            <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
+            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+        </EditForm>
+    </BodyTemplate>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public DeviceProfile? CurrentDevice { get; set; }
+    [Parameter]
+    public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
+    [Parameter]
+    public UserProfile? CurrentUser { get; set; }
+    private DeviceProfile deviceToAdd { get; set; } = new();
+    private EditContext? editDeviceContext;
+    private EditContext? editContext;
+    private bool validRealEstate;
+    private bool validDevice;
+    private Modal? refModalEditAddDevice { get; set; }
+    private RealEstate realEstateToAddDevice { get; set; } = new();
+    public Action changedDeviceListData;
+    private int realEsatateIdToAddDevice
+    {
+        get => realEstateToAddDevice.RealEstateID;
+        set { realEstateToAddDevice.RealEstateID = value; }
+    }
+
+    private string deviceName
+    {
+        get => CurrentDevice.DeviceName;
+        set { CurrentDevice.DeviceName = value; }
+    }
+
+    protected override void OnInitialized()
+    {        
+        editContext = new(realEstateToAddDevice);
+        editDeviceContext = new(deviceToAdd);
+        // editShopContextDevice = new(currentDevice);
+        base.OnInitialized();
+    }
+
+    void ValidDeviceFormSubmitted(EditContext editContext)
+    {
+        validRealEstate = editContext.Validate();
+        validDevice = editDeviceContext.Validate();
+        if (realEstateToAddDevice.RealEstateID != 0 && CurrentDevice.DeviceID == 0 && deviceName != null)
+        {
+            validDevice = editDeviceContext.Validate();
+            validRealEstate = editContext.Validate();
+            DataService.AddNewDevice(CurrentDevice, realEsatateIdToAddDevice);
+            changedDeviceListData();
+            refModalEditAddDevice.HideAsync();
+        }
+        else if (realEstateToAddDevice.RealEstateID != 0 && CurrentDevice.DeviceID != 0 && deviceName != null)
+        {
+            validDevice = editDeviceContext.Validate();
+            validRealEstate = editContext.Validate();
+            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, realEsatateIdToAddDevice);
+            changedDeviceListData();
+            refModalEditAddDevice.HideAsync();
+        }
+        ///////////////
+        //Updating quickgrid only if I use OnInitialized, otherwise it rerender and change only if I change Tab or page.
+        //QuickGrid for RealEstates Details do not need this, so I can imagine that the problem is in SelectMany, maybe? :)
+        //////////////
+        OnInitialized();
+    }
+    public async Task OnHideModalEditDeviceClick()
+    {
+        await refModalEditAddDevice.HideAsync();
+    }
+
+    public async Task OnShowModalEditDeviceClick()
+    {
+        await refModalEditAddDevice.ShowAsync();
+    }
+
+}

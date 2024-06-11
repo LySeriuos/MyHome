@@ -97,7 +97,7 @@ namespace MyHomeBlazorApp.BlazorData
         public void AddNewDevice(DeviceProfile deviceToAdd, int chosedRealEstateID)
         {
             //validation code (duplicates etc)
-            List<DeviceProfile> devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            List<DeviceProfile> devicesList = Devices;
             int maxId = Logic.GetDeviceMaxId(devicesList);
             deviceToAdd.DeviceID = maxId+1;
             deviceToAdd.DeviceWarranty = new();
@@ -330,10 +330,14 @@ namespace MyHomeBlazorApp.BlazorData
             CurrentUser = GetUser(userId);
             RealEstates = CurrentUser.RealEstates;
             CurrentRealEstate = GetRealEstate(realEstateID);
+            //
+            // These do not get updated List and makes id duplicates ///
+            //
             //List<DeviceProfile> _devices = currentUser.GetAllDevices();
             //Devices = Logic.GetAllUserDevices(CurrentUser);
             //Devices = CurrentUser.GetAllDevices();
-            Devices = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            //Devices = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            ///////////
             Device = LastAddedDevice();
             //UnassignedDevicesList = UnassignedDevices();
             UnassignedProfile = UnassignedDevices();
@@ -349,7 +353,11 @@ namespace MyHomeBlazorApp.BlazorData
         private static List<UserProfile>? _users;
         public List<UserProfile>? Users => _users;
         public string XmlPath => _path;
-        public List<DeviceProfile> Devices { get; set; } = new List<DeviceProfile>();
+
+        // Why this get teh updates list but not in the class? Should I change all variables like this ?
+        public List<DeviceProfile> Devices => CurrentUser.GetAllDevices();
+        //
+
         public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile Device { get; set; } = new DeviceProfile();
         public UserProfile CurrentUser { get; set; } = new UserProfile();

@@ -189,52 +189,23 @@
         </BodyTemplate>
     </Modal>
 </div>
-<div class="row">
-    <Modal @ref="modalEditAddDevice" Title="Edit Device Details">
-        <BodyTemplate>
-            <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
-                <DataAnnotationsValidator />
-                <AddEditDeviceComponent Device="@currentDevice" EditContext="@editDeviceContext" />
-                <div class="row">
-                    <div class="form-group">
-                        @* ////// *@
-                        @* There is no option to edit unassigned device without moving to other RealEstate *@
-                        @* /////// *@
-                        <label class="form-label">Choose Real Estate</label>
-                        <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select">
-                            <option selected disabled value="-1">Select Real Estate...</option>
-                            @foreach (var realEstate in currentUser.RealEstates)
-                            {
-                                <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
-                            }
-                        </InputSelect>
-                        <ValidationSummary />
-                        @* <ValidationMessage For="() =>realEstateToAddDevice.RealEstateID" class="text-danger d-block" /> *@
-                    </div>
-                </div>
-                <br>
-                @if (currentDevice.DeviceID != 0)
-                {
-                    <NextPreviuosButtons @bind-CurrentDevice="@currentDevice"
-                                         DevicesListAsQueryable="_devicesListAsQueryable">
-                    </NextPreviuosButtons>
-                }
-                <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
-                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-            </EditForm>
-        </BodyTemplate>
-    </Modal>
+
+<div>
+    <ModalEditAddDevice @ref="refModalEditAddDevice" 
+        CurrentDevice="@currentDevice"
+        CurrentUser="@currentUser"
+     DevicesListAsQueryable="@_devicesListAsQueryable"></ModalEditAddDevice>
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="refModalEditWarrantyDetails"
         CurrentDevice="@currentDevice"
-    DevicesListAsQueryable="_devicesListAsQueryable"></ModalEditWarrantyDetails>
+    DevicesListAsQueryable="@_devicesListAsQueryable"></ModalEditWarrantyDetails>
 </div>
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
                           CurrentDevice="@currentDevice"
                           ShopAddress="@shopAddress"
-                          DevicesListAsQueryable="_devicesListAsQueryable">
+                          DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditShopDetails>
 </div>
 <div>
@@ -279,30 +250,15 @@
     private String? _deletedObjectName;
     private RealEstate currentChosedRealEsate = new();
     private RealEstate currentRealEstate = new();
-    private RealEstate realEstateToAddDevice { get; set; } = new();
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
     private DeviceProfile? currentDevice { get; set; } = new();
-    private DeviceProfile deviceToAdd { get; set; } = new();
-    private UserProfile currentUser = new();    
+    private UserProfile currentUser = new();  
 
     string LastSubmitResult = "";
 
     IQueryable<DeviceProfile> _devicesListAsQueryable;
     IQueryable<RealEstate> _realEstatesListAsQueryable;
-
-    EditContext editContext;
-    EditContext editDeviceContext;
-    EditContext editShopContextDevice;
-
-    bool validRealEstate;
-    bool validDevice;
-    
-    public int realEsatateIdToAddDevice
-    {
-        get => realEstateToAddDevice.RealEstateID;
-        set { realEstateToAddDevice.RealEstateID = value; }
-    }
 
     public string deviceName
     {
@@ -310,33 +266,14 @@
         set { currentDevice.DeviceName = value; }
     }
 
-    void ValidDeviceFormSubmitted(EditContext editContext)
-    {
-        validRealEstate = editContext.Validate();
-        validDevice = editDeviceContext.Validate();
-        if (realEstateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID == 0 && deviceName != null)
-        {
-            validDevice = editDeviceContext.Validate();
-            validRealEstate = editContext.Validate();
-            DataService.AddNewDevice(currentDevice, realEsatateIdToAddDevice);
-            modalEditAddDevice.HideAsync();
-        }
-        else if (realEstateToAddDevice.RealEstateID != 0 && currentDevice.DeviceID != 0 && deviceName != null)
-        {
-            validDevice = editDeviceContext.Validate();
-            validRealEstate = editContext.Validate();
-            DataService.MoveDeviceToOtherRealEstate(currentDevice.DeviceID, currentUser, realEsatateIdToAddDevice);
-            modalEditAddDevice.HideAsync();
-        }
-        ///////////////
-        //Updating quickgrid only if I use OnInitialized, otherwise it rerender and change only if I change Tab or page.
-        //QuickGrid for RealEstates Details do not need this, so I can imagine that the problem is in SelectMany, maybe? :)
-        //////////////
-        OnInitialized();
-    }
-
     // This method getting bool value from component if the item was deleted. But there is no way to activate thsi method to use OnInitialized().
     private void DeviceDataHasChanged()
+    {
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        StateHasChanged();
+    }
+
+    private void DeviceListDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         StateHasChanged();
@@ -365,9 +302,6 @@
         // It does not change nothing if I assign QuickGrid item directly to DataService.
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        editContext = new(realEstateToAddDevice);
-        editDeviceContext = new(deviceToAdd);
-        editShopContextDevice = new(currentDevice);
         base.OnInitialized();
     }
 
@@ -375,6 +309,7 @@
     {
         refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
         refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
+        refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
         refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
@@ -382,6 +317,7 @@
         refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
         refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
         refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
+        
         base.OnAfterRender(firstRender);
     }
 
@@ -535,8 +471,9 @@
 
 
 
-    private Modal modalReasignDevices = default!;
+    // private Modal modalReasignDevices = default!;
     private Modal modalEditAddDevice = default!;
+    private ModalEditAddDevice refModalEditAddDevice = default!;
     private Modal modalDeviceDelete = default!;
     private ModalDeleteSuccessful refModalDeleteSuccess = default!;
     private ModalConfirmDeviceDeletion refModalConfirmDeviceDeletion = default!;
@@ -554,7 +491,7 @@
     {
         currentUser = DataService.CurrentUser;
         currentDevice = new();
-        await modalEditAddDevice.ShowAsync();
+        await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
 
     private async Task OnShowModalEditDeviceClick(int deviceID)
@@ -566,23 +503,7 @@
         }
         currentUser = DataService.CurrentUser;
         currentDevice = DataService.GetDeviceById(deviceID);
-        await modalEditAddDevice.ShowAsync();
-
-    }
-
-    private async Task OnHideModalEditDeviceClick()
-    {
-        await modalEditAddDevice.HideAsync();
-    }
-
-    private async Task OnShowModalReasignDevices(int currentRealEstateID)
-    {
-        await modalReasignDevices.ShowAsync();
-    }
-
-    private async Task OnHideModalReasignDevicesClick()
-    {
-        await modalReasignDevices.HideAsync();
+        await refModalEditAddDevice.OnShowModalEditDeviceClick();        
     }
 
     // error with the sequences
