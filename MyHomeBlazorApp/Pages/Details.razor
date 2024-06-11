@@ -274,33 +274,30 @@
         set { selectedRealEstateID = value; }
     }
     private int TabID = 0;
-    private string _chooseOptionValue = "Choose Real Estate";
-    RealEstate currentChosedRealEsate = new();
     private int selectedRealEstateID = -1;
-    private Address currentRealEstateAddress = new();
-    private DeviceProfile? currentDevice { get; set; } = new();
-    private RealEstate currentRealEstate = new();
-    private UserProfile currentUser = new();
-    private Address shopAddress = new();
+    private string _chooseOptionValue = "Choose Real Estate";
     private String? _deletedObjectName;
+    private RealEstate currentChosedRealEsate = new();
+    private RealEstate currentRealEstate = new();
+    private RealEstate realEstateToAddDevice { get; set; } = new();
+    private Address currentRealEstateAddress = new();
+    private Address shopAddress = new();
+    private DeviceProfile? currentDevice { get; set; } = new();
+    private DeviceProfile deviceToAdd { get; set; } = new();
+    private UserProfile currentUser = new();    
+
     string LastSubmitResult = "";
-    string _modalTitle = "";
-    bool _isNullOrHasNoProperties = false;
+
     IQueryable<DeviceProfile> _devicesListAsQueryable;
     IQueryable<RealEstate> _realEstatesListAsQueryable;
-    TabControl _tabControl;
-    TabPage _realEstatePage;
-    TabPage _devicePage;
+
     EditContext editContext;
     EditContext editDeviceContext;
     EditContext editShopContextDevice;
-    bool valid;
+
     bool validRealEstate;
     bool validDevice;
-    public Action? onDataChanged;
-    public NextPreviuosButtons? nextPreviuosButtons;
-    private RealEstate realEstateToAddDevice { get; set; } = new();
-    private DeviceProfile deviceToAdd { get; set; } = new();
+    
     public int realEsatateIdToAddDevice
     {
         get => realEstateToAddDevice.RealEstateID;
