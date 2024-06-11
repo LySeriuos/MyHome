@@ -234,7 +234,6 @@
 <!--#endregion -->
 @code {
 
-
     [Parameter]
     public int Tab { get; set; }
 
@@ -247,7 +246,8 @@
     private int TabID = 0;
     private int selectedRealEstateID = -1;
     private string _chooseOptionValue = "Choose Real Estate";
-    private String? _deletedObjectName;
+    private string? _deletedObjectName;
+    private string message = "";
     private RealEstate currentChosedRealEsate = new();
     private RealEstate currentRealEstate = new();
     private Address currentRealEstateAddress = new();
@@ -266,45 +266,6 @@
         set { currentDevice.DeviceName = value; }
     }
 
-    // This method getting bool value from component if the item was deleted. But there is no way to activate thsi method to use OnInitialized().
-    private void DeviceDataHasChanged()
-    {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        StateHasChanged();
-    }
-
-    private void DeviceListDataHasChanged()
-    {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        StateHasChanged();
-    }
-
-    private void RealEstateDataHasChanged()
-    {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        StateHasChanged();
-    }
-
-    private void ShopDataHasChanged()
-    {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        StateHasChanged();
-    }
-
-    private void WarrantyDataHasChanged()
-    {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        StateHasChanged();
-    }
-
-    protected override void OnInitialized()
-    {
-        // It does not change nothing if I assign QuickGrid item directly to DataService.
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        base.OnInitialized();
-    }
-
     protected override void OnAfterRender(bool firstRender)
     {
         refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
@@ -321,41 +282,10 @@
         base.OnAfterRender(firstRender);
     }
 
-    private void OnModalReassignDevicesRequest(int realEstateID)
-    {
-        refModalReasignDevices.OnShowModalReasignDevices(realEstateID);
-    }
-
-    private void OnModalRealEstateDeleteRequest()
-    {
-        refModalRealEstateDelete.DeleteRealEstate_Click(true);
-    }
-
     private void OnModalDeleteSuccess()
     {
         refModalDeleteSuccess.OnShowModalClick();
     }
-
-    protected override void OnParametersSet()
-    {
-        if (Tab == 1)
-        {
-            TabID = 1;
-        }
-        else if (Tab == 2)
-        {
-            TabID = 2;
-        }
-        else if (Tab == 3)
-        {
-            TabID = 3;
-        }
-        else
-        {
-            message = "There is no option";
-        }
-    }
-
 
     #region Real Estate
 
@@ -374,6 +304,18 @@
     // {
     //     _devicesListAsQueryable = _devicesListAsQueryable.Where(i => i.DeviceName.Contains(query));
     // }
+
+
+    private void RealEstateDataHasChanged()
+    {
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        StateHasChanged();
+    }
+
+    private void OnModalRealEstateDeleteRequest()
+    {
+        refModalRealEstateDelete.DeleteRealEstate_Click(true);
+    }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
@@ -469,14 +411,26 @@
 
     #region Devices
 
-
-
-    // private Modal modalReasignDevices = default!;
-    private Modal modalEditAddDevice = default!;
     private ModalEditAddDevice refModalEditAddDevice = default!;
-    private Modal modalDeviceDelete = default!;
     private ModalDeleteSuccessful refModalDeleteSuccess = default!;
     private ModalConfirmDeviceDeletion refModalConfirmDeviceDeletion = default!;
+
+    private void OnModalReassignDevicesRequest(int realEstateID)
+    {
+        refModalReasignDevices.OnShowModalReasignDevices(realEstateID);
+    }
+
+    private void DeviceDataHasChanged()
+    {
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        StateHasChanged();
+    }
+
+    private void DeviceListDataHasChanged()
+    {
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        StateHasChanged();
+    }
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
@@ -506,49 +460,17 @@
         await refModalEditAddDevice.OnShowModalEditDeviceClick();        
     }
 
-    // error with the sequences
-    public void OnModalDeviceNext()
-    {
-        // this should be moved to DataService and to the next-previuos buttons component should be
-        // passed currentDevice [Parameter] to use method in one place instead of changing in every copied component.
-        int currentDeviceIndex = 0;
-        List<DeviceProfile> allDevices = _devicesListAsQueryable.ToList();
-        if (currentDevice != null)
-        {
-            currentDeviceIndex = allDevices.IndexOf(currentDevice);
-            currentDevice = allDevices[currentDeviceIndex + 1];
-            StateHasChanged();
-            //one line code with linq
-            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
-        }
-    }
-
-    public void OnModalDevicePreviuos()
-    {
-        int currentDeviceIndex = 0;
-        List<DeviceProfile> allDevices = _devicesListAsQueryable.ToList();
-        //maybe need to sort list first by ID and then use indexing.
-        // allDevices.Sort();
-        // List<DeviceProfile> query = allDevices.OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).ToList();
-
-        if (currentDevice != null)
-        {
-            currentDeviceIndex = allDevices.IndexOf(currentDevice);
-            currentDevice = allDevices[currentDeviceIndex - 1];
-            StateHasChanged();
-            //one line code with linq
-            // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];
-        }
-    }
-
-
-
-
     #endregion
 
     #region Warranties
 
     private ModalEditWarrantyDetails refModalEditWarrantyDetails = default!;
+
+    private void WarrantyDataHasChanged()
+    {
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        StateHasChanged();
+    }
 
     private async Task OnShowModalEditAddDeviceWarrantyClick(int deviceID)
     {
@@ -556,28 +478,17 @@
         await refModalEditWarrantyDetails.OnShowModalEditWarrantyClick();
     }
 
-    // private async Task OnHideModalEditWarrantyClick()
-    // {
-    //     await modalEditWarrantyDetails.HideAsync();
-    // }
-
-    // void ValidWarrantyDetailsFormSubmitted(EditContext editcontext)
-    // {
-    //     DataService.SaveUpdatedObject();
-    //     LastSubmitResult = "OnValidSubmit was executed";
-    //     modalEditWarrantyDetails.HideAsync();
-    // }
-
-    // void InvalidWarrantyDetailsFormSubmitted(EditContext editContext)
-    // {
-    //     LastSubmitResult = "OnInvalidSubmit was executed";
-    // }
-
     #endregion
 
     #region Shops
 
     private ModalEditShopDetails refModalEditShopDetails = default!;
+
+    private void ShopDataHasChanged()
+    {
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        StateHasChanged();
+    }
 
     private async Task OnShowModalEditAddShopClick(int deviceID)
     {
@@ -588,9 +499,33 @@
 
     #endregion
 
-
-
-    private string message = "";
+    protected override void OnInitialized()
+    {
+        // It does not change nothing if I assign QuickGrid item directly to DataService.
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        base.OnInitialized();
+    }
+    
+    protected override void OnParametersSet()
+    {
+        if (Tab == 1)
+        {
+            TabID = 1;
+        }
+        else if (Tab == 2)
+        {
+            TabID = 2;
+        }
+        else if (Tab == 3)
+        {
+            TabID = 3;
+        }
+        else
+        {
+            message = "There is no option";
+        }
+    }
 
 
     // // // // // // // //
