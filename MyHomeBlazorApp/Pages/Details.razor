@@ -49,8 +49,6 @@
         <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
-                @* _devicesListAsQueryable = DataService.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable(); *@
-                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
@@ -63,7 +61,6 @@
                         <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                     }
                 </TemplateColumn>
-
                 <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
                 <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
                 <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
@@ -75,15 +72,12 @@
                 <TemplateColumn Title="Manual">
                     <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
                 </TemplateColumn>
-                @* I do not knowif I need this linein devices details *@
-                @* <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" /> *@
             </QuickGrid>
         </div>
     </TabPage>
     <TabPage Text="Devices Warranties">
         <div class="grid">
-            <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
-                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+            <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">                
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
@@ -111,8 +105,7 @@
     </TabPage>
     <TabPage Text="Shops Details">
         <div class="grid">
-            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
-                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
+            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">                
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)">Edit</Button>
@@ -121,7 +114,6 @@
                 <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
                     <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
                 </TemplateColumn>
-                @* how to make output "no data" if user didn't put in details for alomst each part. Some will be empty *@
                 <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
                 <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
                 <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
@@ -140,8 +132,6 @@
             <div class="grid">
             <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
             <QuickGrid tabindex="2" Items="DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
-                @* _devicesListAsQueryable = DataService.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable(); *@
-                @* Here is "edit" button, but there are two different forms: Real Estate and Address. For logic reason these two should be combined as one editable form*@
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
@@ -159,8 +149,6 @@
                 <TemplateColumn Title="Manual">
                     <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
                 </TemplateColumn>
-                @* I do not knowif I need this linein devices details *@
-                @* <PropertyColumn Title="Warranty Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" /> *@
             </QuickGrid>
         </div>
     </TabPage>
@@ -199,15 +187,6 @@
                 <Button form="realEstateForm123" Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
             </EditForm>
         </BodyTemplate>
-        <FooterTemplate>
-            @* This is just for test purposes *@
-            @if (LastSubmitResult != null)
-            {
-                <h2>
-                    Last submit status: @LastSubmitResult
-                </h2>
-            }
-        </FooterTemplate>
     </Modal>
 </div>
 <div class="row">
