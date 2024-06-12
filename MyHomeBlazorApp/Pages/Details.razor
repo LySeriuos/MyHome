@@ -157,41 +157,16 @@
 
 <!--#region Edit Form Modals  -->
 @* Here is the EditForm with button outside the form *@
-<div class="row">
-    <Modal @ref="modalRealEstate" Title="Edit Real Estate Details">
-        <BodyTemplate>
-            <EditForm id="realEstateForm123" method="get" Model="DataService.RealEstates.AsQueryable()" OnValidSubmit="@ValidRealEsatateFormSubmitted" OnInvalidSubmit="@InvalidRealEstateFormSubmitted">
-                <DataAnnotationsValidator />
-                <div class="form-group row">
-                    <label for="realEstateName" class="col-sm-2 col-form-label">
-                        Real Estate Name
-                    </label>
-                    <div class="col-sm-10">
-                        <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                                   @bind-Value="currentRealEstate.RealEstateName" />
-                    </div>
-                </div>
-                <AddressComponent CurrentObjectAddress="@currentRealEstateAddress" DisplaySubmitButton="false" />
 
-                @if (currentRealEstate.RealEstateID != _realEstatesListAsQueryable.First().RealEstateID && currentRealEstate.RealEstateID != 0)
-                {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
-                }
-                @if (currentRealEstate.RealEstateID != _realEstatesListAsQueryable.Last().RealEstateID && currentRealEstate.RealEstateID != 0)
-                {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
-                }
+<div>
+    <ModalEditAddRealEstate @ref = "@refModalEditAddRealEstate" 
+        CurrentRealEstate="@currentRealEstate">
 
-                <Button Color="ButtonColor.Primary" @onclick="OnHideModalRealEstateClick">Close</Button>
-                @* The button to submit/update form *@
-                <Button form="realEstateForm123" Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-            </EditForm>
-        </BodyTemplate>
-    </Modal>
+    </ModalEditAddRealEstate>
 </div>
 
 <div>
-    <ModalEditAddDevice @ref="refModalEditAddDevice" 
+    <ModalEditAddDevice @ref="@refModalEditAddDevice" 
         CurrentDevice="@currentDevice"
         CurrentUser="@currentUser"
      DevicesListAsQueryable="@_devicesListAsQueryable"></ModalEditAddDevice>
@@ -278,8 +253,15 @@
         refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
         refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
         refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
-        
+        refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
+
         base.OnAfterRender(firstRender);
+    }
+
+    private void RealEstateListDataHasChanged()
+    {
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        StateHasChanged();
     }
 
     private void OnModalDeleteSuccess()
@@ -289,7 +271,7 @@
 
     #region Real Estate
 
-    private Modal modalRealEstate = default!;
+    private ModalEditAddRealEstate refModalEditAddRealEstate = default!;
     private ModalDeleteRealEstate refModalRealEstateDelete = default!;
     private ModalReassignDevices refModalReasignDevices = default!;
     //example
@@ -321,19 +303,14 @@
     {
         currentRealEstate = DataService.GetRealEstate(realEstateID);
         currentRealEstateAddress = currentRealEstate.Address;
-        await modalRealEstate.ShowAsync();
+        await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
 
     private async Task OnShowModalAddNewRealEstate()
     {
         currentRealEstate = new();
         currentRealEstateAddress = new();
-        await modalRealEstate.ShowAsync();
-    }
-
-    private async Task OnHideModalRealEstateClick()
-    {
-        await modalRealEstate.HideAsync();
+        await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
 
     private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
@@ -356,57 +333,8 @@
     //     }
 
     //     return _isNullOrHasNoProperties;
-    // }
-
-    private void OnModalRealEstateNext()
-    {
-        int currentRealEstateIndex = 0;
-        List<RealEstate> allRealEstates = _realEstatesListAsQueryable.ToList();
-        if (currentRealEstate != null)
-        {
-            currentRealEstateIndex = allRealEstates.IndexOf(currentRealEstate);
-            currentRealEstate = allRealEstates[currentRealEstateIndex + 1];
-            //one line code with linq
-            // currentRealEstate = allRealEstates[(allRealEstates.IndexOf(currentRealEstate) + 1) % allRealEstates.Count];
-        }
-
-    }
-
-    private void OnModalRealEstatePreviuos()
-    {
-        int currentRealEstateIndex = 0;
-        List<RealEstate> allRealEstates = _realEstatesListAsQueryable.ToList();
-        if (currentRealEstate != null)
-        {
-            currentRealEstateIndex = allRealEstates.IndexOf(currentRealEstate);
-            currentRealEstate = allRealEstates[currentRealEstateIndex - 1];
-            //one line code with linq
-            // currentRealEstate = allRealEstates[(allRealEstates.IndexOf(currentRealEstate) -1) % allRealEstates.Count]
-        }
-    }
-
-    private void ValidRealEsatateFormSubmitted(EditContext editContext)
-    {
-        //call form validation
-        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
-        {
-            currentRealEstate.Address = currentRealEstateAddress;
-            DataService.AddNewRealEstate(currentRealEstate);
-        }
-        else
-        {
-            DataService.SaveUpdatedObject();
-
-        }
-        OnInitialized();
-        LastSubmitResult = "OnValidSubmit was executed";
-        modalRealEstate.HideAsync();
-    }
-
-    private void InvalidRealEstateFormSubmitted(EditContext editContext)
-    {
-        LastSubmitResult = "OnInvalidSubmit was executed";
-    }
+    // }   
+   
     #endregion
 
     #region Devices
@@ -543,7 +471,7 @@
     //     {
     //         DataService.SaveUpdatedRealEstate();
     //     }
-    //     await modalRealEstate.HideAsync();
+    //     await refModalEditAddRealEstate.HideAsync();
     // }
 
     // Void or async Task?

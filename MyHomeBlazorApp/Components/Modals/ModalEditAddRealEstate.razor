@@ -1,0 +1,110 @@
+﻿@using MyHome.Models;
+@using MyHome;
+@using MyHomeBlazorApp.Pages
+@inject BlazorData.DataService DataService
+
+
+<Modal @ref="refModalEditAddRealEstate" Title="Edit Real Estate Details">
+    <BodyTemplate>
+        <EditForm id="realEstateForm123" method="get" Model="DataService.RealEstates.AsQueryable()" OnSubmit="@RealEsatateFormSubmitted">
+            <DataAnnotationsValidator />
+            <div class="form-group row">
+                <label for="realEstateName" class="col-sm-2 col-form-label">
+                    Real Estate Name
+                </label>
+                <div class="col-sm-10">
+                    <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
+                               @bind-Value="CurrentRealEstate.RealEstateName" />
+                </div>
+            </div>
+            <AddressComponent CurrentObjectAddress="@CurrentRealEstate.Address" DisplaySubmitButton="false" />
+
+            @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.First().RealEstateID && CurrentRealEstate.RealEstateID != 0)
+            {
+                <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
+            }
+            @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.Last().RealEstateID && CurrentRealEstate.RealEstateID != 0)
+            {
+                <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
+            }
+
+            <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddRealEstateClick">Close</Button>
+            @* The button to submit/update form *@
+            <Button form="realEstateForm123" Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+        </EditForm>
+    </BodyTemplate>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public RealEstate? CurrentRealEstate { get; set; }    
+    private IQueryable<RealEstate>? _realEstatesListAsQueryable { get; set; }
+    private Modal refModalEditAddRealEstate { get; set; }
+    private EditContext editContext;
+    private bool validRealEstate;
+    public Action realEstateDataHasChanged;
+
+
+    private void RealEsatateFormSubmitted(EditContext editContext)
+    {
+        //call form validation
+        validRealEstate = editContext.Validate();
+        if (CurrentRealEstate == null || CurrentRealEstate.RealEstateID == 0)
+        {            
+            DataService.AddNewRealEstate(CurrentRealEstate);
+            
+        }
+        else
+        {
+            DataService.SaveUpdatedObject();
+
+        }
+        realEstateDataHasChanged();
+        refModalEditAddRealEstate.HideAsync();
+    }
+
+
+    private void OnModalRealEstateNext()
+    {
+        int CurrentRealEstateIndex = 0;
+        List<RealEstate> allRealEstates = _realEstatesListAsQueryable.ToList();
+        if (CurrentRealEstate != null)
+        {
+            CurrentRealEstateIndex = allRealEstates.IndexOf(CurrentRealEstate);
+            CurrentRealEstate = allRealEstates[CurrentRealEstateIndex + 1];
+            //one line code with linq
+            // CurrentRealEstate = allRealEstates[(allRealEstates.IndexOf(CurrentRealEstate) + 1) % allRealEstates.Count];
+        }
+    }
+
+    private void OnModalRealEstatePreviuos()
+    {
+        int CurrentRealEstateIndex = 0;
+        List<RealEstate> allRealEstates = _realEstatesListAsQueryable.ToList();
+        if (CurrentRealEstate != null)
+        {
+            CurrentRealEstateIndex = allRealEstates.IndexOf(CurrentRealEstate);
+            CurrentRealEstate = allRealEstates[CurrentRealEstateIndex - 1];
+            //one line code with linq
+            // CurrentRealEstate = allRealEstates[(allRealEstates.IndexOf(CurrentRealEstate) -1) % allRealEstates.Count]
+        }
+    }
+
+    public async Task OnHideModalEditAddRealEstateClick()
+    {
+        await refModalEditAddRealEstate.HideAsync();
+    }
+    
+    public async Task OnShowModalEditAddRealEstateClick()
+    {
+        await refModalEditAddRealEstate.ShowAsync();
+    }
+
+    protected override void OnInitialized()
+    {      
+        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        editContext = new(CurrentRealEstate);
+        base.OnInitialized();
+    }
+}
