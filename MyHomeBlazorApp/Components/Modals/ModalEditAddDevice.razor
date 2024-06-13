@@ -7,7 +7,7 @@
 
 <Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
     <BodyTemplate>
-        <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
+        <EditForm Model="deviceToAdd" OnSubmit="@ValidDeviceFormSubmitted">
             <DataAnnotationsValidator />
             <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext" />
             <div class="row">
@@ -31,7 +31,7 @@
             @if (CurrentDevice.DeviceID != 0)
             {
                 <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                     DevicesListAsQueryable="DevicesListAsQueryable">
+                                     DevicesListAsQueryable="_devicesListAsQueryable">
                 </NextPreviuosButtons>
             }
             <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
@@ -44,8 +44,7 @@
 
     [Parameter]
     public DeviceProfile? CurrentDevice { get; set; }
-    [Parameter]
-    public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
+    private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     [Parameter]
     public UserProfile? CurrentUser { get; set; }
     private DeviceProfile deviceToAdd { get; set; } = new();
@@ -73,6 +72,7 @@
         editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
         // editShopContextDevice = new(currentDevice);
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         base.OnInitialized();
     }
 
