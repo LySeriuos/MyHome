@@ -17,7 +17,14 @@
                     @* /////// *@
                     <label class="form-label">Choose Real Estate</label>
                     <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select">
-                        <option selected disabled value="-1">Select Real Estate...</option>
+                        @if (realEsatateIdToAddDevice != 0)
+                        {
+                            <option value="@realEstateToAddDevice.RealEstateID">@realEstateToAddDevice.RealEstateName</option>
+                        }
+                        else
+                        {
+                            <option selected disabled>Select Real Estate...</option>
+                        }
                         @foreach (var realEstate in CurrentUser.RealEstates)
                         {
                             <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
@@ -68,7 +75,7 @@
     }
 
     protected override void OnInitialized()
-    {        
+    {
         editContext = new(realEstateToAddDevice);
         editDeviceContext = new(deviceToAdd);
         // editShopContextDevice = new(currentDevice);

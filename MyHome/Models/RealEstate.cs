@@ -20,7 +20,8 @@ namespace MyHome.Models
         }
 
         private string _realEstateName;
-
+        [Required (ErrorMessage = "Add Real Estate Name")]
+        //[StringLength(10, ErrorMessage = "Name is too long.")]
         public string RealEstateName
         {
             get { return _realEstateName; }
