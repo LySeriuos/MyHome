@@ -7,7 +7,7 @@
 
 <Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
     <BodyTemplate>
-        <EditForm Model="deviceToAdd" OnSubmit="@ValidDeviceFormSubmitted">
+        <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
             <DataAnnotationsValidator />
             <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext" />
             <div class="row">
@@ -17,7 +17,7 @@
                     @* /////// *@
                     <label class="form-label">Choose Real Estate</label>
                     <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select">
-                        @if (realEsatateIdToAddDevice != 0)
+                        @if (realEstateToAddDevice.RealEstateID != 0)
                         {
                             <option value="@realEstateToAddDevice.RealEstateID">@realEstateToAddDevice.RealEstateName</option>
                         }
@@ -30,10 +30,19 @@
                             <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
                         }
                     </InputSelect>
-                    <ValidationSummary />
-                    @* <ValidationMessage For="() =>realEstateToAddDevice.RealEstateID" class="text-danger d-block" /> *@
                 </div>
             </div>
+            @if (showErrorMessageVisible)
+            {
+                <li style=" color:red;">
+                    <ul>@errorMessage</ul>
+                </li>
+            }
+
+            <p>@realEsatateIdToAddDevice</p>
+            <ValidationSummary />
+            <ValidationMessage For="() =>realEstateToAddDevice" class="text-danger d-block" />
+
             <br>
             @if (CurrentDevice.DeviceID != 0)
             {
@@ -59,9 +68,12 @@
     private EditContext? editContext;
     private bool validRealEstate;
     private bool validDevice;
+    private bool showErrorMessageVisible = false;
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
     public Action changedDeviceListData;
+    private string errorMessage;
+
     private int realEsatateIdToAddDevice
     {
         get => realEstateToAddDevice.RealEstateID;
@@ -85,6 +97,16 @@
 
     void ValidDeviceFormSubmitted(EditContext editContext)
     {
+        if (realEsatateIdToAddDevice == 0)
+        {
+            showErrorMessageVisible = true;
+            errorMessage = "Please select Real Estate to Add Device.";
+            return;
+        }
+        else
+        {
+            showErrorMessageVisible = false;
+        }
         validRealEstate = editContext.Validate();
         validDevice = editDeviceContext.Validate();
         if (realEstateToAddDevice.RealEstateID != 0 && CurrentDevice.DeviceID == 0 && deviceName != null)
@@ -93,6 +115,7 @@
             validRealEstate = editContext.Validate();
             DataService.AddNewDevice(CurrentDevice, realEsatateIdToAddDevice);
             changedDeviceListData();
+            realEstateToAddDevice.RealEstateID = 0;
             refModalEditAddDevice.HideAsync();
         }
         else if (realEstateToAddDevice.RealEstateID != 0 && CurrentDevice.DeviceID != 0 && deviceName != null)
@@ -101,6 +124,7 @@
             validRealEstate = editContext.Validate();
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, realEsatateIdToAddDevice);
             changedDeviceListData();
+            realEstateToAddDevice.RealEstateID = 0;
             refModalEditAddDevice.HideAsync();
         }
         ///////////////
