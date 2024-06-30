@@ -11,8 +11,8 @@ namespace MyHome.Models
     {
         
         private int _realEstateID;
-        //[Required]
-        //[Range(1, int.MaxValue, ErrorMessage = "Please select Real Estate to Add Device.")]
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select Real Estate to Add Device.")]
         public int RealEstateID
         {
             get { return _realEstateID; }

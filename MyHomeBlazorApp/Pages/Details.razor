@@ -77,7 +77,7 @@
     </TabPage>
     <TabPage Text="Devices Warranties">
         <div class="grid">
-            <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">                
+            <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
@@ -105,7 +105,7 @@
     </TabPage>
     <TabPage Text="Shops Details">
         <div class="grid">
-            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">                
+            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)">Edit</Button>
@@ -128,30 +128,30 @@
     </TabPage>
     @if (DataService.UnassignedProfile.UnassignedDevicesList.Count > 0)
     {
-        <TabPage Text = "Unassigned Devices">
+        <TabPage Text="Unassigned Devices">
             <div class="grid">
-            <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
-            <QuickGrid tabindex="2" Items="DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
-                <TemplateColumn>
-                    <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
-                    </div>
-                </TemplateColumn>
-                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-                <TemplateColumn Title="Manual">
-                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
-                </TemplateColumn>
-            </QuickGrid>
-        </div>
-    </TabPage>
+                <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
+                <QuickGrid tabindex="2" Items="DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
+                    <TemplateColumn>
+                        <div>
+                            <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
+                            <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
+                        </div>
+                    </TemplateColumn>
+                    <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                    <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                    <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                    <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                    <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                    <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                    <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                    <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+                    <TemplateColumn Title="Manual">
+                        <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+                    </TemplateColumn>
+                </QuickGrid>
+            </div>
+        </TabPage>
     }
 </TabControl>
 
@@ -159,21 +159,23 @@
 @* Here is the EditForm with button outside the form *@
 
 <div>
-    <ModalEditAddRealEstate @ref = "@refModalEditAddRealEstate" 
-        CurrentRealEstate="@currentRealEstate">
+    <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
+                            CurrentRealEstate="@currentRealEstate">
 
     </ModalEditAddRealEstate>
 </div>
 
 <div>
-    <ModalEditAddDevice @ref="@refModalEditAddDevice" 
-        CurrentDevice="@currentDevice"
-        CurrentUser="@currentUser"></ModalEditAddDevice>
+    <ModalEditAddDevice @ref="@refModalEditAddDevice"
+                        CurrentDevice="@currentDevice"
+                        CurrentUser="@currentUser">
+    </ModalEditAddDevice>
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="refModalEditWarrantyDetails"
-        CurrentDevice="@currentDevice"
-    DevicesListAsQueryable="@_devicesListAsQueryable"></ModalEditWarrantyDetails>
+                              CurrentDevice="@currentDevice"
+                              DevicesListAsQueryable="@_devicesListAsQueryable">
+    </ModalEditWarrantyDetails>
 </div>
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
@@ -188,7 +190,7 @@
     </ModalDeleteRealEstate>
 </div>
 <div>
-    
+
     <ModalReassignDevices @ref="@refModalReasignDevices"
                           SelectedRealEstateID="@SelectedRealEstateID"
                           CurrentUser="@currentUser"
@@ -202,7 +204,9 @@
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
-    <ModalDeleteSuccessful @ref="refModalDeleteSuccess" ObjectName="@_deletedObjectName"></ModalDeleteSuccessful>
+    <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
+                           ObjectName="@_deletedObjectName">
+    </ModalDeleteSuccessful>
 </div>
 
 
@@ -228,7 +232,7 @@
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
     private DeviceProfile? currentDevice { get; set; } = new();
-    private UserProfile currentUser = new();  
+    private UserProfile currentUser = new();
 
     string LastSubmitResult = "";
 
@@ -309,6 +313,7 @@
     private async Task OnShowModalAddNewRealEstate()
     {
         currentRealEstate = new();
+        currentChosedRealEsate.RealEstateID = DataService.RealEstates.Max(e => e.RealEstateID) + 1;
         currentRealEstateAddress = new();
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
@@ -333,8 +338,8 @@
     //     }
 
     //     return _isNullOrHasNoProperties;
-    // }   
-   
+    // }
+
     #endregion
 
     #region Devices
@@ -379,13 +384,13 @@
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
         currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(deviceID);
-        if(currentRealEstate.RealEstateID == 0)
+        if (currentRealEstate.RealEstateID == 0)
         {
             _devicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
         }
         currentUser = DataService.CurrentUser;
         currentDevice = DataService.GetDeviceById(deviceID);
-        await refModalEditAddDevice.OnShowModalEditDeviceClick();        
+        await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
 
     #endregion
@@ -434,7 +439,7 @@
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         base.OnInitialized();
     }
-    
+
     protected override void OnParametersSet()
     {
         if (Tab == 1)

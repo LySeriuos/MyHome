@@ -7,41 +7,102 @@
 
 <Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
     <BodyTemplate>
-        <EditForm Model="realEstateToAddDevice" OnSubmit="@ValidDeviceFormSubmitted">
+        @* <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext"/> *@
+        <EditForm Model="@CurrentDevice" OnSubmit="DeviceFormSubmitted">
             <DataAnnotationsValidator />
-            <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext" />
+            <div class="form-group row">
+                <label for="deviceName" class="col-sm-4 col-form-label">
+                    Name
+                </label>
+                <div class="col-sm-8">
+                    <InputText id="deviceName" @bind-Value="CurrentDevice.DeviceName" placeholder="Device Name" />
+                </div>
+                @* <ValidationMessage For=@( () => CurrentDevice.DeviceName )/>              *@
+            </div>
+            <div class="form-group row">
+                <label for="deviceProduser" class="col-sm-4 col-form-label">
+                    Produser
+                </label>
+                <div class="col-sm-8">
+                    <InputText id="deviceProduser" @bind-Value="CurrentDevice.DeviceProduser" placeholder="Device Produser" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceType" class="col-sm-4 col-form-label">Type</label>
+                <div class="col-sm-8">
+                    <InputSelect id="deviceType" @bind-Value="CurrentDevice.DeviceType" placeholder="Device Type">
+                        @foreach (var type in Enum.GetValues(typeof(DeviceType)))
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceSerialNumber" class="col-sm-4 col-form-label">
+                    Serial Number
+                </label>
+                <div class="col-sm-8">
+                    <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceModelNumber" class="col-sm-4 col-form-label">
+                    Model Number
+                </label>
+                <div class="col-sm-8">
+                    <InputText id="deviceModelNumber" @bind-Value="CurrentDevice.DeviceModelNumber" placeholder="Device Model Number" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceIpAddress" class="col-sm-4 col-form-label">
+                    IP Address
+                </label>
+                <div class="col-sm-8">
+                    <InputText id="deviceIpAddress" @bind-Value="CurrentDevice.IpAddress" placeholder="Device Ip Address" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceMacAddress" class="col-sm-4 col-form-label">
+                    Mac Address
+                </label>
+                <div class="col-sm-8">
+                    <InputText id="deviceMacAddress" @bind-Value="CurrentDevice.MacAdrress" placeholder="Mac Address" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
+                    Manual Link
+                </label>
+                <div class="col-sm-8">
+                    <InputText id="deviceManualBookLink" @bind-Value="CurrentDevice.ManualBookLink" placeholder="Device Manual Book Link" />
+                </div>
+                <ValidationSummary />
+            </div>
             <div class="row">
                 <div class="form-group">
                     @* ////// *@
                     @* There is no option to edit unassigned device without moving to other RealEstate *@
                     @* /////// *@
                     <label class="form-label">Choose Real Estate</label>
-                    <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select">
-                        @if (realEstateToAddDevice.RealEstateID != 0)
-                        {
-                            <option value="@realEstateToAddDevice.RealEstateID">@realEstateToAddDevice.RealEstateName</option>
-                        }
-                        else
-                        {
-                            <option selected disabled>Select Real Estate...</option>
-                        }
+                    <InputSelect @bind-Value="realEsatateIdToAddDevice" class="form-select" @bind-Value:after="realEsatateIdToAddDeviceChanged">
+
+                        <option selected disabled>Select Real Estate...</option>
                         @foreach (var realEstate in CurrentUser.RealEstates)
                         {
                             <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="() => realEstateToAddDevice.RealEstateID" class="text-danger d-block" />
                 </div>
             </div>
-            @if (showErrorMessageVisible)
+            @if (showErrorMessageVisible == true)
             {
-                <li style=" color:red;">
-                    <ul>@errorMessage</ul>
-                </li>
+                <p class="text-danger d-block">@errorMessage</p>
             }
 
             <p>@realEsatateIdToAddDevice</p>
-            <ValidationSummary />
-            <ValidationMessage For="() =>realEstateToAddDevice" class="text-danger d-block" />
+
 
             <br>
             @if (CurrentDevice.DeviceID != 0)
@@ -53,6 +114,8 @@
             <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
         </EditForm>
+            
+
     </BodyTemplate>
 </Modal>
 
@@ -68,6 +131,7 @@
     private EditContext? editContext;
     private bool validRealEstate;
     private bool validDevice;
+    ValidationMessageStore validationMessages;
     private bool showErrorMessageVisible = false;
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
@@ -88,44 +152,33 @@
 
     protected override void OnInitialized()
     {
-        editContext = new(realEstateToAddDevice);
+        editContext = new(CurrentDevice);
         editDeviceContext = new(deviceToAdd);
+        // validationMessages = new(editContext);
         // editShopContextDevice = new(currentDevice);
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         base.OnInitialized();
     }
 
-    void ValidDeviceFormSubmitted(EditContext editContext)
+    public void realEsatateIdToAddDeviceChanged()
     {
-        if (realEsatateIdToAddDevice == 0)
+        showErrorMessageVisible = false;
+    }
+
+    void DeviceFormSubmitted(EditContext editContext)
+    {
+        validDevice = editContext.Validate();
+        if (realEsatateIdToAddDevice == 0 && validDevice != true)
         {
+            validDevice = editContext.Validate();
             showErrorMessageVisible = true;
-            errorMessage = "Please select Real Estate to Add Device.";
+            errorMessage = "Please select Real Estate to Add Device";
             return;
         }
         else
         {
+            validDevice = editContext.Validate();
             showErrorMessageVisible = false;
-        }
-        validRealEstate = editContext.Validate();
-        validDevice = editDeviceContext.Validate();
-        if (realEstateToAddDevice.RealEstateID != 0 && CurrentDevice.DeviceID == 0 && deviceName != null)
-        {
-            validDevice = editDeviceContext.Validate();
-            validRealEstate = editContext.Validate();
-            DataService.AddNewDevice(CurrentDevice, realEsatateIdToAddDevice);
-            changedDeviceListData();
-            realEstateToAddDevice.RealEstateID = 0;
-            refModalEditAddDevice.HideAsync();
-        }
-        else if (realEstateToAddDevice.RealEstateID != 0 && CurrentDevice.DeviceID != 0 && deviceName != null)
-        {
-            validDevice = editDeviceContext.Validate();
-            validRealEstate = editContext.Validate();
-            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, realEsatateIdToAddDevice);
-            changedDeviceListData();
-            realEstateToAddDevice.RealEstateID = 0;
-            refModalEditAddDevice.HideAsync();
         }
         ///////////////
         //Updating quickgrid only if I use OnInitialized, otherwise it rerender and change only if I change Tab or page.

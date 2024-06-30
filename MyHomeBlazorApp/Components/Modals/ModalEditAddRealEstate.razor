@@ -1,6 +1,7 @@
 ﻿@using MyHome.Models;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
+@using System.ComponentModel.DataAnnotations
 @inject BlazorData.DataService DataService
 
 
@@ -42,13 +43,13 @@
 
     [Parameter]
     public RealEstate CurrentRealEstate { get; set; }
-    private RealEstate? realEstateModel = new();
     private IQueryable<RealEstate>? _realEstatesListAsQueryable { get; set; }
     private Modal refModalEditAddRealEstate { get; set; }
     private EditContext editContext;
     private bool validRealEstate;
     public Action realEstateDataHasChanged;
-
+    public RealEstate? realEstateModel = new();
+    
 
     private void RealEsatateFormSubmitted(EditContext editContext)
     {

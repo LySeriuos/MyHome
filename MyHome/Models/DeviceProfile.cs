@@ -21,8 +21,8 @@ namespace MyHome.Models
 
 
         private string _deviceName;
-        [Required(ErrorMessage = "Please Add Device Name")]
 
+        [Required(ErrorMessage = "Please Add Device Name")]
         public string DeviceName
         {
             get { return _deviceName; }
