@@ -84,8 +84,7 @@
                     @* There is no option to edit unassigned device without moving to other RealEstate *@
                     @* /////// *@
                     <label class="form-label">Choose Real Estate</label>
-                    <InputSelect @bind-Value="realEsatateIdToAddDevice" class="form-select" @bind-Value:after="realEsatateIdToAddDeviceChanged">
-
+                    <InputSelect @bind-Value="RealEsatateIdToAddDevice" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
                         <option selected disabled>Select Real Estate...</option>
                         @foreach (var realEstate in CurrentUser.RealEstates)
                         {
@@ -127,8 +126,8 @@
     private bool RealEstateIdIsValid;
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
-
-    private int realEsatateIdToAddDevice
+    [Parameter]
+    public int RealEsatateIdToAddDevice
     {
         get => realEstateToAddDevice.RealEstateID;
         set { realEstateToAddDevice.RealEstateID = value; }
@@ -142,24 +141,23 @@
 
     protected override void OnInitialized()
     {
-        editContext = new(CurrentDevice);
+        editContext = new(CurrentDevice);       
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         base.OnInitialized();
     }
 
-    private void realEsatateIdToAddDeviceChanged()
+    private void RealEsatateIdToAddDeviceChanged()
     {
         showErrorMessageVisible = false;
     }
 
     private bool AddDeviceToChosedRealEstateIsValid()
     {
-        if (realEsatateIdToAddDevice == 0)
+        if (RealEsatateIdToAddDevice == 0)
         {
             RealEstateIdIsValid = false;
             showErrorMessageVisible = true;
             errorMessage = "Please select Real Estate to Add Device";
-
         }
         else
         {
@@ -183,7 +181,7 @@
             validDeviceForm = editContext.Validate();
             if (validDeviceForm == true && chosedRealEstateIsValid == true)
             {
-                DataService.AddNewDevice(CurrentDevice, realEsatateIdToAddDevice);
+                DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
                 changedDeviceListData();
                 realEstateToAddDevice.RealEstateID = 0;
                 refModalEditAddDevice.HideAsync();
