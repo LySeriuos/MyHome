@@ -99,7 +99,6 @@
             {
                 <p class="text-danger d-block">@errorMessage</p>
             }
-
             <br>
             @if (CurrentDevice.DeviceID != 0)
             {
@@ -110,8 +109,6 @@
             <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
         </EditForm>
-            
-
     </BodyTemplate>
 </Modal>
 
@@ -122,18 +119,14 @@
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     [Parameter]
     public UserProfile? CurrentUser { get; set; }
-    private DeviceProfile deviceToAdd { get; set; } = new();
-    private EditContext? editDeviceContext;
-    private EditContext? editContext;
-    private bool validRealEstate;
-    private bool validDeviceForm;
-    ValidationMessageStore validationMessages;
-    private bool showErrorMessageVisible = false;
+    private EditContext? editContext;    
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
-    public Action changedDeviceListData;
-    private string errorMessage;
+    public Action? changedDeviceListData;
+    private string? errorMessage;
     private bool RealEstateIdIsValid;
+    private bool validDeviceForm;
+    private bool showErrorMessageVisible = false;
 
     private int realEsatateIdToAddDevice
     {
@@ -150,14 +143,11 @@
     protected override void OnInitialized()
     {
         editContext = new(CurrentDevice);
-        editDeviceContext = new(deviceToAdd);
-        // validationMessages = new(editContext);
-        // editShopContextDevice = new(currentDevice);
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         base.OnInitialized();
     }
 
-    public void realEsatateIdToAddDeviceChanged()
+    private void realEsatateIdToAddDeviceChanged()
     {
         showErrorMessageVisible = false;
     }
@@ -179,7 +169,7 @@
         return RealEstateIdIsValid;
     }
 
-    void DeviceFormSubmitted(EditContext editContext)
+    private void DeviceFormSubmitted(EditContext editContext)
     {
         validDeviceForm = editContext.Validate();
         bool chosedRealEstateIsValid = AddDeviceToChosedRealEstateIsValid();
