@@ -17,7 +17,7 @@
                 <div class="col-sm-8">
                     <InputText id="deviceName" @bind-Value="CurrentDevice.DeviceName" placeholder="Device Name" />
                 </div>
-                <ValidationMessage For=@( () => CurrentDevice.DeviceName )/>
+                <ValidationMessage For=@( () => CurrentDevice.DeviceName ) />
             </div>
             <div class="form-group row">
                 <label for="deviceProduser" class="col-sm-4 col-form-label">
@@ -118,7 +118,7 @@
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     [Parameter]
     public UserProfile? CurrentUser { get; set; }
-    private EditContext? editContext;    
+    private EditContext? editContext;
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
     public Action? changedDeviceListData;
@@ -126,6 +126,7 @@
     private bool RealEstateIdIsValid;
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
+    bool chosedRealEstateIsValid;
     [Parameter]
     public int RealEsatateIdToAddDevice
     {
@@ -133,15 +134,9 @@
         set { realEstateToAddDevice.RealEstateID = value; }
     }
 
-    private string deviceName
-    {
-        get => CurrentDevice.DeviceName;
-        set { CurrentDevice.DeviceName = value; }
-    }
-
     protected override void OnInitialized()
     {
-        editContext = new(CurrentDevice);       
+        editContext = new(CurrentDevice);
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         base.OnInitialized();
     }
@@ -151,7 +146,22 @@
         showErrorMessageVisible = false;
     }
 
-    private bool AddDeviceToChosedRealEstateIsValid()
+    private bool CheckIfCurrentDeviceIsAssignedToRealEstate()
+    {
+        bool deviceIsAssignedToRealEstate;
+        if (DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID) > 0)
+        {
+            deviceIsAssignedToRealEstate = true;
+            throw new InvalidOperationException("Something went wrong, this device shouldn't be assigned to the Real Estate");
+        }
+        else
+        {
+            deviceIsAssignedToRealEstate = false;
+        }
+        return deviceIsAssignedToRealEstate;
+    }
+
+    private bool ChosedRealEstateIsValid()
     {
         if (RealEsatateIdToAddDevice == 0)
         {
@@ -170,31 +180,66 @@
     private void DeviceFormSubmitted(EditContext editContext)
     {
         validDeviceForm = editContext.Validate();
-        bool chosedRealEstateIsValid = AddDeviceToChosedRealEstateIsValid();
-        
-        if (validDeviceForm != true)
-        {
-            validDeviceForm = editContext.Validate();            
-        }
-        else
-        {
-            validDeviceForm = editContext.Validate();
-            if (validDeviceForm == true && chosedRealEstateIsValid == true)
+        chosedRealEstateIsValid = ChosedRealEstateIsValid();
+        if (CurrentDevice.DeviceID == 0)
+        {            
+            if (validDeviceForm != true && chosedRealEstateIsValid != true)
             {
+                validDeviceForm = editContext.Validate();
+                return;
+            }
+            else
+            {
+                validDeviceForm = editContext.Validate();
                 DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
-                changedDeviceListData();
-                realEstateToAddDevice.RealEstateID = 0;
-                refModalEditAddDevice.HideAsync();
-            }            
+            }
         }
-
+        else if (CurrentDevice.DeviceID != 0 && chosedRealEstateIsValid == true)
+        {
+            CurrentUser.RealEstates.First(r => r.RealEstateID == RealEsatateIdToAddDevice).DevicesProfiles.Add(CurrentDevice);
+            CurrentUser.UnassignedDevices.UnassignedDevicesList.Remove(CurrentDevice);
+        }
+        else 
+        {
+            DataService.SaveUpdatedObject();            
+        }
         
-        ///////////////
-        //Updating quickgrid only if I use OnInitialized, otherwise it rerender and change only if I change Tab or page.
-        //QuickGrid for RealEstates Details do not need this, so I can imagine that the problem is in SelectMany, maybe? :)
-        //////////////
-        OnInitialized();
+        realEstateToAddDevice.RealEstateID = 0;
+        showErrorMessageVisible = false;
+        changedDeviceListData();
+        refModalEditAddDevice.HideAsync();
+        OnInitialized();        
     }
+
+    // private void TestMethod()
+    // {
+    //     if (CurrentDevice.DeviceID == 0 && realEstateToAddDevice.RealEstateID == 0)
+    //     {
+    //         if (validDeviceForm != true)
+    //         {
+    //             validDeviceForm = editContext.Validate();
+    //         }
+    //         else
+    //         {
+    //             validDeviceForm = editContext.Validate();
+    //             if (validDeviceForm == true && chosedRealEstateIsValid == true)
+    //             {
+    //                 DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
+    //                 changedDeviceListData();
+    //                 realEstateToAddDevice.RealEstateID = 0;
+    //                 refModalEditAddDevice.HideAsync();
+    //             }
+    //         }
+    //     }
+    //     else if (CurrentDevice.DeviceID != 0 && CheckIfCurrentDeviceIsAssignedToRealEstate() == false)
+    //     {
+    //         DataService.SaveUpdatedObject();
+    //     }
+    //     else if (CurrentDevice.DeviceID != 0 && realEstateToAddDevice.RealEstateID != 0)
+    //     {
+    //         DataService.SaveUpdatedObject();
+    //     }
+    // }
     public async Task OnHideModalEditDeviceClick()
     {
         await refModalEditAddDevice.HideAsync();

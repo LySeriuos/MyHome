@@ -130,7 +130,6 @@
     {
         <TabPage Text="Unassigned Devices">
             <div class="grid">
-                <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
                 <QuickGrid tabindex="2" Items="DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
                     <TemplateColumn>
                         <div>
@@ -161,7 +160,6 @@
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
                             CurrentRealEstate="@currentRealEstate">
-
     </ModalEditAddRealEstate>
 </div>
 
@@ -169,7 +167,7 @@
     <ModalEditAddDevice @ref="@refModalEditAddDevice"
                         CurrentDevice="@currentDevice"
                         CurrentUser="@currentUser"
-    RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
+                        RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
     </ModalEditAddDevice>
 </div>
 <div>
