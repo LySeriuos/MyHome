@@ -237,6 +237,7 @@
 
     IQueryable<DeviceProfile> _devicesListAsQueryable;
     IQueryable<RealEstate> _realEstatesListAsQueryable;
+    IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
 
     public string deviceName
     {
@@ -383,10 +384,6 @@
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
         currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(deviceID);
-        if (currentRealEstate.RealEstateID == 0)
-        {
-            _devicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
-        }
         currentUser = DataService.CurrentUser;
         currentDevice = DataService.GetDeviceById(deviceID);
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
