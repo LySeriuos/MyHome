@@ -215,8 +215,8 @@
     [Parameter]
     public int Tab { get; set; }
 
-    [Parameter]
-    public int SelectedRealEstateID
+    
+    private int SelectedRealEstateID
     {
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
@@ -253,12 +253,12 @@
         refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
-        refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
-        refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+        
         refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
         refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
         refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
-
+        refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
+        refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
         base.OnAfterRender(firstRender);
     }
 
@@ -300,6 +300,8 @@
 
     private void OnModalRealEstateDeleteRequest()
     {
+        // currentUser = DataService.CurrentUser;
+        // currentRealEstate = DataService.GetRealEstate(realEstateID);
         refModalRealEstateDelete.DeleteRealEstate_Click(true);
     }
 
@@ -322,6 +324,7 @@
     {
         currentUser = DataService.CurrentUser;
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
+        //TODO fixthis variable to give value only if after realEstate was deleted
         _deletedObjectName = currentRealEstate.RealEstateName;
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }

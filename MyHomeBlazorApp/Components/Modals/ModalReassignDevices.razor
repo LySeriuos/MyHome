@@ -77,28 +77,34 @@
     // deleting first before devicesList had been moved
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
-        if (currentRealEstate != null && SelectedRealEstateID > 0)
+        if (currentRealEstate.RealEstateID !=0 && SelectedRealEstateID > 0)
         {
             DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);            
-            onDeleteRealEstate();
-            onDataChanged();
+           
         }
         else
         {
             return;
         }
         await OnHideModalReasignDevicesCloseClick();
+        onDeleteRealEstate();
+        onDataChanged();
     }
 
     private async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
     {
-        if (currentRealEstate != null)
+        if (currentRealEstate.RealEstateID != 0)
         {
             DataService.LeaveDevicesUnassigned(currentRealEstate);
-            onDeleteRealEstate();
-            onDataChanged();
+            
+        }
+        else
+        {
+            return;
         }
         await OnHideModalReasignDevicesCloseClick();
+        onDeleteRealEstate();
+        onDataChanged();
     }
 
     public async Task OnShowModalReasignDevices(int currentRealEstateID)

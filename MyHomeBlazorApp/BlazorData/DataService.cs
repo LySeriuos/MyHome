@@ -46,7 +46,7 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate GetRealEstate(int realEstateID)
         {
             RealEstate rE = new RealEstate();
-            if (RealEstates.Count > 1)
+            if (RealEstates.Count > 1 && RealEstates.Any(item => item.RealEstateID == realEstateID))
             {
                 rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
             }
@@ -216,10 +216,18 @@ namespace MyHomeBlazorApp.BlazorData
 
         public void RemoveRealEstate(int contextChosedRealEstateID)
         {
-            RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
-            RealEstates.Remove(realEstateToDelete);
-            Data.SaveUsersListToXml(_users, _path);
-            _users = Data.GetUsersListFromXml(_path);
+            bool realEstateExsits = RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
+            if (realEstateExsits == true)
+            {
+                RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
+                RealEstates.Remove(realEstateToDelete);
+                Data.SaveUsersListToXml(_users, _path);
+                _users = Data.GetUsersListFromXml(_path);
+            }
+            else
+            {
+                return;
+            }
         }
 
         public void SaveUpdatedObject()

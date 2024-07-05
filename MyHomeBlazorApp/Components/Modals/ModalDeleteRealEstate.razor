@@ -12,7 +12,7 @@
     <FooterTemplate>
         @if (CurrentRealEstate.DevicesProfiles.Count > 0)
         {
-            <Button @onclick="()=> onRequestReassignDevicesListToOtherRealEstate(CurrentRealEstate.RealEstateID)">Delete Only Real Estate</Button>
+            <Button @onclick="()=> CallTheRequest()">Delete Only Real Estate</Button>
             <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate With Devices</Button>
         }
         else
@@ -23,7 +23,7 @@
     </FooterTemplate>
 </Modal>
 
-    @code {
+@code {
     // [Parameter]
     // public ModalReassignDevices? RefModalReassignDevices { get; set; }
     private Modal? refModalRealEstateDelete { get; set; }
@@ -34,22 +34,28 @@
 
     public Action<int> onRequestReassignDevicesListToOtherRealEstate;
 
+    private void CallTheRequest()
+    {
+        onRequestReassignDevicesListToOtherRealEstate(CurrentRealEstate.RealEstateID);
+    }
+
     public async Task DeleteRealEstate_Click(bool _confirmDeletion)
     {
         if (_confirmDeletion == true)
         {
-            if (CurrentRealEstate != null)
+            if (CurrentRealEstate.RealEstateID != 0)
             {
-                DataService.RemoveRealEstate(CurrentRealEstate.RealEstateID);
-                onDataChanged();
+                DataService.RemoveRealEstate(CurrentRealEstate.RealEstateID);                
             }
             else
             {
                 throw new ArgumentException("Real Estate doesn't exist!");                
             }
-        }
-
+        }        
         await OnHideModalDeleteRealEstateCloseClick();
+        CurrentRealEstate = new();
+        onDataChanged();
+        
     }
 
     public async Task OnHideModalDeleteRealEstateCloseClick()
