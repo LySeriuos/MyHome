@@ -215,7 +215,7 @@
     [Parameter]
     public int Tab { get; set; }
 
-    
+
     private int SelectedRealEstateID
     {
         get => selectedRealEstateID;
@@ -245,6 +245,30 @@
         set { currentDevice.DeviceName = value; }
     }
 
+    public class ManualLinkApiService
+    {
+        private const string BaseApiUrl = "https://www.google.com/search?";
+    }
+
+    public static class QueryStringHelper
+    {
+        public static string BuildUrlWithQueryStringUsingStringConcat(string basePath, Dictionary<string, string> queryParams)
+        {
+            var queryString = string.Join("&", queryParams.Select(kvp => $"{kvp.Key} = {kvp.Value}"));
+            return $"{basePath}?{queryString}";
+        }
+    }
+
+    private void CreateNewQuery(EditContext editConext)
+    {
+        var query = new Dictionary<string, string>
+    {
+            { "produser", $"{currentDevice.DeviceProduser}" },
+            { "serialNumber",  $"{currentDevice.DeviceSerialNumber}"}
+        };
+    }
+
+
     protected override void OnAfterRender(bool firstRender)
     {
         refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
@@ -253,7 +277,7 @@
         refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
         refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
-        
+
         refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
         refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
         refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
@@ -307,6 +331,7 @@
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
+
         currentRealEstate = DataService.GetRealEstate(realEstateID);
         currentRealEstateAddress = currentRealEstate.Address;
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
@@ -376,6 +401,8 @@
         _deletedObjectName = currentDevice.DeviceName;
         await refModalConfirmDeviceDeletion.OnShowModalClick();
     }
+
+
 
     private async Task OnShowModalAddNewDevice()
     {
