@@ -13,7 +13,9 @@
 @using MyHomeBlazorApp.Shared
 @using MyHomeBlazorApp.Components.Modals
 @using System.ComponentModel.DataAnnotations
-@inject NavigationManager uriHelper;
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager uriHelper
+@inject NavigationManager NavManager
 @inject BlazorData.DataService DataService;
 
 
@@ -70,7 +72,7 @@
                 <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
                 <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
                 <TemplateColumn Title="Manual">
-                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+                    <Button class="btn btn-sm" @onclick="Navigate">Manual</Button>
                 </TemplateColumn>
             </QuickGrid>
         </div>
@@ -153,6 +155,14 @@
         </TabPage>
     }
 </TabControl>
+<p>
+    Click <a href="@BaseApiUrl">here</a>
+    to send a query string parameter to the component.
+</p>
+<p>
+    Click the button to send a query string parameter with NavigationManager
+    <button type="button" class="btn btn-info" @onclick="Navigate">Send</button>
+</p>
 
 <!--#region Edit Form Modals  -->
 @* Here is the EditForm with button outside the form *@
@@ -232,7 +242,7 @@
     private Address shopAddress = new();
     private DeviceProfile? currentDevice { get; set; } = new();
     private UserProfile currentUser = new();
-
+    private const string BaseApiUrl = "https://www.google.se/search?q=";
     string LastSubmitResult = "";
 
     IQueryable<DeviceProfile> _devicesListAsQueryable;
@@ -254,12 +264,12 @@
     {
         public static string BuildUrlWithQueryStringUsingStringConcat(string basePath, Dictionary<string, string> queryParams)
         {
-            var queryString = string.Join("&", queryParams.Select(kvp => $"{kvp.Key} = {kvp.Value}"));
-            return $"{basePath}?{queryString}";
+            var queryString = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}+{kvp.Value}"));
+            return $"{basePath}{queryString}";
         }
     }
 
-    private void CreateNewQuery(EditContext editConext)
+    private void CreateNewQuery()
     {
         var query = new Dictionary<string, string>
     {
@@ -268,6 +278,16 @@
         };
     }
 
+    private void Navigate()
+    {
+        
+        var query = new Dictionary<string, string>
+    {
+            { "Samsung", "TU65CU7105KXXC" }
+        };
+
+        NavManager.NavigateTo(QueryStringHelper.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query));
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {
