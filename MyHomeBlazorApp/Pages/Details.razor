@@ -280,7 +280,6 @@
 
     private void Navigate()
     {
-        
         var query = new Dictionary<string, string>
     {
             { "Samsung", "TU65CU7105KXXC" }
@@ -291,18 +290,21 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
-        refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
-        refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
-        refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
-        refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
-        refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
-        refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
+        if (firstRender)
+        {
+            refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
+            refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
+            refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
+            refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
+            refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
+            refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
 
-        refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
-        refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
-        refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
-        refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
-        refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+            refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
+            refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
+            refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
+            refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
+            refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+        }
         base.OnAfterRender(firstRender);
     }
 
@@ -351,7 +353,6 @@
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
-
         currentRealEstate = DataService.GetRealEstate(realEstateID);
         currentRealEstateAddress = currentRealEstate.Address;
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
