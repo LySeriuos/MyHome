@@ -72,7 +72,7 @@
                 <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
                 <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
                 <TemplateColumn Title="Manual">
-                    <Button class="btn btn-sm" @onclick="Navigate">Manual</Button>
+                    <Button class="btn btn-sm" @onclick="() => Navigate(context.DeviceID)">Manual</Button>
                 </TemplateColumn>
             </QuickGrid>
         </div>
@@ -155,14 +155,6 @@
         </TabPage>
     }
 </TabControl>
-<p>
-    Click <a href="@BaseApiUrl">here</a>
-    to send a query string parameter to the component.
-</p>
-<p>
-    Click the button to send a query string parameter with NavigationManager
-    <button type="button" class="btn btn-info" @onclick="Navigate">Send</button>
-</p>
 
 <!--#region Edit Form Modals  -->
 @* Here is the EditForm with button outside the form *@
@@ -264,25 +256,18 @@
     {
         public static string BuildUrlWithQueryStringUsingStringConcat(string basePath, Dictionary<string, string> queryParams)
         {
-            var queryString = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}+{kvp.Value}"));
+            var queryString = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}+{kvp.Value}+manual"));
             return $"{basePath}{queryString}";
         }
     }
 
-    private void CreateNewQuery()
+    private void Navigate(int deviceID)
     {
-        var query = new Dictionary<string, string>
-    {
-            { "produser", $"{currentDevice.DeviceProduser}" },
-            { "serialNumber",  $"{currentDevice.DeviceSerialNumber}"}
-        };
-    }
+        currentDevice = DataService.GetDeviceById(deviceID);
 
-    private void Navigate()
-    {
         var query = new Dictionary<string, string>
     {
-            { "Samsung", "TU65CU7105KXXC" }
+            { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
         };
 
         NavManager.NavigateTo(QueryStringHelper.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query));
