@@ -14,9 +14,12 @@
 @using MyHomeBlazorApp.Components.Modals
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.WebUtilities
+@using System.Threading.Tasks
+@using System.Threading
 @inject NavigationManager uriHelper
 @inject NavigationManager NavManager
 @inject BlazorData.DataService DataService;
+@inject IJSRuntime JSRuntime
 
 
 
@@ -72,7 +75,7 @@
                 <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
                 <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
                 <TemplateColumn Title="Manual">
-                    <Button class="btn btn-sm" @onclick="() => Navigate(context.DeviceID)">Manual</Button>
+                    <Button class="btn btn-sm" @onclick="() => Navigate(context.DeviceID)">Manual</Button>                    
                 </TemplateColumn>
             </QuickGrid>
         </div>
@@ -261,16 +264,15 @@
         }
     }
 
-    private void Navigate(int deviceID)
+    private async void Navigate(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
-
         var query = new Dictionary<string, string>
     {
             { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
         };
-
-        NavManager.NavigateTo(QueryStringHelper.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query));
+        string buildedUrl = QueryStringHelper.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
+        await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");        
     }
 
     protected override void OnAfterRender(bool firstRender)
