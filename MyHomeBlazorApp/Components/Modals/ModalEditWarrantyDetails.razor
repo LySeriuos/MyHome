@@ -1,5 +1,6 @@
 ﻿@using BlazorBootstrap
 @inject BlazorData.DataService DataService
+@using Microsoft.AspNetCore.Mvc
 @using MyHome.Models
 @using MyHomeBlazorApp.Components.Modals
 
@@ -7,54 +8,151 @@
 <Modal @ref="refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
         <EditForm Model="@CurrentDevice" Context="WarrantyDetails" OnSubmit="WarrantyDetailsFormSubmitted">
-                <div class="form-group row">
-                    <label for="devicePurchaseDate" class="col-sm-2 col-form-label">Purchase Date</label>
-                    <div class="col-sm-10">
-                        <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="CurrentDevice.DeviceWarranty.PurchaseDate">Add Purchase Date</InputDate>
-                        <ValidationMessage For="@(() => CurrentDevice.DeviceWarranty.PurchaseDate)" />
-                    </div>
+            <div class="form-group row">
+                <label for="devicePurchaseDate" class="col-sm-2 col-form-label">Purchase Date</label>
+                <div class="col-sm-10">
+                    <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="CurrentDevice.DeviceWarranty.PurchaseDate">Add Purchase Date</InputDate>
+                    <ValidationMessage For="@(() => CurrentDevice.DeviceWarranty.PurchaseDate)" />
                 </div>
-                <div class="form-group row">
-                    <label for="deviceWarrantyLength" class="col-sm-2 col-form-label">Warranty Lentgh (years)</label>
-                    <div class="col-sm-10">
-                        <InputNumber id="deviceWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.Years">Add warranty lentgh in years</InputNumber>
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceWarrantyLength" class="col-sm-2 col-form-label">Warranty Lentgh (years)</label>
+                <div class="col-sm-10">
+                    <InputNumber id="deviceWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.Years">Add warranty lentgh in years</InputNumber>
                 </div>
-                <div class="form-group row">
-                    <label for="linkToReceipt" class="col-sm-2 col-form-label">Receipt Link</label>
-                    <div class="col-sm-10">
-                        <InputText id="linkToReceipt" @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink">Add link to purchase receipt</InputText>
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label for="linkToReceipt" class="col-sm-2 col-form-label">Receipt Link</label>
+                <div class="col-sm-10">
+                    <InputText id="linkToReceipt" @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink">Add link to purchase receipt</InputText>
                 </div>
-                <div class="form-group row">
-                    <label for="deviceExtendedWarrantyLength" class="col-sm-2 col-form-label">Extended warranty lentgh (years)</label>
-                    <div class="col-sm-10">
-                        <InputNumber id="deviceExtendedWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.ExtendedWarrantyinYears">Add extended warranty lentgh in years</InputNumber>
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label for="deviceExtendedWarrantyLength" class="col-sm-2 col-form-label">Extended warranty lentgh (years)</label>
+                <div class="col-sm-10">
+                    <InputNumber id="deviceExtendedWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.ExtendedWarrantyinYears">Add extended warranty lentgh in years</InputNumber>
                 </div>
-                <div class="form-group row">
-                    <label for="extendedWarrantyLinkToReceipt" class="col-sm-2 col-form-label">Extended Warranty Receipt</label>
-                    <div class="col-sm-10">
-                        <InputText id="extendedWarrantyLinkToReceipt" @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink">Add Extended Warranty link to receipt</InputText>
-                    </div>
+            </div>
+            <div class="form-group row">
+                <label for="extendedWarrantyLinkToReceipt" class="col-sm-2 col-form-label">Extended Warranty Receipt</label>
+                <div class="col-sm-10">
+                    <InputFile id="extendedWarrantyLinkToReceipt"
+                               @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
+                               OnChange="@UploadFiles">
+                        Add Extended Warranty link to receipt
+                    </InputFile>
                 </div>
-            
+            </div>
+
             <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
                                  DevicesListAsQueryable="DevicesListAsQueryable">
             </NextPreviuosButtons>
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditWarrantyClick">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
         </EditForm>
+        @if (errors.Count > 0)
+        {
+            <h2>Errors</h2>
+            <ul class="text-danger">
+                @foreach (string error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        }
     </BodyTemplate>
 </Modal>
 
+
 @code {
+
     [Parameter]
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
     public Action? WarrantyDataHasChanged;
     private Modal? refModalEditWarrantyDetails { get; set; }
+
+   
+    // public async Task<IActionResult> Upload(IFormFile file)
+    // {
+    //     // create the new file name consisting of the current time plus a GUID
+    //     newFileName = DateTime.Now.Ticks + "_" + Guid.NewGuid().ToString();
+
+    //     // Verify the home-guac directory exists, and combine the home-guac directory with the new file name
+    //     Directory.CreateDirectory(guacHomePath);
+    //     var filePath = Path.Combine(guacHomePath, newFileName);
+
+    //     // Create a new file in the home-guac directory with the newly generated file name
+    //     using (var stream = new FileStream(filePath, FileMode.Create))
+    //     {
+    //         //copy the contents of the received file to the newly created local file
+    //         await file.CopyToAsync(stream);
+    //     }
+    //     // return the file name for the locally stored file
+    //     return new OkObjectResult(newFileName);
+    // }
+
+    // private void HandleFileSelected()
+    // {
+    //     async Task<IActionResult> Upload(IFormFile file)
+    //     {
+    //         // create the new file name consisting of the current time plus a GUID
+    //         string newFileName = DateTime.Now.Ticks + "_" + Guid.NewGuid().ToString();
+
+    //         // Verify the home-guac directory exists, and combine the home-guac directory with the new file name
+    //         Directory.CreateDirectory(guacHomePath);
+    //         var filePath = Path.Combine(guacHomePath, newFileName);
+
+    //         // Create a new file in the home-guac directory with the newly generated file name
+    //         using (var stream = new FileStream(filePath, FileMode.Create))
+    //         {
+    //             //copy the contents of the received file to the newly created local file
+    //             await file.CopyToAsync(stream);
+    //         }
+    //         // return the file name for the locally stored file
+    //         return new OkObjectResult(newFileName);
+    //     }
+    // }
+
+
+    // creating new directory in user environment
+    readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
+                   Environment.OSVersion.Platform == PlatformID.MacOSX)
+    ? Environment.GetEnvironmentVariable("HOME")
+    : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+
+    // creating new Path for directory
+    readonly string receiptsHomePath = Path.Combine(homePath, "receipts");
+    // 1024 bytes is 1 kb * 1024 is 1 KB. The file limit is 3 MB.
+    private long maxFileSize = 1024 * 1024 * 3;
+    private int maxAllowedFiles = 1;
+    private List<string> errors = new();
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        errors.Clear();
+        try
+        {
+            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(e.File.Name));
+            Directory.CreateDirectory(receiptsHomePath);
+            string filePath = Path.Combine(receiptsHomePath, newFileName);
+            if (e.File.Size <= maxFileSize)
+            {
+                await using FileStream fs = new(filePath, FileMode.Create);
+                await e.File.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            }
+            else
+            {
+                errors.Add($"File: {e.File.Name} Error: The File has exceed file size{maxFileSize}");
+            }
+        }
+        catch (Exception ex)
+        {
+            // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
+            errors.Add($"File: {e.File.Name} Error: {ex.Message}");
+        }
+    }
 
     public async Task OnShowModalEditWarrantyClick()
     {
@@ -68,6 +166,7 @@
 
     void WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
+        
         DataService.SaveUpdatedObject();
         WarrantyDataHasChanged();
         refModalEditWarrantyDetails.HideAsync();

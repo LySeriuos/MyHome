@@ -98,14 +98,7 @@
                 <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
                 @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                 <TemplateColumn Title="Receipt">
-                    @if (context.DeviceWarranty.ReceiptLink == "" || context.DeviceWarranty.ReceiptLink == null )
-                    {
-                        <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Upload Receipt</Button>
-                    }
-                    else
-                    {
                     <Button class="btn btn-sm" href="@context.DeviceWarranty.ReceiptLink">Receipt</Button>
-                    }
                 </TemplateColumn>
                 <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
                 @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
