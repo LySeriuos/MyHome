@@ -42,6 +42,9 @@
                         Add Extended Warranty link to receipt
                     </InputFile>
                 </div>
+                <div>
+                    <label class="col-sm-2 col-form-label">@CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</label>
+                </div>
             </div>
 
             <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
@@ -72,85 +75,58 @@
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
     public Action? WarrantyDataHasChanged;
     private Modal? refModalEditWarrantyDetails { get; set; }
-
-   
-    // public async Task<IActionResult> Upload(IFormFile file)
-    // {
-    //     // create the new file name consisting of the current time plus a GUID
-    //     newFileName = DateTime.Now.Ticks + "_" + Guid.NewGuid().ToString();
-
-    //     // Verify the home-guac directory exists, and combine the home-guac directory with the new file name
-    //     Directory.CreateDirectory(guacHomePath);
-    //     var filePath = Path.Combine(guacHomePath, newFileName);
-
-    //     // Create a new file in the home-guac directory with the newly generated file name
-    //     using (var stream = new FileStream(filePath, FileMode.Create))
-    //     {
-    //         //copy the contents of the received file to the newly created local file
-    //         await file.CopyToAsync(stream);
-    //     }
-    //     // return the file name for the locally stored file
-    //     return new OkObjectResult(newFileName);
-    // }
-
-    // private void HandleFileSelected()
-    // {
-    //     async Task<IActionResult> Upload(IFormFile file)
-    //     {
-    //         // create the new file name consisting of the current time plus a GUID
-    //         string newFileName = DateTime.Now.Ticks + "_" + Guid.NewGuid().ToString();
-
-    //         // Verify the home-guac directory exists, and combine the home-guac directory with the new file name
-    //         Directory.CreateDirectory(guacHomePath);
-    //         var filePath = Path.Combine(guacHomePath, newFileName);
-
-    //         // Create a new file in the home-guac directory with the newly generated file name
-    //         using (var stream = new FileStream(filePath, FileMode.Create))
-    //         {
-    //             //copy the contents of the received file to the newly created local file
-    //             await file.CopyToAsync(stream);
-    //         }
-    //         // return the file name for the locally stored file
-    //         return new OkObjectResult(newFileName);
-    //     }
-    // }
-
-
-    // creating new directory in user environment
-    readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
-                   Environment.OSVersion.Platform == PlatformID.MacOSX)
-    ? Environment.GetEnvironmentVariable("HOME")
-    : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-
+    private IBrowserFile? file;
     // creating new Path for directory
     readonly string receiptsHomePath = Path.Combine(homePath, "receipts");
     // 1024 bytes is 1 kb * 1024 is 1 KB. The file limit is 3 MB.
     private long maxFileSize = 1024 * 1024 * 3;
     private int maxAllowedFiles = 1;
     private List<string> errors = new();
+    // creating new directory in user environment
+    readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
+                   Environment.OSVersion.Platform == PlatformID.MacOSX)
+    ? Environment.GetEnvironmentVariable("HOME")
+    : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
 
-    private async Task UploadFiles(InputFileChangeEventArgs e)
+
+
+    private void UploadFiles(InputFileChangeEventArgs e)
     {
-        errors.Clear();
+        file = e.File;
+    }
+
+    private async Task<string> CaptureFile()
+    {
+        if (file is null)
+        {
+            // returns empty string if there is no file
+            return "";
+        }
+
         try
         {
-            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(e.File.Name));
+
+            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
             Directory.CreateDirectory(receiptsHomePath);
             string filePath = Path.Combine(receiptsHomePath, newFileName);
-            if (e.File.Size <= maxFileSize)
+
+            if (file.Size <= maxFileSize)
             {
                 await using FileStream fs = new(filePath, FileMode.Create);
-                await e.File.OpenReadStream(maxFileSize).CopyToAsync(fs);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
             }
             else
             {
-                errors.Add($"File: {e.File.Name} Error: The File has exceed file size{maxFileSize}");
+                errors.Add($"File: {file.Name} Error: The File has exceed file size{maxFileSize}");
             }
+
+            return filePath;
         }
         catch (Exception ex)
         {
             // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
-            errors.Add($"File: {e.File.Name} Error: {ex.Message}");
+            errors.Add($"File: {file.Name} Error: {ex.Message}");
+            throw;
         }
     }
 
@@ -164,11 +140,29 @@
         await refModalEditWarrantyDetails.HideAsync();
     }
 
-    void WarrantyDetailsFormSubmitted(EditContext editcontext)
+    async void WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
-        
-        DataService.SaveUpdatedObject();
-        WarrantyDataHasChanged();
-        refModalEditWarrantyDetails.HideAsync();
+        try
+        {
+            string relativePath = await CaptureFile();
+            if (CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
+            {
+                CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
+            }
+            else
+            {
+                errors.Add($"Error: There is already uploaded file for this device!");
+                return;
+            }
+            DataService.SaveUpdatedObject();
+            WarrantyDataHasChanged();
+            refModalEditWarrantyDetails.HideAsync();
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"Error: {ex.Message}"); 
+            throw;
+        }
+       
     }
 }
