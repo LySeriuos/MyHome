@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.FileProviders;
 using MyHomeBlazorApp.BlazorData;
 using System.Security.Cryptography.X509Certificates;
 
@@ -38,7 +39,12 @@ namespace MyHomeBlazorApp
 
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+            // routing url to physical path "Files"
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
+                RequestPath = "/Files"
+            });
 
             app.UseRouting();
 

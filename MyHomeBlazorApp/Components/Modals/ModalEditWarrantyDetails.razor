@@ -92,12 +92,12 @@
     private long maxFileSize = 1024 * 1024 * 3;
     private int maxAllowedFiles = 1;
     private List<string> errors = new();
-    // creating new directory in user environment
+    // creating new directory in user environmentenvironment
     readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
                    Environment.OSVersion.Platform == PlatformID.MacOSX)
     ? Environment.GetEnvironmentVariable("HOME")
     : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-
+   
 
 
     private void UploadFiles(InputFileChangeEventArgs e)
@@ -115,11 +115,13 @@
 
         try
         {
-
+            // string path = "wwwroot/files/data.jpg";
             string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
-            Directory.CreateDirectory(receiptsHomePath);
-            string filePath = Path.Combine(receiptsHomePath, newFileName);
+            string userId = DataService.CurrentUser.UserID.ToString();
 
+            Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
+            // string filePath = Path.Combine(receiptsHomePath, newFileName);
+            string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
             if (file.Size <= maxFileSize)
             {
                 await using FileStream fs = new(filePath, FileMode.Create);
@@ -147,11 +149,11 @@
     async Task ListFiles()
     {
         FileUrls.Clear();
-        var files = Directory.GetFiles(receiptsHomePath);
+        var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
         foreach (var filename in files)
         {
             var file = Path.GetFileName(filename);
-            string url = $"files/{file}";
+            string url = $"files/{DataService.CurrentUser.UserID}/{file}";
             FileUrls.Add(url);
         }
         await InvokeAsync(StateHasChanged);

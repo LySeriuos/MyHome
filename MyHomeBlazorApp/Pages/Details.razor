@@ -17,6 +17,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using System.Threading.Tasks
 @using System.Threading
+@using My_Home
 @inject NavigationManager uriHelper
 @inject NavigationManager NavManager
 @inject BlazorData.DataService DataService;
@@ -265,11 +266,7 @@
 
     public static class QueryStringHelper
     {
-        public static string BuildUrlWithQueryStringUsingStringConcat(string basePath, Dictionary<string, string> queryParams)
-        {
-            var queryString = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}+{kvp.Value}+manual"));
-            return $"{basePath}{queryString}";
-        }
+   
     }
 
     private async void Navigate(int deviceID)
@@ -279,7 +276,7 @@
     {
             { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
         };
-        string buildedUrl = QueryStringHelper.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
+        string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
         await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
     }
 
