@@ -61,7 +61,6 @@
             </NextPreviuosButtons>
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditWarrantyClick">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
-            <Button @onclick="CaptureFileToOpen">Open</Button>
         </EditForm>
         @if (errors.Count > 0)
         {
@@ -97,7 +96,7 @@
                    Environment.OSVersion.Platform == PlatformID.MacOSX)
     ? Environment.GetEnvironmentVariable("HOME")
     : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-   
+
 
 
     private void UploadFiles(InputFileChangeEventArgs e)
@@ -118,12 +117,14 @@
             // string path = "wwwroot/files/data.jpg";
             string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
             string userId = DataService.CurrentUser.UserID.ToString();
-
+            string deviceID = CurrentDevice.DeviceID.ToString();
+            string fileNameWithDeviceID = Path.Combine(deviceID, newFileName);
             Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
             // string filePath = Path.Combine(receiptsHomePath, newFileName);
-            string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
+            string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\";
             if (file.Size <= maxFileSize)
             {
+                using var content = new MultipartFormDataContent();
                 await using FileStream fs = new(filePath, FileMode.Create);
                 await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
                 fs.Close();
@@ -164,38 +165,6 @@
         await ListFiles();
     }
 
-    private async void CaptureFileToOpen()
-    {
-
-        FileStream fs = File.Open(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink, FileMode.Open, FileAccess.Read, FileShare.None);
-        // {
-        //     byte[] b = new byte[1024];
-        //     UTF8Encoding temp = new UTF8Encoding(true);
-        //     var filename = Path.GetFullPath(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink);
-        //     var file = Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink);
-            
-        //     while (fs.Read(b, 0, b.Length) > 0)
-        //     {
-        //         Console.WriteLine(temp.GetString(b));
-                
-        //     }
-
-        //     try
-        //     {
-        //         // Try to get another handle to the same file.
-        //         // using (FileStream fs2 = File.Open(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink, FileMode.Open))
-        //         // {
-        //         //      // await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
-        //         // }
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Console.Write("Opening the file twice is disallowed.");
-        //         Console.WriteLine(", as expected: {0}", e.ToString());
-        //     }
-        // }
-    }
-
     public async Task OnShowModalEditWarrantyClick()
     {
         await refModalEditWarrantyDetails.ShowAsync();
@@ -210,10 +179,11 @@
     {
         try
         {
+            DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice!.DeviceID);
             string relativePath = await CaptureFile();
-            if (CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
+            if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
             {
-                CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
+                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
             }
             else
             {

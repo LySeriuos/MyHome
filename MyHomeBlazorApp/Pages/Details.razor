@@ -111,8 +111,8 @@
                     }
                     else
                     {
-                        <a href="@context.DeviceWarranty.ExtraInsuranceWarrantyLink">Link</a>
-                        @* <Button class="btn btn-sm nav-link" @onclick="()=>NavigateToFile(context.DeviceID)">Receipt</Button> *@
+                        @* <a href="@context.DeviceWarranty.ExtraInsuranceWarrantyLink">Link</a> *@
+                        <Button class="btn btn-sm nav-link" @onclick="()=>NavigateToFile(context.DeviceID)">Receipt</Button>
                     }
                 </TemplateColumn>
             </QuickGrid>
@@ -266,7 +266,7 @@
 
     public static class QueryStringHelper
     {
-   
+
     }
 
     private async void Navigate(int deviceID)
@@ -285,11 +285,15 @@
         currentDevice = DataService.GetDeviceById(deviceID);
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
         var memory = new MemoryStream();
-        // using (var stream = new FileStream(currentWarrantyReceiptLink, FileMode.Open))
-        // {
-        //     await using FileStream fs = new(path, FileMode.Create);
-        //     await browserFile.OpenReadStream().CopyToAsync(fs);
-        // }
+        var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
+        string url = "";
+        foreach (var filename in files)
+        {
+            var file = Path.GetFileName(filename);
+            url = $"files/{DataService.CurrentUser.UserID}/{file}";
+            
+        }
+        await JSRuntime.InvokeVoidAsync("open", url, "_blank");
     }
 
     protected override void OnAfterRender(bool firstRender)
