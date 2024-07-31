@@ -86,16 +86,16 @@
     private Modal? refModalEditWarrantyDetails { get; set; }
     private IBrowserFile? file;
     // creating new Path for directory
-    readonly string receiptsHomePath = Path.Combine(homePath, "receipts");
+    // readonly string receiptsHomePath = Path.Combine(homePath, "receipts");
     // 1024 bytes is 1 kb * 1024 is 1 KB. The file limit is 3 MB.
     private long maxFileSize = 1024 * 1024 * 3;
     private int maxAllowedFiles = 1;
     private List<string> errors = new();
     // creating new directory in user environmentenvironment
-    readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
-                   Environment.OSVersion.Platform == PlatformID.MacOSX)
-    ? Environment.GetEnvironmentVariable("HOME")
-    : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+    // readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
+    //                Environment.OSVersion.Platform == PlatformID.MacOSX)
+    // ? Environment.GetEnvironmentVariable("HOME")
+    // : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
 
 
 
@@ -117,8 +117,8 @@
             // string path = "wwwroot/files/data.jpg";
             string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
             string userId = DataService.CurrentUser.UserID.ToString();
-            string deviceID = CurrentDevice.DeviceID.ToString();
-            string fileNameWithDeviceID = Path.Combine(deviceID, newFileName);
+            // string deviceID = CurrentDevice.DeviceID.ToString();
+            // string fileNameWithDeviceID = Path.Combine(deviceID, newFileName);
             Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
             // string filePath = Path.Combine(receiptsHomePath, newFileName);
             string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\";
