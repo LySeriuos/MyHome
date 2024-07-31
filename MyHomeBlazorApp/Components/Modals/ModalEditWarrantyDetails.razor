@@ -121,7 +121,7 @@
             // string fileNameWithDeviceID = Path.Combine(deviceID, newFileName);
             Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
             // string filePath = Path.Combine(receiptsHomePath, newFileName);
-            string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\";
+            string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
             if (file.Size <= maxFileSize)
             {
                 using var content = new MultipartFormDataContent();
@@ -175,21 +175,26 @@
         await refModalEditWarrantyDetails.HideAsync();
     }
 
+    //if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+        // {
+        //     deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
+        // }
     async void WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
         try
         {
-            DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice!.DeviceID);
+            DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
             string relativePath = await CaptureFile();
-            if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
-            {
-                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
-            }
-            else
-            {
-                errors.Add($"Error: There is already uploaded file for this device!");
-                return;
-            }
+            deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
+            // if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+            // {
+                
+            // }
+            // else
+            // {
+            //     errors.Add($"Error: There is already uploaded file for this device!");
+            //     return;
+            // }
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
             refModalEditWarrantyDetails.HideAsync();

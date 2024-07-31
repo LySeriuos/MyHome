@@ -280,20 +280,19 @@
         await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
     }
 
+    private Stream GetFileStream()
+    {
+        string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
+        return File.OpenRead(@"{currentWarrantyReceiptLink}");
+    }
+
     private async Task NavigateToFile(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
-        string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        var memory = new MemoryStream();
-        var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
-        string url = "";
-        foreach (var filename in files)
-        {
-            var file = Path.GetFileName(filename);
-            url = $"files/{DataService.CurrentUser.UserID}/{file}";
-            
-        }
-        await JSRuntime.InvokeVoidAsync("open", url, "_blank");
+        string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;        
+        var file = Path.GetFileName(currentWarrantyReceiptLink);
+        string fileUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
+        await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
     protected override void OnAfterRender(bool firstRender)

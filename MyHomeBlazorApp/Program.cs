@@ -38,7 +38,7 @@ namespace MyHomeBlazorApp
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             // routing url to physical path "Files"
             app.UseStaticFiles(new StaticFileOptions
             {
