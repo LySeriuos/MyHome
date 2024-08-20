@@ -132,6 +132,7 @@
             else
             {
                 errors.Add($"File: {file.Name} Error: The File has exceed file size{maxFileSize}");
+
             }
 
             await ListFiles();
@@ -167,6 +168,7 @@
 
     public async Task OnShowModalEditWarrantyClick()
     {
+
         await refModalEditWarrantyDetails.ShowAsync();
     }
 
@@ -176,28 +178,43 @@
     }
 
     //if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
-        // {
-        //     deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
-        // }
+    // {
+    //     deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
+    // }
     async void WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
         try
         {
+            errors.Clear();
             DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
             string relativePath = await CaptureFile();
-            deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
-            // if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
-            // {
-                
-            // }
-            // else
-            // {
-            //     errors.Add($"Error: There is already uploaded file for this device!");
-            //     return;
-            // }
+
+            if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
+            {
+                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
+
+            }
+            else if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
+            {
+                // delete file and add new
+                // open modal to confirm deletion
+                {
+                    System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                    // files.Delete(file);
+                    
+                }
+
+            }
+            else
+            {
+                errors.Add($"Error: There is already uploaded file for this device!");
+                return;
+            }
+
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
             refModalEditWarrantyDetails.HideAsync();
+
         }
         catch (Exception ex)
         {
