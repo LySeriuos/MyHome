@@ -107,7 +107,7 @@
                 <TemplateColumn Title="Extra's Receipt">
                     @if (context.DeviceWarranty.ExtraInsuranceWarrantyLink == "" || context.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
                     {
-                        <Button class="btn btn-sm" href="@context.DeviceWarranty.ExtraInsuranceWarrantyLink">Upload Receipt</Button>
+                        <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
                     }
                     else
                     {
@@ -284,6 +284,26 @@
     {
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
         return File.OpenRead(@"{currentWarrantyReceiptLink}");
+    }
+    // this method should ckeck if there are files in the server. It could be deleted or corupted and then there is no way to open it.
+    private bool CheckIfFileExists()
+    {
+        var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
+        bool fileExists = true;
+        foreach (var filename in files)
+        {
+            var file = Path.GetFileName(filename);
+            if (!System.IO.File.Exists(file))
+            {
+                fileExists = false;
+                currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
+            }
+            else
+            {
+                fileExists = true;
+            }            
+        }
+        return fileExists;
     }
 
     private async Task NavigateToFile(int deviceID)
