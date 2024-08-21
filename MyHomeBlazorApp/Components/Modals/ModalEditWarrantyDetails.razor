@@ -49,11 +49,11 @@
                 </div>
             </div>
 
-            <h3>Files</h3>
+            @* <h3>Files</h3>
             @foreach (var url in FileUrls)
             {
-                <li><a href="@url">@url</a><br /></li>
-            }
+            <li><a href="@url">@url</a><br /></li>
+            } *@
 
 
             <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
@@ -187,29 +187,49 @@
         {
             errors.Clear();
             DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
-            string relativePath = await CaptureFile();
-
-            if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
+            string relativeFilePath = await CaptureFile();
+            if (relativeFilePath != null || relativeFilePath != "")
             {
-                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativePath;
-
-            }
-            else if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
-            {
-                // delete file and add new
-                // open modal to confirm deletion
+                if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
                 {
-                    System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
-                    // files.Delete(file);
-                    
+                    if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+                    {
+                        System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                    }
+                    else
+                    {
+                        deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
+                    }
                 }
+
+                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativeFilePath;
 
             }
             else
             {
-                errors.Add($"Error: There is already uploaded file for this device!");
+                errors.Add($"Error: Something went wrong with this file!");
                 return;
             }
+
+            // if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
+            // {
+            //     deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativeFilePath;
+
+            // }
+            // else if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
+            // {
+            //     // delete file and add new
+            //     {
+            //         System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+            //         deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativeFilePath;
+            //     }
+
+            // }
+            // else
+            // {
+            //     errors.Add($"Error: There is already uploaded file for this device!");
+            //     return;
+            // }
 
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
