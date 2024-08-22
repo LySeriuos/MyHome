@@ -22,10 +22,17 @@
                     <InputNumber id="deviceWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.Years">Add warranty lentgh in years</InputNumber>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row mb-5">
                 <label for="linkToReceipt" class="col-sm-6 col-form-label">Receipt Link</label>
                 <div class="col-sm-6">
-                    <InputText id="linkToReceipt" @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink">Add link to purchase receipt</InputText>
+                    @if (CurrentDevice.DeviceWarranty.ReceiptLink != null)
+                    {
+                        <p class="text-success">The receipt was uploaded.</p>
+                    }
+                    <InputFile id="WarrantyReceiptLink"
+                               @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"
+                               OnChange="@UploadFiles">
+                    </InputFile>
                 </div>
             </div>
             <div class="form-group row">
@@ -44,7 +51,6 @@
                     <InputFile id="extendedWarrantyLinkToReceipt"
                                @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
                                OnChange="@UploadFiles">
-                        Add Extended Warranty link to receipt
                     </InputFile>
                 </div>
             </div>

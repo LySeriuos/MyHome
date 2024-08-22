@@ -112,7 +112,7 @@
                     else
                     {
                         @* <a href="@context.DeviceWarranty.ExtraInsuranceWarrantyLink">Link</a> *@
-                        <Button class="btn btn-sm nav-link" @onclick="()=>NavigateToFile(context.DeviceID)">Receipt</Button>
+                        <Button class="btn btn-sm nav-link" @onclick="()=>NavigateToFile(context.DeviceID)">Open</Button>
                     }
                 </TemplateColumn>
             </QuickGrid>
@@ -244,7 +244,7 @@
     private RealEstate currentRealEstate = new();
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
-    private DeviceProfile? currentDevice { get; set; } = new();
+    private DeviceProfile currentDevice { get; set; } = new();
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
     string LastSubmitResult = "";
