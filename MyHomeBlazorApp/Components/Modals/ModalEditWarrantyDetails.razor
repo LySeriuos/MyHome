@@ -251,52 +251,56 @@
 
             string relativeExtrawarrantyRecieptFilePath = await CaptureExtrawarrantyRecieptFile();
             string relativeWarrantyReceiptFilePath = await CapturewarrantyRecieptFile();
-            if (relativeExtrawarrantyRecieptFilePath != null || relativeExtrawarrantyRecieptFilePath != "")
+            if (extrawarrantyRecieptFile != null)
             {
-                if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
+                if (relativeExtrawarrantyRecieptFilePath != null || relativeExtrawarrantyRecieptFilePath != "")
                 {
-                    if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+                    if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
                     {
-                        System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                        if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+                        {
+                            System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                        }
+                        else
+                        {
+                            deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
+                        }
                     }
-                    else
-                    {
-                        deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
-                    }
+
+                    deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativeExtrawarrantyRecieptFilePath;
+
                 }
-
-                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativeExtrawarrantyRecieptFilePath;
-
-            }
-            else
-            {
-                errors.Add($"Error: Something went wrong with this file!");
-                return;
-            }
-
-            if (relativeWarrantyReceiptFilePath != null || relativeWarrantyReceiptFilePath != "")
-            {
-                if (deviceToAddLink.DeviceWarranty.ReceiptLink != "" || deviceToAddLink.DeviceWarranty.ReceiptLink != null)
+                else
                 {
-                    if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ReceiptLink))
-                    {
-                        System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ReceiptLink);
-                    }
-                    else
-                    {
-                        deviceToAddLink.DeviceWarranty.ReceiptLink = "";
-                    }
+                    errors.Add($"Error: Something went wrong with this file!");
+                    return;
                 }
-
-                deviceToAddLink.DeviceWarranty.ReceiptLink = relativeWarrantyReceiptFilePath;
-
             }
-            else
+            if (warrantyRecieptFile != null)
             {
-                errors.Add($"Error: Something went wrong with this file!");
-                return;
-            }
+                if (relativeWarrantyReceiptFilePath != null || relativeWarrantyReceiptFilePath != "")
+                {
+                    if (deviceToAddLink.DeviceWarranty.ReceiptLink != "" || deviceToAddLink.DeviceWarranty.ReceiptLink != null)
+                    {
+                        if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ReceiptLink))
+                        {
+                            System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ReceiptLink);
+                        }
+                        else
+                        {
+                            deviceToAddLink.DeviceWarranty.ReceiptLink = "";
+                        }
+                    }
 
+                    deviceToAddLink.DeviceWarranty.ReceiptLink = relativeWarrantyReceiptFilePath;
+
+                }
+                else
+                {
+                    errors.Add($"Error: Something went wrong with this file!");
+                    return;
+                }
+            }
             // if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
             // {
             //     deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativeFilePath;
