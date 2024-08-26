@@ -258,6 +258,7 @@
                 {
                     if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
                     {
+                        //TODO: make method to clean up failed upload files with 0 bytes
                         if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
                         {
                             System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
