@@ -100,7 +100,15 @@
                 <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
                 @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                 <TemplateColumn Title="Receipt">
-                    <Button class="btn btn-sm" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
+                    @if (context.DeviceWarranty.ReceiptLink == "" || context.DeviceWarranty.ReceiptLink == null)
+                    {
+                        <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
+                    }
+                    else
+                    {
+                        <Button class="button-51" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
+                    }
+                    
                 </TemplateColumn>
                 <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
                 @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
@@ -111,8 +119,7 @@
                     }
                     else
                     {
-                        @* <a href="@context.DeviceWarranty.ExtraInsuranceWarrantyLink">Link</a> *@
-                        <Button class="test-btn button-32" @onclick="()=>NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
+                        <Button class="test-btn button-51" @onclick="()=>NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
                     }
                 </TemplateColumn>
             </QuickGrid>
