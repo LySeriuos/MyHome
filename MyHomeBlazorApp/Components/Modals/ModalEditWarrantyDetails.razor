@@ -53,7 +53,7 @@
                     }
                     <InputFile id="extendedWarrantyLinkToReceipt"
                                @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
-                               OnChange="@UploadExtraWarrantyRecieptFile">
+                               OnChange="@UploadExtraWarrantyReceiptFile">
                     </InputFile>
                 </div>
             </div>
@@ -94,11 +94,14 @@
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
     public Action? WarrantyDataHasChanged;
     private Modal? refModalEditWarrantyDetails { get; set; }
-    private IBrowserFile? warrantyRecieptFile;
-    private IBrowserFile? extrawarrantyRecieptFile;
+    private IBrowserFile? warrantyReceiptFile;
+    private IBrowserFile? extraWarrantyReceiptFile;
     private long maxFileSize = 1024 * 1024 * 3;
     private int maxAllowedFiles = 1;
     private List<string> errors = new();
+    private string warrantyReceiptFilePath;
+    private string extraWarrantyReceiptFilePath;
+
     //Some example
     // creating new directory in user environmentenvironment
     // readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
@@ -107,21 +110,19 @@
     // : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
 
 
-
-
-    private void UploadExtraWarrantyRecieptFile(InputFileChangeEventArgs e)
+    private async void UploadExtraWarrantyReceiptFile(InputFileChangeEventArgs e)
     {
-        extrawarrantyRecieptFile = e.File;
+        extraWarrantyReceiptFilePath = await CaptureFilePath(e.File);
     }
 
-    private void UploadReceiptFile(InputFileChangeEventArgs f)
-    {        
-        warrantyRecieptFile = f.File;
+    private async void UploadReceiptFile(InputFileChangeEventArgs f)
+    {
+        warrantyReceiptFilePath = await CaptureFilePath(f.File);
     }
 
-    private async Task<string> CaptureExtrawarrantyRecieptFile()
+    private async Task<string> CaptureFilePath(IBrowserFile file)
     {
-        if (extrawarrantyRecieptFile is null)
+        if (file is null)
         {
             // returns empty string if there is no file
             return "";
@@ -129,20 +130,20 @@
 
         try
         {
-            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(extrawarrantyRecieptFile.Name));
+            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
             string userId = DataService.CurrentUser.UserID.ToString();
             Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
             string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
-            if (extrawarrantyRecieptFile.Size <= maxFileSize)
+            if (file.Size <= maxFileSize)
             {
                 using var content = new MultipartFormDataContent();
                 await using FileStream fs = new(filePath, FileMode.Create);
-                await extrawarrantyRecieptFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
                 fs.Close();
             }
             else
             {
-                errors.Add($"File: {extrawarrantyRecieptFile.Name} Error: The File has exceed file size{maxFileSize}");
+                errors.Add($"File: {file.Name} Error: The File has exceed file size{maxFileSize}");
             }
 
             // await ListFiles();
@@ -151,48 +152,95 @@
         catch (Exception ex)
         {
             // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
-            errors.Add($"File: {extrawarrantyRecieptFile.Name} Error: {ex.Message}");
-            throw;
-        }
-
-    }
-
-    private async Task<string> CaptureWarrantyRecieptFile()
-    {
-        if (warrantyRecieptFile is null)
-        {
-            // returns empty string if there is no file
-            return "";
-        }
-
-        try
-        {
-            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(warrantyRecieptFile.Name));
-            string userId = DataService.CurrentUser.UserID.ToString();
-            Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
-            string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
-            if (warrantyRecieptFile.Size <= maxFileSize)
-            {
-                using var content = new MultipartFormDataContent();
-                await using FileStream fs = new(filePath, FileMode.Create);
-                await warrantyRecieptFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
-                fs.Close();
-            }
-            else
-            {
-                errors.Add($"File: {warrantyRecieptFile.Name} Error: The File has exceed file size{maxFileSize}");
-            }
-
-            // await ListFiles();
-            return filePath;
-        }
-        catch (Exception ex)
-        {
-            // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
-            errors.Add($"File: {warrantyRecieptFile.Name} Error: {ex.Message}");
+            errors.Add($"File: {file.Name} Error: {ex.Message}");
             throw;
         }
     }
+
+    // private void UploadExtraWarrantyReceiptFile(InputFileChangeEventArgs e)
+    // {
+    //     extrawarrantyReceiptFile = e.File;
+    // }
+
+    // private void UploadReceiptFile(InputFileChangeEventArgs f)
+    // {        
+    //     warrantyReceiptFile = f.File;
+    // }
+
+    // private async Task<string> CaptureExtraWarrantyReceiptFile()
+    // {
+    //     if (extrawarrantyReceiptFile is null)
+    //     {
+    //         // returns empty string if there is no file
+    //         return "";
+    //     }
+
+    //     try
+    //     {
+    //         string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(extrawarrantyReceiptFile.Name));
+    //         string userId = DataService.CurrentUser.UserID.ToString();
+    //         Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
+    //         string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
+    //         if (extrawarrantyReceiptFile.Size <= maxFileSize)
+    //         {
+    //             using var content = new MultipartFormDataContent();
+    //             await using FileStream fs = new(filePath, FileMode.Create);
+    //             await extrawarrantyReceiptFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+    //             fs.Close();
+    //         }
+    //         else
+    //         {
+    //             errors.Add($"File: {extrawarrantyReceiptFile.Name} Error: The File has exceed file size{maxFileSize}");
+    //         }
+
+    //         // await ListFiles();
+    //         return filePath;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
+    //         errors.Add($"File: {extrawarrantyReceiptFile.Name} Error: {ex.Message}");
+    //         throw;
+    //     }
+
+    // }
+
+    // private async Task<string> CaptureWarrantyReceiptFile()
+    // {
+    //     if (warrantyReceiptFile is null)
+    //     {
+    //         // returns empty string if there is no file
+    //         return "";
+    //     }
+
+    //     try
+    //     {
+    //         string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(warrantyReceiptFile.Name));
+    //         string userId = DataService.CurrentUser.UserID.ToString();
+    //         Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
+    //         string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
+    //         if (warrantyReceiptFile.Size <= maxFileSize)
+    //         {
+    //             using var content = new MultipartFormDataContent();
+    //             await using FileStream fs = new(filePath, FileMode.Create);
+    //             await warrantyReceiptFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+    //             fs.Close();
+    //         }
+    //         else
+    //         {
+    //             errors.Add($"File: {warrantyReceiptFile.Name} Error: The File has exceed file size{maxFileSize}");
+    //         }
+
+    //         // await ListFiles();
+    //         return filePath;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
+    //         errors.Add($"File: {warrantyReceiptFile.Name} Error: {ex.Message}");
+    //         throw;
+    //     }
+    // }
 
     List<string> FileUrls = new();
     async Task ListFiles()
@@ -216,7 +264,6 @@
 
     public async Task OnShowModalEditWarrantyClick()
     {
-
         await refModalEditWarrantyDetails.ShowAsync();
     }
 
@@ -224,18 +271,17 @@
     {
         await refModalEditWarrantyDetails.HideAsync();
     }
+    
 
-    async void WarrantyDetailsFormSubmitted(EditContext editcontext)
+    private void WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
         try
         {
             errors.Clear();
             DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
-            string relativeExtrawarrantyRecieptFilePath = await CaptureExtrawarrantyRecieptFile();
-            string relativeWarrantyReceiptFilePath = await CaptureWarrantyRecieptFile();
-            if (extrawarrantyRecieptFile != null)
+            if (extraWarrantyReceiptFilePath != null)
             {
-                if (relativeExtrawarrantyRecieptFilePath != null || relativeExtrawarrantyRecieptFilePath != "")
+                if (extraWarrantyReceiptFilePath != null || extraWarrantyReceiptFilePath != "")
                 {
                     if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
                     {
@@ -250,7 +296,7 @@
                         }
                     }
 
-                    deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = relativeExtrawarrantyRecieptFilePath;
+                    deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
                 }
                 else
                 {
@@ -258,9 +304,9 @@
                     return;
                 }
             }
-            if (warrantyRecieptFile != null)
+            if (warrantyReceiptFilePath != null)
             {
-                if (relativeWarrantyReceiptFilePath != null || relativeWarrantyReceiptFilePath != "")
+                if (warrantyReceiptFilePath != null || warrantyReceiptFilePath != "")
                 {
                     if (deviceToAddLink.DeviceWarranty.ReceiptLink != "" || deviceToAddLink.DeviceWarranty.ReceiptLink != null)
                     {
@@ -274,7 +320,7 @@
                         }
                     }
 
-                    deviceToAddLink.DeviceWarranty.ReceiptLink = relativeWarrantyReceiptFilePath;
+                    deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
                 }
                 else
                 {
@@ -285,8 +331,8 @@
 
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
-            warrantyRecieptFile = null;
-            extrawarrantyRecieptFile = null;
+            warrantyReceiptFile = null;
+            extraWarrantyReceiptFile = null;
             refModalEditWarrantyDetails.HideAsync();
 
         }
