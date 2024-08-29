@@ -30,7 +30,7 @@
                         <p class="text-success">The receipt was uploaded.</p>
                     }
                     <InputFile id="WarrantyReceiptLink"
-                               @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"                               
+                               @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"
                                OnChange="@UploadReceiptFile">
                     </InputFile>
                 </div>
@@ -109,6 +109,19 @@
     // ? Environment.GetEnvironmentVariable("HOME")
     // : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
 
+    private async void UploadAnyFile(InputFileChangeEventArgs e, string fileID)
+    {
+        switch (fileID)
+        {
+            case "warraty":
+                extraWarrantyReceiptFilePath = await CaptureFilePath(e.File);
+                break;
+            case "":
+                warrantyReceiptFilePath = await CaptureFilePath(e.File);
+                break;
+
+        }
+    }
 
     private async void UploadExtraWarrantyReceiptFile(InputFileChangeEventArgs e)
     {
@@ -163,7 +176,7 @@
     // }
 
     // private void UploadReceiptFile(InputFileChangeEventArgs f)
-    // {        
+    // {
     //     warrantyReceiptFile = f.File;
     // }
 
@@ -271,7 +284,22 @@
     {
         await refModalEditWarrantyDetails.HideAsync();
     }
-    
+
+    private void DeleteFileIfExists(string filePath)
+    {
+        if (!String.IsNullOrEmpty(filePath))
+        {
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
+        else
+        {
+            errors.Add($"Error: Something went wrong with this file!");
+            return;
+        }
+    }
 
     private void WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
@@ -279,55 +307,67 @@
         {
             errors.Clear();
             DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
-            if (extraWarrantyReceiptFilePath != null)
+            
+            if (!String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
             {
-                if (extraWarrantyReceiptFilePath != null || extraWarrantyReceiptFilePath != "")
-                {
-                    if (deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != "" || deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
-                    {
-                        //TODO: make method to clean up failed upload files with 0 bytes
-                        if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
-                        {
-                            System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
-                        }
-                        else
-                        {
-                            deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
-                        }
-                    }
-
-                    deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
-                }
-                else
-                {
-                    errors.Add($"Error: Something went wrong with this file!");
-                    return;
-                }
+                DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
             }
-            if (warrantyReceiptFilePath != null)
+
+            deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
+
+            if (!String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ReceiptLink))
             {
-                if (warrantyReceiptFilePath != null || warrantyReceiptFilePath != "")
-                {
-                    if (deviceToAddLink.DeviceWarranty.ReceiptLink != "" || deviceToAddLink.DeviceWarranty.ReceiptLink != null)
-                    {
-                        if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ReceiptLink))
-                        {
-                            System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ReceiptLink);
-                        }
-                        else
-                        {
-                            deviceToAddLink.DeviceWarranty.ReceiptLink = "";
-                        }
-                    }
-
-                    deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
-                }
-                else
-                {
-                    errors.Add($"Error: Something went wrong with this file!");
-                    return;
-                }
+                DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
+                deviceToAddLink.DeviceWarranty.ReceiptLink = "";
             }
+
+            deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
+
+            // if (!String.IsNullOrEmpty(warrantyReceiptFilePath))
+            // {
+            //     if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+            //     {
+            //         //TODO: make method to clean up failed upload files with 0 bytes
+            //         if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+            //         {
+            //             System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+            //         }
+            //         else
+            //         {
+            //             deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
+            //         }
+            //     }
+            //     deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
+            // }
+            // else
+            // {
+            //     errors.Add($"Error: Something went wrong with this file!");
+            //     return;
+            // }
+
+            // if (!String.IsNullOrEmpty(warrantyReceiptFilePath))
+            // {
+            //     if (String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ReceiptLink))
+            //     {
+            //         if (System.IO.File.Exists(deviceToAddLink.DeviceWarranty.ReceiptLink))
+            //         {
+            //             System.IO.File.Delete(deviceToAddLink.DeviceWarranty.ReceiptLink);
+            //         }
+            //         else
+            //         {
+            //             deviceToAddLink.DeviceWarranty.ReceiptLink = "";
+            //         }
+            //     }
+
+            //     deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
+            // }
+            // else
+            // {
+            //     errors.Add($"Error: Something went wrong with this file!");
+            //     return;
+            // }
+
 
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
