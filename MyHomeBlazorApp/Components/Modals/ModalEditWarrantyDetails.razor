@@ -25,7 +25,7 @@
             <div class="form-group row mb-5">
                 <label for="linkToReceipt" class="col-sm-6 col-form-label">Receipt Link</label>
                 <div class="col-sm-6">
-                    @if (CurrentDevice.DeviceWarranty.ReceiptLink != null)
+                    @if (!String.IsNullOrEmpty(CurrentDevice.DeviceWarranty.ReceiptLink))
                     {
                         <p class="text-success">The receipt was uploaded.</p>
                     }
@@ -47,7 +47,7 @@
             <div class="form-group row mb-5">
                 <label for="extendedWarrantyLinkToReceipt" class="col-sm-6 col-form-label">Extended Warranty Receipt</label>
                 <div class="col-sm-6">
-                    @if (CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink != null)
+                    @if (!String.IsNullOrEmpty(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
                     {
                         <p class="text-success">The receipt was uploaded.</p>
                     }

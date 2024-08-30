@@ -100,7 +100,7 @@
                 <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
                 @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                 <TemplateColumn Title="Receipt">
-                    @if (context.DeviceWarranty.ReceiptLink == "" || context.DeviceWarranty.ReceiptLink == null)
+                    @if (String.IsNullOrEmpty(context.DeviceWarranty.ReceiptLink))
                     {
                         <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
                     }
@@ -113,7 +113,7 @@
                 <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
                 @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
                 <TemplateColumn Title="Extra's Receipt">
-                    @if (context.DeviceWarranty.ExtraInsuranceWarrantyLink == "" || context.DeviceWarranty.ExtraInsuranceWarrantyLink == null)
+                    @if (String.IsNullOrEmpty(context.DeviceWarranty.ExtraInsuranceWarrantyLink))
                     {
                         <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
                     }
@@ -311,6 +311,23 @@
             }            
         }
         return fileExists;
+    }
+
+    private void CheckIfFileExsist()
+    {
+        // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
+        List<DeviceProfile> deviceProfiles = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+        foreach(DeviceProfile device in deviceProfiles)
+        {
+            if (!System.IO.File.Exists(device.DeviceWarranty.ReceiptLink))
+            {
+                device.DeviceWarranty.ReceiptLink = "";
+            }
+            if (!System.IO.File.Exists(device.DeviceWarranty.ExtraInsuranceWarrantyLink))
+            {
+                device.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
+            }
+        }
     }
 
     private async Task NavigateToExtraWarrantyFile(int deviceID)
@@ -524,9 +541,9 @@
 
     protected override void OnInitialized()
     {
-        // It does not change nothing if I assign QuickGrid item directly to DataService.
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        CheckIfFileExsist();
         base.OnInitialized();
     }
 
