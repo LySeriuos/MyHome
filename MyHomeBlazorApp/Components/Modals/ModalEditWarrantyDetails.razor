@@ -307,22 +307,19 @@
         {
             errors.Clear();
             DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
-            
-            if (!String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink))
+            if (!String.IsNullOrEmpty(extraWarrantyReceiptFilePath))
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
-                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
+                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
             }
 
-            deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
-
-            if (!String.IsNullOrEmpty(deviceToAddLink.DeviceWarranty.ReceiptLink))
+            if (!String.IsNullOrEmpty(warrantyReceiptFilePath))
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
-                deviceToAddLink.DeviceWarranty.ReceiptLink = "";
+                deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
 
-            deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
+
 
             // if (!String.IsNullOrEmpty(warrantyReceiptFilePath))
             // {
@@ -371,8 +368,8 @@
 
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
-            warrantyReceiptFile = null;
-            extraWarrantyReceiptFile = null;
+            warrantyReceiptFilePath = "";
+            extraWarrantyReceiptFilePath = "";
             refModalEditWarrantyDetails.HideAsync();
 
         }
