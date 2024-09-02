@@ -211,8 +211,7 @@
         }
         else
         {
-            errors.Add($"Error: Something went wrong with this file!");
-            return;
+            filePath = "";
         }
     }
 
@@ -227,11 +226,22 @@
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
             }
+            else
+            {
+                errors.Add($"Error: Something went wrong with this file!");
+                return;
+            }
 
             if (!String.IsNullOrEmpty(warrantyReceiptFilePath))
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
+            }
+
+            else
+            {
+                errors.Add($"Error: Something went wrong with this file!");
+                return;
             }
 
             DataService.SaveUpdatedObject();
