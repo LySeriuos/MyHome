@@ -6,7 +6,7 @@
 @using System.Text
 
 
-<Modal @ref="refModalEditWarrantyDetails" Title="Edit Warranty Details">
+<Modal @ref="refModalEditWarrantyDetails" Title="Edit Warranty Details" OnHiding="OnModalHiding">
     <BodyTemplate>
         <EditForm Model="@CurrentDevice" Context="WarrantyDetails" OnSubmit="WarrantyDetailsFormSubmitted">
             <div class="form-group row">
@@ -101,6 +101,8 @@
     private List<string> errors = new();
     private string warrantyReceiptFilePath;
     private string extraWarrantyReceiptFilePath;
+    private bool warrantyFileUpploadSuccsess = false;
+    private bool extraWarrantyFileUpploadSuccess = false;
 
     //Some example
     // creating new directory in user environmentenvironment
@@ -197,7 +199,29 @@
 
     public async Task OnHideModalEditWarrantyClick()
     {
+        if (warrantyFileUpploadSuccsess == false)
+        {
+            DeleteFileIfExists(extraWarrantyReceiptFilePath);
+        }
+
+        if (extraWarrantyFileUpploadSuccess == false)
+        {
+            DeleteFileIfExists(warrantyReceiptFilePath);
+        }
         await refModalEditWarrantyDetails.HideAsync();
+    }
+
+    private void OnModalHiding()
+    {
+        if (warrantyFileUpploadSuccsess == false)
+        {
+            DeleteFileIfExists(extraWarrantyReceiptFilePath);
+        }
+
+        if (extraWarrantyFileUpploadSuccess == false)
+        {
+            DeleteFileIfExists(warrantyReceiptFilePath);
+        }
     }
 
     private void DeleteFileIfExists(string filePath)
@@ -225,6 +249,8 @@
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
+                warrantyFileUpploadSuccsess = true;
+
             }
             else
             {
@@ -236,6 +262,7 @@
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
+                extraWarrantyFileUpploadSuccess = true;
             }
 
             else
