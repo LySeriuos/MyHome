@@ -31,7 +31,7 @@
                     }
                     <InputFile id="WarrantyReceiptLink"
                                @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"
-                               OnChange="@UploadReceiptFile">
+                               OnChange="@LoadWarrantyFile">
                     </InputFile>
                 </div>
                 <div>
@@ -53,7 +53,7 @@
                     }
                     <InputFile id="extendedWarrantyLinkToReceipt"
                                @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
-                               OnChange="@UploadExtraWarrantyReceiptFile">
+                               OnChange="@LoadExtraWarrantyFile">
                     </InputFile>
                 </div>
             </div>
@@ -92,8 +92,8 @@
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
-    public Action? WarrantyDataHasChanged;
-    private Modal? refModalEditWarrantyDetails { get; set; }
+    public Action WarrantyDataHasChanged;
+    private Modal refModalEditWarrantyDetails { get; set; }
     private IBrowserFile? warrantyReceiptFile;
     private IBrowserFile? extraWarrantyReceiptFile;
     private long maxFileSize = 1024 * 1024 * 3;
@@ -125,15 +125,25 @@
         }
     }
 
-    private async void UploadExtraWarrantyReceiptFile(InputFileChangeEventArgs e)
+    private void LoadExtraWarrantyFile(InputFileChangeEventArgs e)
     {
-        extraWarrantyReceiptFilePath = await CaptureFilePath(e.File);
+        extraWarrantyReceiptFile = e.File;
     }
 
-    private async void UploadReceiptFile(InputFileChangeEventArgs f)
+    private void LoadWarrantyFile(InputFileChangeEventArgs f)
     {
-        warrantyReceiptFilePath = await CaptureFilePath(f.File);
+        warrantyReceiptFile = f.File;
     }
+
+    // private async void UploadExtraWarrantyReceiptFile(InputFileChangeEventArgs e)
+    // {
+    //     extraWarrantyReceiptFilePath = await CaptureFilePath(e.File);
+    // }
+
+    // private async void UploadReceiptFile(InputFileChangeEventArgs f)
+    // {
+    //     warrantyReceiptFilePath = await CaptureFilePath(f.File);
+    // }
 
     private async Task<string> CaptureFilePath(IBrowserFile file)
     {
@@ -161,7 +171,7 @@
                 errors.Add($"File: {file.Name} Error: The File has exceed file size{maxFileSize}");
             }
 
-            // await ListFiles();
+            await ListFiles();
             return filePath;
         }
         catch (Exception ex)
@@ -199,15 +209,6 @@
 
     public async Task OnHideModalEditWarrantyClick()
     {
-        if (warrantyFileUpploadSuccsess == false)
-        {
-            DeleteFileIfExists(extraWarrantyReceiptFilePath);
-        }
-
-        if (extraWarrantyFileUpploadSuccess == false)
-        {
-            DeleteFileIfExists(warrantyReceiptFilePath);
-        }
         await refModalEditWarrantyDetails.HideAsync();
     }
 
@@ -239,15 +240,16 @@
         }
     }
 
-    private void WarrantyDetailsFormSubmitted(EditContext editcontext)
+    private async Task WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
         try
         {
             errors.Clear();
             DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
-            if (!String.IsNullOrEmpty(extraWarrantyReceiptFilePath))
+            if (extraWarrantyReceiptFile != null)
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                string extraWarrantyReceiptFilePath = await CaptureFilePath(extraWarrantyReceiptFile);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
                 warrantyFileUpploadSuccsess = true;
 
@@ -258,9 +260,10 @@
                 return;
             }
 
-            if (!String.IsNullOrEmpty(warrantyReceiptFilePath))
+            if (warrantyReceiptFile != null)
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
+                string warrantyReceiptFilePath = await CaptureFilePath(warrantyReceiptFile);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
                 extraWarrantyFileUpploadSuccess = true;
             }
@@ -275,7 +278,7 @@
             WarrantyDataHasChanged();
             warrantyReceiptFilePath = "";
             extraWarrantyReceiptFilePath = "";
-            refModalEditWarrantyDetails.HideAsync();
+            await refModalEditWarrantyDetails.HideAsync();
 
         }
         catch (Exception ex)
