@@ -29,7 +29,7 @@
                     {
                         <p class="text-success">The receipt was uploaded.</p>
                     }
-                    <InputFile id="WarrantyReceiptLink"
+                    <InputFile @key=@(inputWarrantyFileId) id="WarrantyReceiptLink"
                                @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"
                                OnChange="@LoadWarrantyFile">
                     </InputFile>
@@ -51,7 +51,7 @@
                     {
                         <p class="text-success">The receipt was uploaded.</p>
                     }
-                    <InputFile id="extendedWarrantyLinkToReceipt"
+                    <InputFile @key=@(inputExtraWarrantyFileId) id="extendedWarrantyLinkToReceipt"
                                @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
                                OnChange="@LoadExtraWarrantyFile">
                     </InputFile>
@@ -103,6 +103,8 @@
     private string extraWarrantyReceiptFilePath;
     private bool warrantyFileUpploadSuccsess = false;
     private bool extraWarrantyFileUpploadSuccess = false;
+    public Guid inputWarrantyFileId = Guid.NewGuid();
+    public Guid inputExtraWarrantyFileId = Guid.NewGuid();
 
     //Some example
     // creating new directory in user environmentenvironment
@@ -276,8 +278,6 @@
 
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
-            warrantyReceiptFilePath = "";
-            extraWarrantyReceiptFilePath = "";
             await refModalEditWarrantyDetails.HideAsync();
 
         }
