@@ -6,7 +6,7 @@
 @using System.Text
 
 
-<Modal @ref="refModalEditWarrantyDetails" Title="Edit Warranty Details" OnHiding="OnModalHiding">
+<Modal @ref="refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
         <EditForm Model="@CurrentDevice" Context="WarrantyDetails" OnSubmit="WarrantyDetailsFormSubmitted">
             <div class="form-group row">
@@ -57,15 +57,6 @@
                     </InputFile>
                 </div>
             </div>
-
-            <h3>Files</h3>
-            <p>@FileUrls.Count()</p>
-            @* @foreach (var url in FileUrls)
-            {
-            <li><a href="@url">@url</a><br /></li>
-            } *@
-
-
             <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
                                  DevicesListAsQueryable="DevicesListAsQueryable">
             </NextPreviuosButtons>
@@ -92,7 +83,7 @@
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
-    public Action? WarrantyDataHasChanged;
+    public Action WarrantyDataHasChanged;
     private Modal refModalEditWarrantyDetails { get; set; } = new();
     private IBrowserFile? warrantyReceiptFile;
     private IBrowserFile? extraWarrantyReceiptFile;
@@ -108,7 +99,7 @@
     //                Environment.OSVersion.Platform == PlatformID.MacOSX)
     // ? Environment.GetEnvironmentVariable("HOME")
     // : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-        
+
 
     private void LoadExtraWarrantyFile(InputFileChangeEventArgs e)
     {
@@ -184,8 +175,12 @@
     {
         try
         {
+            DeviceProfile deviceToAddLink = new();
             errors.Clear();
-            DeviceProfile deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
+            if (CurrentDevice != null)
+            {
+                deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
+            }
             if (extraWarrantyReceiptFile != null)
             {
                 DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
