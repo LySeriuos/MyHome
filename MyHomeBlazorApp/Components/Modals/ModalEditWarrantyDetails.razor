@@ -88,7 +88,6 @@
     private IBrowserFile? warrantyReceiptFile;
     private IBrowserFile? extraWarrantyReceiptFile;
     private long maxFileSize = 1024 * 1024 * 3;
-    private int maxAllowedFiles = 1;
     private List<string> errors = new();
     private Guid inputWarrantyFileId = Guid.NewGuid();
     private Guid inputExtraWarrantyFileId = Guid.NewGuid();
@@ -156,20 +155,7 @@
         await refModalEditWarrantyDetails.HideAsync();
     }  
 
-    private void DeleteFileIfExists(string filePath)
-    {
-        if (!String.IsNullOrEmpty(filePath))
-        {
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-        }
-        else
-        {
-            filePath = "";
-        }
-    }
+    
 
     private async Task WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
@@ -183,10 +169,9 @@
             }
             if (extraWarrantyReceiptFile != null)
             {
-                DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
                 string extraWarrantyReceiptFilePath = await CaptureFilePath(extraWarrantyReceiptFile);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
-
             }
             else
             {
@@ -196,11 +181,10 @@
 
             if (warrantyReceiptFile != null)
             {
-                DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
                 string warrantyReceiptFilePath = await CaptureFilePath(warrantyReceiptFile);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
-
             else
             {
                 errors.Add($"Error: Something went wrong with this file!");

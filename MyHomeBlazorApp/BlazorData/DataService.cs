@@ -327,6 +327,19 @@ namespace MyHomeBlazorApp.BlazorData
             return CurrentUser.UnassignedDevices;
         }
 
+        //  InputFile upploading handling // 
+
+        public void DeleteFileIfExists(string filePath)
+        {
+            if (!System.String.IsNullOrEmpty(filePath))
+            {
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+        }
+
         #endregion
         public DataService()
         {
