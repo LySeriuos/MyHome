@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="form-group row mb-5">
-                <label for="linkToReceipt" class="col-sm-6 col-form-label">Receipt Link</label>
+                <label for="linkToReceipt" class="col-sm-6 col-form-label">Add new Receipt Link</label>
                 <div class="col-sm-6">
                     @if (!String.IsNullOrEmpty(CurrentDevice.DeviceWarranty.ReceiptLink))
                     {
@@ -34,9 +34,6 @@
                                OnChange="@LoadWarrantyFile">
                     </InputFile>
                 </div>
-                <div>
-                    <p>@CurrentDevice.DeviceWarranty.ReceiptLink</p>
-                </div>
             </div>
             <div class="form-group row">
                 <label for="deviceExtendedWarrantyLength" class="col-sm-6 col-form-label">Extended warranty lentgh (years)</label>
@@ -45,7 +42,7 @@
                 </div>
             </div>
             <div class="form-group row mb-5">
-                <label for="extendedWarrantyLinkToReceipt" class="col-sm-6 col-form-label">Extended Warranty Receipt</label>
+                <label for="extendedWarrantyLinkToReceipt" class="col-sm-6 col-form-label">Add new Extended Warranty Receipt</label>
                 <div class="col-sm-6">
                     @if (!String.IsNullOrEmpty(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
                     {
@@ -108,17 +105,7 @@
     private void LoadWarrantyFile(InputFileChangeEventArgs f)
     {
         warrantyReceiptFile = f.File;
-    }    
-
-    public async Task OnShowModalEditWarrantyClick()
-    {
-        await refModalEditWarrantyDetails.ShowAsync();
     }
-
-    public async Task OnHideModalEditWarrantyClick()
-    {
-        await refModalEditWarrantyDetails.HideAsync();
-    } 
 
     private async Task WarrantyDetailsFormSubmitted(EditContext editcontext)
     {
@@ -132,7 +119,7 @@
             }
             if (extraWarrantyReceiptFile != null)
             {
-                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink); // deleting previuos file when loading new one
                 string extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(extraWarrantyReceiptFile, maxFileSize, errors);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
             }
@@ -144,7 +131,7 @@
 
             if (warrantyReceiptFile != null)
             {
-                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink); // deleting previuos file when loading new one
                 string warrantyReceiptFilePath = await DataService.CaptureFilePath(warrantyReceiptFile, maxFileSize, errors);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
@@ -164,7 +151,17 @@
             errors.Add($"Error: {ex.Message}");
             throw;
         }
-
     }
+
+    public async Task OnShowModalEditWarrantyClick()
+    {
+        await refModalEditWarrantyDetails.ShowAsync();
+    }
+
+    public async Task OnHideModalEditWarrantyClick()
+    {
+        await refModalEditWarrantyDetails.HideAsync();
+    }
+
 }
 
