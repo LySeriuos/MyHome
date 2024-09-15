@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Connections.Features;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Connections.Features;
 using My_Home.Models;
 using MyHome;
 using MyHome.Models;
@@ -328,6 +329,41 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         //  InputFile upploading handling // 
+
+        public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors)
+        {
+            if (file is null)
+            {
+                // returns empty string if there is no file
+                return "";
+            }
+
+            try
+            {
+                string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
+                string userId = CurrentUser.UserID.ToString();
+                Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
+                string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
+                if (file.Size <= maxFileSize)
+                {
+                    using var content = new MultipartFormDataContent();
+                    await using FileStream fs = new(filePath, FileMode.Create);
+                    await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+                    fs.Close();
+                }
+                else
+                {
+                    errors.Add($"File: {file.Name} Error: The File has exceed file size{maxFileSize}");
+                }
+                return filePath;
+            }
+            catch (Exception ex)
+            {
+                // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
+                errors.Add($"File: {file.Name} Error: {ex.Message}");
+                throw;
+            }
+        }
 
         public void DeleteFileIfExists(string filePath)
         {
