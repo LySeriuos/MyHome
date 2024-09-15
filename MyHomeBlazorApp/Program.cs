@@ -22,7 +22,6 @@ namespace MyHomeBlazorApp
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddSingleton<DataService>();
             builder.Services.AddBlazorBootstrap();
             
