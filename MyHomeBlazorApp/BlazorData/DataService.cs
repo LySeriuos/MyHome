@@ -43,21 +43,32 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         #endregion
+
         #region Real Estate
+
+        /// <summary>
+        /// Get RealEstate object by realEstate ID
+        /// </summary>
+        /// <param name="realEstateID">RealEstate ID to look for</param>
+        /// <returns>RealEstate object</returns>
         public RealEstate GetRealEstate(int realEstateID)
         {
-            RealEstate rE = new RealEstate();
+            RealEstate realEstateById = new RealEstate();
             if (RealEstates.Count > 1 && RealEstates.Any(item => item.RealEstateID == realEstateID))
             {
-                rE = RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
+                realEstateById = RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
             }
             else
             {
-                rE = new();
+                realEstateById = new();
             }
-            return rE;
+            return realEstateById;
         }
 
+        /// <summary>
+        /// Method to save created new RealEstate
+        /// </summary>
+        /// <param name="realEstate">Created RealEstate</param>
         public void AddNewRealEstate(RealEstate realEstate)
         {
             realEstate.RealEstateID = Logic.GetRealEstateMaxId(RealEstates) + 1;
@@ -65,11 +76,21 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
+        /// <summary>
+        /// Method to assign Adrress object to RealEstate 
+        /// </summary>
+        /// <param name="adrress">Newly created adress</param>
         public void AddRealEstateAdrress(Address adrress)
         {
             CurrentRealEstate.Address = adrress;
             Data.SaveUsersListToXml(_users, _path);
         }
+
+        /// <summary>
+        /// Method to get RealEstate object by Device ID parameter
+        /// </summary>
+        /// <param name="deviceId">Parameter</param>
+        /// <returns>RealEstate's ID</returns>
         public int GetRealEstateByDeviceID(int deviceId)
         {
             RealEstate currentRealEstateTest = new();
@@ -83,13 +104,41 @@ namespace MyHomeBlazorApp.BlazorData
                         break;
                     }
                 }
-                
             }
             return currentRealEstateTest.RealEstateID;
         }
 
+        /// <summary>
+        /// To get last added RealEstate in RealEstates list
+        /// </summary>
+        /// <returns>Last added RealEstate in the list</returns>
+        public RealEstate LastAddedRealEstate()
+        {
+            RealEstate lastRealEstate = RealEstates.Last();
+            return lastRealEstate;
+        }
+
+        /// <summary>
+        /// Method to delete(remove) RealEstate from the RealEstates list
+        /// </summary>
+        /// <param name="contextChosedRealEstateID">Chosed RealEstate</param>
+        public void RemoveRealEstate(int contextChosedRealEstateID)
+        {
+            bool realEstateExsits = RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
+            if (realEstateExsits == true)
+            {
+                RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
+                RealEstates.Remove(realEstateToDelete);
+                Data.SaveUsersListToXml(_users, _path);
+            }
+            else
+            {
+                return;
+            }
+        }
+
         #endregion
-        #region Device
+        #region Devices
         public static int GetDeviceMaxId(List<DeviceProfile> devices)
         {
             int maxID = devices.Max(d => d.DeviceID);
@@ -100,66 +149,81 @@ namespace MyHomeBlazorApp.BlazorData
             //validation code (duplicates etc)
             List<DeviceProfile> devicesList = Devices;
             int maxId = Logic.GetDeviceMaxId(devicesList);
-            deviceToAdd.DeviceID = maxId+1;
+            deviceToAdd.DeviceID = maxId + 1;
             deviceToAdd.DeviceWarranty = new();
             deviceToAdd.DeviceWarranty.Shop = new();
             deviceToAdd.DeviceWarranty.Shop.Address = new();
-            RealEstate? chosedRealEstate = RealEstates.FirstOrDefault(r => r.RealEstateID == chosedRealEstateID);
-            
+            RealEstate chosedRealEstate = new();
+            if (chosedRealEstateID != 0)
+            {
+                chosedRealEstate = RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
+            }
+
             if (Devices.Any(d => d.DeviceID == deviceToAdd.DeviceID))
             {
+
                 return;
             }
             else
             {
-                chosedRealEstate.DevicesProfiles.Add(deviceToAdd);                
+                chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
             }
 
             Data.SaveUsersListToXml(_users, _path);
             deviceToAdd = new();
         }
 
-        public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
+        /// last added device should be matched by highest ID
+        public DeviceProfile LastAddedDevice()
         {
-            int totalDaysInTheYear = 365;
-            int yearsToDays = years * totalDaysInTheYear;
-            TimeSpan interval = TimeSpan.FromDays(yearsToDays);
-            string timeInterval = interval.ToString();
-            int pIndex = timeInterval.IndexOf(':');
-            pIndex = timeInterval.IndexOf('.', pIndex);
-            if (pIndex < 0) timeInterval += "        ";
+            List<DeviceProfile>? devices = Devices;
+            DeviceProfile? device = devices.Last();
+            return device; // this shouldn't be marked
+        }
 
-            Console.WriteLine("{0,21}{1,26}", yearsToDays, timeInterval);
-            return interval;
+        /// <summary>
+        /// Method to move devices list from one RealEstate to another
+        /// </summary>
+        /// <param name="realEstateID">Devices list will be moved into RealEstate by realEstateID</param>
+        /// <param name="currentRealEstate">RealEstate to move from(delete) devices list</param>
+        public void MoveDeviceListToOtherRealEstate(int realEstateID, RealEstate currentRealEstate)
+        {
+            List<DeviceProfile> deviceProfilesMoveToRealEstate = CurrentUser.RealEstates.First(r => r.RealEstateID == realEstateID).DevicesProfiles;
+            foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
+            {
+                deviceProfilesMoveToRealEstate.Add(deviceProfile);
+                currentRealEstate.DevicesProfiles.Remove(deviceProfile);
+            }
+            Data.SaveUsersListToXml(_users, _path);
+        }
+
+        /// <summary>
+        /// Method to move DeviceProfile from one Real Estate to another
+        /// </summary>
+        /// <param name="deviceToMoveID">DeviceProfile ID which will be moved </param>
+        /// <param name="currentUser">Indentified user</param>
+        /// <param name="realEstateIdToAddDevice">Real Estate ID to move in Device by deviceToMoveID</param>
+        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, UserProfile currentUser, int realEstateIdToAddDevice)
+        {
+            int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
+            DeviceProfile deviceToMove = Devices.FirstOrDefault(d => d.DeviceID == deviceToMoveID);
+            RealEstate realEstateToMoveFrom = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToMoveFrom);
+            RealEstate realEstateToAddDevice = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
+            realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
+            realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
+            Data.SaveUsersListToXml(_users, _path);
         }
         public DeviceProfile GetDeviceById(int id)
         {
             DeviceProfile currentDevice = new DeviceProfile();
-            currentDevice = CurrentUser.GetAllDevices().FirstOrDefault(d => d.DeviceID == id);
-            //List<DeviceProfile> devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
-            //foreach (DeviceProfile device in devicesList)
-            //{
-            //    if (device.DeviceID == id)
-            //    {
-            //        currentDevice = device;
-            //        break;
-            //    }
-            //    else
-            //    {
-            //        currentDevice = new DeviceProfile();
-            //    }
-            //}
-            //device = Devices.FirstOrDefault(Device => Device.DeviceID == id);
+            currentDevice = CurrentUser.GetAllDevices().First(d => d.DeviceID == id);
             return currentDevice;
         }
 
-        public void AddDeviceWarrantyInfo(DeviceWarranty deviceWarranty)
-        {       // Do I need to take Years to database? How to awoid it ?   
-            deviceWarranty.WarrantyPeriod = GetTimeSpanFromYears(deviceWarranty.Years);
-            deviceWarranty.ExtraInsuranceWarrantyLenght = GetTimeSpanFromYears(deviceWarranty.ExtendedWarrantyinYears);
-            CurrentDevice.DeviceWarranty = deviceWarranty;
-            Data.SaveUsersListToXml(_users, _path);
-        }
+        #endregion
+
+
+        #region ShopDetails
 
         public void AddShopInfo(Shop shop)
         {
@@ -200,53 +264,26 @@ namespace MyHomeBlazorApp.BlazorData
             DeviceProfile firstExpiringDevice = sortedList.First();
             return firstExpiringDevice;
         }
-
-        /// last added device should be matched by highest ID
-        public DeviceProfile LastAddedDevice()
-        {
-            List<DeviceProfile>? devices = Devices;
-            DeviceProfile? device = devices.Last();
-            return device; // this shouldn't be marked
-        }
-
-        public RealEstate LastAddedRealEstate()
-        {
-            RealEstate lastRealEstate = RealEstates.Last();
-            return lastRealEstate;
-        }
-
-        public void RemoveRealEstate(int contextChosedRealEstateID)
-        {
-            bool realEstateExsits = RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
-            if (realEstateExsits == true)
-            {
-                RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
-                RealEstates.Remove(realEstateToDelete);
-                Data.SaveUsersListToXml(_users, _path);
-                _users = Data.GetUsersListFromXml(_path);
-            }
-            else
-            {
-                return;
-            }
-        }
-
-        public void SaveUpdatedObject()
-        {
+        public void AddDeviceWarrantyInfo(DeviceWarranty deviceWarranty)
+        {       // Do I need to take Years to database? How to awoid it ?   
+            deviceWarranty.WarrantyPeriod = GetTimeSpanFromYears(deviceWarranty.Years);
+            deviceWarranty.ExtraInsuranceWarrantyLenght = GetTimeSpanFromYears(deviceWarranty.ExtendedWarrantyinYears);
+            CurrentDevice.DeviceWarranty = deviceWarranty;
             Data.SaveUsersListToXml(_users, _path);
         }
 
-        public void OnModalDeviceNext(DeviceProfile currentDevice)
+        public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
         {
-            int currentDeviceIndex = 0;
-            List<DeviceProfile> allDevices = Devices;
-            if (currentDevice != null)
-            {
-                currentDeviceIndex = allDevices.IndexOf(currentDevice);
-                currentDevice = allDevices[currentDeviceIndex + 1];
-                //one line code with linq
-                // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];            
-            }
+            int totalDaysInTheYear = 365;
+            int yearsToDays = years * totalDaysInTheYear;
+            TimeSpan interval = TimeSpan.FromDays(yearsToDays);
+            string timeInterval = interval.ToString();
+            int pIndex = timeInterval.IndexOf(':');
+            pIndex = timeInterval.IndexOf('.', pIndex);
+            if (pIndex < 0) timeInterval += "        ";
+
+            Console.WriteLine("{0,21}{1,26}", yearsToDays, timeInterval);
+            return interval;
         }
 
         public string GetExpiringDevice()
@@ -266,39 +303,22 @@ namespace MyHomeBlazorApp.BlazorData
             }
             return firstDevice;
         }
-        /// <summary>
-        /// Method to move devices list from one RealEstate to another
-        /// </summary>
-        /// <param name="realEstateID">RealEstate by ID to move</param>
-        /// <param name="currentRealEstate">RealEstate to move from</param>
-        public void MoveDeviceListToOtherRealEstate(int realEstateID, RealEstate currentRealEstate)
+        #endregion
+
+        public void OnModalDeviceNext(DeviceProfile currentDevice)
         {
-            List<DeviceProfile> deviceProfilesMoveToRealEstate = CurrentUser.RealEstates.First(r => r.RealEstateID == realEstateID).DevicesProfiles;
-            foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
+            int currentDeviceIndex = 0;
+            List<DeviceProfile> allDevices = Devices;
+            if (currentDevice != null)
             {
-                deviceProfilesMoveToRealEstate.Add(deviceProfile);
-                currentRealEstate.DevicesProfiles.Remove(deviceProfile);
+                currentDeviceIndex = allDevices.IndexOf(currentDevice);
+                currentDevice = allDevices[currentDeviceIndex + 1];
+                //one line code with linq
+                // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];            
             }
-            Data.SaveUsersListToXml(_users, _path);
-
-        }
-        /// <summary>
-        /// method to move DeviceProfile from one Real Estate to Another
-        /// </summary>
-        /// <param name="deviceToMoveID">DeviceProfile by ID to change real estates</param>
-        /// <param name="currentUser">Indentified user</param>
-        /// <param name="realEstateIdToAddDevice">Real Estate ID to move DeviceProfile in</param>
-        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, UserProfile currentUser, int realEstateIdToAddDevice)
-        {
-            int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
-            DeviceProfile deviceToMove = Devices.FirstOrDefault(d => d.DeviceID == deviceToMoveID);
-            RealEstate realEstateToMoveFrom = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToMoveFrom);
-            RealEstate realEstateToAddDevice = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
-            realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
-            realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
-            Data.SaveUsersListToXml(_users, _path);
         }
 
+        #region Unassigned Devices
         /// <summary>
         /// Main Idea is to create default Real Estate and use it to add unnasigned devices.
         /// If real estate has ID = 0, show text = "unassigned" instead of ID number.
@@ -327,7 +347,10 @@ namespace MyHomeBlazorApp.BlazorData
             }
             return CurrentUser.UnassignedDevices;
         }
+        #endregion
 
+        #region Should be moved?
+        // these should be moved somwhere else
         //  InputFile upploading handling // 
 
         public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors)
@@ -376,7 +399,13 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        public void SaveUpdatedObject()
+        {
+            Data.SaveUsersListToXml(_users, _path);
+        }
+
         #endregion
+
         public DataService()
         {
             _users = Data.GetUsersListFromXml(_path);
@@ -387,21 +416,11 @@ namespace MyHomeBlazorApp.BlazorData
             CurrentUser = GetUser(userId);
             RealEstates = CurrentUser.RealEstates;
             CurrentRealEstate = GetRealEstate(realEstateID);
-            //
-            // These do not get updated List and makes id duplicates ///
-            //
-            //List<DeviceProfile> _devices = currentUser.GetAllDevices();
-            //Devices = Logic.GetAllUserDevices(CurrentUser);
-            //Devices = CurrentUser.GetAllDevices();
-            //Devices = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
-            ///////////
             Device = LastAddedDevice();
-            //UnassignedDevicesList = UnassignedDevices();
             UnassignedProfile = UnassignedDevices();
             CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
-            //FirstExpiringDevice = FirstExpiringWarranty();
         }
 
 
@@ -410,10 +429,7 @@ namespace MyHomeBlazorApp.BlazorData
         private static List<UserProfile>? _users;
         public List<UserProfile>? Users => _users;
         public string XmlPath => _path;
-
-        // Why this get teh updates list but not in the class? Should I change all variables like this ?
         public List<DeviceProfile> Devices => CurrentUser.GetAllDevices();
-        //
 
         public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile Device { get; set; } = new DeviceProfile();
@@ -429,6 +445,5 @@ namespace MyHomeBlazorApp.BlazorData
         public Shop Shop { get; set; } = new Shop();
         public Unassigned UnassignedProfile { get; set; } = new Unassigned();
         public List<DeviceProfile> UnassignedDevicesList { get; } = new List<DeviceProfile>();
-        public RealEstate DefaultRealEstate { get; set; } = new RealEstate();
     }
 }
