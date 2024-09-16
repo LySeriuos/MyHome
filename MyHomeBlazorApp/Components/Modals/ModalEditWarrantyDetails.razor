@@ -123,11 +123,11 @@
                 string extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(extraWarrantyReceiptFile, maxFileSize, errors);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
             }
-            else
-            {
-                errors.Add($"Error: Something went wrong with this file!");
-                return;
-            }
+            // // else
+            // // {
+            // //     errors.Add($"Error: Something went wrong with this file!");
+            // //     return;
+            // // }
 
             if (warrantyReceiptFile != null)
             {
@@ -135,16 +135,15 @@
                 string warrantyReceiptFilePath = await DataService.CaptureFilePath(warrantyReceiptFile, maxFileSize, errors);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
-            else
-            {
-                errors.Add($"Error: Something went wrong with this file!");
-                return;
-            }
+            // else
+            // {
+            //     errors.Add($"Error: Something went wrong with this file!");
+            //     return;
+            // }
 
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
             await refModalEditWarrantyDetails.HideAsync();
-
         }
         catch (Exception ex)
         {

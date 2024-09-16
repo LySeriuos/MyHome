@@ -181,7 +181,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         public DeviceProfile FirstExpiringWarranty()
         {
-            List<DeviceProfile>? devicesList = RealEstates.SelectMany(d => d.DevicesProfiles).ToList();
+            List<DeviceProfile>? devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
             //List<DeviceWarranty> warranties = DevicesWarranties;
             List<DeviceProfile> validWarrantiesList = new();
             var counting = 0;
@@ -198,7 +198,7 @@ namespace MyHomeBlazorApp.BlazorData
 
             var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
             DeviceProfile firstExpiringDevice = sortedList.First();
-            return firstExpiringDevice; // this shouldn't be marked
+            return firstExpiringDevice;
         }
 
         /// last added device should be matched by highest ID
@@ -401,7 +401,7 @@ namespace MyHomeBlazorApp.BlazorData
             CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
-            FirstExpiringDevice = FirstExpiringWarranty();
+            //FirstExpiringDevice = FirstExpiringWarranty();
         }
 
 
