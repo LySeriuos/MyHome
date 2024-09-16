@@ -75,27 +75,21 @@
             </div>
         </div>
     </div>
-    <div>
-        <p>Fix That Last Real Estate would never be Default Real Estate with ID = 0</p>
-        <p>Fix That Warranties should be not passed warranty deadline, should be showing future expiring waranties not the Past!</p>
-        <p>Some Lists doubles after hot reload in visual. Need to check!</p>
-    </div>
 
 </body>
 </html>
 @code {
 
-    List<string> deviceItemsList = new List<string>();
-    List<string> warrantyItemsList = new List<string>();
-    List<string> realEstateItemsList = new List<string>();
-    DeviceProfile expiringWarranty;
+    private List<string> _deviceItemsList = new List<string>();
+    private List<string> _warrantyItemsList = new List<string>();
+    private List<string> _realEstateItemsList = new List<string>();
     private List<string> GetExpiringDevice()
     {
         string dateInput = DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString();
         string deviceName = DataService.FirstExpiringWarranty().DeviceName;        
-        warrantyItemsList.Add("Expires soonest:");
-        warrantyItemsList.Add(deviceName + " " + dateInput);
-        return warrantyItemsList;
+        _warrantyItemsList.Add("Expires soonest:");
+        _warrantyItemsList.Add(deviceName + " " + dateInput);
+        return _warrantyItemsList;
     }
 
     private List<string> GetLastAddedDevice()
@@ -104,18 +98,18 @@
         string deviceID = lastDevice.DeviceID.ToString();
         string deviceName = lastDevice.DeviceName;
         string finalString = "ID" + ":" + lastDevice.DeviceID.ToString() + " " + lastDevice.DeviceName;
-        deviceItemsList.Add("Last Added Device:");
-        deviceItemsList.Add(finalString);
-        return deviceItemsList;
+        _deviceItemsList.Add("Last Added Device:");
+        _deviceItemsList.Add(finalString);
+        return _deviceItemsList;
     }
 
     private List<string> GetLastAddedRealEstate()
     {
         RealEstate lastRealEstate = DataService.LastAddedRealEstate();
         string lastRealEstateId = lastRealEstate.RealEstateID.ToString();
-        realEstateItemsList.Add("Last added Real Estate:");
-        realEstateItemsList.Add($"ID:{lastRealEstateId} {lastRealEstate.RealEstateName}");
-        return realEstateItemsList;
+        _realEstateItemsList.Add("Last added Real Estate:");
+        _realEstateItemsList.Add($"ID:{lastRealEstateId} {lastRealEstate.RealEstateName}");
+        return _realEstateItemsList;
     }
 
     List<string> userItemsList = new List<string>()

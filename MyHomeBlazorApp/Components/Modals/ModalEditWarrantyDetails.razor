@@ -6,7 +6,7 @@
 @using System.Text
 
 
-<Modal @ref="refModalEditWarrantyDetails" Title="Edit Warranty Details">
+<Modal @ref="_refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
         <EditForm Model="@CurrentDevice" Context="WarrantyDetails" OnSubmit="WarrantyDetailsFormSubmitted">
             <div class="form-group row">
@@ -29,7 +29,7 @@
                     {
                         <p class="text-success">The receipt was uploaded.</p>
                     }
-                    <InputFile @key=@(inputWarrantyFileId) id="WarrantyReceiptLink"
+                    <InputFile @key=@(_inputWarrantyFileId) id="WarrantyReceiptLink"
                                @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"
                                OnChange="@LoadWarrantyFile">
                     </InputFile>
@@ -48,7 +48,7 @@
                     {
                         <p class="text-success">The receipt was uploaded.</p>
                     }
-                    <InputFile @key=@(inputExtraWarrantyFileId) id="extendedWarrantyLinkToReceipt"
+                    <InputFile @key=@(_inputExtraWarrantyFileId) id="extendedWarrantyLinkToReceipt"
                                @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
                                OnChange="@LoadExtraWarrantyFile">
                     </InputFile>
@@ -81,13 +81,13 @@
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
     public Action WarrantyDataHasChanged;
-    private Modal refModalEditWarrantyDetails { get; set; } = new();
-    private IBrowserFile? warrantyReceiptFile;
-    private IBrowserFile? extraWarrantyReceiptFile;
+    private Modal _refModalEditWarrantyDetails { get; set; } = new();
+    private IBrowserFile? _warrantyReceiptFile;
+    private IBrowserFile? _extraWarrantyReceiptFile;
     private long maxFileSize = 1024 * 1024 * 3;
     private List<string> errors = new();
-    private Guid inputWarrantyFileId = Guid.NewGuid();
-    private Guid inputExtraWarrantyFileId = Guid.NewGuid();
+    private Guid _inputWarrantyFileId = Guid.NewGuid();
+    private Guid _inputExtraWarrantyFileId = Guid.NewGuid();
 
     //Some example
     // creating new directory in user environmentenvironment
@@ -99,12 +99,12 @@
 
     private void LoadExtraWarrantyFile(InputFileChangeEventArgs e)
     {
-        extraWarrantyReceiptFile = e.File;
+        _extraWarrantyReceiptFile = e.File;
     }
 
     private void LoadWarrantyFile(InputFileChangeEventArgs f)
     {
-        warrantyReceiptFile = f.File;
+        _warrantyReceiptFile = f.File;
     }
 
     private async Task WarrantyDetailsFormSubmitted(EditContext editcontext)
@@ -117,33 +117,23 @@
             {
                 deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
             }
-            if (extraWarrantyReceiptFile != null)
+            if (_extraWarrantyReceiptFile != null)
             {
                 DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink); // deleting previuos file when loading new one
-                string extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(extraWarrantyReceiptFile, maxFileSize, errors);
-                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraWarrantyReceiptFilePath;
+                string _extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors);
+                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = _extraWarrantyReceiptFilePath;
             }
-            // // else
-            // // {
-            // //     errors.Add($"Error: Something went wrong with this file!");
-            // //     return;
-            // // }
 
-            if (warrantyReceiptFile != null)
+            if (_warrantyReceiptFile != null)
             {
                 DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink); // deleting previuos file when loading new one
-                string warrantyReceiptFilePath = await DataService.CaptureFilePath(warrantyReceiptFile, maxFileSize, errors);
+                string warrantyReceiptFilePath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
-            // else
-            // {
-            //     errors.Add($"Error: Something went wrong with this file!");
-            //     return;
-            // }
 
             DataService.SaveUpdatedObject();
             WarrantyDataHasChanged();
-            await refModalEditWarrantyDetails.HideAsync();
+            await _refModalEditWarrantyDetails.HideAsync();
         }
         catch (Exception ex)
         {
@@ -154,12 +144,12 @@
 
     public async Task OnShowModalEditWarrantyClick()
     {
-        await refModalEditWarrantyDetails.ShowAsync();
+        await _refModalEditWarrantyDetails.ShowAsync();
     }
 
     public async Task OnHideModalEditWarrantyClick()
     {
-        await refModalEditWarrantyDetails.HideAsync();
+        await _refModalEditWarrantyDetails.HideAsync();
     }
 
 }

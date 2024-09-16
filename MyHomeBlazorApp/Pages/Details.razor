@@ -193,7 +193,7 @@
     </ModalEditAddDevice>
 </div>
 <div>
-    <ModalEditWarrantyDetails @ref="refModalEditWarrantyDetails"
+    <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
                               CurrentDevice="@currentDevice"
                               DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditWarrantyDetails>
@@ -360,7 +360,7 @@
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
 
             refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
-            refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
+            _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
             refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
@@ -504,7 +504,7 @@
 
     #region Warranties
 
-    private ModalEditWarrantyDetails refModalEditWarrantyDetails = default!;
+    private ModalEditWarrantyDetails _refModalEditWarrantyDetails = default!;
 
     private void WarrantyDataHasChanged()
     {
@@ -515,7 +515,7 @@
     private async Task OnShowModalEditAddDeviceWarrantyClick(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
-        await refModalEditWarrantyDetails.OnShowModalEditWarrantyClick();
+        await _refModalEditWarrantyDetails.OnShowModalEditWarrantyClick();
     }
 
     #endregion
