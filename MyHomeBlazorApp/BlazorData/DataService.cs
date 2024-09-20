@@ -94,13 +94,13 @@ namespace MyHomeBlazorApp.BlazorData
         public int GetRealEstateByDeviceID(int deviceId)
         {
             RealEstate currentRealEstateTest = new();
-            foreach (RealEstate r in RealEstates)
+            foreach (RealEstate realEstate in RealEstates)
             {
-                foreach (DeviceProfile d in r.DevicesProfiles)
+                foreach (DeviceProfile device in realEstate.DevicesProfiles)
                 {
-                    if (d.DeviceID == deviceId)
+                    if (device.DeviceID == deviceId)
                     {
-                        currentRealEstateTest = r;
+                        currentRealEstateTest = realEstate;
                         break;
                     }
                 }
@@ -139,11 +139,23 @@ namespace MyHomeBlazorApp.BlazorData
 
         #endregion
         #region Devices
+
+        /// <summary>
+        /// Getting Max Id number of the devices in the list.
+        /// </summary>
+        /// <param name="devices">List of devices</param>
+        /// <returns>highest ID int</returns>
         public static int GetDeviceMaxId(List<DeviceProfile> devices)
         {
             int maxID = devices.Max(d => d.DeviceID);
             return maxID;
         }
+
+        /// <summary>
+        /// Add new device to the devices list and assigning default values of nested classes
+        /// </summary>
+        /// <param name="deviceToAdd">Newly created device</param>
+        /// <param name="chosedRealEstateID">Real Estate by ID to add new device profile</param>
         public void AddNewDevice(DeviceProfile deviceToAdd, int chosedRealEstateID)
         {
             //validation code (duplicates etc)
@@ -161,7 +173,6 @@ namespace MyHomeBlazorApp.BlazorData
 
             if (Devices.Any(d => d.DeviceID == deviceToAdd.DeviceID))
             {
-
                 return;
             }
             else
@@ -173,12 +184,15 @@ namespace MyHomeBlazorApp.BlazorData
             deviceToAdd = new();
         }
 
-        /// last added device should be matched by highest ID
+        /// <summary>
+        /// Getting last item in the sequence
+        /// </summary>
+        /// <returns>Returns last added device in the list</returns>
         public DeviceProfile LastAddedDevice()
         {
             List<DeviceProfile>? devices = Devices;
             DeviceProfile? device = devices.Last();
-            return device; // this shouldn't be marked
+            return device;
         }
 
         /// <summary>
@@ -213,10 +227,16 @@ namespace MyHomeBlazorApp.BlazorData
             realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
             Data.SaveUsersListToXml(_users, _path);
         }
+
+        /// <summary>
+        /// Getting item in the list by ID
+        /// </summary>
+        /// <param name="id">ID number</param>
+        /// <returns>Device Profile from the list with matched device ID</returns>
         public DeviceProfile GetDeviceById(int id)
         {
-            DeviceProfile currentDevice = new DeviceProfile();
-            currentDevice = CurrentUser.GetAllDevices().First(d => d.DeviceID == id);
+            DeviceProfile? currentDevice = new DeviceProfile();
+            currentDevice = CurrentUser.GetAllDevices().FirstOrDefault(d => d.DeviceID == id);
             return currentDevice;
         }
 
@@ -225,6 +245,10 @@ namespace MyHomeBlazorApp.BlazorData
 
         #region ShopDetails
 
+        /// <summary>
+        /// Adding new warranties profile to the shop
+        /// </summary>
+        /// <param name="shop">Shop profile to add warranties profile</param>
         public void AddShopInfo(Shop shop)
         {
             DeviceWarranty currentWarranty = CurrentDevice.DeviceWarranty;
@@ -232,6 +256,10 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address"></param>
         public void AddShopAdrress(Address address)
         {
             Shop shop = CurrentDevice.DeviceWarranty.Shop;
