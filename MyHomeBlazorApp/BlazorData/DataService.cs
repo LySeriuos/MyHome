@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using BlazorBootstrap;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Connections.Features;
 using My_Home.Models;
 using MyHome;
@@ -235,8 +236,17 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Device Profile from the list with matched device ID</returns>
         public DeviceProfile GetDeviceById(int id)
         {
+            int i = 0;
             DeviceProfile? currentDevice = new DeviceProfile();
-            currentDevice = CurrentUser.GetAllDevices().FirstOrDefault(d => d.DeviceID == id);
+            DeviceProfile device;
+            for (i = 0; i < CurrentUser.GetAllDevices().Count; i++)
+            {
+                device = CurrentUser.GetAllDevices()[i];
+                if (device.DeviceID == id)
+                {
+                    currentDevice = device;
+                }
+            }
             return currentDevice;
         }
 
