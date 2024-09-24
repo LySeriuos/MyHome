@@ -286,6 +286,7 @@ namespace MyHomeBlazorApp.BlazorData
             List<DeviceProfile>? devicesList = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
             //List<DeviceWarranty> warranties = DevicesWarranties;
             List<DeviceProfile> validWarrantiesList = new();
+            DeviceProfile firstExpiringDevice = new();
             var counting = 0;
             DateTime date = DateTime.Now;
 
@@ -297,9 +298,12 @@ namespace MyHomeBlazorApp.BlazorData
                     validWarrantiesList.Add(device);
                 }
             }
+            if (validWarrantiesList.Count != 0)
+            {
+                var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
+                firstExpiringDevice = sortedList.First();
+            }
 
-            var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
-            DeviceProfile firstExpiringDevice = sortedList.First();
             return firstExpiringDevice;
         }
         public void AddDeviceWarrantyInfo(DeviceWarranty deviceWarranty)

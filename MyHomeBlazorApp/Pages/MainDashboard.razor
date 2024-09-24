@@ -85,8 +85,14 @@
     private List<string> _realEstateItemsList = new List<string>();
     private List<string> GetExpiringDevice()
     {
-        string dateInput = DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString();
-        string deviceName = DataService.FirstExpiringWarranty().DeviceName;        
+        string dateInput="No expiring warranties!";
+        string deviceName = string.Empty;
+        DeviceProfile firstExpiringDevice = DataService.FirstExpiringWarranty();
+        if (firstExpiringDevice.DeviceID != 0)
+        {
+            dateInput = DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString();
+            deviceName = DataService.FirstExpiringWarranty().DeviceName;
+        }
         _warrantyItemsList.Add("Expires soonest:");
         _warrantyItemsList.Add(deviceName + " " + dateInput);
         return _warrantyItemsList;
