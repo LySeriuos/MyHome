@@ -267,7 +267,7 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         /// <summary>
-        /// 
+        /// Creating new Shop object and assigning adrress object to it
         /// </summary>
         /// <param name="address"></param>
         public void AddShopAdrress(Address address)
@@ -394,7 +394,13 @@ namespace MyHomeBlazorApp.BlazorData
         #region Should be moved?
         // these should be moved somwhere else
         //  InputFile upploading handling // 
-
+        /// <summary>
+        /// Capturing file and creating filePath to return
+        /// </summary>
+        /// <param name="file">Loaded file in InputFile</param>
+        /// <param name="maxFileSize">Limited file size</param>
+        /// <param name="errors">List to add errors and later print them as needed</param>
+        /// <returns>Created file path to the file in Blazor server</returns>
         public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors)
         {
             if (file is null)
@@ -430,6 +436,12 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        /// <summary>
+        /// Checking if there is a file assigned to the filepath. 
+        /// If there is so it will be deleted to avoid saving multiple files in the server for the same object. 
+        /// Old file always will be deleted and then added new to the server.
+        /// </summary>
+        /// <param name="filePath">Path to the file in the Blazor server</param>
         public void DeleteFileIfExists(string filePath)
         {
             if (!System.String.IsNullOrEmpty(filePath))
@@ -441,6 +453,9 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        /// <summary>
+        /// Saving new changes to xml database
+        /// </summary>
         public void SaveUpdatedObject()
         {
             Data.SaveUsersListToXml(_users, _path);
