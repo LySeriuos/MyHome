@@ -215,14 +215,21 @@
             CurrentUser.RealEstates.First(r => r.RealEstateID == RealEsatateIdToAddDevice).DevicesProfiles.Add(CurrentDevice);
             CurrentUser.UnassignedDevices.UnassignedDevicesList.Remove(CurrentDevice);
         }
+        else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == true)
+        {
+            //TODO move to dataservice method
+            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);            
+        }
+
         else
         {
             DataService.SaveUpdatedObject();
         }
 
+        
+        changedDeviceListData();
         realEstateToAddDevice.RealEstateID = 0;
         showErrorMessageVisible = false;
-        changedDeviceListData();
         refModalEditAddDevice.HideAsync();
     }
 
