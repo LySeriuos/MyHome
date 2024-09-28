@@ -229,6 +229,12 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
+        public void MoveDeviceFromUnassignedDevicesProfile(UserProfile currentUser, int realEstateToAddDevice, DeviceProfile currentDevice)
+        {
+            currentUser.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
+            currentUser.UnassignedDevices.UnassignedDevicesList.Remove(currentDevice);
+        }
+
         /// <summary>
         /// Getting item in the list by ID
         /// </summary>

@@ -211,13 +211,10 @@
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
         {
-            //TODO move to dataservice method
-            CurrentUser.RealEstates.First(r => r.RealEstateID == RealEsatateIdToAddDevice).DevicesProfiles.Add(CurrentDevice);
-            CurrentUser.UnassignedDevices.UnassignedDevicesList.Remove(CurrentDevice);
+            DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, RealEsatateIdToAddDevice, CurrentDevice);
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == true)
-        {
-            //TODO move to dataservice method
+        {            
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);            
         }
 
