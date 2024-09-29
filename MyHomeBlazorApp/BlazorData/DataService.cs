@@ -226,7 +226,6 @@ namespace MyHomeBlazorApp.BlazorData
             RealEstate realEstateToAddDevice = currentUser.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
             realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
             realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
-            Data.SaveUsersListToXml(_users, _path);
         }
 
         public void MoveDeviceFromUnassignedDevicesProfile(UserProfile currentUser, int realEstateToAddDevice, DeviceProfile currentDevice)

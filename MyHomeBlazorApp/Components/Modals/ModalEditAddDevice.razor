@@ -218,14 +218,9 @@
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);            
         }
 
-        else
-        {
-            DataService.SaveUpdatedObject();
-        }
-
-        
+        DataService.SaveUpdatedObject();
         changedDeviceListData();
-        realEstateToAddDevice.RealEstateID = 0;
+        realEstateToAddDevice = new();
         showErrorMessageVisible = false;
         refModalEditAddDevice.HideAsync();
     }
