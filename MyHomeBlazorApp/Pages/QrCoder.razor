@@ -1,0 +1,37 @@
+﻿@page "/QrCoder"
+
+@using MyHome.Models;
+@using MyHome;
+@using MyHomeBlazorApp.Pages
+@inject BlazorData.DataService DataService
+
+
+<h3>QrCoder</h3>
+<label class="form-label">Choose Device</label>
+<InputSelect @bind-Value="ChosedDevice">
+    <option selected disabled>Select Device...</option>
+    @foreach (var device in DataService.CurrentUser.GetAllDevices())
+    {
+        <option value="@device.DeviceID">@device.DeviceName</option>
+    }
+</InputSelect>
+<p>@ChosedDevice</p>
+
+<div class="form-check">
+    
+    <input class="form-check-input" type="checkbox" value="" id="deviceName">
+    <InputCheckbox @bind-Value="@ChosedSerialNumber">@DataService.CurrentUser.GetAllDevices().First(d => d.DeviceID == ChosedDevice)</InputCheckbox>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+    <label class="form-check-label" for="flexCheckChecked">
+        Checked checkbox
+    </label>
+</div>
+
+@code {
+
+    private int ChosedDevice { get; set; }
+    private string ChosedSerialNumber { get; set; } = "";
+
+}
