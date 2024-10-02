@@ -8,30 +8,123 @@
 
 <h3>QrCoder</h3>
 <label class="form-label">Choose Device</label>
-<InputSelect @bind-Value="ChosedDevice">
-    <option selected disabled>Select Device...</option>
+<InputSelect @bind-Value="_chosedDeviceID">
+    <option selected disabled value="-1">Select Device...</option>
     @foreach (var device in DataService.CurrentUser.GetAllDevices())
     {
         <option value="@device.DeviceID">@device.DeviceName</option>
     }
 </InputSelect>
-<p>@ChosedDevice</p>
+<p>@_chosedDeviceID</p>
 
-<div class="form-check">
-    
-    <input class="form-check-input" type="checkbox" value="" id="deviceName">
-    <InputCheckbox @bind-Value="@ChosedSerialNumber">@DataService.CurrentUser.GetAllDevices().First(d => d.DeviceID == ChosedDevice)</InputCheckbox>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-    <label class="form-check-label" for="flexCheckChecked">
-        Checked checkbox
-    </label>
-</div>
 
+
+<h5>Create Device Info Qr Code </h5>
+
+<EditForm Model="deviceProfile" Context="editContext">
+    <ol>
+        <li>
+            <div class="form-check">
+                <InputCheckbox id="deviceName" @bind-Value="_chosedDeviceName"></InputCheckbox>
+                <label class="form-check-label" for="deviceName">
+                    Device Name
+                </label>                
+            </div>
+        </li>
+        <li>
+            <div class="form-check">
+                <InputCheckbox id="deviceSerialNumber" @bind-Value="_chosedSerialNumber"></InputCheckbox>
+                <label class="form-check-label" for="deviceSerialNumber">
+                    Serial Number
+                </label>                
+            </div>
+        </li>
+        <li>
+            <div class="form-check">
+                <InputCheckbox id="deviceMacAdrress" @bind-Value="_chosedMacAdrress"></InputCheckbox>
+                <label class="form-check-label" for="deviceMacAdrress">
+                    Mac Adrress
+                </label>
+            </div>
+        </li>
+        <li>
+            <div class="form-check">
+                <InputCheckbox id="deviceID" @bind-Value="_deviceID"></InputCheckbox>
+                <label class="form-check-label" for="deviceID">
+                    Device ID
+                </label>
+            </div>
+        </li>
+        <li>
+            <div class="form-check">
+                <InputCheckbox id="deviceModelNumber" @bind-Value="_chosedDeviceModelNumber"></InputCheckbox>
+                <label class="form-check-label" for="deviceModelNumber">
+                    Model Number
+                </label>
+            </div>
+        </li>
+        <li>
+            <div class="form-check">
+                <InputCheckbox id="deviceWarrantyEnd" @bind-Value="_chosedDeviceWarrantyExpiration"></InputCheckbox>
+                <label class="form-check-label" for="deviceWarrantyEnd">
+                    Warranty Expiration
+                </label>
+            </div>
+        </li>
+    </ol>
+    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Details Qr Code</Button>
+</EditForm>
+<br />
+<br/>
+<h5>Create Wifi Sharing Qr Code</h5>
+<EditForm Model="wifiModel">  
+        <div>
+            <label class="form-check-label" for="wifiName">
+                Wifi Name
+            </label>
+            <InputText id="wifiName" @bind-Value="_wifiName"></InputText>
+        </div>    
+        <div>
+            <label class="form-check-label" for="wifiPassword">
+                Wifi Pasword
+            </label>
+            <InputText id="wifiPassword" @bind-Value="_wifiPassword"></InputText>
+        </div>
+        <br />
+    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
+</EditForm>
 @code {
 
-    private int ChosedDevice { get; set; }
-    private string ChosedSerialNumber { get; set; } = "";
+    private DeviceProfile deviceProfile { get; set; } = new();
+    private WifiModel wifiModel { get; set; } = new();
+    private int _chosedDeviceID { get; set; }
+    private bool _chosedSerialNumber { get; set; }
+    private bool _chosedDeviceName { get; set; }
+    private bool _chosedMacAdrress { get; set; }
+    private bool _deviceID { get; set; }
+    private bool _chosedDeviceModelNumber { get; set; }
+    private bool _chosedDeviceWarrantyExpiration { get; set; }
+    private string? _wifiName { get; set; }
+    private string? _wifiPassword { get; set; }
+
+    public class WifiModel
+    {
+        private string _wifiName ="";
+
+        public string WifiName
+        {
+            get { return _wifiName; }
+            set { _wifiName = value; }
+        }
+
+        private string _wifiPassword = "";        
+
+        public string WifiPassword
+        {
+            get { return _wifiPassword; }
+            set { _wifiPassword = value; }
+        }
+    }
+
 
 }
