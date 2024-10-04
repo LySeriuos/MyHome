@@ -9,6 +9,9 @@ using System.Security.Cryptography;
 using QRCoder;
 using MyHome.Models;
 using System.IO;
+using static QRCoder.PayloadGenerator;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace MyHome
 {
@@ -135,6 +138,21 @@ namespace MyHome
 #pragma warning disable CA1416 // Validate platform compatibility
             qrCodeImage.Save(saveQrCodeLink);
 #pragma warning restore CA1416 // Validate platform compatibility
+        }
+        //public static System.Web.HttpContext Current { get; set; }
+        public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string saveQrCodeLink)
+        {
+            //HttpRequest request = HttpContext.Current.Request;
+            //Uri pageUri = new Uri(request.Url, "/ThePageName");
+            Url absoluteUrl = new Url("https://xf23m0jf-7211.euw.devtunnels.ms/");
+            //Url qrCodeLink = new Url($"{absoluteUrl}mdetails/{userID}/{deviceID}");
+            Url qrCodeLink = new Url($"{absoluteUrl}mdetails");
+            string payload = qrCodeLink.ToString();
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+            qrCodeImage.Save(saveQrCodeLink);
         }
 
         /// <summary>

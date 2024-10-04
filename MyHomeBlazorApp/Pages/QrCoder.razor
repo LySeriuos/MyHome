@@ -7,72 +7,23 @@
 
 
 <h3>QrCoder</h3>
-<label class="form-label">Choose Device</label>
-<InputSelect @bind-Value="_chosedDeviceID">
-    <option selected disabled value="-1">Select Device...</option>
-    @foreach (var device in DataService.CurrentUser.GetAllDevices())
-    {
-        <option value="@device.DeviceID">@device.DeviceName</option>
-    }
-</InputSelect>
+
 <p>@_chosedDeviceID</p>
+<p>@selectedDeviceProfile.DeviceID</p>
 
 
+<h5>Generate link to Device QrCode </h5>
 
-<h5>Create Device Info Qr Code </h5>
-
-<EditForm Model="deviceProfile" Context="editContext">
-    <ol>
-        <li>
-            <div class="form-check">
-                <InputCheckbox id="deviceName" @bind-Value="_chosedDeviceName"></InputCheckbox>
-                <label class="form-check-label" for="deviceName">
-                    Device Name
-                </label>                
-            </div>
-        </li>
-        <li>
-            <div class="form-check">
-                <InputCheckbox id="deviceSerialNumber" @bind-Value="_chosedSerialNumber"></InputCheckbox>
-                <label class="form-check-label" for="deviceSerialNumber">
-                    Serial Number
-                </label>                
-            </div>
-        </li>
-        <li>
-            <div class="form-check">
-                <InputCheckbox id="deviceMacAdrress" @bind-Value="_chosedMacAdrress"></InputCheckbox>
-                <label class="form-check-label" for="deviceMacAdrress">
-                    Mac Adrress
-                </label>
-            </div>
-        </li>
-        <li>
-            <div class="form-check">
-                <InputCheckbox id="deviceID" @bind-Value="_deviceID"></InputCheckbox>
-                <label class="form-check-label" for="deviceID">
-                    Device ID
-                </label>
-            </div>
-        </li>
-        <li>
-            <div class="form-check">
-                <InputCheckbox id="deviceModelNumber" @bind-Value="_chosedDeviceModelNumber"></InputCheckbox>
-                <label class="form-check-label" for="deviceModelNumber">
-                    Model Number
-                </label>
-            </div>
-        </li>
-        <li>
-            <div class="form-check">
-                <InputCheckbox id="deviceWarrantyEnd" @bind-Value="_chosedDeviceWarrantyExpiration"></InputCheckbox>
-                <label class="form-check-label" for="deviceWarrantyEnd">
-                    Warranty Expiration
-                </label>
-            </div>
-        </li>
-    </ol>
-    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Details Qr Code</Button>
+<EditForm Model="@selectedDeviceProfile" Context="editContext" OnSubmit="HandleQrCode">
+    <label class="form-label">Choose Device</label>
+    <InputSelect @bind-Value="_chosedDeviceID">
+        <option selected disabled value="-1">Select Device...</option>
+        @foreach (var device in DataService.CurrentUser.GetAllDevices())
+        {
+            <option value="@device.DeviceID">@device.DeviceName</option>
+        }
+    </InputSelect>
+    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
 </EditForm>
 <br />
 <br/>
@@ -94,10 +45,13 @@
     <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
 </EditForm>
 @code {
-
-    private DeviceProfile deviceProfile { get; set; } = new();
+    private DeviceProfile selectedDeviceProfile { get; set; } = new();
     private WifiModel wifiModel { get; set; } = new();
-    private int _chosedDeviceID { get; set; }
+    private EditContext EditContext;
+    [Parameter]
+    public int _chosedDeviceID { get; set; }
+    [Parameter]
+    public UserProfile currentUser { get; set; } = new();
     private bool _chosedSerialNumber { get; set; }
     private bool _chosedDeviceName { get; set; }
     private bool _chosedMacAdrress { get; set; }
@@ -106,7 +60,9 @@
     private bool _chosedDeviceWarrantyExpiration { get; set; }
     private string? _wifiName { get; set; }
     private string? _wifiPassword { get; set; }
-
+    private string devicesSerialNumber { get;set;} =  String.Empty;
+    private string deviceID { get; set; } = String.Empty;
+    private string saveQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
     public class WifiModel
     {
         private string _wifiName ="";
@@ -124,7 +80,21 @@
             get { return _wifiPassword; }
             set { _wifiPassword = value; }
         }
+    }    
+
+    private void SetselectedDeviceProfile(int deviceID)
+    {
+        selectedDeviceProfile = DataService.GetDeviceById(deviceID);
     }
 
 
+
+
+    private void HandleQrCode(EditContext editContext)
+    {
+        selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);        
+        currentUser = DataService.CurrentUser;
+        // string QrCodeUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
+        Logic.CreateQrCodeLinkToDevice(selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), saveQRCodeLink);
+    }
 }
