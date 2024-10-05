@@ -144,9 +144,9 @@ namespace MyHome
         {
             //HttpRequest request = HttpContext.Current.Request;
             //Uri pageUri = new Uri(request.Url, "/ThePageName");
-            Url absoluteUrl = new Url("https://xf23m0jf-7211.euw.devtunnels.ms/");
+            Url absoluteUrl = new Url("https://9kbdt2f4-7211.euw.devtunnels.ms");
             //Url qrCodeLink = new Url($"{absoluteUrl}mdetails/{userID}/{deviceID}");
-            Url qrCodeLink = new Url($"{absoluteUrl}mdetails");
+            Url qrCodeLink = new Url($"{absoluteUrl}/mdetails/{userID}/{deviceID}");
             string payload = qrCodeLink.ToString();
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
