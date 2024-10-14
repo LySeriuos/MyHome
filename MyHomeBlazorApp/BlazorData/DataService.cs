@@ -1,6 +1,8 @@
 ﻿using BlazorBootstrap;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Connections.Features;
+using Microsoft.JSInterop;
+using My_Home;
 using My_Home.Models;
 using MyHome;
 using MyHome.Models;
@@ -12,6 +14,7 @@ using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 
 namespace MyHomeBlazorApp.BlazorData
@@ -253,6 +256,17 @@ namespace MyHomeBlazorApp.BlazorData
                 }
             }
             return currentDevice;
+        }
+
+        public async void Navigate(int deviceID, IJSRuntime jSRuntime)
+        {
+            DeviceProfile currentDevice = GetDeviceById(deviceID);
+            var query = new Dictionary<string, string>
+            {
+            { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
+        };
+            string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(Program.Constants.BASE_API_URL, query);
+            await jSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
         }
 
         #endregion

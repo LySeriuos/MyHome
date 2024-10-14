@@ -77,7 +77,7 @@
                 <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
                 <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
                 <TemplateColumn Title="Manual">
-                    <Button class="btn-sm btn btn-outline-info" @onclick="() => Navigate(context.DeviceID)">Manual</Button>
+                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context.DeviceID, JSRuntime)">Manual</Button>
                 </TemplateColumn>
             </QuickGrid>
         </div>
@@ -266,26 +266,16 @@
         set { currentDevice.DeviceName = value; }
     }
 
-    public class ManualLinkApiService
-    {
-        private const string BaseApiUrl = "https://www.google.com/search?";
-    }
-
-    public static class QueryStringHelper
-    {
-
-    }
-
-    private async void Navigate(int deviceID)
-    {
-        currentDevice = DataService.GetDeviceById(deviceID);
-        var query = new Dictionary<string, string>
-    {
-            { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
-        };
-        string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
-        await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
-    }
+    // private async void Navigate(int deviceID)
+    // {
+    //     currentDevice = DataService.GetDeviceById(deviceID);
+    //     var query = new Dictionary<string, string>
+    // {
+    //         { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
+    //     };
+    //     string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
+    //     await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
+    // }
 
     private Stream GetFileStream()
     {

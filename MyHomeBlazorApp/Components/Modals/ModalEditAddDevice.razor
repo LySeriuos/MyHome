@@ -2,7 +2,7 @@
 @using MyHome;
 @using MyHomeBlazorApp.Pages
 @inject BlazorData.DataService DataService
-
+@inject IJSRuntime JSRuntime
 
 
 <Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
@@ -74,8 +74,8 @@
                 <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
                     Manual Link
                 </label>
-                <div class="col-sm-8">
-                    <InputText id="deviceManualBookLink" @bind-Value="CurrentDevice.ManualBookLink" placeholder="Device Manual Book Link" />
+                <div class="col-sm-8">                    
+                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice.DeviceID, JSRuntime)">Manual</Button>
                 </div>
             </div>
             <div class="row">

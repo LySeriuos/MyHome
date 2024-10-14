@@ -14,6 +14,7 @@ namespace MyHomeBlazorApp
             public const string XML_DATA_PATH = @"C:\Temp\usersListTestData111.xml";
             public const string SAVE_QR_CODE_PATH = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
             public const string SAVE_UPLOADED_FILES = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\UploadedFiles\\";
+            public const string BASE_API_URL = "https://www.google.se/search?q=";
         }
         public static void Main(string[] args)
         {
