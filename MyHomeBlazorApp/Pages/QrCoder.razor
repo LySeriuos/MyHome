@@ -3,18 +3,19 @@
 @using MyHome.Models;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
+@using static QRCoder.PayloadGenerator
 @inject BlazorData.DataService DataService
 
 
 <h3>QrCoder</h3>
 
 <p>@_chosedDeviceID</p>
-<p>@selectedDeviceProfile.DeviceID</p>
+<p>@_selectedDeviceProfile.DeviceID</p>
 
 
 <h5>Generate link to Device QrCode </h5>
 
-<EditForm Model="@selectedDeviceProfile" Context="editContext" OnSubmit="HandleQrCode">
+<EditForm Model="@_selectedDeviceProfile" Context="editDeviceContext" OnSubmit="HandleQrCode">
     <label class="form-label">Choose Device</label>
     <InputSelect @bind-Value="_chosedDeviceID">
         <option selected disabled value="-1">Select Device...</option>
@@ -28,7 +29,7 @@
 <br />
 <br/>
 <h5>Create Wifi Sharing Qr Code</h5>
-<EditForm Model="wifiModel">  
+<EditForm Model="wifiModel" Context="editWifiContext" OnSubmit="HandleWifiSharingQrCode">  
         <div>
             <label class="form-check-label" for="wifiName">
                 Wifi Name
@@ -45,24 +46,18 @@
     <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
 </EditForm>
 @code {
-    private DeviceProfile selectedDeviceProfile { get; set; } = new();
+    private DeviceProfile _selectedDeviceProfile { get; set; } = new();
     private WifiModel wifiModel { get; set; } = new();
-    private EditContext EditContext;
+    private EditContext EditDeviceContext;
+    private EditContext EditWifiContext;
     [Parameter]
     public int _chosedDeviceID { get; set; }
     [Parameter]
     public UserProfile currentUser { get; set; } = new();
-    private bool _chosedSerialNumber { get; set; }
-    private bool _chosedDeviceName { get; set; }
-    private bool _chosedMacAdrress { get; set; }
-    private bool _deviceID { get; set; }
-    private bool _chosedDeviceModelNumber { get; set; }
-    private bool _chosedDeviceWarrantyExpiration { get; set; }
     private string? _wifiName { get; set; }
     private string? _wifiPassword { get; set; }
-    private string devicesSerialNumber { get;set;} =  String.Empty;
     private string deviceID { get; set; } = String.Empty;
-    private string saveQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
+    private string savedQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
     public class WifiModel
     {
         private string _wifiName ="";
@@ -82,19 +77,24 @@
         }
     }    
 
-    private void SetselectedDeviceProfile(int deviceID)
+    private void SetSelectedDeviceProfile(int deviceID)
     {
-        selectedDeviceProfile = DataService.GetDeviceById(deviceID);
+        _selectedDeviceProfile = DataService.GetDeviceById(deviceID);
     }
-
-
 
 
     private void HandleQrCode(EditContext editContext)
     {
-        selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);        
+        _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);        
         currentUser = DataService.CurrentUser;
         // string QrCodeUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
-        Logic.CreateQrCodeLinkToDevice(selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), saveQRCodeLink);
+        Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), savedQRCodeLink);
     }
+
+    private void HandleWifiSharingQrCode (EditContext editContext)
+    {        
+        Logic.CreateWifiSharingQrCode(_wifiName, _wifiPassword, savedQRCodeLink);
+    }
+
+    
 }

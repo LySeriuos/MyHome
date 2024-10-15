@@ -139,20 +139,32 @@ namespace MyHome
             qrCodeImage.Save(saveQrCodeLink);
 #pragma warning restore CA1416 // Validate platform compatibility
         }
-        //public static System.Web.HttpContext Current { get; set; }
-        public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string saveQrCodeLink)
+
+        
+        public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string savedQrCodeLink)
         {
-            //HttpRequest request = HttpContext.Current.Request;
-            //Uri pageUri = new Uri(request.Url, "/ThePageName");
+            // This is used for test on local environment, new Url every time visual studio started. 
             Url absoluteUrl = new Url("https://9kbdt2f4-7211.euw.devtunnels.ms");
             //Url qrCodeLink = new Url($"{absoluteUrl}mdetails/{userID}/{deviceID}");
-            Url qrCodeLink = new Url($"{absoluteUrl}/mdetails/{userID}/{deviceID}");
-            string payload = qrCodeLink.ToString();
+            Url qrCodeUrl = new Url($"{absoluteUrl}/mdetails/{userID}/{deviceID}");
+            string generatedQrCodeLink = qrCodeUrl.ToString();
+            QrCodeGenerator(generatedQrCodeLink, savedQrCodeLink);
+        }
+
+        public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
+        {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            qrCodeImage.Save(saveQrCodeLink);
+            qrCodeImage.Save(savedQrCodeLink);
+        }
+
+        public static void CreateWifiSharingQrCode(string wifiName, string wifiPasswrod, string savedQrCodeLink)
+        {
+            WiFi wifiQrCodeGenerator = new WiFi($"{wifiName}", $"{ wifiName }", WiFi.Authentication.WPA);
+            string generatedWifiQrCodeLink = wifiQrCodeGenerator.ToString();
+            QrCodeGenerator(generatedWifiQrCodeLink, savedQrCodeLink);            
         }
 
         /// <summary>
