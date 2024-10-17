@@ -3,6 +3,7 @@
 @using MyHome.Models;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
+@using System.ComponentModel.DataAnnotations
 @using static QRCoder.PayloadGenerator
 @inject BlazorData.DataService DataService
 
@@ -27,55 +28,62 @@
     <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
 </EditForm>
 <br />
-<br/>
+<br />
 <h5>Create Wifi Sharing Qr Code</h5>
-<EditForm Model="wifiModel" Context="editWifiContext" OnSubmit="HandleWifiSharingQrCode">  
-        <div>
-            <label class="form-check-label" for="wifiName">
-                Wifi Name
-            </label>
-            <InputText id="wifiName" @bind-Value="_wifiName"></InputText>
-        </div>    
-        <div>
-            <label class="form-check-label" for="wifiPassword">
-                Wifi Pasword
-            </label>
-            <InputText id="wifiPassword" @bind-Value="_wifiPassword"></InputText>
-        </div>
-        <br />
+<EditForm Model="wifiModel" Context="editWifiContext" OnSubmit="HandleWifiSharingQrCode">
+    <DataAnnotationsValidator />
+    <div>
+        <label class="form-check-label" for="wifiName">
+            Wifi Name
+        </label>
+        <InputText id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
+        <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
+    </div>
+    <div>
+        <label class="form-check-label" for="wifiPassword">
+            Wifi Pasword
+        </label>
+        <InputText type="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+        <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
+    </div>
+
+    <br />
     <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
 </EditForm>
 @code {
     private DeviceProfile _selectedDeviceProfile { get; set; } = new();
-    private WifiModel wifiModel { get; set; } = new();
-    private EditContext EditDeviceContext;
-    private EditContext EditWifiContext;
+    private WifiModel wifiModel = new();
+    private EditContext editDeviceContext;
+    private EditContext editWifiContext;
     [Parameter]
     public int _chosedDeviceID { get; set; }
     [Parameter]
     public UserProfile currentUser { get; set; } = new();
-    private string? _wifiName { get; set; }
-    private string? _wifiPassword { get; set; }
     private string deviceID { get; set; } = String.Empty;
     private string savedQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
+    bool valid;
+
     public class WifiModel
     {
-        private string _wifiName ="";
 
+        private string _wifiName = "";
+        [Required(ErrorMessage = "Wifi Name is mandatory")]
+        [MinLength(4)]
         public string WifiName
         {
             get { return _wifiName; }
             set { _wifiName = value; }
         }
 
-        private string _wifiPassword = "";        
-
+        private string _wifiPassword = "";
+        [Required(ErrorMessage = "Password is mandatory")]
+        [MinLength(8)]
         public string WifiPassword
         {
             get { return _wifiPassword; }
             set { _wifiPassword = value; }
         }
-    }    
+    }
 
     private void SetSelectedDeviceProfile(int deviceID)
     {
@@ -85,16 +93,40 @@
 
     private void HandleQrCode(EditContext editContext)
     {
-        _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);        
+        _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
         currentUser = DataService.CurrentUser;
         // string QrCodeUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
         Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), savedQRCodeLink);
     }
 
-    private void HandleWifiSharingQrCode (EditContext editContext)
-    {        
-        Logic.CreateWifiSharingQrCode(_wifiName, _wifiPassword, savedQRCodeLink);
+    private void HandleWifiSharingQrCode(EditContext editWifiContext)
+    {
+        valid = editWifiContext.Validate();
+
+        if (valid == true)
+        {
+            valid = editWifiContext.Validate();
+            Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, savedQRCodeLink);
+        }
+        else
+        {
+            return;
+        }
     }
 
-    
+
+
+    protected override void OnInitialized()
+    {
+        WifiModel wifiModel = new();
+        editWifiContext = new(wifiModel);
+        base.OnInitializedAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            editWifiContext.Validate();
+    }
+
 }

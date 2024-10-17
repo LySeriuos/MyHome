@@ -160,9 +160,9 @@ namespace MyHome
             qrCodeImage.Save(savedQrCodeLink);
         }
 
-        public static void CreateWifiSharingQrCode(string wifiName, string wifiPasswrod, string savedQrCodeLink)
+        public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword, string savedQrCodeLink)
         {
-            WiFi wifiQrCodeGenerator = new WiFi($"{wifiName}", $"{ wifiName }", WiFi.Authentication.WPA);
+            WiFi wifiQrCodeGenerator = new WiFi($"{wifiName}", $"{ wifiPassword }", WiFi.Authentication.WPA);
             string generatedWifiQrCodeLink = wifiQrCodeGenerator.ToString();
             QrCodeGenerator(generatedWifiQrCodeLink, savedQrCodeLink);            
         }
