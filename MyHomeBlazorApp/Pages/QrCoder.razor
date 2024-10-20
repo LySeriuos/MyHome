@@ -43,7 +43,9 @@
         <label class="form-check-label" for="wifiPassword">
             Wifi Pasword
         </label>
-        <InputText type="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+        <InputText type="password" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+        <span class=""><i class="bi bi-eye" style="font-size: 1.2rem; color: black;"></i></span>
+        
         <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
     </div>
 

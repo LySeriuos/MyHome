@@ -8,7 +8,8 @@
     <None Include="wwwroot\images\user-svgrepo-com.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Blazor.Bootstrap" Version="1.10.5" />
+    <PackageReference Include="Blazor.Bootstrap" Version="3.0.0" />
+    <PackageReference Include="bootstrap" Version="5.3.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.7" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
