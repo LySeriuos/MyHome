@@ -43,15 +43,24 @@
         <label class="form-check-label" for="wifiPassword">
             Wifi Pasword
         </label>
-        <InputText type="password" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
-        <span class=""><i class="bi bi-eye" style="font-size: 1.2rem; color: black;"></i></span>
-        
+        <InputText type="@TxtType"  name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+        <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
+
         <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
     </div>
 
     <br />
     <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
 </EditForm>
+
+<style>
+    bi.bi-eye:before {
+        content: '\e345';
+        font-family: e-icons;
+        font-size: 13px;
+    }
+
+</style>
 @code {
     private DeviceProfile _selectedDeviceProfile { get; set; } = new();
     private WifiModel wifiModel = new();
@@ -86,6 +95,25 @@
             set { _wifiPassword = value; }
         }
     }
+
+    public string TxtType = "password";
+    public string changedClass = "bi bi-eye-slash";
+    public void ShowPassword()
+    {
+        if (this.TxtType == "password")
+        {
+            this.TxtType = "text";
+            changedClass = "bi bi-eye";
+        }
+        else
+        {
+            this.TxtType = "password";
+            changedClass = "bi bi-eye-slash";
+        }
+    }
+
+    
+
 
     private void SetSelectedDeviceProfile(int deviceID)
     {
