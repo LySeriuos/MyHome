@@ -5,7 +5,7 @@
 @inject IJSRuntime JSRuntime
 
 
-<Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
+<Modal @ref="refModalEditAddDevice" Title="Edit Device Details" Fullscreen="ModalFullscreen.Always">
     <BodyTemplate>
         @* <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext"/> *@
         <EditForm Model="@CurrentDevice" OnSubmit="DeviceFormSubmitted">
@@ -74,7 +74,7 @@
                 <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
                     Manual Link
                 </label>
-                <div class="col-sm-8">                    
+                <div class="col-sm-8">
                     <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice.DeviceID, JSRuntime)">Manual</Button>
                 </div>
             </div>
@@ -114,6 +114,7 @@
             <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
         </EditForm>
+
     </BodyTemplate>
 </Modal>
 
@@ -121,10 +122,23 @@
 
     [Parameter]
     public DeviceProfile? CurrentDevice { get; set; }
-    private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
-    private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     [Parameter]
     public UserProfile? CurrentUser { get; set; }
+    [Parameter]
+    public int RealEsatateIdToAddDevice
+    {
+        get => realEstateToAddDevice.RealEstateID;
+        set
+        {
+            realEstateToAddDevice.RealEstateID = value;
+        }
+    }
+    [Parameter]
+    public bool IsModal { get; set; } = true;
+    [Parameter]
+    public ModalFullscreen Fullscreen {get;set;}
+    private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
+    private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     private EditContext? editContext;
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
@@ -134,12 +148,6 @@
     bool deviceIsAssignedToRealEstate;
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
-    [Parameter]
-    public int RealEsatateIdToAddDevice
-    {
-        get => realEstateToAddDevice.RealEstateID;
-        set { realEstateToAddDevice.RealEstateID = value; }
-    }
 
     protected override void OnInitialized()
     {
@@ -214,8 +222,8 @@
             DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, RealEsatateIdToAddDevice, CurrentDevice);
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == true)
-        {            
-            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);            
+        {
+            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);
         }
 
         DataService.SaveUpdatedObject();
