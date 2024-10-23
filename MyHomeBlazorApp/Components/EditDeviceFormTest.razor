@@ -108,7 +108,14 @@
                              DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
         </NextPreviuosButtons>
     }
-    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+    @if (changedDeviceListData != null)
+    {
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+    }
+    else
+    {
+        <Button Color="ButtonColor.Primary" Disabled Type="ButtonType.Submit">Save changes</Button>
+    }
 </EditForm>
 
 @code {
@@ -191,6 +198,16 @@
             showErrorMessageVisible = false;
         }
         return chosedRealEstateIsValid;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //Change thisi to proper action
+            changedDeviceListData += OnInitialized;
+        }
+        base.OnAfterRender(firstRender);
     }
 
     private void DeviceFormSubmitted(EditContext editContext)
