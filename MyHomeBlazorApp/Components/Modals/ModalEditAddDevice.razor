@@ -5,7 +5,7 @@
 @inject IJSRuntime JSRuntime
 
 
-<Modal @ref="refModalEditAddDevice" Title="Edit Device Details" Fullscreen="ModalFullscreen.Always">
+<Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
     <BodyTemplate>
         @* <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext"/> *@
         <EditForm Model="@CurrentDevice" OnSubmit="DeviceFormSubmitted">

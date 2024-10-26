@@ -193,6 +193,9 @@
     </ModalEditAddDevice>
 </div>
 <div>
+    @* <Modal @ref="refModalEditAddDeviceTest" /> *@
+</div>
+<div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
                               CurrentDevice="@currentDevice"
                               DevicesListAsQueryable="@_devicesListAsQueryable">
@@ -228,6 +231,10 @@
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
                            ObjectName="@_deletedObjectName">
     </ModalDeleteSuccessful>
+</div>
+<div>
+    <Modal @ref="modal" />
+    <Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button>
 </div>
 
 
@@ -265,6 +272,15 @@
     {
         get => currentDevice.DeviceName;
         set { currentDevice.DeviceName = value; }
+    }
+
+    private Modal modal = default!;
+    private async Task ShowEmployeeComponent()
+    {
+        currentDevice = DataService.GetDeviceById(2);
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("Device", currentDevice);
+        await modal.ShowAsync<AddEditDeviceComponent>(title: "Device Details", parameters: parameters);
     }
 
     // private async void Navigate(int deviceID)
