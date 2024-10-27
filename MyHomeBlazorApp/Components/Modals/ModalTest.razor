@@ -1,10 +1,30 @@
-﻿<Modal @ref="modal" />
-<Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button>
+﻿
+@if(Opened)
+{
+<Modal @ref="refModal" Title="@Title">
+    <BodyTemplate>
+            @BodyContent
+    </BodyTemplate>
+    <FooterTemplate>
+            @FooterContent
+    </FooterTemplate>
+</Modal>
+}
+
+
 @code {
-    private Modal modal = default!;
-    private async Task ShowEmployeeComponent()
+    [Parameter]
+    public Modal refModal { get; set; } = default!;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? BodyContent { get; set; }
+    [Parameter] public RenderFragment? FooterContent { get; set; }
+    [Parameter] public bool Opened { get; set; }
+    [Parameter] public EventCallback CloseButtonClicked { get; set; }
+    
+
+    private void CloseDialog()
     {
-        var parameters = new Dictionary<string, object>();
-        await modal.ShowAsync<AddEditDeviceComponent>(title: "Device Details", parameters: parameters);
+        Opened = false;
+        CloseButtonClicked.InvokeAsync();
     }
 }

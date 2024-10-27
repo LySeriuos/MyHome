@@ -108,7 +108,7 @@
                     {
                         <Button class="button-51" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
                     }
-                    
+
                 </TemplateColumn>
                 <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
                 @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
@@ -233,7 +233,13 @@
     </ModalDeleteSuccessful>
 </div>
 <div>
-    <Modal @ref="modal" />
+    
+    <Modal @ref="modal">
+        <FooterTemplate>
+        <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+        </FooterTemplate>
+    </Modal>
     <Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button>
 </div>
 
@@ -259,6 +265,7 @@
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
     private DeviceProfile currentDevice { get; set; } = new();
+    private DeviceProfile CurrentDevice { get; set; } = new();
     private EditDeviceFormTest refeditDeviceFormTest;
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
@@ -277,10 +284,22 @@
     private Modal modal = default!;
     private async Task ShowEmployeeComponent()
     {
-        currentDevice = DataService.GetDeviceById(2);
+        currentUser = DataService.Users[1];
+        CurrentDevice = DataService.GetDeviceById(2);
         var parameters = new Dictionary<string, object>();
-        parameters.Add("Device", currentDevice);
-        await modal.ShowAsync<AddEditDeviceComponent>(title: "Device Details", parameters: parameters);
+        parameters.Add("CurrentDevice", CurrentDevice);
+        parameters.Add("CurrentUser", currentUser);
+        await modal.ShowAsync<AddEditDeviceTest>(title: "Device Details", parameters: parameters);
+    }
+
+    public async Task OnHideModalEditDeviceClick()
+    {
+        await modal.HideAsync();
+    }
+
+    public async Task OnShowModalEditDeviceClick()
+    {
+        await modal.ShowAsync();
     }
 
     // private async void Navigate(int deviceID)
@@ -315,7 +334,7 @@
             else
             {
                 fileExists = true;
-            }            
+            }
         }
         return fileExists;
     }
@@ -324,7 +343,7 @@
     {
         // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
         List<DeviceProfile> deviceProfiles = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
-        foreach(DeviceProfile device in deviceProfiles)
+        foreach (DeviceProfile device in deviceProfiles)
         {
             if (!System.IO.File.Exists(device.DeviceWarranty.ReceiptLink))
             {
@@ -340,7 +359,7 @@
     private async Task NavigateToExtraWarrantyFile(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
-        string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;        
+        string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
         var file = Path.GetFileName(currentWarrantyReceiptLink);
         string fileUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
