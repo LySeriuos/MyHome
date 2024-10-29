@@ -237,11 +237,13 @@
     <Modal @ref="modal">
         <FooterTemplate>
         <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
-        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+        <Button Color="ButtonColor.Primary"  @onclick="SaveChanges(true)">Save changes</Button>
         </FooterTemplate>
     </Modal>
     <Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button>
 </div>
+
+
 
 
 <!--#endregion -->
@@ -270,6 +272,7 @@
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
     string LastSubmitResult = "";
+    public EventCallback<bool> SaveChanges { get; set; }
 
     IQueryable<DeviceProfile> _devicesListAsQueryable;
     IQueryable<RealEstate> _realEstatesListAsQueryable;
@@ -384,12 +387,12 @@
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
-
             refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
             _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
             refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+            
         }
         base.OnAfterRender(firstRender);
     }

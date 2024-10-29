@@ -109,8 +109,8 @@
                              DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
         </NextPreviuosButtons>
     }
-    @* <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
-    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button> *@
+    @* <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button> *@
+    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
 </EditForm>
 
 @code {
@@ -133,6 +133,8 @@
     public bool IsModal { get; set; } = true;
     [Parameter]
     public ModalFullscreen Fullscreen { get; set; }
+    [Parameter]
+    public EventCallback<bool> SaveClicked { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     private EditContext? editContext;
