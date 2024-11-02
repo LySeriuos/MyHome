@@ -16,7 +16,8 @@
     [Parameter]
     public UserProfile CurrentUser { get; set; } = new();
     public Action SaveChanges;
-    
+    [Parameter]
+    public EventCallback<bool> ButtonPressedOk { get; set; }
     private Modal modal = default!;
     private async Task ShowEmployeeComponent()
     {        

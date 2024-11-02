@@ -233,15 +233,20 @@
     </ModalDeleteSuccessful>
 </div>
 <div>
-    
+
     <Modal @ref="modal">
         <FooterTemplate>
-        <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
-        <Button Color="ButtonColor.Primary"  @onclick="SaveChanges(true)">Save changes</Button>
+            <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
+            <Button Color="ButtonColor.Primary">Save changes</Button>
         </FooterTemplate>
     </Modal>
     <Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button>
+    
 </div>
+<div>
+    @message11
+</div>
+
 
 
 
@@ -257,6 +262,8 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
+    [Parameter]
+    public string TestStringToPass { get; set; }
     private int TabID = 0;
     private int selectedRealEstateID = -1;
     private string _chooseOptionValue = "Choose Real Estate";
@@ -272,12 +279,11 @@
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
     string LastSubmitResult = "";
-    public EventCallback<bool> SaveChanges { get; set; }
-
-    IQueryable<DeviceProfile> _devicesListAsQueryable;
-    IQueryable<RealEstate> _realEstatesListAsQueryable;
-    IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
-
+    private string navToEditForm { get; set; }
+    private IQueryable<DeviceProfile> _devicesListAsQueryable;
+    private IQueryable<RealEstate >_realEstatesListAsQueryable;
+    private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
+    private string? message11;
     public string deviceName
     {
         get => currentDevice.DeviceName;
@@ -290,11 +296,20 @@
         currentUser = DataService.Users[1];
         CurrentDevice = DataService.GetDeviceById(2);
         var parameters = new Dictionary<string, object>();
+        parameters.Add("OnClickCallback", EventCallback.Factory.Create(this, ShowDTMessage));
         parameters.Add("CurrentDevice", CurrentDevice);
         parameters.Add("CurrentUser", currentUser);
-        await modal.ShowAsync<AddEditDeviceTest>(title: "Device Details", parameters: parameters);
+        await modal.ShowAsync<AddEditDeviceTest>
+            (title: "Device Details", parameters: parameters);
     }
 
+    // private async Task IncrementCount()
+    // {
+    //     currentCount++;
+    //     if (currentCount % 3 == 0)
+    //         await OnMultipleOfThree.InvokeAsync(currentCount);
+    // }
+    public void ShowDTMessage(MouseEventArgs e) => message = $"The current DT is: {DateTime.Now}.";
     public async Task OnHideModalEditDeviceClick()
     {
         await modal.HideAsync();
@@ -345,7 +360,8 @@
     private void CheckIfFileExsist()
     {
         // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
-        List<DeviceProfile> deviceProfiles = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+        List<DeviceProfile>
+            deviceProfiles = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
         foreach (DeviceProfile device in deviceProfiles)
         {
             if (!System.IO.File.Exists(device.DeviceWarranty.ReceiptLink))
@@ -392,7 +408,7 @@
             refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
-            
+
         }
         base.OnAfterRender(firstRender);
     }
