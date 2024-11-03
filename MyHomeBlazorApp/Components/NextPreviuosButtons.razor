@@ -7,10 +7,18 @@
 {
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
 }
+else
+{
+    <Button style="margin:5px" Disabled Color="ButtonColor.Primary" @onclick="OnModalDevicePreviuos">Previuos</Button>
+}
 
 @if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.Last().DeviceID)
 {
     <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
+}
+else
+{
+    <Button style="margin:5px" Disabled Color="ButtonColor.Primary" @onclick="OnModalDeviceNext">Next</Button>
 }
 
 @code{

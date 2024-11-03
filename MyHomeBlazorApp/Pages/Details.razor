@@ -58,7 +58,7 @@
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEdiFormInModal(context.DeviceID)">Edit</Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
                     </div>
                 </TemplateColumn>
@@ -85,6 +85,7 @@
     <TabPage Text="Devices Warranties">
         <div class="grid">
             <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
+                
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
@@ -234,18 +235,14 @@
 </div>
 <div>
 
-    <Modal @ref="modal">
+    <Modal @ref="refmodal">
         <FooterTemplate>
             <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
-            <Button Color="ButtonColor.Primary">Save changes</Button>
+            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" form="refAddEditDeviceTest">Save changes</Button>
         </FooterTemplate>
     </Modal>
-    <Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button>
-    
 </div>
-<div>
-    @message11
-</div>
+
 
 
 
@@ -262,8 +259,7 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
-    [Parameter]
-    public string TestStringToPass { get; set; }
+    
     private int TabID = 0;
     private int selectedRealEstateID = -1;
     private string _chooseOptionValue = "Choose Real Estate";
@@ -274,61 +270,39 @@
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
     private DeviceProfile currentDevice { get; set; } = new();
-    private DeviceProfile CurrentDevice { get; set; } = new();
-    private EditDeviceFormTest refeditDeviceFormTest;
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
-    string LastSubmitResult = "";
-    private string navToEditForm { get; set; }
     private IQueryable<DeviceProfile> _devicesListAsQueryable;
     private IQueryable<RealEstate >_realEstatesListAsQueryable;
     private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
-    private string? message11;
     public string deviceName
     {
         get => currentDevice.DeviceName;
         set { currentDevice.DeviceName = value; }
     }
 
-    private Modal modal = default!;
-    private async Task ShowEmployeeComponent()
+    private Modal refmodal = default!;
+    private async Task ShowDeviceEdiFormInModal(int deviceID)
     {
-        currentUser = DataService.Users[1];
-        CurrentDevice = DataService.GetDeviceById(2);
+        currentUser = DataService.CurrentUser;
+        currentDevice = DataService.GetDeviceById(deviceID);
         var parameters = new Dictionary<string, object>();
-        parameters.Add("OnClickCallback", EventCallback.Factory.Create(this, ShowDTMessage));
-        parameters.Add("CurrentDevice", CurrentDevice);
-        parameters.Add("CurrentUser", currentUser);
-        await modal.ShowAsync<AddEditDeviceTest>
-            (title: "Device Details", parameters: parameters);
-    }
 
-    // private async Task IncrementCount()
-    // {
-    //     currentCount++;
-    //     if (currentCount % 3 == 0)
-    //         await OnMultipleOfThree.InvokeAsync(currentCount);
-    // }
-    public void ShowDTMessage(MouseEventArgs e) => message = $"The current DT is: {DateTime.Now}.";
+        parameters.Add("CurrentDevice", currentDevice);
+        parameters.Add("CurrentUser", currentUser);
+        parameters.Add("refAddEditDeviceTest", addEditDeviceTest);
+        await refmodal.ShowAsync<AddEditDeviceTest>
+            (title: "Device Details", parameters: parameters);
+    }    
+    
     public async Task OnHideModalEditDeviceClick()
     {
-        await modal.HideAsync();
+        await refmodal.HideAsync();
     }
 
-    public async Task OnShowModalEditDeviceClick()
-    {
-        await modal.ShowAsync();
-    }
-
-    // private async void Navigate(int deviceID)
+    // public async Task OnShowModalEditDeviceClick()
     // {
-    //     currentDevice = DataService.GetDeviceById(deviceID);
-    //     var query = new Dictionary<string, string>
-    // {
-    //         { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
-    //     };
-    //     string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
-    //     await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
+    //     await refmodal.ShowAsync();
     // }
 
     private Stream GetFileStream()
@@ -400,6 +374,7 @@
             refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
             refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
             refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
+            // addEditDeviceTest.changedDeviceListData += DeviceDataHasChanged;
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
@@ -430,6 +405,11 @@
     private ModalDeleteRealEstate refModalRealEstateDelete = default!;
     private ModalReassignDevices refModalReasignDevices = default!;
     private EditDeviceFormTest refEditTest;
+
+
+    private AddEditDeviceTest addEditDeviceTest = default!;
+
+
     //example
 
 
@@ -589,6 +569,7 @@
     {
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        
         CheckIfFileExsist();
         base.OnInitialized();
     }
@@ -653,5 +634,17 @@
     // {
     //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
     // }
+
+    // private async void Navigate(int deviceID)
+    // {
+    //     currentDevice = DataService.GetDeviceById(deviceID);
+    //     var query = new Dictionary<string, string>
+    // {
+    //         { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
+    //     };
+    //     string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
+    //     await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
+    // }
+
 }
 
