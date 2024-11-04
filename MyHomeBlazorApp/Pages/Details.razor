@@ -247,7 +247,6 @@
 
 
 
-
 <!--#endregion -->
 @code {
 
@@ -259,7 +258,7 @@
         get => selectedRealEstateID;
         set { selectedRealEstateID = value; }
     }
-    
+
     private int TabID = 0;
     private int selectedRealEstateID = -1;
     private string _chooseOptionValue = "Choose Real Estate";
@@ -290,11 +289,11 @@
 
         parameters.Add("CurrentDevice", currentDevice);
         parameters.Add("CurrentUser", currentUser);
-        parameters.Add("refAddEditDeviceTest", addEditDeviceTest);
+        parameters.Add("refAddEditDeviceTest", refAddEditDeviceTest);
         await refmodal.ShowAsync<AddEditDeviceTest>
             (title: "Device Details", parameters: parameters);
     }    
-    
+
     public async Task OnHideModalEditDeviceClick()
     {
         await refmodal.HideAsync();
@@ -375,6 +374,8 @@
             refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
             refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
             // addEditDeviceTest.changedDeviceListData += DeviceDataHasChanged;
+            
+            refAddEditDeviceTest.changedDeviceListData += DeviceDataHasChanged;
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
@@ -407,7 +408,7 @@
     private EditDeviceFormTest refEditTest;
 
 
-    private AddEditDeviceTest addEditDeviceTest = default!;
+    private AddEditDeviceTest refAddEditDeviceTest = new AddEditDeviceTest();
 
 
     //example

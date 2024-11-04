@@ -139,8 +139,8 @@
     [Parameter]
     public EventCallback<bool> SaveClicked { get; set; }
     public EventCallback OnClick { get; set; }
-    [Parameter]
-    public EditForm refAddEditDeviceTest { get; set; } = new();
+    [CascadingParameter]
+    public EditForm refAddEditDeviceTest { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     private EditContext? editContext;
