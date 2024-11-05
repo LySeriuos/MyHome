@@ -237,7 +237,7 @@
 
     <Modal @ref="refmodal">
         <FooterTemplate>
-            <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
+            <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClickModal">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" form="refAddEditDeviceTest">Save changes</Button>
         </FooterTemplate>
     </Modal>
@@ -280,7 +280,7 @@
         set { currentDevice.DeviceName = value; }
     }
 
-    private Modal refmodal = default!;
+    public Modal refmodal = default!;
     private async Task ShowDeviceEdiFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUser;
@@ -289,14 +289,19 @@
 
         parameters.Add("CurrentDevice", currentDevice);
         parameters.Add("CurrentUser", currentUser);
-        parameters.Add("refAddEditDeviceTest", refAddEditDeviceTest);
+        parameters.Add("refmodal", refmodal);
         await refmodal.ShowAsync<AddEditDeviceTest>
             (title: "Device Details", parameters: parameters);
     }    
 
-    public async Task OnHideModalEditDeviceClick()
+    // public async Task OnHideModalEditDeviceClick()
+    // {
+    //     await refmodal.HideAsync();
+    // }
+
+    public void OnHideModalEditDeviceClickModal()
     {
-        await refmodal.HideAsync();
+        refmodal.HideAsync();
     }
 
     // public async Task OnShowModalEditDeviceClick()
@@ -374,7 +379,7 @@
             refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
             refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
             // addEditDeviceTest.changedDeviceListData += DeviceDataHasChanged;
-            
+            refAddEditDeviceTest.closeTheModal += OnHideModalEditDeviceClickModal;
             refAddEditDeviceTest.changedDeviceListData += DeviceDataHasChanged;
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;

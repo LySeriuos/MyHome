@@ -139,7 +139,7 @@
     [Parameter]
     public EventCallback<bool> SaveClicked { get; set; }
     public EventCallback OnClick { get; set; }
-    [CascadingParameter]
+    [Parameter]
     public EditForm refAddEditDeviceTest { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
@@ -148,7 +148,8 @@
     private RealEstate realEstateToAddDevice { get; set; } = new();
     public Action? changedDeviceListData;
     public Action<bool> testOnAction { get; set; }
-
+    [Parameter]
+    public Modal refmodal { get; set; } = default!;
     public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
     private string? errorMessage;
     private bool chosedRealEstateIsValid;
@@ -156,7 +157,7 @@
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private string? message;
-
+    public Action closeTheModal{ get; set; }
 
     protected override void OnInitialized()
     {
@@ -171,7 +172,7 @@
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
     }
 
-    
+
 
     public void OnCallBack(EventArgs e)
     {
@@ -247,10 +248,12 @@
         }
 
         DataService.SaveUpdatedObject();
-        changedDeviceListData();
+        StateHasChanged();
+        // changedDeviceListData();
         realEstateToAddDevice = new();
         showErrorMessageVisible = false;
-        refModalEditAddDevice.HideAsync();
+        // closeTheModal();
+        refmodal.HideAsync();
     }
 
     // protected override void OnAfterRender(bool firstRender)
