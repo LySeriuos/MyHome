@@ -235,7 +235,7 @@
 </div>
 <div>
 
-    <Modal @ref="refmodal">
+    <Modal @ref="refModalComponent">
         <FooterTemplate>
             <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClickModal">Close</Button>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" form="refAddEditDeviceTest">Save changes</Button>
@@ -280,7 +280,7 @@
         set { currentDevice.DeviceName = value; }
     }
 
-    public Modal refmodal = default!;
+    public Modal refModalComponent = default!;
     private async Task ShowDeviceEdiFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUser;
@@ -289,25 +289,15 @@
 
         parameters.Add("CurrentDevice", currentDevice);
         parameters.Add("CurrentUser", currentUser);
-        parameters.Add("refmodal", refmodal);
-        await refmodal.ShowAsync<AddEditDeviceTest>
+        parameters.Add("refModalComponent", refModalComponent);
+        await refModalComponent.ShowAsync<AddEditDeviceTest>
             (title: "Device Details", parameters: parameters);
     }    
 
-    // public async Task OnHideModalEditDeviceClick()
-    // {
-    //     await refmodal.HideAsync();
-    // }
-
     public void OnHideModalEditDeviceClickModal()
     {
-        refmodal.HideAsync();
+        refModalComponent.HideAsync();
     }
-
-    // public async Task OnShowModalEditDeviceClick()
-    // {
-    //     await refmodal.ShowAsync();
-    // }
 
     private Stream GetFileStream()
     {
@@ -378,9 +368,6 @@
             refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
             refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
             refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
-            // addEditDeviceTest.changedDeviceListData += DeviceDataHasChanged;
-            refAddEditDeviceTest.closeTheModal += OnHideModalEditDeviceClickModal;
-            refAddEditDeviceTest.changedDeviceListData += DeviceDataHasChanged;
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
@@ -417,9 +404,6 @@
 
 
     //example
-
-
-
     // void SortByID()
     // {
     //     _devicesListAsQueryable = _devicesListAsQueryable.OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID);
@@ -514,8 +498,6 @@
         _deletedObjectName = currentDevice.DeviceName;
         await refModalConfirmDeviceDeletion.OnShowModalClick();
     }
-
-
 
     private async Task OnShowModalAddNewDevice()
     {

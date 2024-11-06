@@ -133,31 +133,21 @@
         }
     }
     [Parameter]
-    public bool IsModal { get; set; } = true;
-    [Parameter]
-    public ModalFullscreen Fullscreen { get; set; }
-    [Parameter]
-    public EventCallback<bool> SaveClicked { get; set; }
-    public EventCallback OnClick { get; set; }
-    [Parameter]
     public EditForm refAddEditDeviceTest { get; set; }
+    [Parameter]
+    public Modal refModalComponent { get; set; } = default!;
+
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     private EditContext? editContext;
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
-    public Action? changedDeviceListData;
-    public Action<bool> testOnAction { get; set; }
-    [Parameter]
-    public Modal refmodal { get; set; } = default!;
-    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
     private string? errorMessage;
     private bool chosedRealEstateIsValid;
     bool deviceIsAssignedToRealEstate;
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private string? message;
-    public Action closeTheModal{ get; set; }
 
     protected override void OnInitialized()
     {
@@ -172,21 +162,10 @@
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
     }
 
-
-
-    public void OnCallBack(EventArgs e)
-    {
-        if(OnClickCallback.HasDelegate == true)
-        {
-            DeviceFormSubmitted(editContext);
-        }
-    }
-
     private void RealEsatateIdToAddDeviceChanged()
     {
         showErrorMessageVisible = false;
-    }
-    public void ShowDTMessage(MouseEventArgs e) => message = $"The current DT is: {DateTime.Now}.";
+    }   
 
     private bool CheckIfCurrentDeviceIsAssignedToRealEstate()
     {
@@ -249,58 +228,10 @@
 
         DataService.SaveUpdatedObject();
         StateHasChanged();
-        // changedDeviceListData();
         realEstateToAddDevice = new();
         showErrorMessageVisible = false;
-        // closeTheModal();
-        refmodal.HideAsync();
+        refModalComponent.HideAsync();
     }
 
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         refAddEditDeviceTest.OnSubmit += DeviceFormSubmitted(editContext);
-
-    //     }
-    //     base.OnAfterRender(firstRender);
-    // }
-    // private void TestMethod()
-    // {
-    //     if (CurrentDevice.DeviceID == 0 && realEstateToAddDevice.RealEstateID == 0)
-    //     {
-    //         if (validDeviceForm != true)
-    //         {
-    //             validDeviceForm = editContext.Validate();
-    //         }
-    //         else
-    //         {
-    //             validDeviceForm = editContext.Validate();
-    //             if (validDeviceForm == true && chosedRealEstateIsValid == true)
-    //             {
-    //                 DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
-    //                 changedDeviceListData();
-    //                 realEstateToAddDevice.RealEstateID = 0;
-    //                 refModalEditAddDevice.HideAsync();
-    //             }
-    //         }
-    //     }
-    //     else if (CurrentDevice.DeviceID != 0 && CheckIfCurrentDeviceIsAssignedToRealEstate() == false)
-    //     {
-    //         DataService.SaveUpdatedObject();
-    //     }
-    //     else if (CurrentDevice.DeviceID != 0 && realEstateToAddDevice.RealEstateID != 0)
-    //     {
-    //         DataService.SaveUpdatedObject();
-    //     }
-    // }
-    // public async Task OnHideModalEditDeviceClick()
-    // {
-    //     await refModalEditAddDevice.HideAsync();
-    // }
-
-    // public async Task OnShowModalEditDeviceClick()
-    // {
-    //     await refModalEditAddDevice.ShowAsync();
-    // }
+    
 }
