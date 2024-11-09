@@ -1,0 +1,28 @@
+﻿@using BlazorBootstrap
+
+<Modal Title="@Title" @ref="_reusableModal">
+    <BodyTemplate>
+        <CascadingValue Value="this">
+            @ChildContent
+        </CascadingValue>
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="() => _reusableModal.HideAsync()">Close</Button>
+        <Button Color="ButtonColor.Primary" @onclick="SaveDataChanges">Save changes</Button>
+    </FooterTemplate>
+</Modal>
+
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+    public Action SaveDataChanges { get; set; }
+    private Modal _reusableModal { get; set; } = default!;
+    public async Task ShowAsync()
+    {
+        await _reusableModal.ShowAsync();
+    }    
+}
