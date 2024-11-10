@@ -244,12 +244,10 @@
 </div>
 
 <div>
-    <CustomReusableModal @ref="_reusableModal" Title="Edit Devíce Details">
-        <AddEditDeviceTest @ref="refAddEditDeviceTest"
-                           CurrentDevice="currentDevice"
+    <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
+        <AddEditDeviceTest CurrentDevice="currentDevice"
                            CurrentUser="currentUser"
-                           refModalComponent="_reusableModal"
-                           DataChangedEvent="DeviceListDataHasChangedTest"></AddEditDeviceTest>
+                           DataChangedEvent="DeviceListDataHasChangedTest"/>
     </CustomReusableModal>
 </div>
 
@@ -289,7 +287,6 @@
         get => currentDevice.DeviceName;
         set { currentDevice.DeviceName = value; }
     }
-    public AddEditDeviceTest? refAddEditDeviceTest { get; set; } = new();
     public CustomReusableModal _reusableModal = default!;
 
     private async Task ShowDeviceEdiFormInModal(int deviceID)
@@ -396,11 +393,6 @@
             refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
-
-            // refAddEditDeviceTest.LoadChanges += DeviceListDataHasChangedTest;
-
-
-
         }
         base.OnAfterRender(firstRender);
     }
