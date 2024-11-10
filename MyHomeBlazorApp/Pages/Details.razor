@@ -58,7 +58,7 @@
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEdiFormInModal(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)">Edit</Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
                     </div>
                 </TemplateColumn>
@@ -289,10 +289,17 @@
     }
     public CustomReusableModal _reusableModal = default!;
 
-    private async Task ShowDeviceEdiFormInModal(int deviceID)
+    private async Task ShowDeviceEditFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUser;
         currentDevice = DataService.GetDeviceById(deviceID); ;
+        await _reusableModal.ShowAsync();
+    }
+
+    private async Task OnShowModalAddNewDevice()
+    {
+        currentUser = DataService.CurrentUser;
+        currentDevice = new();
         await _reusableModal.ShowAsync();
     }
 
@@ -521,12 +528,12 @@
         await refModalConfirmDeviceDeletion.OnShowModalClick();
     }
 
-    private async Task OnShowModalAddNewDevice()
-    {
-        currentUser = DataService.CurrentUser;
-        currentDevice = new();
-        await refModalEditAddDevice.OnShowModalEditDeviceClick();
-    }
+    // private async Task OnShowModalAddNewDevice()
+    // {
+    //     currentUser = DataService.CurrentUser;
+    //     currentDevice = new();
+    //     await refModalEditAddDevice.OnShowModalEditDeviceClick();
+    // }
 
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {

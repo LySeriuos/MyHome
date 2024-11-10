@@ -85,7 +85,7 @@
             @* /////// *@
             <label class="form-label">Choose Real Estate</label>
             <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
-                <option selected disabled>Select Real Estate...</option>
+                <option selected value="0" disabled>Select Real Estate...</option>
                 @foreach (var realEstate in CurrentUser.RealEstates)
                 {
                     <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
@@ -111,11 +111,11 @@
                              DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
         </NextPreviuosButtons>
     }
-    @* <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button> *@
     @if (IncludeButtons)
     {
         <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
     }
+    <p>@realEstateToAddDevice.RealEstateID</p>
 </EditForm>
 
 @code {
@@ -124,7 +124,7 @@
     [Parameter]
     public UserProfile? CurrentUser { get; set; }
     [Parameter]
-    public EditForm refAddEditDeviceTest { get; set; }    
+    public EditForm refAddEditDeviceTest { get; set; }
     [CascadingParameter]
     public CustomReusableModal Parent { get; set; }
     [Parameter]
@@ -149,6 +149,7 @@
 
     private void Init()
     {
+        realEstateToAddDevice.RealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
         editContext = new(CurrentDevice);
         _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
@@ -160,7 +161,7 @@
         {
             DeviceFormSubmitted(editContext);
         }
-    }    
+    }
 
     protected override void OnParametersSet()
     {
@@ -175,7 +176,14 @@
 
     private void RealEsatateIdToAddDeviceChanged()
     {
-        showErrorMessageVisible = false;
+        if (realEstateToAddDevice.RealEstateID != 0)
+        {
+            showErrorMessageVisible = false;
+        }
+        else
+        {
+            showErrorMessageVisible = true;
+        }
     }
 
     private bool CheckIfCurrentDeviceIsAssignedToRealEstate()
@@ -199,6 +207,7 @@
         {
             chosedRealEstateIsValid = false;
             showErrorMessageVisible = true;
+            validDeviceForm = false;
             errorMessage = "Please select Real Estate to Add Device";
         }
         else
@@ -215,18 +224,15 @@
         ChosedRealEstateIsValid();
         CheckIfCurrentDeviceIsAssignedToRealEstate();
 
-        if (CurrentDevice.DeviceID == 0)
+        if (validDeviceForm != true && chosedRealEstateIsValid != true)
         {
-            if (validDeviceForm != true && chosedRealEstateIsValid != true)
-            {
-                validDeviceForm = editContext.Validate();
-                return;
-            }
-            else
-            {
-                validDeviceForm = editContext.Validate();
-                DataService.AddNewDevice(CurrentDevice, realEstateToAddDevice.RealEstateID);
-            }
+            validDeviceForm = editContext.Validate();
+            return;
+        }
+
+        if (CurrentDevice.DeviceID == 0 && chosedRealEstateIsValid == true)
+        {
+            DataService.AddNewDevice(CurrentDevice, realEstateToAddDevice.RealEstateID);
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
         {
@@ -236,6 +242,8 @@
         {
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, realEstateToAddDevice.RealEstateID);
         }
+
+
 
         DataService.SaveUpdatedObject();
         DataChangedEvent.InvokeAsync();
