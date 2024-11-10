@@ -224,13 +224,13 @@
         ChosedRealEstateIsValid();
         CheckIfCurrentDeviceIsAssignedToRealEstate();
 
-        if (validDeviceForm != true && chosedRealEstateIsValid != true)
+        if (validDeviceForm != true)
         {
             validDeviceForm = editContext.Validate();
             return;
         }
 
-        if (CurrentDevice.DeviceID == 0 && chosedRealEstateIsValid == true)
+        if (CurrentDevice.DeviceID == 0 && validDeviceForm == true)
         {
             DataService.AddNewDevice(CurrentDevice, realEstateToAddDevice.RealEstateID);
         }
@@ -242,8 +242,6 @@
         {
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, realEstateToAddDevice.RealEstateID);
         }
-
-
 
         DataService.SaveUpdatedObject();
         DataChangedEvent.InvokeAsync();
