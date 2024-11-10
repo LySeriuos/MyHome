@@ -7,7 +7,7 @@
         </CascadingValue>
     </BodyTemplate>
     <FooterTemplate>
-        <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="() => _reusableModal.HideAsync()">Close</Button>
+        <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="HideAsync">Close</Button>
         <Button Color="ButtonColor.Primary" @onclick="SaveDataChanges">Save changes</Button>
     </FooterTemplate>
 </Modal>
@@ -24,5 +24,10 @@
     public async Task ShowAsync()
     {
         await _reusableModal.ShowAsync();
-    }    
+    }
+    
+    public async Task HideAsync()
+    {
+        await _reusableModal.HideAsync();
+    }
 }

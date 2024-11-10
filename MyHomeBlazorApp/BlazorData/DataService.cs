@@ -480,6 +480,11 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
+        public void LoadData()
+        {
+            Data.GetUsersListFromXml(_path);
+        }
+
         #endregion
 
         public DataService()

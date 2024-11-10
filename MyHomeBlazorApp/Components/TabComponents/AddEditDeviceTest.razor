@@ -2,6 +2,8 @@
 @using MyHome.Models;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
+@using MyHomeBlazorApp.Shared
+@using System.Reflection
 @inject BlazorData.DataService DataService
 @inject IJSRuntime JSRuntime
 
@@ -110,10 +112,10 @@
         </NextPreviuosButtons>
     }
     @* <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button> *@
-    @* <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" @onclick="OnClickCallback">Save changes</Button> *@
-    @* <Button class="mt-3" Color="ButtonColor.Success" Type="ButtonType.Button" @onclick="OnClickCallback">
-        Trigger a Parent component method
-    </Button> *@
+    @if (IncludeButtons)
+    {
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+    }
 </EditForm>
 
 @code {
@@ -131,15 +133,21 @@
         {
             realEstateToAddDevice.RealEstateID = value;
         }
-    }
+    } 
     [Parameter]
     public EditForm refAddEditDeviceTest { get; set; }
+    // [Parameter]
+    // public Modal refModalComponent { get; set; } = default!;
     [Parameter]
-    public Modal refModalComponent { get; set; } = default!;
-
+    public CustomReusableModal refModalComponent { get; set; } = default!;
+    [Parameter]
+    public Modal refModalComponentTest { get; set; } = default!;
+    [CascadingParameter]
+    public CustomReusableModal Parent { get; set; }
+    public bool IncludeButtons { get; set; } = true;
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
-    private EditContext? editContext;
+    private EditContext? editContext { get; set; }
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
     private string? errorMessage;
@@ -148,24 +156,56 @@
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private string? message;
-
+    public Action? LoadChanges;
+    [Parameter]
+    public EventCallback DataChangedEvent { get; set; }
     protected override void OnInitialized()
     {
         Init();
         base.OnInitialized();
     }
 
-    void Init()
+    private void Init()
     {
         editContext = new(CurrentDevice);
         _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
     }
 
+    public void Save()
+    {
+        if (editContext != null)
+        {
+            DeviceFormSubmitted(editContext);
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //Change thisi to proper action
+            _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
+            _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
+        }
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Parent != null)
+        {
+            IncludeButtons = false;
+            Parent.SaveDataChanges = Save;
+        }
+        base.OnParametersSet();
+    }
+
+
     private void RealEsatateIdToAddDeviceChanged()
     {
         showErrorMessageVisible = false;
-    }   
+    }
 
     private bool CheckIfCurrentDeviceIsAssignedToRealEstate()
     {
@@ -225,13 +265,13 @@
         {
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);
         }
-
+        // LoadChanges();
         DataService.SaveUpdatedObject();
-        StateHasChanged();
+        DataCangedEvent.InvokeAsync();
         realEstateToAddDevice = new();
         showErrorMessageVisible = false;
         refModalComponent.HideAsync();
     }
 
-    
+
 }

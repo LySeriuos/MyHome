@@ -85,7 +85,7 @@
     <TabPage Text="Devices Warranties">
         <div class="grid">
             <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
-                
+
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
@@ -243,6 +243,16 @@
     </Modal>
 </div>
 
+<div>
+    <CustomReusableModal @ref="_reusableModal" Title="Edit Devíce Details">
+        <AddEditDeviceTest @ref="refAddEditDeviceTest"
+                           CurrentDevice="currentDevice"
+                           CurrentUser="currentUser"
+                           refModalComponent="_reusableModal"
+                           DataChangedEvent="DeviceListDataHasChangedTest"></AddEditDeviceTest>
+    </CustomReusableModal>
+</div>
+
 
 
 
@@ -272,27 +282,37 @@
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
     private IQueryable<DeviceProfile> _devicesListAsQueryable;
-    private IQueryable<RealEstate >_realEstatesListAsQueryable;
+    private IQueryable<RealEstate> _realEstatesListAsQueryable;
     private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
     public string deviceName
     {
         get => currentDevice.DeviceName;
         set { currentDevice.DeviceName = value; }
     }
+    public AddEditDeviceTest? refAddEditDeviceTest { get; set; } = new();
+    public CustomReusableModal _reusableModal = default!;
 
-    public Modal refModalComponent = default!;
     private async Task ShowDeviceEdiFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUser;
-        currentDevice = DataService.GetDeviceById(deviceID);
-        var parameters = new Dictionary<string, object>();
+        currentDevice = DataService.GetDeviceById(deviceID); ;
+        await _reusableModal.ShowAsync();
+    }
 
-        parameters.Add("CurrentDevice", currentDevice);
-        parameters.Add("CurrentUser", currentUser);
-        parameters.Add("refModalComponent", refModalComponent);
-        await refModalComponent.ShowAsync<AddEditDeviceTest>
-            (title: "Device Details", parameters: parameters);
-    }    
+    public Modal refModalComponent = default!;
+    // private async Task ShowDeviceEdiFormInModal(int deviceID)
+    // {
+    //     currentUser = DataService.CurrentUser;
+    //     currentDevice = DataService.GetDeviceById(deviceID);
+    //     var parameters = new Dictionary<string, object>();
+
+    //     parameters.Add("CurrentDevice", currentDevice);
+    //     parameters.Add("CurrentUser", currentUser);
+    //     parameters.Add("refModalComponent", refModalComponent);
+    //     await refModalComponent.ShowAsync<AddEditDeviceTest>
+    //         (title: "Device Details", parameters: parameters);
+    // }
+
 
     public void OnHideModalEditDeviceClickModal()
     {
@@ -377,6 +397,10 @@
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
 
+            // refAddEditDeviceTest.LoadChanges += DeviceListDataHasChangedTest;
+
+
+
         }
         base.OnAfterRender(firstRender);
     }
@@ -400,7 +424,7 @@
     private EditDeviceFormTest refEditTest;
 
 
-    private AddEditDeviceTest refAddEditDeviceTest = new AddEditDeviceTest();
+
 
 
     //example
@@ -490,6 +514,12 @@
         StateHasChanged();
     }
 
+    private void DeviceListDataHasChangedTest()
+    {
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        StateHasChanged();
+    }
+
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
         int ChosedRealEsatateID = DataService.GetRealEstateByDeviceID(deviceId);
@@ -557,7 +587,7 @@
     {
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        
+
         CheckIfFileExsist();
         base.OnInitialized();
     }
