@@ -11,26 +11,32 @@
 
 <h3>MobileDeviceInfo</h3>
 <div class="w-25 p-3">
-<AddEditDeviceTest CurrentDevice="CurrentDevice"
+<AddEditDeviceTest CurrentDevice="_currentDevice"
                     CurrentUser="_userProfile">
                 </AddEditDeviceTest>
 </div>
 
 @code {
-    
+
     [Parameter]
     public int DeviceID { get; set; }
     [Parameter]
     public int UserID { get; set; }   
     private UserProfile _userProfile { get; set; }
-    public DeviceProfile? CurrentDevice { get; set; }
+    private DeviceProfile? _currentDevice { get; set; }
 
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         _userProfile = DataService.Users.First(d => d.UserID == UserID);
-        CurrentDevice = _userProfile.GetAllDevices().First(d => d.DeviceID == DeviceID);
-        base.OnInitialized();
+        _currentDevice = _userProfile.GetAllDevices().First(d => d.DeviceID == DeviceID);
     }
+
+    // protected override void OnInitialized()
+    // {
+    //     _userProfile = DataService.Users.First(d => d.UserID == UserID);
+    //     CurrentDevice = _userProfile.GetAllDevices().First(d => d.DeviceID == DeviceID);
+    //     base.OnInitialized();
+    // }
 
 }
