@@ -247,7 +247,10 @@
         DataChangedEvent.InvokeAsync();
         realEstateToAddDevice = new();
         showErrorMessageVisible = false;
-        Parent.HideAsync();
+        if (Parent != null)
+        {
+            Parent.HideAsync();
+        }
     }
 
 
