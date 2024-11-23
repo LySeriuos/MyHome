@@ -8,7 +8,7 @@
         <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" @onclick="SaveChanges">Save changes</Button>
     </FooterTemplate>
 </Modal>
-<Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button>
+@* <Button Color="ButtonColor.Primary" @onclick="ShowEmployeeComponent">Show Employee Component</Button> *@
 
 @code {
     [Parameter]
@@ -19,13 +19,13 @@
     [Parameter]
     public EventCallback<bool> ButtonPressedOk { get; set; }
     private Modal modal = default!;
-    private async Task ShowEmployeeComponent()
-    {        
-        var parameters = new Dictionary<string, object>();
-        parameters.Add("CurrentDevice", CurrentDevice);
-        parameters.Add("CurrentUser", CurrentUser);
-        await modal.ShowAsync<AddEditDeviceTest>(title: "Device Details", parameters: parameters);
-    }
+    // private async Task ShowEmployeeComponent()
+    // {        
+    //     var parameters = new Dictionary<string, object>();
+    //     parameters.Add("CurrentDevice", CurrentDevice);
+    //     parameters.Add("CurrentUser", CurrentUser);
+    //     await modal.ShowAsync<AddEditDeviceTest>(title: "Device Details", parameters: parameters);
+    // }
 
     public async Task OnHideModalEditDeviceClick()
     {

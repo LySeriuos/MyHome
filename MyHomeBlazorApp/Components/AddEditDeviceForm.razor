@@ -9,7 +9,7 @@
 @inject IJSRuntime JSRuntime
 
 
-<EditForm @ref="refAddEditDeviceTest" Model="@CurrentDevice" id="refAddEditDeviceTest" OnSubmit="DeviceFormSubmitted">
+<EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" OnSubmit="DeviceFormSubmitted" @oninput="OnInput">
     <DataAnnotationsValidator />
     <div class="form-group row">
         <label for="deviceName" class="col-sm-4 col-form-label">
@@ -44,7 +44,7 @@
             Serial Number
         </label>
         <div class="col-sm-8">
-            <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number" />
+            <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number"/>
         </div>
     </div>
     <div class="form-group row">
@@ -103,21 +103,29 @@
     @if (CurrentDevice.DeviceID != 0)
     {
         <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                             DevicesListAsQueryable="_devicesListAsQueryable">
+        DevicesListAsQueryable="_devicesListAsQueryable">
         </NextPreviuosButtons>
     }
     else if (_unassignedDevicesListAsQueryable.Count() > 1)
     {
         <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                             DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
+        DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
         </NextPreviuosButtons>
     }
     @if (IncludeButtons)
     {
-        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+        @if (fieldHasBeenChanged == true)
+        {
+            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+        }
+        else
+        {
+            <Button Color="ButtonColor.Primary" Disabled Type="ButtonType.Submit">Save changes</Button>
+        }
     }
 </EditForm>
-
+<Button @onclick="() => { ; }">test </Button>
+@* @oninput="() =>OnInput()" *@
 @code {
 
     [Parameter]
@@ -140,14 +148,20 @@
     private bool deviceIsAssignedToRealEstate;
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
-
-
+    private bool fieldHasBeenChanged { get; set; } = false;
+    
     protected override void OnInitialized()
     {
         Init();
         base.OnInitialized();
     }
 
+    private void OnInput()
+    {
+        fieldHasBeenChanged = true;
+    }
+
+    //todo: disable button if there is no changes in the editForm
     private void Init()
     {
         realEstateToAddDevice.RealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
