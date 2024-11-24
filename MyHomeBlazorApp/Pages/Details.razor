@@ -233,15 +233,6 @@
                            ObjectName="@_deletedObjectName">
     </ModalDeleteSuccessful>
 </div>
-@* <div>
-
-    <Modal @ref="refModalComponent">
-        <FooterTemplate>
-            <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClickModal">Close</Button>
-            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" form="refAddEditDeviceTest">Save changes</Button>
-        </FooterTemplate>
-    </Modal>
-</div> *@
 
 <div>
     <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
@@ -301,26 +292,6 @@
         currentUser = DataService.CurrentUser;
         currentDevice = new();
         await _reusableModal.ShowAsync();
-    }
-
-    public Modal refModalComponent = default!;
-    // private async Task ShowDeviceEdiFormInModal(int deviceID)
-    // {
-    //     currentUser = DataService.CurrentUser;
-    //     currentDevice = DataService.GetDeviceById(deviceID);
-    //     var parameters = new Dictionary<string, object>();
-
-    //     parameters.Add("CurrentDevice", currentDevice);
-    //     parameters.Add("CurrentUser", currentUser);
-    //     parameters.Add("refModalComponent", refModalComponent);
-    //     await refModalComponent.ShowAsync<AddEditDeviceTest>
-    //         (title: "Device Details", parameters: parameters);
-    // }
-
-
-    public void OnHideModalEditDeviceClickModal()
-    {
-        refModalComponent.HideAsync();
     }
 
     private Stream GetFileStream()
@@ -421,21 +392,6 @@
     private ModalDeleteRealEstate refModalRealEstateDelete = default!;
     private ModalReassignDevices refModalReasignDevices = default!;
 
-
-
-
-
-    //example
-    // void SortByID()
-    // {
-    //     _devicesListAsQueryable = _devicesListAsQueryable.OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID);
-    // }
-    // void FilterDevices(string query)
-    // {
-    //     _devicesListAsQueryable = _devicesListAsQueryable.Where(i => i.DeviceName.Contains(query));
-    // }
-
-
     private void RealEstateDataHasChanged()
     {
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
@@ -472,20 +428,6 @@
         _deletedObjectName = currentRealEstate.RealEstateName;
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
-
-    // private bool CheckIfRealEstateObjectIsEmpty()
-    // {
-    //     if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
-    //     {
-    //         _isNullOrHasNoProperties = true;
-    //     }
-    //     else
-    //     {
-    //         _isNullOrHasNoProperties = false;
-    //     }
-
-    //     return _isNullOrHasNoProperties;
-    // }
 
     #endregion
 
@@ -526,13 +468,6 @@
         _deletedObjectName = currentDevice.DeviceName;
         await refModalConfirmDeviceDeletion.OnShowModalClick();
     }
-
-    // private async Task OnShowModalAddNewDevice()
-    // {
-    //     currentUser = DataService.CurrentUser;
-    //     currentDevice = new();
-    //     await refModalEditAddDevice.OnShowModalEditDeviceClick();
-    // }
 
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
