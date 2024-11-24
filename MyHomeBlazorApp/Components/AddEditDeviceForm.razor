@@ -127,13 +127,13 @@
 @code {
 
     [Parameter]
-    public DeviceProfile? CurrentDevice { get; set; } = new();
+    public DeviceProfile CurrentDevice { get; set; } = new();
     [Parameter]
-    public UserProfile? CurrentUser { get; set; }
+    public UserProfile CurrentUser { get; set; } = new();
     [Parameter]
-    public EditForm refAddEditDeviceTest { get; set; }
+    public EditForm refAddEditDeviceTest { get; set; } = new();
     [CascadingParameter]
-    public CustomReusableModal Parent { get; set; }
+    public CustomReusableModal Parent { get; set; } = new();
     [Parameter]
     public EventCallback DataChangedEvent { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
