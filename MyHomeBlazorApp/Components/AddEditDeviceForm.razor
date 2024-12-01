@@ -1,6 +1,7 @@
 ﻿@using MyHomeBlazorApp.BlazorData
 @using MyHome.Models;
 @using MyHome;
+@using MyHomeBlazorApp.Components.Modals
 @using MyHomeBlazorApp.Pages
 @using MyHomeBlazorApp.Shared
 @using System.Reflection
@@ -124,6 +125,10 @@
         }
     }
 </EditForm>
+<div>
+    <SuccessModal @ref="_successModal" Title="Add/Edit Confirmation"></SuccessModal>
+</div>
+
 @code {
 
     [Parameter]
@@ -133,7 +138,7 @@
     [Parameter]
     public EditForm refAddEditDeviceTest { get; set; } = new();
     [CascadingParameter]
-    public CustomReusableModal Parent { get; set; } = new();
+    public CustomReusableModal Parent { get; set; }
     [Parameter]
     public EventCallback DataChangedEvent { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
@@ -147,7 +152,7 @@
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private bool fieldHasBeenChanged { get; set; } = false;
-    
+    private SuccessModal _successModal = default!;
     protected override void OnInitialized()
     {
         Init();
@@ -185,7 +190,6 @@
         }
         base.OnParametersSet();
     }
-
 
     private void RealEsatateIdToAddDeviceChanged()
     {
@@ -231,7 +235,7 @@
         return chosedRealEstateIsValid;
     }
 
-    private void DeviceFormSubmitted(EditContext editContext)
+    private async Task DeviceFormSubmitted(EditContext editContext)
     {
         validDeviceForm = editContext.Validate();
         ChosedRealEstateIsValid();
@@ -246,6 +250,7 @@
         if (CurrentDevice.DeviceID == 0 && validDeviceForm == true)
         {
             DataService.AddNewDevice(CurrentDevice, realEstateToAddDevice.RealEstateID);
+            realEstateToAddDevice = new();
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
         {
@@ -257,14 +262,12 @@
         }
 
         DataService.SaveUpdatedObject();
-        DataChangedEvent.InvokeAsync();
-        realEstateToAddDevice = new();
+        await DataChangedEvent.InvokeAsync();  
+        await _successModal.OnShowModalClick();
         showErrorMessageVisible = false;
         if (Parent != null)
         {
-            Parent.HideAsync();
+            await Parent.HideAsync();
         }
     }
-
-
 }

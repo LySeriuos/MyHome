@@ -182,15 +182,15 @@
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
-                            CurrentRealEstate="@currentRealEstate">
+    CurrentRealEstate="@currentRealEstate">
     </ModalEditAddRealEstate>
 </div>
 
 <div>
     <ModalEditAddDevice @ref="@refModalEditAddDevice"
-                        CurrentDevice="@currentDevice"
-                        CurrentUser="@currentUser"
-                        RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
+    CurrentDevice="@currentDevice"
+    CurrentUser="@currentUser"
+    RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
     </ModalEditAddDevice>
 </div>
 <div>
@@ -198,51 +198,52 @@
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
-                              CurrentDevice="@currentDevice"
-                              DevicesListAsQueryable="@_devicesListAsQueryable">
+    CurrentDevice="@currentDevice"
+    DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditWarrantyDetails>
 </div>
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
-                          CurrentDevice="@currentDevice"
-                          ShopAddress="@shopAddress"
-                          DevicesListAsQueryable="@_devicesListAsQueryable">
+    CurrentDevice="@currentDevice"
+    ShopAddress="@shopAddress"
+    DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditShopDetails>
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
-                           CurrentRealEstate="@currentRealEstate">
+    CurrentRealEstate="@currentRealEstate">
     </ModalDeleteRealEstate>
 </div>
 <div>
 
     <ModalReassignDevices @ref="@refModalReasignDevices"
-                          SelectedRealEstateID="@SelectedRealEstateID"
-                          CurrentUser="@currentUser"
-                          CurrentRealEstate="@currentRealEstate">
+    SelectedRealEstateID="@SelectedRealEstateID"
+    CurrentUser="@currentUser"
+    CurrentRealEstate="@currentRealEstate">
     </ModalReassignDevices>
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-                                CurrentDeviceToDelete="@currentDevice"
-                                CurrentRealEstateToDeleteFrom="@currentRealEstate">
+    CurrentDeviceToDelete="@currentDevice"
+    CurrentRealEstateToDeleteFrom="@currentRealEstate">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
-                           ObjectName="@_deletedObjectName">
+    ObjectName="@_deletedObjectName">
     </ModalDeleteSuccessful>
 </div>
 
 <div>
     <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
         <AddEditDeviceForm CurrentDevice="currentDevice"
-                           CurrentUser="currentUser"
-                           DataChangedEvent="DeviceListDataHasChangedTest"/>
+        CurrentUser="currentUser"
+        DataChangedEvent="DeviceListDataHasChangedTest"/>
     </CustomReusableModal>
 </div>
-
-
+<div>
+    <SuccessModal @ref="_successModal" Title="Add/Edit Confirmation"></SuccessModal>
+</div>
 
 
 
@@ -278,7 +279,8 @@
         get => currentDevice.DeviceName;
         set { currentDevice.DeviceName = value; }
     }
-    public CustomReusableModal _reusableModal = default!;
+    private CustomReusableModal _reusableModal = default!;
+    private SuccessModal _successModal = default!;
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
@@ -455,8 +457,9 @@
     }
 
     private void DeviceListDataHasChangedTest()
-    {
+    {        
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _successModal.OnShowModalClick();
         StateHasChanged();
     }
 
