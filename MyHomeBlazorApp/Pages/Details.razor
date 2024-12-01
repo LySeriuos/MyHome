@@ -242,7 +242,7 @@
     </CustomReusableModal>
 </div>
 <div>
-    <SuccessModal @ref="_successModal" Title="Add/Edit Confirmation"></SuccessModal>
+    <SuccessModal @ref="_refSuccessModal" Title="Add/Edit Confirmation"></SuccessModal>
 </div>
 
 
@@ -280,7 +280,7 @@
         set { currentDevice.DeviceName = value; }
     }
     private CustomReusableModal _reusableModal = default!;
-    private SuccessModal _successModal = default!;
+    private SuccessModal _refSuccessModal = default!;
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
@@ -459,7 +459,7 @@
     private void DeviceListDataHasChangedTest()
     {        
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _successModal.OnShowModalClick();
+        _refSuccessModal.OnShowModalClick();
         StateHasChanged();
     }
 

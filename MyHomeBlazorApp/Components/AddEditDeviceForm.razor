@@ -126,7 +126,7 @@
     }
 </EditForm>
 <div>
-    <SuccessModal @ref="_successModal" Title="Add/Edit Confirmation"></SuccessModal>
+    <SuccessModal @ref="_refSuccessModal" Title="Add/Edit Confirmation"></SuccessModal>
 </div>
 
 @code {
@@ -139,6 +139,7 @@
     public EditForm refAddEditDeviceTest { get; set; } = new();
     [CascadingParameter]
     public CustomReusableModal Parent { get; set; }
+    private SuccessModal _refSuccessModal = default!;
     [Parameter]
     public EventCallback DataChangedEvent { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
@@ -152,7 +153,6 @@
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private bool fieldHasBeenChanged { get; set; } = false;
-    private SuccessModal _successModal = default!;
     protected override void OnInitialized()
     {
         Init();
@@ -171,6 +171,12 @@
         editContext = new(CurrentDevice);
         _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        realEstateToAddDevice.RealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
+        base.OnAfterRender(firstRender);
     }
 
     public void Save()
@@ -263,7 +269,7 @@
 
         DataService.SaveUpdatedObject();
         await DataChangedEvent.InvokeAsync();  
-        await _successModal.OnShowModalClick();
+        await _refSuccessModal.OnShowModalClick();
         showErrorMessageVisible = false;
         if (Parent != null)
         {
