@@ -1,0 +1,101 @@
+﻿@page "/createEmail"
+@page "/createEmail/{currentUserID:int}"
+
+@inject BlazorData.DataService DataService;
+
+
+<h3>CreateEmail</h3>
+@* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
+<label class="form-label">Choose The Device</label>
+<InputSelect @bind-Value="_chosedDeviceID" class="form-select">
+    <option selected value="0" disabled>Select Real Estate...</option>
+    @foreach (var device in _currentUser.GetAllDevices())
+    {
+        <option value="@device.DeviceID">@device.DeviceName</option>
+    }
+</InputSelect>
+<p>@_chosedDeviceID</p>
+<p>@_produserChecked</p>
+<p>@_modelNumberChecked</p>
+
+@if (_chosedDeviceID != 0)
+{
+    <EditForm Model="_deviceProfile">
+        <div class="row">
+            <div>
+                <InputCheckbox id="produser" @bind-Value="_produserChecked">
+                </InputCheckbox>
+                <label>Device Produser</label>
+                <p>@_chosedDevice.DeviceProduser</p>
+
+            </div>
+            <div>
+                <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked">
+                </InputCheckbox>
+                <label>Serial Number</label>
+                <p>@_chosedDevice.DeviceSerialNumber</p>
+            </div>
+            <div>
+                <InputCheckbox id="modelNumber" @bind-Value="_modelNumberChecked">
+                </InputCheckbox>
+                <label>Model Number</label>
+                <p>@_chosedDevice.DeviceModelNumber</p>
+            </div>
+            <div>
+                <InputCheckbox id="shopDate" @bind-Value="_shopDateChecked">
+                </InputCheckbox>
+                <label>Shop Date</label>
+                <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
+            </div>
+            @* <div>
+                <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
+                </InputCheckbox>
+                <label>Reciept</label>
+                <p>@_chosedDevice.DeviceWarranty.ReceiptLink</p>
+            </div>
+            <div>
+                <InputCheckbox id="extraWarranty" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked">
+                </InputCheckbox>
+                <label>Extra Warranty</label>
+                <p>@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
+            </div> *@
+        </div>
+    </EditForm>
+}
+@code {
+    [Parameter]
+    public int currentUserID { get; set; }
+    private EditContext? editContext;
+    private int _chosedDeviceID { get; set; } = new();
+    private DeviceProfile _chosedDevice { get; set; } = new();
+    private UserProfile _currentUser = new();
+    private bool _produserChecked { get; set; }
+    private bool _serialNumberChecked { get; set; }
+    private bool _modelNumberChecked { get; set; }
+    private bool _shopDateChecked { get; set; }
+    private bool _chosedDeviceRecieptChecked { get; set; }
+    private bool _chosedDeviceExtraWarrantyRecieptChecked { get; set; }
+    private bool _warrantyIsValidUntilChecked { get; set; }
+    private bool _extraWarrantyIsValidUntilChecked { get; set; }
+    private DeviceProfile _deviceProfile { get; set; } = new();
+    private String _createdText { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (currentUserID != 0)
+        {
+            _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (_chosedDeviceID != 0)
+        {
+            _chosedDevice = _currentUser.GetAllDevices().First(d => d.DeviceID == _chosedDeviceID);
+        }
+        base.OnAfterRender(firstRender);
+        StateHasChanged();
+    }
+
+}

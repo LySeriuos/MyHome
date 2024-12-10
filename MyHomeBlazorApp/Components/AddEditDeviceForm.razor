@@ -270,6 +270,7 @@
         DataService.SaveUpdatedObject();
         await DataChangedEvent.InvokeAsync();  
         await _refSuccessModal.OnShowModalClick();
+        fieldHasBeenChanged = false;
         showErrorMessageVisible = false;
         if (Parent != null)
         {
