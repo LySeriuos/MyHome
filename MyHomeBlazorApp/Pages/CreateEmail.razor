@@ -47,7 +47,7 @@
                 <label>Shop Date</label>
                 <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
             </div>
-            @* <div>
+            <div>
                 <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
                 </InputCheckbox>
                 <label>Reciept</label>
@@ -58,10 +58,17 @@
                 </InputCheckbox>
                 <label>Extra Warranty</label>
                 <p>@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
-            </div> *@
+            </div>
+            <div>
+                <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
+                </InputCheckbox>
+                <label>Shop Adress</label>
+                <p>@_chosedDevice.DeviceWarranty.Shop.Address.StreetName @_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber @_chosedDevice.DeviceWarranty.Shop.Address.City</p>
+            </div>
         </div>
     </EditForm>
 }
+
 @code {
     [Parameter]
     public int currentUserID { get; set; }
@@ -77,8 +84,17 @@
     private bool _chosedDeviceExtraWarrantyRecieptChecked { get; set; }
     private bool _warrantyIsValidUntilChecked { get; set; }
     private bool _extraWarrantyIsValidUntilChecked { get; set; }
+    private bool _chosedDeviceShopAdressChecked { get; set; }
     private DeviceProfile _deviceProfile { get; set; } = new();
     private String _createdText { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _chosedDevice.DeviceWarranty = new();
+        _chosedDevice.DeviceWarranty.Shop = new();
+        _chosedDevice.DeviceWarranty.Shop.Address = new();
+        base.OnInitialized();
+    }
 
     protected override void OnParametersSet()
     {
