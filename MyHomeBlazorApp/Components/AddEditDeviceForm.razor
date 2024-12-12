@@ -145,7 +145,6 @@
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     private EditContext? editContext { get; set; }
-    private RealEstate realEstateToAddDevice { get; set; } = new();
     private int _chosedRealEstateID { get; set; } = new();
     private SuccessModal _refSuccessModal = default!;
     private string? errorMessage;
@@ -174,12 +173,6 @@
         _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
     }
-
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     realEstateToAddDevice.RealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
-    //     base.OnAfterRender(firstRender);
-    // }
 
     public void Save()
     {
@@ -270,8 +263,7 @@
         }
 
         DataService.SaveUpdatedObject();
-        await DataChangedEvent.InvokeAsync();  
-        // await _refSuccessModal.OnShowModalClick();
+        await DataChangedEvent.InvokeAsync();
         fieldHasBeenChanged = false;
         showErrorMessageVisible = false;
         if (Parent != null)

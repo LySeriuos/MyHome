@@ -12,7 +12,7 @@
     public String? Title { get; set; }
     private Modal refModalSuccess { get; set; } = new();
 
-    private async Task OnHideModalClick()
+    public async Task OnHideModalClick()
     {
         await refModalSuccess.HideAsync();
     }
