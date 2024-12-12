@@ -86,14 +86,15 @@
             @* There is no option to edit unassigned device without moving to other RealEstate *@
             @* /////// *@
             <label class="form-label">Choose Real Estate</label>
-            <InputSelect @bind-Value="realEstateToAddDevice.RealEstateID" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
+            <InputSelect @bind-Value="_chosedRealEstateID" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
                 <option selected value="0" disabled>Select Real Estate...</option>
                 @foreach (var realEstate in CurrentUser.RealEstates)
                 {
                     <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
                 }
             </InputSelect>
-            <ValidationMessage For="() => realEstateToAddDevice.RealEstateID" class="text-danger d-block" />
+            <p>@_chosedRealEstateID</p>
+            <ValidationMessage For="() => _chosedRealEstateID" class="text-danger d-block" />
         </div>
     </div>
     @if (showErrorMessageVisible == true)
@@ -138,14 +139,15 @@
     [Parameter]
     public EditForm refAddEditDeviceTest { get; set; } = new();
     [CascadingParameter]
-    public CustomReusableModal Parent { get; set; }
-    private SuccessModal _refSuccessModal = default!;
+    public CustomReusableModal Parent { get; set; }    
     [Parameter]
     public EventCallback DataChangedEvent { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     private EditContext? editContext { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
+    private int _chosedRealEstateID { get; set; } = new();
+    private SuccessModal _refSuccessModal = default!;
     private string? errorMessage;
     private bool chosedRealEstateIsValid;
     private bool IncludeButtons { get; set; } = true;
@@ -167,17 +169,17 @@
     //todo: disable button if there is no changes in the editForm
     private void Init()
     {
-        realEstateToAddDevice.RealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
+        _chosedRealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
         editContext = new(CurrentDevice);
         _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        realEstateToAddDevice.RealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
-        base.OnAfterRender(firstRender);
-    }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     realEstateToAddDevice.RealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
+    //     base.OnAfterRender(firstRender);
+    // }
 
     public void Save()
     {
@@ -199,7 +201,7 @@
 
     private void RealEsatateIdToAddDeviceChanged()
     {
-        if (realEstateToAddDevice.RealEstateID != 0)
+        if (_chosedRealEstateID != 0)
         {
             showErrorMessageVisible = false;
         }
@@ -226,7 +228,7 @@
 
     private bool ChosedRealEstateIsValid()
     {
-        if (realEstateToAddDevice.RealEstateID == 0)
+        if (_chosedRealEstateID == 0)
         {
             chosedRealEstateIsValid = false;
             showErrorMessageVisible = true;
@@ -255,21 +257,21 @@
 
         if (CurrentDevice.DeviceID == 0 && validDeviceForm == true)
         {
-            DataService.AddNewDevice(CurrentDevice, realEstateToAddDevice.RealEstateID);
-            realEstateToAddDevice = new();
+            DataService.AddNewDevice(CurrentDevice, _chosedRealEstateID);
+            _chosedRealEstateID = 0;
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
         {
-            DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, realEstateToAddDevice.RealEstateID, CurrentDevice);
+            DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, _chosedRealEstateID, CurrentDevice);
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == true)
         {
-            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, realEstateToAddDevice.RealEstateID);
+            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, _chosedRealEstateID);
         }
 
         DataService.SaveUpdatedObject();
         await DataChangedEvent.InvokeAsync();  
-        await _refSuccessModal.OnShowModalClick();
+        // await _refSuccessModal.OnShowModalClick();
         fieldHasBeenChanged = false;
         showErrorMessageVisible = false;
         if (Parent != null)
