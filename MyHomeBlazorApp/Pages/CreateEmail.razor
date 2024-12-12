@@ -27,7 +27,6 @@
                 </InputCheckbox>
                 <label>Device Produser</label>
                 <p>@_chosedDevice.DeviceProduser</p>
-
             </div>
             <div>
                 <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked">
@@ -47,19 +46,21 @@
                 <label>Shop Date</label>
                 <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
             </div>
-            <div>
+            <div class="mt-2">
                 <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
                 </InputCheckbox>
                 <label>Reciept</label>
-                <p>@_chosedDevice.DeviceWarranty.ReceiptLink</p>
+                <p class="mb-0">@_chosedDevice.DeviceWarranty.ReceiptLink</p>
+                <Button Class="btn-dark btn-sm">Open</Button>
             </div>
-            <div>
+            <div class="mt-2">
                 <InputCheckbox id="extraWarranty" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked">
                 </InputCheckbox>
                 <label>Extra Warranty</label>
-                <p>@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
+                <p class="mb-0">@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
+                <Button Class="btn-dark btn-sm">Open</Button>
             </div>
-            <div>
+            <div class="mt-2">
                 <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
                 </InputCheckbox>
                 <label>Shop Adress</label>
@@ -67,6 +68,25 @@
             </div>
         </div>
     </EditForm>
+    <Button Class="btn-dark btn-sm" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
+
+    <p>Dear Sir, Madam,
+        On purchase date
+        , I made a purchase from your company ‘<span>name of company</span> name of company>’, a for the sum of € (the total amount here). The product does not fulfil all prerequisites to
+        be fit for purpose.
+        Description of complaint
+        Describe why the product is faulty
+        X
+        X
+        Statutory warranty
+        I am entitled to a functional product pursuant to legislation. As the product became faulty within the
+        warranty period, you are liable for repair or replacement free of charge.
+        If free repair or replacement is not possible, I am entitled to termination of the purchase contract and a
+        refund of the purchase amount.
+        Please send me your response within 7 days of receiving this message.
+        With kind regards,
+        Your name and signature</p>
+        <p>@message</p>
 }
 
 @code {
@@ -85,6 +105,10 @@
     private bool _warrantyIsValidUntilChecked { get; set; }
     private bool _extraWarrantyIsValidUntilChecked { get; set; }
     private bool _chosedDeviceShopAdressChecked { get; set; }
+    private string _producer = "";
+    private string _serialNumber = "";
+    private string _modelNumber = "";
+    private string message;
     private DeviceProfile _deviceProfile { get; set; } = new();
     private String _createdText { get; set; }
 
@@ -94,6 +118,24 @@
         _chosedDevice.DeviceWarranty.Shop = new();
         _chosedDevice.DeviceWarranty.Shop.Address = new();
         base.OnInitialized();
+    }
+
+    private void AddDetailsToTheEmailMessage()
+    {
+        if (_produserChecked)
+        {
+            _producer = _chosedDevice.DeviceProduser;
+        }
+        if (_serialNumberChecked)
+        {
+            _serialNumber = _chosedDevice.DeviceSerialNumber;
+        }
+        if(_modelNumberChecked)
+        {
+            _modelNumber = _chosedDevice.DeviceModelNumber;
+        }
+
+        message = $"Dear Sir/Maddam, On {_modelNumber}, I made a purchase from your company {_serialNumber}, a for the sum of € {_producer}.";
     }
 
     protected override void OnParametersSet()
