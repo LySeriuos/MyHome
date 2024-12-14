@@ -1,5 +1,6 @@
 ﻿@page "/createEmail"
 @page "/createEmail/{currentUserID:int}"
+@using MimeKit
 @using My_Home.Models
 
 @inject BlazorData.DataService DataService;
@@ -103,7 +104,7 @@
     <Button Class="btn-dark btn-sm" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
 
     <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail">
-        <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To"/>
+        <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To" />
         <InputText @bind-Value="EmailRequest.Subject" class="form-control mt-2" placeholder="Subject" />
         <InputText @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
         <Button Type="ButtonType.Submit" class="btn btn-primary mt-2">Send Email</Button>
@@ -162,20 +163,47 @@
     private String _createdText { get; set; }
 
     private void SendEmail()
+
     {
-        
+        try
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(""));
+            email.To.Add(MailboxAddress.Parse(""));
+            email.Subject = EmailRequest.Subject;
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html);
+
+            var builder = new BodyBuilder();
+            builder.HtmlBody = htmlContent;
+            builder.TextBody = textContent;
+
+            // you can either create MimeEntity object(s)
+            // this might get handy in case you want to pass multiple attachments from somewhere else
+            byte[] myFileAsByteArray = LoadMyFileAsByteArray();
+            var attachments = new List<MimeEntity>
+            {
+                // from file
+                MimeEntity.Load("myFile.pdf")
+            }
+            message.Body = builder.ToMessageBody();
+
+        }
+
     }
 
-        protected override void OnInitialized()
-        {
+
+
+
+    protected override void OnInitialized()
+    {
         _chosedDevice.DeviceWarranty = new();
         _chosedDevice.DeviceWarranty.Shop = new();
         _chosedDevice.DeviceWarranty.Shop.Address = new();
         base.OnInitialized();
-        }
+    }
 
-        private void AddDetailsToTheEmailMessage()
-        {
+    private void AddDetailsToTheEmailMessage()
+    {
         if (_produserChecked)
         {
             _producer = _chosedDevice.DeviceProduser;
@@ -190,24 +218,24 @@
         }
 
         message = $"Dear Sir/Maddam, On {_modelNumber}, I made a purchase from your company {_serialNumber}, a for the sum of € {_producer}.";
-        }
+    }
 
-        protected override void OnParametersSet()
-        {
+    protected override void OnParametersSet()
+    {
         if (currentUserID != 0)
         {
             _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
         }
-        }
+    }
 
-        protected override void OnAfterRender(bool firstRender)
-        {
+    protected override void OnAfterRender(bool firstRender)
+    {
         if (_chosedDeviceID != 0)
         {
             _chosedDevice = _currentUser.GetAllDevices().First(d => d.DeviceID == _chosedDeviceID);
         }
         base.OnAfterRender(firstRender);
         StateHasChanged();
-        }
+    }
 
 }
