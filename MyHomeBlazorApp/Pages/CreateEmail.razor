@@ -21,56 +21,88 @@
 @if (_chosedDeviceID != 0)
 {
     <EditForm Model="_deviceProfile">
-        <div class="row">
-            <div>
+        <div class="row w-50 mr-0">
+            <div class="col-2 text-start">
                 <InputCheckbox id="produser" @bind-Value="_produserChecked">
                 </InputCheckbox>
-                <label>Device Produser</label>
+                <label>Device Produser:</label>
+            </div>
+            <div class="col text-start">
                 <p>@_chosedDevice.DeviceProduser</p>
             </div>
-            <div>
-                <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked">
+        </div>
+        <div class="row w-50 mr-0">
+            <div class="col-2 text-start">
+                <InputCheckbox id="produser" @bind-Value="_serialNumberChecked">
                 </InputCheckbox>
-                <label>Serial Number</label>
+                <label>Serial Number:</label>
+            </div>
+            <div class="col text-start">
                 <p>@_chosedDevice.DeviceSerialNumber</p>
             </div>
-            <div>
+        </div>
+        <div class="row w-50 mr-0">
+            <div class="col-2 text-start">
                 <InputCheckbox id="modelNumber" @bind-Value="_modelNumberChecked">
                 </InputCheckbox>
-                <label>Model Number</label>
+                <label>Model Number:</label>
+            </div>
+            <div class="col text-start">
                 <p>@_chosedDevice.DeviceModelNumber</p>
             </div>
-            <div>
+        </div>
+        <div class="row w-50 mr-0">
+            <div class="col-2 text-start">
                 <InputCheckbox id="shopDate" @bind-Value="_shopDateChecked">
                 </InputCheckbox>
-                <label>Shop Date</label>
+                <label>Shop Date:</label>
+            </div>
+            <div class="col text-start">
                 <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
             </div>
-            <div class="mt-2">
+        </div>
+        <div class="row w-50 mr-0">
+            <div class="col-2 text-start">
                 <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
                 </InputCheckbox>
-                <label>Reciept</label>
+                <label>Reciept:</label>
+            </div>
+            <div class="col text-start">
                 <p class="mb-0">@_chosedDevice.DeviceWarranty.ReceiptLink</p>
+            </div>
+            <div class="col">
                 <Button Class="btn-dark btn-sm">Open</Button>
             </div>
-            <div class="mt-2">
-                <InputCheckbox id="extraWarranty" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked">
+        </div>
+        <div class="row w-50 mr-0">
+            <div class="col-2 text-start">
+                <InputCheckbox id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked">
                 </InputCheckbox>
-                <label>Extra Warranty</label>
-                <p class="mb-0">@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
+                <label>Extra Warranty:</label>
+            </div>
+            <div class="col text-start">
+                <p>@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
+            </div>
+            <div class="col">
                 <Button Class="btn-dark btn-sm">Open</Button>
             </div>
-            <div class="mt-2">
+        </div>
+        <div class="row w-50 mr-0">
+            <div class="col-2 text-start">
                 <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
                 </InputCheckbox>
                 <label>Shop Adress</label>
+            </div>
+            <div class="col text-start">
                 <p>@_chosedDevice.DeviceWarranty.Shop.Address.StreetName @_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber @_chosedDevice.DeviceWarranty.Shop.Address.City</p>
             </div>
         </div>
+
     </EditForm>
     <Button Class="btn-dark btn-sm" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
 
-    <p>Dear Sir, Madam,
+    <p>
+        Dear Sir, Madam,
         On purchase date
         , I made a purchase from your company ‘<span>name of company</span> name of company>’, a for the sum of € (the total amount here). The product does not fulfil all prerequisites to
         be fit for purpose.
@@ -85,8 +117,9 @@
         refund of the purchase amount.
         Please send me your response within 7 days of receiving this message.
         With kind regards,
-        Your name and signature</p>
-        <p>@message</p>
+        Your name and signature
+    </p>
+    <p>@message</p>
 }
 
 @code {
@@ -108,6 +141,12 @@
     private string _producer = "";
     private string _serialNumber = "";
     private string _modelNumber = "";
+    private string _shopDate = "";
+    private string _recieptLink = "";
+    private string _extraWarrantyRecieptLink = "";
+    private string _shopAddress = "";
+    private string _warrantyIsValidUntil = "";
+    private string _extraWarrantyIsValidUntil = "";
     private string message;
     private DeviceProfile _deviceProfile { get; set; } = new();
     private String _createdText { get; set; }
@@ -130,7 +169,7 @@
         {
             _serialNumber = _chosedDevice.DeviceSerialNumber;
         }
-        if(_modelNumberChecked)
+        if (_modelNumberChecked)
         {
             _modelNumber = _chosedDevice.DeviceModelNumber;
         }
