@@ -1,4 +1,4 @@
-﻿@page "/createEmail"
+﻿@* @page "/createEmail" *@
 @page "/createEmail/{currentUserID:int}"
 @using MailKit.Net.Smtp
 @using MimeKit
@@ -107,29 +107,9 @@
     <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail">
         <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To" />
         <InputText @bind-Value="EmailRequest.Subject" class="form-control mt-2" placeholder="Subject" />
-        <InputText @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
+        <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
         <Button Type="ButtonType.Submit" class="btn btn-primary mt-2">Send Email</Button>
     </EditForm>
-
-    <p>
-        Dear Sir, Madam,
-        On purchase date
-        , I made a purchase from your company ‘<span>name of company</span> name of company>’, a for the sum of € (the total amount here). The product does not fulfil all prerequisites to
-        be fit for purpose.
-        Description of complaint
-        Describe why the product is faulty
-        X
-        X
-        Statutory warranty
-        I am entitled to a functional product pursuant to legislation. As the product became faulty within the
-        warranty period, you are liable for repair or replacement free of charge.
-        If free repair or replacement is not possible, I am entitled to termination of the purchase contract and a
-        refund of the purchase amount.
-        Please send me your response within 7 days of receiving this message.
-        With kind regards,
-        Your name and signature
-    </p>
-    <p>@message</p>
 }
 
 @code {
@@ -159,7 +139,7 @@
     private string _shopAddress = "";
     private string _warrantyIsValidUntil = "";
     private string _extraWarrantyIsValidUntil = "";
-    private string message;
+    private string _preparedMessage;
     private DeviceProfile _deviceProfile { get; set; } = new();
     private String _createdText { get; set; }
     private List<string> _attachementsForEmail { get; set; } = new();
@@ -170,15 +150,16 @@
     {
         try
         {
+
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
             email.To.Add(MailboxAddress.Parse(EmailRequest.To));
             email.Subject = EmailRequest.Subject;
-
             var builder = new BodyBuilder();
             builder.HtmlBody = EmailRequest.Body;
-            email.Body = builder.ToMessageBody();
+            builder.TextBody = _preparedMessage;
             var attachments = new List<MimeEntity>();
+
             if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
             {
                 // MimeEntity.Load($"{_recieptLink}");
@@ -190,15 +171,14 @@
                 // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
                 builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
             }
-
             email.Body = builder.ToMessageBody();
-
+            EmailRequest.Body = email.Body.ToString();
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
             smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
             smtp.Send(email);
             smtp.Disconnect(true);
-        } 
+        }
         catch
         {
 
@@ -234,14 +214,40 @@
         if (_chosedDeviceRecieptChecked)
         {
             _recieptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
+            _warrantyIsValidUntil = _chosedDevice.DeviceWarranty.WarrantyEnd.ToShortDateString();
         }
 
-        if(_chosedDeviceExtraWarrantyRecieptChecked)
+        if (_chosedDeviceExtraWarrantyRecieptChecked)
         {
-            _extraWarrantyRecieptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink; 
+            _extraWarrantyRecieptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
+            _warrantyIsValidUntil = _chosedDevice.DeviceWarranty.WarrantyEnd.ToShortDateString();
         }
 
-        message = $"Dear Sir/Maddam, On {_modelNumber}, I made a purchase from your company {_serialNumber}, a for the sum of € {_producer}.";
+        if (_shopDateChecked)
+        {
+            _shopDate = _chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString();
+        }
+
+        if (_chosedDeviceShopAdressChecked)
+        {
+            string stringToJoin = $"{_chosedDevice.DeviceWarranty.Shop.Address.StreetName}, {_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber}, {_chosedDevice.DeviceWarranty.Shop.Address.City}";
+            // string joinedString = string.Join(",", string)
+            _shopAddress = stringToJoin;
+        }
+        
+        _preparedMessage = $@"Dear Sir/Madam,
+                    On {_shopDate}, I made a purchase of {_producer} [ADD ITEM TYPE HERE], model number: {_modelNumber} and serial number: {_serialNumber} from ‘{_chosedDevice.DeviceWarranty.Shop.ShopName}’ 
+                    at adress: {_shopAddress}.
+                    Warranty valid until: {_warrantyIsValidUntil}. I attached reciept and/or extra warranty reciept.
+                    The product does not fulfil all prerequisites to be fit for purpose.
+                    [X X Description of complaint Describe why the product is faulty X X].
+                    Statutory warranty I am entitled to a functional product pursuant to legislation.
+                    As the product became faulty within the warranty period, you are liable for repair or replacement free of charge.
+                    If free repair or replacement is not possible, I am entitled to termination of the purchase contract and a refund of the purchase amount.
+                    Please send me your response within 7 days of receiving this message. 
+                    With kind regards,
+                    [YOUR NAME AND SIGNATURE]";
+        EmailRequest.Body = _preparedMessage;
     }
 
     protected override void OnParametersSet()
