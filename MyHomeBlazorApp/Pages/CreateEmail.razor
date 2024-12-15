@@ -1,5 +1,6 @@
 ﻿@page "/createEmail"
 @page "/createEmail/{currentUserID:int}"
+@using MailKit.Net.Smtp
 @using MimeKit
 @using My_Home.Models
 
@@ -161,6 +162,8 @@
     private string message;
     private DeviceProfile _deviceProfile { get; set; } = new();
     private String _createdText { get; set; }
+    private List<string> _attachementsForEmail { get; set; } = new();
+    private bool _linkedAttachements;
 
     private void SendEmail()
 
@@ -168,27 +171,38 @@
         try
         {
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(""));
-            email.To.Add(MailboxAddress.Parse(""));
+            email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
+            email.To.Add(MailboxAddress.Parse(EmailRequest.To));
             email.Subject = EmailRequest.Subject;
-            email.Body = new TextPart(MimeKit.Text.TextFormat.Html);
 
             var builder = new BodyBuilder();
-            builder.HtmlBody = htmlContent;
-            builder.TextBody = textContent;
-
-            // you can either create MimeEntity object(s)
-            // this might get handy in case you want to pass multiple attachments from somewhere else
-            byte[] myFileAsByteArray = LoadMyFileAsByteArray();
-            var attachments = new List<MimeEntity>
+            builder.HtmlBody = EmailRequest.Body;
+            email.Body = builder.ToMessageBody();
+            var attachments = new List<MimeEntity>();
+            if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
             {
-                // from file
-                MimeEntity.Load("myFile.pdf")
+                // MimeEntity.Load($"{_recieptLink}");
+                builder.Attachments.Add($"{_recieptLink}");
             }
-            message.Body = builder.ToMessageBody();
+
+            if (_chosedDeviceExtraWarrantyRecieptChecked && !String.IsNullOrEmpty(_extraWarrantyRecieptLink))
+            {
+                // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
+                builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
+            }
+
+            email.Body = builder.ToMessageBody();
+
+            using var smtp = new SmtpClient();
+            smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+        } 
+        catch
+        {
 
         }
-
     }
 
 
@@ -217,6 +231,16 @@
             _modelNumber = _chosedDevice.DeviceModelNumber;
         }
 
+        if (_chosedDeviceRecieptChecked)
+        {
+            _recieptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
+        }
+
+        if(_chosedDeviceExtraWarrantyRecieptChecked)
+        {
+            _extraWarrantyRecieptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink; 
+        }
+
         message = $"Dear Sir/Maddam, On {_modelNumber}, I made a purchase from your company {_serialNumber}, a for the sum of € {_producer}.";
     }
 
@@ -237,5 +261,4 @@
         base.OnAfterRender(firstRender);
         StateHasChanged();
     }
-
 }
