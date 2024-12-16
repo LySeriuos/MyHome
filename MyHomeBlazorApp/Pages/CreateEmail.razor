@@ -6,7 +6,6 @@
 
 @inject BlazorData.DataService DataService;
 
-
 <h3>CreateEmail</h3>
 @* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
 <label class="form-label">Choose The Device</label>
@@ -18,8 +17,6 @@
     }
 </InputSelect>
 <p>@_chosedDeviceID</p>
-<p>@_produserChecked</p>
-<p>@_modelNumberChecked</p>
 
 @if (_chosedDeviceID != 0)
 {
@@ -36,7 +33,7 @@
         </div>
         <div class="row w-50 mr-0">
             <div class="col-2 text-start">
-                <InputCheckbox id="produser" @bind-Value="_serialNumberChecked">
+                <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked">
                 </InputCheckbox>
                 <label>Serial Number:</label>
             </div>
@@ -117,10 +114,10 @@
     public int currentUserID { get; set; }
     [SupplyParameterFromForm(FormName = "EmailForm")]
     public EmailRequest EmailRequest { get; set; } = new();
-    private EditContext? editContext;
-    private int _chosedDeviceID { get; set; } = new();
+    private DeviceProfile _deviceProfile { get; set; } = new();
     private DeviceProfile _chosedDevice { get; set; } = new();
     private UserProfile _currentUser = new();
+    private int _chosedDeviceID { get; set; } = new();
     private bool _produserChecked { get; set; }
     private bool _serialNumberChecked { get; set; }
     private bool _modelNumberChecked { get; set; }
@@ -139,18 +136,13 @@
     private string _shopAddress = "";
     private string _warrantyIsValidUntil = "";
     private string _extraWarrantyIsValidUntil = "";
-    private string _preparedMessage;
-    private DeviceProfile _deviceProfile { get; set; } = new();
-    private String _createdText { get; set; }
-    private List<string> _attachementsForEmail { get; set; } = new();
-    private bool _linkedAttachements;
+    private string _preparedMessage = "";
 
     private void SendEmail()
 
     {
         try
         {
-
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
             email.To.Add(MailboxAddress.Parse(EmailRequest.To));
@@ -178,15 +170,13 @@
             smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
             smtp.Send(email);
             smtp.Disconnect(true);
+            EmailRequest = new();
         }
         catch
         {
 
         }
     }
-
-
-
 
     protected override void OnInitialized()
     {
@@ -200,7 +190,8 @@
     {
         if (_produserChecked)
         {
-            _producer = _chosedDevice.DeviceProduser;
+            _producer = _chosedDevice.DeviceProduser;            
+
         }
         if (_serialNumberChecked)
         {
