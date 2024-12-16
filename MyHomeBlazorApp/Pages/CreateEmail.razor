@@ -156,8 +156,8 @@
             email.To.Add(MailboxAddress.Parse(EmailRequest.To));
             email.Subject = EmailRequest.Subject;
             var builder = new BodyBuilder();
-            builder.HtmlBody = EmailRequest.Body;
-            builder.TextBody = _preparedMessage;
+            // builder.HtmlBody = EmailRequest.Body;
+            builder.TextBody = EmailRequest.Body;
             var attachments = new List<MimeEntity>();
 
             if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
@@ -172,7 +172,7 @@
                 builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
             }
             email.Body = builder.ToMessageBody();
-            EmailRequest.Body = email.Body.ToString();
+            // EmailRequest.Body = email.Body.ToString();
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
             smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
