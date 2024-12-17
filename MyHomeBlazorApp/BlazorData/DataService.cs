@@ -13,8 +13,8 @@ using System.IO;
 using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Xml;
+using Unity;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
 
 
 namespace MyHomeBlazorApp.BlazorData
@@ -470,6 +470,44 @@ namespace MyHomeBlazorApp.BlazorData
                     System.IO.File.Delete(filePath);
                 }
             }
+        }
+
+        /// <summary>
+        /// Checking if file exsists and if the link is active. If not so it will be changed to an empty string.
+        /// </summary>
+        public void CheckIfFileExsist()
+        {
+            // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
+            List<DeviceProfile> deviceProfiles = CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            foreach (DeviceProfile device in deviceProfiles)
+            {
+                if (!System.IO.File.Exists(device.DeviceWarranty.ReceiptLink))
+                {
+                    device.DeviceWarranty.ReceiptLink = "";
+                }
+                if (!System.IO.File.Exists(device.DeviceWarranty.ExtraInsuranceWarrantyLink))
+                {
+                    device.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
+                }
+            }
+        }
+
+        public async Task NavigateToExtraWarrantyFile(int deviceID, DeviceProfile currentDevice)
+        {
+            currentDevice = GetDeviceById(deviceID);
+            string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
+            var file = Path.GetFileName(currentWarrantyReceiptLink);
+            string fileUrl = $"files/{CurrentUser.UserID}/{file}";
+            await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+        }
+
+        public async Task NavigateToWarrantyFile(int deviceID)
+        {
+            currentDevice = DataService.GetDeviceById(deviceID);
+            string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ReceiptLink;
+            var file = Path.GetFileName(currentWarrantyReceiptLink);
+            string fileUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
+            await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         }
 
         /// <summary>
