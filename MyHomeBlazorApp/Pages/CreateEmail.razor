@@ -138,6 +138,7 @@
     private string _extraWarrantyIsValidUntil = "";
     private string _preparedMessage = "";
 
+
     private void SendEmail()
 
     {
@@ -171,11 +172,25 @@
             smtp.Send(email);
             smtp.Disconnect(true);
             EmailRequest = new();
+            init();
         }
         catch
         {
 
         }
+    }
+
+    private void init()
+    {
+        _produserChecked = false;
+        _serialNumberChecked = false;
+        _modelNumberChecked = false;
+        _shopDateChecked = false;
+        _chosedDeviceRecieptChecked = false;
+        _chosedDeviceExtraWarrantyRecieptChecked = false;
+        _warrantyIsValidUntilChecked = false;
+        _extraWarrantyIsValidUntilChecked = false;
+        _chosedDeviceShopAdressChecked = false;
     }
 
     protected override void OnInitialized()
@@ -190,7 +205,7 @@
     {
         if (_produserChecked)
         {
-            _producer = _chosedDevice.DeviceProduser;            
+            _producer = _chosedDevice.DeviceProduser;
 
         }
         if (_serialNumberChecked)
@@ -225,9 +240,9 @@
             // string joinedString = string.Join(",", string)
             _shopAddress = stringToJoin;
         }
-        
+
         _preparedMessage = $@"Dear Sir/Madam,
-                    On {_shopDate}, I made a purchase of {_producer} [ADD ITEM TYPE HERE], model number: {_modelNumber} and serial number: {_serialNumber} from ‘{_chosedDevice.DeviceWarranty.Shop.ShopName}’ 
+                    On {_shopDate}, I made a purchase of {_producer} [ADD ITEM TYPE HERE], model number: {_modelNumber} and serial number: {_serialNumber} from ‘{_chosedDevice.DeviceWarranty.Shop.ShopName}’
                     at adress: {_shopAddress}.
                     Warranty valid until: {_warrantyIsValidUntil}. I attached reciept and/or extra warranty reciept.
                     The product does not fulfil all prerequisites to be fit for purpose.
@@ -235,7 +250,7 @@
                     Statutory warranty I am entitled to a functional product pursuant to legislation.
                     As the product became faulty within the warranty period, you are liable for repair or replacement free of charge.
                     If free repair or replacement is not possible, I am entitled to termination of the purchase contract and a refund of the purchase amount.
-                    Please send me your response within 7 days of receiving this message. 
+                    Please send me your response within 7 days of receiving this message.
                     With kind regards,
                     [YOUR NAME AND SIGNATURE]";
         EmailRequest.Body = _preparedMessage;
