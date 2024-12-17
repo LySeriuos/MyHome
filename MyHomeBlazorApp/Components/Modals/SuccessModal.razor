@@ -1,6 +1,6 @@
 ﻿<Modal @ref="refModalSuccess" Title="@Title">
     <BodyTemplate>
-        Data updated/added successfully!
+        @Text
     </BodyTemplate>
     <FooterTemplate>
         <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
@@ -10,7 +10,10 @@
 @code {
     [Parameter]
     public String? Title { get; set; }
+    [Parameter]
+    public String? Text { get; set; }
     private Modal refModalSuccess { get; set; } = new();
+    
 
     public async Task OnHideModalClick()
     {

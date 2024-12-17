@@ -2,6 +2,7 @@
 @page "/createEmail/{currentUserID:int}"
 @using MailKit.Net.Smtp
 @using MimeKit
+@using MyHomeBlazorApp.Components.Modals
 @using My_Home.Models
 
 @inject BlazorData.DataService DataService;
@@ -107,6 +108,10 @@
         <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
         <Button Type="ButtonType.Submit" class="btn btn-primary mt-2">Send Email</Button>
     </EditForm>
+
+    <div>
+        <SuccessModal @ref="_refSuccessModal" Title="Email service notification" Text="Your email has been sent!"></SuccessModal>
+    </div>
 }
 
 @code {
@@ -117,6 +122,7 @@
     private DeviceProfile _deviceProfile { get; set; } = new();
     private DeviceProfile _chosedDevice { get; set; } = new();
     private UserProfile _currentUser = new();
+    private SuccessModal _refSuccessModal = default!;
     private int _chosedDeviceID { get; set; } = new();
     private bool _produserChecked { get; set; }
     private bool _serialNumberChecked { get; set; }
@@ -171,6 +177,7 @@
             smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
             smtp.Send(email);
             smtp.Disconnect(true);
+            _refSuccessModal.OnShowModalClick();
             EmailRequest = new();
             init();
         }
