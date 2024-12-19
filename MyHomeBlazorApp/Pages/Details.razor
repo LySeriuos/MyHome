@@ -296,51 +296,7 @@
         currentDevice = new();
         await _reusableModal.ShowAsync();
     }
-
-    // private Stream GetFileStream()
-    // {
-    //     string currentExtraWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-    //     return File.OpenRead(@"{currentExtraWarrantyReceiptLink}");
-    // }
-    // this method should ckeck if there are files in the server. It could be deleted or corupted and then there is no way to open it.
-    // private bool CheckIfFileExists()
-    // {
-    //     var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
-    //     bool fileExists = true;
-    //     foreach (var filename in files)
-    //     {
-    //         var file = Path.GetFileName(filename);
-    //         if (!System.IO.File.Exists(file))
-    //         {
-    //             fileExists = false;
-    //             currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
-    //         }
-    //         else
-    //         {
-    //             fileExists = true;
-    //         }
-    //     }
-    //     return fileExists;
-    // }
-
-    // private void CheckIfFileExsist()
-    // {
-    //     // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService.CurrentUser.UserID}", "*.*");
-    //     List<DeviceProfile> deviceProfiles = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
-    //     foreach (DeviceProfile device in deviceProfiles)
-    //     {
-    //         if (!System.IO.File.Exists(device.DeviceWarranty.ReceiptLink))
-    //         {
-    //             device.DeviceWarranty.ReceiptLink = "";
-    //         }
-    //         if (!System.IO.File.Exists(device.DeviceWarranty.ExtraInsuranceWarrantyLink))
-    //         {
-    //             device.DeviceWarranty.ExtraInsuranceWarrantyLink = "";
-    //         }
-    //     }
-    // }
-
-
+    
     private async Task NavigateToExtraWarrantyFile(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
