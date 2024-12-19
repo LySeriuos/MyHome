@@ -340,12 +340,12 @@
     //     }
     // }
 
+
     private async Task NavigateToExtraWarrantyFile(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        var file = Path.GetFileName(currentWarrantyReceiptLink);
-        string fileUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
@@ -353,8 +353,7 @@
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ReceiptLink;
-        var file = Path.GetFileName(currentWarrantyReceiptLink);
-        string fileUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 

@@ -1,4 +1,5 @@
 ﻿using BlazorBootstrap;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.JSInterop;
@@ -492,22 +493,15 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
-        public async Task NavigateToExtraWarrantyFile(int deviceID, DeviceProfile currentDevice)
+        public string GetFileUrl(string linkToTheFile)
         {
-            currentDevice = GetDeviceById(deviceID);
-            string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-            var file = Path.GetFileName(currentWarrantyReceiptLink);
+            //currentDevice = GetDeviceById(deviceID);
+            //string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
+            var file = Path.GetFileName(linkToTheFile);
             string fileUrl = $"files/{CurrentUser.UserID}/{file}";
-            await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
-        }
-
-        public async Task NavigateToWarrantyFile(int deviceID)
-        {
-            currentDevice = DataService.GetDeviceById(deviceID);
-            string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ReceiptLink;
-            var file = Path.GetFileName(currentWarrantyReceiptLink);
-            string fileUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
-            await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+            return fileUrl;
+            //NavigationManager.NavigateTo(fileUrl, true);
+            //await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         }
 
         /// <summary>
