@@ -72,9 +72,12 @@
             <div class="col text-start">
                 <p class="mb-0">@_chosedDevice.DeviceWarranty.ReceiptLink</p>
             </div>
-            <div class="col">
-                <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToWarrantyFile()">Open</Button>
-            </div>
+            @if (_chosedDevice.DeviceWarranty.ReceiptLink != "")
+            {
+                <div class="col">
+                    <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToWarrantyFile()">Open</Button>
+                </div>
+            }
         </div>
         <div class="row w-50 mr-0">
             <div class="col-2 text-start">
@@ -85,9 +88,12 @@
             <div class="col text-start">
                 <p>@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
             </div>
-            <div class="col">
-                <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToExtraWarrantyFile()">Open</Button>
-            </div>
+            @if (_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink != "")
+            {
+                <div class="col">
+                    <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToExtraWarrantyFile()">Open</Button>
+                </div>
+            }
         </div>
         <div class="row w-50 mr-0">
             <div class="col-2 text-start">
@@ -146,7 +152,7 @@
     private string _preparedMessage = "";
 
     private async Task NavigateToExtraWarrantyFile()
-    {       
+    {
         string currentExtraWarrrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
         string fileUrl = DataService.GetFileUrl(currentExtraWarrrantyReceiptLink);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
