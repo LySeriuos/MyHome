@@ -70,7 +70,7 @@
                 <label>Reciept:</label>
             </div>
             <div class="col text-start">
-                <p class="mb-0">@_chosedDevice.DeviceWarranty.ReceiptLink</p>
+                <p class="mb-0">@receiptFileName</p>
             </div>
             @if (_chosedDevice.DeviceWarranty.ReceiptLink != "")
             {
@@ -86,7 +86,7 @@
                 <label>Extra Warranty:</label>
             </div>
             <div class="col text-start">
-                <p>@_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink</p>
+                <p class="mb-0">@extraWarrantyFileName</p>
             </div>
             @if (_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink != "")
             {
@@ -140,6 +140,8 @@
     private bool _warrantyIsValidUntilChecked { get; set; }
     private bool _extraWarrantyIsValidUntilChecked { get; set; }
     private bool _chosedDeviceShopAdressChecked { get; set; }
+    private string receiptFileName { get; set; } = "";
+    private string extraWarrantyFileName { get; set; } = "";
     private string _producer = "";
     private string _serialNumber = "";
     private string _modelNumber = "";
@@ -220,6 +222,14 @@
         _chosedDeviceShopAdressChecked = false;
     }
 
+    public string GetFileName(string fileLink)
+    {
+        int getIndex = fileLink.LastIndexOf('\\');
+        string splitedString = fileLink.Remove(0, getIndex+1);
+        string fileName = splitedString;
+        return fileName;
+    }
+
     protected override void OnInitialized()
     {
         _chosedDevice.DeviceWarranty = new();
@@ -296,6 +306,8 @@
         if (_chosedDeviceID != 0)
         {
             _chosedDevice = _currentUser.GetAllDevices().First(d => d.DeviceID == _chosedDeviceID);
+            receiptFileName = GetFileName(_chosedDevice.DeviceWarranty.ReceiptLink);
+            extraWarrantyFileName = GetFileName(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink);
         }
         base.OnAfterRender(firstRender);
         StateHasChanged();
