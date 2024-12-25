@@ -117,7 +117,7 @@
                 </div>
                 <div class="col text-start">
                     <p>@_chosedDevice.DeviceWarranty.Shop.Address.StreetName @_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber @_chosedDevice.DeviceWarranty.Shop.Address.City</p>
-            </div>
+                </div>
             }
         </div>
     </EditForm>
@@ -241,9 +241,13 @@
 
     public string GetFileName(string fileLink)
     {
-        int getIndex = fileLink.LastIndexOf('\\');
-        string splitedString = fileLink.Remove(0, getIndex + 1);
-        string fileName = splitedString;
+        string fileName = "";
+        if (!String.IsNullOrEmpty(fileLink))
+        {
+            int getIndex = fileLink.LastIndexOf('\\');
+            string splitedString = fileLink.Remove(0, getIndex + 1);
+            fileName = splitedString;
+        }
         return fileName;
     }
 
