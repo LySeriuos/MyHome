@@ -24,36 +24,46 @@
 {
     <EditForm Model="_deviceProfile">
         <div class="row w-50 mr-0">
-            <div class="col-2 text-start">
-                <InputCheckbox id="produser" @bind-Value="_produserChecked">
-                </InputCheckbox>
-                <label>Device Produser:</label>
-            </div>
-            <div class="col text-start">
-                <p>@_chosedDevice.DeviceProduser</p>
-            </div>
+            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceProduser))
+            {
+                <div class="col-2 text-start">
+                    <InputCheckbox id="produser" @bind-Value="_produserChecked">
+                    </InputCheckbox>
+                    <label>Device Produser:</label>
+                </div>
+                <div class="col text-start">
+                    <p>@_chosedDevice.DeviceProduser</p>
+                </div>
+            }
         </div>
         <div class="row w-50 mr-0">
-            <div class="col-2 text-start">
-                <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked">
-                </InputCheckbox>
-                <label>Serial Number:</label>
-            </div>
-            <div class="col text-start">
-                <p>@_chosedDevice.DeviceSerialNumber</p>
-            </div>
+            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceSerialNumber))
+            {
+                <div class="col-2 text-start">
+                    <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked">
+                    </InputCheckbox>
+                    <label>Serial Number:</label>
+                </div>
+                <div class="col text-start">
+                    <p>@_chosedDevice.DeviceSerialNumber</p>
+                </div>
+            }
         </div>
         <div class="row w-50 mr-0">
-            <div class="col-2 text-start">
-                <InputCheckbox id="modelNumber" @bind-Value="_modelNumberChecked">
-                </InputCheckbox>
-                <label>Model Number:</label>
-            </div>
-            <div class="col text-start">
-                <p>@_chosedDevice.DeviceModelNumber</p>
-            </div>
+            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceModelNumber))
+            {
+                <div class="col-2 text-start">
+                    <InputCheckbox id="modelNumber" @bind-Value="_modelNumberChecked">
+                    </InputCheckbox>
+                    <label>Model Number:</label>
+                </div>
+                <div class="col text-start">
+                    <p>@_chosedDevice.DeviceModelNumber</p>
+                </div>
+            }
         </div>
         <div class="row w-50 mr-0">
+            @* Date issue! Which date format to use for editFrom to add new device? DateNow, new DateTime or default(DateTime)?  *@
             <div class="col-2 text-start">
                 <InputCheckbox id="shopDate" @bind-Value="_shopDateChecked">
                 </InputCheckbox>
@@ -62,40 +72,32 @@
             <div class="col text-start">
                 <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
             </div>
+
         </div>
         <div class="row w-50 mr-0">
-            <div class="col-2 text-start">
-                <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
-                </InputCheckbox>
-                <label>Reciept:</label>
-            </div>
-            <div class="col text-start">
-                <p class="mb-0">@receiptFileName</p>
-            </div>
-            @if (_chosedDevice.DeviceWarranty.ReceiptLink != "")
+
+            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ReceiptLink))
             {
+                <div class="col-2 text-start">
+                    <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
+                    </InputCheckbox>
+                    <label>Reciept:</label>
+                </div>
+                <div class="col text-start">
+                    <p class="mb-0">@receiptFileName</p>
+                </div>
                 <div class="col">
                     <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToWarrantyFile()">Open</Button>
                 </div>
             }
         </div>
         <div class="row w-50 mr-0">
-            @if (_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink == "")
+            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
             {
                 <div class="col-2 text-start">
-                    <InputCheckbox Disabled id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
+                    <InputCheckbox id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
                     <label>Extra Warranty:</label>
                 </div>
-                <div class="col text-start">
-                    <p class="mb-0">@extraWarrantyFileName</p>
-                </div>
-            }
-            else
-            {
-                <div class="col-2 text-start">
-                            <InputCheckbox id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
-                            <label>Extra Warranty:</label>
-                        </div>
                 <div class="col text-start">
                     <p class="mb-0">@extraWarrantyFileName</p>
                 </div>
@@ -103,20 +105,21 @@
                     <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToExtraWarrantyFile()">Open</Button>
                 </div>
             }
-
         </div>
 
         <div class="row w-50 mr-0">
-            <div class="col-2 text-start">
-                <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
-                </InputCheckbox>
-                <label>Shop Adress</label>
+            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.Shop.Address.StreetName))
+            {
+                <div class="col-2 text-start">
+                    <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
+                    </InputCheckbox>
+                    <label>Shop Adress</label>
+                </div>
+                <div class="col text-start">
+                    <p>@_chosedDevice.DeviceWarranty.Shop.Address.StreetName @_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber @_chosedDevice.DeviceWarranty.Shop.Address.City</p>
             </div>
-            <div class="col text-start">
-                <p>@_chosedDevice.DeviceWarranty.Shop.Address.StreetName @_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber @_chosedDevice.DeviceWarranty.Shop.Address.City</p>
-            </div>
+            }
         </div>
-
     </EditForm>
     <Button Class="btn-dark btn-sm" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
 

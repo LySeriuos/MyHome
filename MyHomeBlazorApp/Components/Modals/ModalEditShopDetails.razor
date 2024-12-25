@@ -24,7 +24,6 @@
                     <InputNumber id="shopPhoneNumber" @bind-Value="CurrentDevice.DeviceWarranty.Shop.PhoneNumber">Shop Phone Number</InputNumber>
                 </div>
             </div>
-            <AddEditShopDetailsComponent CurrentDevice="@CurrentDevice" />
             <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@ShopAddress" />
             <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice" DevicesListAsQueryable="@DevicesListAsQueryable"></NextPreviuosButtons>
             <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddShopClick">Close</Button>

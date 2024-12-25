@@ -53,7 +53,7 @@ namespace MyHome.Models
         }
 
         [Required]
-        private DateTime _purchaseDate = DateTime.Now;
+        private DateTime _purchaseDate = new DateTime();
 
         public DateTime PurchaseDate
         {

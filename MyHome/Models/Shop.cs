@@ -8,7 +8,7 @@ namespace MyHome.Models
 {
     public class Shop
     {
-        private string _shopName = "No Data";
+        private string _shopName = default;
 
         public string ShopName
         {
@@ -16,7 +16,7 @@ namespace MyHome.Models
             set { _shopName = value; }
         }
 
-        private string _shopWebAdrress = "No Data";
+        private string _shopWebAdrress = default;
 
         public string ShopWebAddress
         {

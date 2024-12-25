@@ -9,7 +9,7 @@ namespace MyHome.Models
 {
     public class Address
     {
-        private string _streetName = "No Data";
+        private string _streetName = default;
 
         public string StreetName
         {
@@ -25,7 +25,7 @@ namespace MyHome.Models
             set { _houseNumber = value; }
         }
 
-        private int _apartamentNumber = 0;
+        private int _apartamentNumber = default;
 
         public int ApartamentNumber
         {
@@ -34,7 +34,7 @@ namespace MyHome.Models
         }
 
         // """bla@1domain.tld
-        private string _houseNumberExtension = "No Data";
+        private string _houseNumberExtension = default;
         [EmailAddress]
         public string HouseNumberExtension
         {
@@ -42,7 +42,7 @@ namespace MyHome.Models
             set { _houseNumberExtension = value; }
         }
 
-        private string _city = "No Data";
+        private string _city = default;
 
         public string City
         {
@@ -50,7 +50,7 @@ namespace MyHome.Models
             set { _city = value; }
         }
 
-        private string _country = "No Data";
+        private string _country = default;
 
         public string Country
         {
