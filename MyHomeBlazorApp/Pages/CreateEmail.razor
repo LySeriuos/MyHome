@@ -11,7 +11,7 @@
 <h3>CreateEmail</h3>
 @* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
 <label class="form-label">Choose The Device</label>
-<InputSelect @bind-Value="_chosedDeviceID" class="form-select">
+<InputSelect @bind-Value="_chosedDeviceID" @bind-Value:after="init" class="form-select">
     <option selected value="0" disabled>Select Real Estate...</option>
     @foreach (var device in _currentUser.GetAllDevices())
     {
@@ -80,21 +80,32 @@
             }
         </div>
         <div class="row w-50 mr-0">
-            <div class="col-2 text-start">
-                <InputCheckbox id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked">
-                </InputCheckbox>
-                <label>Extra Warranty:</label>
-            </div>
-            <div class="col text-start">
-                <p class="mb-0">@extraWarrantyFileName</p>
-            </div>
-            @if (_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink != "")
+            @if (_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink == "")
             {
+                <div class="col-2 text-start">
+                    <InputCheckbox Disabled id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
+                    <label>Extra Warranty:</label>
+                </div>
+                <div class="col text-start">
+                    <p class="mb-0">@extraWarrantyFileName</p>
+                </div>
+            }
+            else
+            {
+                <div class="col-2 text-start">
+                            <InputCheckbox id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
+                            <label>Extra Warranty:</label>
+                        </div>
+                <div class="col text-start">
+                    <p class="mb-0">@extraWarrantyFileName</p>
+                </div>
                 <div class="col">
                     <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToExtraWarrantyFile()">Open</Button>
                 </div>
             }
+
         </div>
+
         <div class="row w-50 mr-0">
             <div class="col-2 text-start">
                 <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
@@ -142,16 +153,19 @@
     private bool _chosedDeviceShopAdressChecked { get; set; }
     private string receiptFileName { get; set; } = "";
     private string extraWarrantyFileName { get; set; } = "";
-    private string _producer = "";
-    private string _serialNumber = "";
-    private string _modelNumber = "";
-    private string _shopDate = "";
+    private string _producerStringToAdd = "";
+    private string _serialNumberStringToAdd = "";
+    private string _modelNumberStringToAdd = "";
+    private string _shopDateStringToAdd = "";
     private string _recieptLink = "";
     private string _extraWarrantyRecieptLink = "";
     private string _shopAddress = "";
     private string _warrantyIsValidUntil = "";
     private string _extraWarrantyIsValidUntil = "";
     private string _preparedMessage = "";
+    private string _exrtraWarrantyFileLinkConfirmation = "";
+    private string _receiptFileLinkConfirmation = "";
+
 
     private async Task NavigateToExtraWarrantyFile()
     {
@@ -225,7 +239,7 @@
     public string GetFileName(string fileLink)
     {
         int getIndex = fileLink.LastIndexOf('\\');
-        string splitedString = fileLink.Remove(0, getIndex+1);
+        string splitedString = fileLink.Remove(0, getIndex + 1);
         string fileName = splitedString;
         return fileName;
     }
@@ -242,50 +256,54 @@
     {
         if (_produserChecked)
         {
-            _producer = _chosedDevice.DeviceProduser;
-
+            _producerStringToAdd = $"{_chosedDevice.DeviceProduser} [ADD ITEM TYPE HERE].";
         }
         if (_serialNumberChecked)
         {
-            _serialNumber = _chosedDevice.DeviceSerialNumber;
+            _serialNumberStringToAdd = $"Its serial number is {_chosedDevice.DeviceSerialNumber}.";
         }
         if (_modelNumberChecked)
         {
-            _modelNumber = _chosedDevice.DeviceModelNumber;
+            _modelNumberStringToAdd = $"Its model number is {_chosedDevice.DeviceModelNumber}.";
         }
 
         if (_chosedDeviceRecieptChecked)
         {
             _recieptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
             _warrantyIsValidUntil = _chosedDevice.DeviceWarranty.WarrantyEnd.ToShortDateString();
+            _receiptFileLinkConfirmation = $"The original receipt attached.";
         }
 
         if (_chosedDeviceExtraWarrantyRecieptChecked)
         {
+
             _extraWarrantyRecieptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
             _warrantyIsValidUntil = _chosedDevice.DeviceWarranty.WarrantyEnd.ToShortDateString();
+            _exrtraWarrantyFileLinkConfirmation = $"The extra warranty/insurance receipt attached.";
         }
 
         if (_shopDateChecked)
         {
-            _shopDate = _chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString();
+            _shopDateStringToAdd = $"On {_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()},";
         }
 
         if (_chosedDeviceShopAdressChecked)
         {
-            string stringToJoin = $"{_chosedDevice.DeviceWarranty.Shop.Address.StreetName}, {_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber}, {_chosedDevice.DeviceWarranty.Shop.Address.City}";
+            string stringToJoin = $"Bought from {_chosedDevice.DeviceWarranty.Shop.ShopName} at {_chosedDevice.DeviceWarranty.Shop.Address.StreetName}, {_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber}, {_chosedDevice.DeviceWarranty.Shop.Address.City}.";
             // string joinedString = string.Join(",", string)
             _shopAddress = stringToJoin;
         }
 
         _preparedMessage = $@"Dear Sir/Madam,
-                    On {_shopDate}, I made a purchase of {_producer} [ADD ITEM TYPE HERE], model number: {_modelNumber} and serial number: {_serialNumber} from ‘{_chosedDevice.DeviceWarranty.Shop.ShopName}’
-                    at adress: {_shopAddress}.
-                    Warranty valid until: {_warrantyIsValidUntil}. I attached reciept and/or extra warranty reciept.
+    {_shopDateStringToAdd} I made a purchase of {_producerStringToAdd} {_modelNumberStringToAdd} {_serialNumberStringToAdd}
+    {_shopAddress} {_receiptFileLinkConfirmation} {_exrtraWarrantyFileLinkConfirmation}
                     The product does not fulfil all prerequisites to be fit for purpose.
-                    [X X Description of complaint Describe why the product is faulty X X].
-                    Statutory warranty I am entitled to a functional product pursuant to legislation.
-                    As the product became faulty within the warranty period, you are liable for repair or replacement free of charge.
+                    Product is faulty because:
+                    1.
+                    2.
+                    3.
+                    ...
+                    As the product became faulty within the warranty or insurance period, you are liable for repair or replacement free of charge.
                     If free repair or replacement is not possible, I am entitled to termination of the purchase contract and a refund of the purchase amount.
                     Please send me your response within 7 days of receiving this message.
                     With kind regards,
