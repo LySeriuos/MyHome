@@ -6,6 +6,7 @@
 @using System.ComponentModel.DataAnnotations
 @using static QRCoder.PayloadGenerator
 @inject BlazorData.DataService DataService
+@inject IJSRuntime JSRuntime
 
 
 <h3>QrCoder</h3>
@@ -43,7 +44,7 @@
         <label class="form-check-label" for="wifiPassword">
             Wifi Pasword
         </label>
-        <InputText type="@TxtType"  name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+        <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
         <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
 
         <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
@@ -112,21 +113,19 @@
         }
     }
 
-    
-
-
     private void SetSelectedDeviceProfile(int deviceID)
     {
         _selectedDeviceProfile = DataService.GetDeviceById(deviceID);
     }
 
 
-    private void HandleQrCode(EditContext editContext)
+    private async Task HandleQrCode(EditContext editContext)
     {
         _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
         currentUser = DataService.CurrentUser;
         // string QrCodeUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
         Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), savedQRCodeLink);
+        // await JSRuntime.InvokeVoidAsync("open", savedQRCodeLink, "_blank");
     }
 
     private void HandleWifiSharingQrCode(EditContext editWifiContext)
