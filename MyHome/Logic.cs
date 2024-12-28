@@ -144,7 +144,7 @@ namespace MyHome
         public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string savedQrCodeLink)
         {
             // This is used for test on local environment, new Url every time visual studio started. 
-            Url absoluteUrl = new Url("https://xqgznzvc-7211.euw.devtunnels.ms");
+            Url absoluteUrl = new Url("https://3w7qd4gh-7211.euw.devtunnels.ms");
             //Url qrCodeLink = new Url($"{absoluteUrl}mdetails/{userID}/{deviceID}");
             Url qrCodeUrl = new Url($"{absoluteUrl}/mobileDeviceInfo/{userID}/{deviceID}");
             string generatedQrCodeLink = qrCodeUrl.ToString();

@@ -56,9 +56,9 @@
 
 <style>
     bi.bi-eye:before {
-        content: '\e345';
-        font-family: e-icons;
-        font-size: 13px;
+    content: '\e345';
+    font-family: e-icons;
+    font-size: 13px;
     }
 
 </style>
@@ -72,7 +72,7 @@
     [Parameter]
     public UserProfile currentUser { get; set; } = new();
     private string deviceID { get; set; } = String.Empty;
-    private string savedQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
+    private string savedQrCodeLink = $"{Environment.CurrentDirectory}\\files\\2\\qrCode\\savedQrCode.png";
     bool valid;
 
     public class WifiModel
@@ -124,18 +124,24 @@
         _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
         currentUser = DataService.CurrentUser;
         // string QrCodeUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
-        Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), savedQRCodeLink);
-        // await JSRuntime.InvokeVoidAsync("open", savedQRCodeLink, "_blank");
+        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCode");
+        Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), savedQrCodeLink);
+        var file = Path.GetFileName(savedQrCodeLink);
+        string fileUrl = $"files/{currentUser.UserID}/qrCode/{file}";
+        await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private void HandleWifiSharingQrCode(EditContext editWifiContext)
+    private async void HandleWifiSharingQrCode(EditContext editWifiContext)
     {
         valid = editWifiContext.Validate();
-
+        currentUser = DataService.CurrentUser;
         if (valid == true)
         {
             valid = editWifiContext.Validate();
-            Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, savedQRCodeLink);
+            Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, savedQrCodeLink);
+            var file = Path.GetFileName(savedQrCodeLink);
+            string fileUrl = $"files/{currentUser.UserID}/qrCode/{file}";
+            await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         }
         else
         {
