@@ -43,6 +43,6 @@ DeviceProfile foundedDevice = Logic.GetDeviceInfoByID(searchID, currentUser);
 Console.WriteLine(foundedDevice.ToString());//creating Qr code for device 
 string idNumber = userDevices[0].DeviceID.ToString();
 
-Logic.CreateQRCodeForDevice(idNumber, saveQRCodeLink);
+//Logic.CreateQRCodeForDevice(idNumber, saveQRCodeLink);
 // saved updated userDevices profile
 //Data.SaveUsersListToXml(usersList, path);
