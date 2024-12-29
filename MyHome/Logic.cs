@@ -125,27 +125,19 @@ namespace MyHome
             devices.Remove(foundDevice);
             return deviceWasAdded;
         }
+
         /// <summary>
         /// Method to create QrCode for devices 
         /// </summary>
-        /// <param name="idNumber">Device's ID number</param>
-        public static void CreateQRCodeForDevice(string idNumber, string saveQrCodeLink)
-        {
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode($"Device ID number: {idNumber}", QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-#pragma warning disable CA1416 // Validate platform compatibility
-            qrCodeImage.Save(saveQrCodeLink);
-#pragma warning restore CA1416 // Validate platform compatibility
-        }
-
-        
+        /// <param name="deviceID">Qr Code link to the device by device ID </param>
+        /// <param name="userID">current user by user ID </param>
+        /// <param name="savedQrCodeLink">Path to saved Qr Code</param>
         public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string savedQrCodeLink)
         {
+            //TODO:
             // This is used for test on local environment, new Url every time visual studio started. 
             Url absoluteUrl = new Url("https://3w7qd4gh-7211.euw.devtunnels.ms");
-            //Url qrCodeLink = new Url($"{absoluteUrl}mdetails/{userID}/{deviceID}");
+            //
             Url qrCodeUrl = new Url($"{absoluteUrl}/mobileDeviceInfo/{userID}/{deviceID}");
             string generatedQrCodeLink = qrCodeUrl.ToString();
             QrCodeGenerator(generatedQrCodeLink, savedQrCodeLink);

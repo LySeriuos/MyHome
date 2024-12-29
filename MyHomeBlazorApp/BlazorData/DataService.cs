@@ -494,14 +494,10 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         public string GetFileUrl(string linkToTheFile)
-        {
-            //currentDevice = GetDeviceById(deviceID);
-            //string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
+        {           
             var file = Path.GetFileName(linkToTheFile);
             string fileUrl = $"files/{CurrentUser.UserID}/{file}";
             return fileUrl;
-            //NavigationManager.NavigateTo(fileUrl, true);
-            //await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         }
 
         /// <summary>

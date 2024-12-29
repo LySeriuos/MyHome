@@ -123,7 +123,6 @@
     {
         _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
         currentUser = DataService.CurrentUser;
-        // string QrCodeUrl = $"files/{DataService.CurrentUser.UserID}/{file}";
         Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCode");
         Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), savedQrCodeLink);
         var file = Path.GetFileName(savedQrCodeLink);
