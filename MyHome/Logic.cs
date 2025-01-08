@@ -143,13 +143,18 @@ namespace MyHome
             QrCodeGenerator(generatedQrCodeLink, savedQrCodeLink);
         }
 
+        //Need to fix this!!!!
         public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            qrCodeImage.Save(savedQrCodeLink);
+
+            PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
+            byte[] qrCodeImage = qrCode.GetGraphic(20);
+            //Bitmap qrCodeImage = qrCode.GetGraphic(20);
+            //qrCodeImage.Save(savedQrCodeLink);
+            using var ms = new MemoryStream(qrCodeImage);
+            //return new Bitmap(ms);
         }
 
         public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword, string savedQrCodeLink)
