@@ -30,7 +30,7 @@ namespace MyHomeBlazorApp.BlazorData
         public void AddUser(UserProfile u)
         {
             _users.Add(u);
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         public int UserMaxID(List<UserProfile> _users)
@@ -78,7 +78,7 @@ namespace MyHomeBlazorApp.BlazorData
         {
             realEstate.RealEstateID = Logic.GetRealEstateMaxId(RealEstates) + 1;
             RealEstates.Add(realEstate);
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace MyHomeBlazorApp.BlazorData
         public void AddRealEstateAdrress(Address adrress)
         {
             CurrentRealEstate.Address = adrress;
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace MyHomeBlazorApp.BlazorData
             {
                 RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
                 RealEstates.Remove(realEstateToDelete);
-                Data.SaveUsersListToXml(_users, _path);
+                MyHome.Data.SaveUsersListToXml(_users, _path);
             }
             else
             {
@@ -185,7 +185,7 @@ namespace MyHomeBlazorApp.BlazorData
                 chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
             }
 
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
             deviceToAdd = new();
         }
 
@@ -213,7 +213,7 @@ namespace MyHomeBlazorApp.BlazorData
                 deviceProfilesMoveToRealEstate.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace MyHomeBlazorApp.BlazorData
         {
             DeviceWarranty currentWarranty = CurrentDevice.DeviceWarranty;
             currentWarranty.Shop = shop;
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace MyHomeBlazorApp.BlazorData
         {
             Shop shop = CurrentDevice.DeviceWarranty.Shop;
             shop.Address = address;
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         #endregion
@@ -331,7 +331,7 @@ namespace MyHomeBlazorApp.BlazorData
             deviceWarranty.WarrantyPeriod = GetTimeSpanFromYears(deviceWarranty.Years);
             deviceWarranty.ExtraInsuranceWarrantyLenght = GetTimeSpanFromYears(deviceWarranty.ExtendedWarrantyinYears);
             CurrentDevice.DeviceWarranty = deviceWarranty;
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
@@ -397,7 +397,7 @@ namespace MyHomeBlazorApp.BlazorData
                 UnassignedProfile.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         public Unassigned UnassignedDevices()
@@ -505,19 +505,19 @@ namespace MyHomeBlazorApp.BlazorData
         /// </summary>
         public void SaveUpdatedObject()
         {
-            Data.SaveUsersListToXml(_users, _path);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
         }
 
         public void LoadData()
         {
-            Data.GetUsersListFromXml(_path);
-        }
+            MyHome.Data.GetUsersListFromXml(_path);
+        }   
 
         #endregion
 
         public DataService()
         {
-            _users = Data.GetUsersListFromXml(_path);
+            _users = MyHome.Data.GetUsersListFromXml(_path);
             // manually assigned test data
             int userId = 2;
             int realEstateID = 1;

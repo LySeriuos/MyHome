@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyHomeBlazorApp.Data;
+using MyHomeBlazorApp.Areas.Identity.Data;
 
 
 
