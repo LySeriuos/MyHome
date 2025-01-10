@@ -3,6 +3,52 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using MyHomeBlazorApp.BlazorData;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MyHomeBlazorApp.Data;
+
+
+
+var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
+
+builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MyHomeBlazorAppContext>();
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddSingleton<DataService>();
+builder.Services.AddBlazorBootstrap();
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+// routing url to physical path "Files"
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
+    RequestPath = "/Files"
+});
+
+app.UseRouting();
+
+app.MapBlazorHub();
+app.MapFallbackToPage("/_Host");
+
+app.Run();
+
 
 namespace MyHomeBlazorApp
 {
@@ -15,43 +61,6 @@ namespace MyHomeBlazorApp
             public const string SAVE_QR_CODE_PATH = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
             public const string SAVE_UPLOADED_FILES = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\UploadedFiles\\";
             public const string BASE_API_URL = "https://www.google.se/search?q=";
-        }
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-            builder.Services.AddRazorPages();
-            builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<DataService>();
-            builder.Services.AddBlazorBootstrap();
-            
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            // routing url to physical path "Files"
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
-                RequestPath = "/Files"
-            });
-
-            app.UseRouting();
-
-            app.MapBlazorHub();
-            app.MapFallbackToPage("/_Host");
-
-            app.Run();
         }
     }
 }
