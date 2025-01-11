@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyHomeBlazorApp.Data;
 using MyHomeBlazorApp.Areas.Identity.Data;
+using Microsoft.AspNetCore.Components.Authorization;
+using MyHomeBlazorApp.Areas.Identity;
 
 
 
@@ -15,11 +17,14 @@ var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAp
 
 builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MyHomeBlazorAppContext>();
+builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<MyHomeBlazorAppContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<DataService>();
 builder.Services.AddBlazorBootstrap();
 
@@ -44,7 +49,9 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
+app.UseAuthorization();
 
+app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
