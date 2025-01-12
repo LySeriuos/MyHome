@@ -1,5 +1,7 @@
 ﻿@* @page "/createEmail" *@
 @page "/createEmail/{currentUserID:int}"
+@attribute [Authorize]
+
 @using MailKit.Net.Smtp
 @using MimeKit
 @using MyHomeBlazorApp.Components.Modals
