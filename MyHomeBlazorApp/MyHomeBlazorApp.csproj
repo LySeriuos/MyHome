@@ -31,7 +31,6 @@
     <ProjectReference Include="..\MyHome\MyHome.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Files\" />
     <Folder Include="Files\2\" />
   </ItemGroup>
 	
