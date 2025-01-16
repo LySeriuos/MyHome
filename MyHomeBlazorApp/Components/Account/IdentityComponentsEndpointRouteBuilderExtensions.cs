@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using MyHomeBlazorApp.BlazorData;
-using MyHomeBlazorApp.Pages.Account;
-using MyHomeBlazorApp.Pages.Account.Pages;
-using MyHomeBlazorApp.Pages.Account.Pages.Manage;
+using MyHomeBlazorApp.Components.Account;
+using MyHomeBlazorApp.Components.Account.Pages;
+using MyHomeBlazorApp.Components.Account.Pages.Manage;
 
 namespace Microsoft.AspNetCore.Routing
 {

@@ -6,8 +6,9 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity;
-
+using MyHomeBlazorApp.Components.Account;
+using Microsoft.AspNetCore.Builder;
+//using MyHomeBlazorApp.Components.Account;
 namespace MyHomeBlazorApp
 {
     public class Program
@@ -27,24 +28,25 @@ namespace MyHomeBlazorApp
 
             builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
 
-            builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MyHomeBlazorAppContext>();
+            builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<MyHomeBlazorAppContext>();
             // Add services to the container.
-            builder.Services.AddRazorPages();
-            builder.Services.AddServerSideBlazor();
+            //builder.Services.AddRazorPages();
+            //builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<DataService>();
             builder.Services.AddBlazorBootstrap();
-            //builder.Services.AddAuthentication(options =>
-            //{
-            //    options.DefaultScheme = IdentityConstants.ApplicationScheme;
-            //    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            //}).AddIdentityCookies();
+
+            builder.Services.AddRazorComponents()
+        .AddInteractiveServerComponents();
+
+
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddScoped<IdentityUserAccessor>();
-
             builder.Services.AddScoped<IdentityRedirectManager>();
 
-            //builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+            //builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -66,9 +68,12 @@ namespace MyHomeBlazorApp
             });
 
             app.UseRouting();
-
+            app.UseAuthorization();
+            //app.MapControllers();
             app.MapBlazorHub();
-            app.MapFallbackToPage("/_Host");
+            app.UseAntiforgery();
+            app.MapRazorComponents<App>()
+               .AddInteractiveServerRenderMode();
 
             app.Run();
         }
