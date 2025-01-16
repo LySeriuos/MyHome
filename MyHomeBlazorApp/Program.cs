@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using MyHomeBlazorApp.BlazorData;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity;
 
 namespace MyHomeBlazorApp
 {
@@ -19,14 +23,28 @@ namespace MyHomeBlazorApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
 
+            builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MyHomeBlazorAppContext>();
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<DataService>();
             builder.Services.AddBlazorBootstrap();
-            
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            //    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            //}).AddIdentityCookies();
+            builder.Services.AddCascadingAuthenticationState();
 
+            builder.Services.AddScoped<IdentityUserAccessor>();
+
+            builder.Services.AddScoped<IdentityRedirectManager>();
+
+            //builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -36,6 +54,7 @@ namespace MyHomeBlazorApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
