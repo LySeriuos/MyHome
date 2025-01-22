@@ -17,7 +17,7 @@
 
 <h5>Generate link to Device QrCode </h5>
 
-<EditForm Model="@_selectedDeviceProfile" Context="editDeviceContext" OnSubmit="HandleQrCode">
+<EditForm Model="@_selectedDeviceProfile" Context="editDeviceContext" OnSubmit="HandleQrCode" FormName="QrC">
     <label class="form-label">Choose Device</label>
     <InputSelect @bind-Value="_chosedDeviceID">
         <option selected disabled value="-1">Select Device...</option>
@@ -128,6 +128,7 @@
         var file = Path.GetFileName(savedQrCodeLink);
         string fileUrl = $"files/{currentUser.UserID}/qrCode/{file}";
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+        StateHasChanged();
     }
 
     private async void HandleWifiSharingQrCode(EditContext editWifiContext)

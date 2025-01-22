@@ -32,8 +32,8 @@ namespace MyHomeBlazorApp
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MyHomeBlazorAppContext>();
             // Add services to the container.
-            //builder.Services.AddRazorPages();
-            //builder.Services.AddServerSideBlazor();
+    //        builder.Services.AddRazorPages();
+            builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<DataService>();
             builder.Services.AddBlazorBootstrap();
 
@@ -67,10 +67,10 @@ namespace MyHomeBlazorApp
                 RequestPath = "/Files"
             });
 
-            app.UseRouting();
+      //      app.UseRouting();
             app.UseAuthorization();
-            //app.MapControllers();
-            app.MapBlazorHub();
+      //      app.MapControllers();
+      //      app.MapBlazorHub();
             app.UseAntiforgery();
             app.MapRazorComponents<App>()
                .AddInteractiveServerRenderMode();
