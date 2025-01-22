@@ -24,7 +24,7 @@ namespace MyHomeBlazorApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContext") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
 
             builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
 
@@ -32,7 +32,7 @@ namespace MyHomeBlazorApp
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MyHomeBlazorAppContext>();
             // Add services to the container.
-    //        builder.Services.AddRazorPages();
+        //    builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<DataService>();
             builder.Services.AddBlazorBootstrap();
