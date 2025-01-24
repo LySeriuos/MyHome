@@ -26,7 +26,15 @@
             <option value="@device.DeviceID">@device.DeviceName</option>
         }
     </InputSelect>
-    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+    <br />
+    @if (_chosedDeviceID <= 0)
+    {
+        <Button Disabled Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+    }
+    else
+    {
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+    }
 </EditForm>
 <br />
 <br />
@@ -56,9 +64,9 @@
 
 <style>
     bi.bi-eye:before {
-    content: '\e345';
-    font-family: e-icons;
-    font-size: 13px;
+        content: '\e345';
+        font-family: e-icons;
+        font-size: 13px;
     }
 
 </style>
@@ -73,6 +81,7 @@
     public UserProfile currentUser { get; set; } = new();
     private string deviceID { get; set; } = String.Empty;
     private string savedQrCodeLink = $"{Environment.CurrentDirectory}\\files\\2\\qrCode\\savedQrCode.png";
+    private string errorMessage = "";
     bool valid;
 
     public class WifiModel
