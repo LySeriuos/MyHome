@@ -136,7 +136,7 @@ namespace MyHome
         {
             //TODO:
             // This is used for test on local environment, new Url every time visual studio started. 
-            Url absoluteUrl = new Url("https://j3241878-7211.euw.devtunnels.ms/");
+            Url absoluteUrl = new Url("https://j3241878-7211.euw.devtunnels.ms");
             //
             Url qrCodeUrl = new Url($"{absoluteUrl}/mobileDeviceInfo/{userID}/{deviceID}");
             string generatedQrCodeLink = qrCodeUrl.ToString();
@@ -148,13 +148,9 @@ namespace MyHome
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, QRCodeGenerator.ECCLevel.Q);
-
-            PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
-            byte[] qrCodeImage = qrCode.GetGraphic(20);
-            //Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            //qrCodeImage.Save(savedQrCodeLink);
-            using var ms = new MemoryStream(qrCodeImage);
-            //return new Bitmap(ms);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+            qrCodeImage.Save(savedQrCodeLink);
         }
 
         public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword, string savedQrCodeLink)
