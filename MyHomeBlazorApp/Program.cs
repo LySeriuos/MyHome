@@ -24,27 +24,35 @@ namespace MyHomeBlazorApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContext") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
 
             builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
-
-            builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<MyHomeBlazorAppContext>();
-            // Add services to the container.
-        //    builder.Services.AddRazorPages();
-            builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<DataService>();
-            builder.Services.AddBlazorBootstrap();
 
             builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
 
-
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddScoped<IdentityUserAccessor>();
+
             builder.Services.AddScoped<IdentityRedirectManager>();
+
+            builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<MyHomeBlazorAppContext>().AddSignInManager()
+    .AddDefaultTokenProviders();
+            // Add services to the container.
+            //    builder.Services.AddRazorPages();
+            builder.Services.AddServerSideBlazor();
+            builder.Services.AddSingleton<DataService>();
+            builder.Services.AddBlazorBootstrap();
+            builder.Services.AddSingleton<IEmailSender<MyHomeBlazorAppUser>, IdentityNoOpEmailSender>();
+
+
+
+
+
+
 
             //builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>();
             var app = builder.Build();
@@ -56,7 +64,7 @@ namespace MyHomeBlazorApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -67,10 +75,10 @@ namespace MyHomeBlazorApp
                 RequestPath = "/Files"
             });
 
-      //      app.UseRouting();
+            //      app.UseRouting();
             app.UseAuthorization();
-      //      app.MapControllers();
-      //      app.MapBlazorHub();
+            //      app.MapControllers();
+            //      app.MapBlazorHub();
             app.UseAntiforgery();
             app.MapRazorComponents<App>()
                .AddInteractiveServerRenderMode();
