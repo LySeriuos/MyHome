@@ -26,7 +26,7 @@ namespace MyHomeBlazorApp
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
 
-            builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlite(connectionString));
 
             builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
