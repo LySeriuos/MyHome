@@ -11,8 +11,8 @@ using MyHomeBlazorApp.BlazorData;
 namespace MyHomeBlazorApp.Migrations
 {
     [DbContext(typeof(MyHomeBlazorAppContext))]
-    [Migration("20250128102520_Initial")]
-    partial class Initial
+    [Migration("20250130105726_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

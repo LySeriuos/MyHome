@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using MyHomeBlazorApp.Components.Account;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Data.Sqlite;
 //using MyHomeBlazorApp.Components.Account;
 namespace MyHomeBlazorApp
 {
@@ -25,8 +26,9 @@ namespace MyHomeBlazorApp
         {
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
-
+            
             builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlite(connectionString));
+            
 
             builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
