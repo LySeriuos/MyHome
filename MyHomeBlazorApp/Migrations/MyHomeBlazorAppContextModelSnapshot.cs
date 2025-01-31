@@ -149,6 +149,195 @@ namespace MyHomeBlazorApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MyHome.Models.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ApartamentNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("HouseNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("HouseNumberExtension")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StreetName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Address");
+                });
+
+            modelBuilder.Entity("MyHome.Models.DeviceProfile", b =>
+                {
+                    b.Property<int>("DeviceID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DeviceModelNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeviceName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeviceProduser")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeviceSerialNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeviceType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DeviceWarrantyId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MacAdrress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ManualBookLink")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RealEstateID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("UnassignedId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DeviceID");
+
+                    b.HasIndex("DeviceWarrantyId");
+
+                    b.HasIndex("RealEstateID");
+
+                    b.HasIndex("UnassignedId");
+
+                    b.ToTable("DeviceProfile");
+                });
+
+            modelBuilder.Entity("MyHome.Models.DeviceWarranty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ExtendedWarrantyinYears")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("ExtraInsuranceWarrantyLenght")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ExtraInsuranceWarrantyLink")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReceiptLink")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ShopId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("WarrantyPeriod")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Years")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShopId");
+
+                    b.ToTable("DeviceWarranty");
+                });
+
+            modelBuilder.Entity("MyHome.Models.RealEstate", b =>
+                {
+                    b.Property<int>("RealEstateID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RealEstateName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("UserProfileUserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("RealEstateID");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("UserProfileUserID");
+
+                    b.ToTable("RealEstate");
+                });
+
+            modelBuilder.Entity("MyHome.Models.Shop", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("PhoneNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShopName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShopWebAddress")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.ToTable("Shop");
+                });
+
+            modelBuilder.Entity("MyHome.Models.UserProfile", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("UnassignedDevicesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserID");
+
+                    b.HasIndex("UnassignedDevicesId");
+
+                    b.ToTable("UserProfile");
+                });
+
             modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -201,6 +390,9 @@ namespace MyHomeBlazorApp.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UserProfileUserID")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -210,7 +402,20 @@ namespace MyHomeBlazorApp.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("UserProfileUserID");
+
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("My_Home.Models.Unassigned", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Unassigned");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -262,6 +467,87 @@ namespace MyHomeBlazorApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MyHome.Models.DeviceProfile", b =>
+                {
+                    b.HasOne("MyHome.Models.DeviceWarranty", "DeviceWarranty")
+                        .WithMany()
+                        .HasForeignKey("DeviceWarrantyId");
+
+                    b.HasOne("MyHome.Models.RealEstate", null)
+                        .WithMany("DevicesProfiles")
+                        .HasForeignKey("RealEstateID");
+
+                    b.HasOne("My_Home.Models.Unassigned", null)
+                        .WithMany("UnassignedDevicesList")
+                        .HasForeignKey("UnassignedId");
+
+                    b.Navigation("DeviceWarranty");
+                });
+
+            modelBuilder.Entity("MyHome.Models.DeviceWarranty", b =>
+                {
+                    b.HasOne("MyHome.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId");
+
+                    b.Navigation("Shop");
+                });
+
+            modelBuilder.Entity("MyHome.Models.RealEstate", b =>
+                {
+                    b.HasOne("MyHome.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
+                    b.HasOne("MyHome.Models.UserProfile", null)
+                        .WithMany("RealEstates")
+                        .HasForeignKey("UserProfileUserID");
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("MyHome.Models.Shop", b =>
+                {
+                    b.HasOne("MyHome.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("MyHome.Models.UserProfile", b =>
+                {
+                    b.HasOne("My_Home.Models.Unassigned", "UnassignedDevices")
+                        .WithMany()
+                        .HasForeignKey("UnassignedDevicesId");
+
+                    b.Navigation("UnassignedDevices");
+                });
+
+            modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>
+                {
+                    b.HasOne("MyHome.Models.UserProfile", "UserProfile")
+                        .WithMany()
+                        .HasForeignKey("UserProfileUserID");
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("MyHome.Models.RealEstate", b =>
+                {
+                    b.Navigation("DevicesProfiles");
+                });
+
+            modelBuilder.Entity("MyHome.Models.UserProfile", b =>
+                {
+                    b.Navigation("RealEstates");
+                });
+
+            modelBuilder.Entity("My_Home.Models.Unassigned", b =>
+                {
+                    b.Navigation("UnassignedDevicesList");
                 });
 #pragma warning restore 612, 618
         }

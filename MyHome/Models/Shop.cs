@@ -8,6 +8,7 @@ namespace MyHome.Models
 {
     public class Shop
     {
+        public int Id { get; set; }
         private string _shopName = default;
 
         public string ShopName

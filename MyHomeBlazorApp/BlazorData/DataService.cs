@@ -59,9 +59,9 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate GetRealEstate(int realEstateID)
         {
             RealEstate realEstateById = new RealEstate();
-            if (RealEstates.Count > 1 && RealEstates.Any(item => item.RealEstateID == realEstateID))
+            if (CurrentUser.RealEstates.Count > 1 && CurrentUser.RealEstates.Any(item => item.RealEstateID == realEstateID))
             {
-                realEstateById = RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
+                realEstateById = CurrentUser.RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
             }
             else
             {
@@ -70,17 +70,32 @@ namespace MyHomeBlazorApp.BlazorData
             return realEstateById;
         }
 
+        void bla()
+        {
+            //load userobj from xml
+
+            //get logged in user / useraobj
+
+            //save database
+        }
+
         /// <summary>
         /// Method to save created new RealEstate
         /// </summary>
         /// <param name="realEstate">Created RealEstate</param>
         public void AddNewRealEstate(RealEstate realEstate)
         {
-            realEstate.RealEstateID = Logic.GetRealEstateMaxId(RealEstates) + 1;
-            RealEstates.Add(realEstate);
+            realEstate.RealEstateID = Logic.GetRealEstateMaxId(CurrentUser.RealEstates) + 1;
+            CurrentUser.RealEstates.Add(realEstate);
             Data.SaveUsersListToXml(_users, _path);
         }
 
+        public void AddNewRealEstateDBExample(RealEstate realEstate)
+        {
+            realEstate.RealEstateID = 0;
+            CurrentUser.RealEstates.Add(realEstate);
+           //dbcontext.savechanges()
+        }
         /// <summary>
         /// Method to assign Adrress object to RealEstate 
         /// </summary>
@@ -99,7 +114,7 @@ namespace MyHomeBlazorApp.BlazorData
         public int GetRealEstateByDeviceID(int deviceId)
         {
             RealEstate currentRealEstateTest = new();
-            foreach (RealEstate realEstate in RealEstates)
+            foreach (RealEstate realEstate in CurrentUser.RealEstates)
             {
                 foreach (DeviceProfile device in realEstate.DevicesProfiles)
                 {
@@ -119,7 +134,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Last added RealEstate in the list</returns>
         public RealEstate LastAddedRealEstate()
         {
-            RealEstate lastRealEstate = RealEstates.Last();
+            RealEstate lastRealEstate = CurrentUser.RealEstates.Last();
             return lastRealEstate;
         }
 
@@ -129,11 +144,11 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="contextChosedRealEstateID">Chosed RealEstate</param>
         public void RemoveRealEstate(int contextChosedRealEstateID)
         {
-            bool realEstateExsits = RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
+            bool realEstateExsits = CurrentUser.RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
             if (realEstateExsits == true)
             {
-                RealEstate realEstateToDelete = RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
-                RealEstates.Remove(realEstateToDelete);
+                RealEstate realEstateToDelete = CurrentUser.RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
+                CurrentUser.RealEstates.Remove(realEstateToDelete);
                 Data.SaveUsersListToXml(_users, _path);
             }
             else
@@ -173,7 +188,7 @@ namespace MyHomeBlazorApp.BlazorData
             RealEstate chosedRealEstate = new();
             if (chosedRealEstateID != 0)
             {
-                chosedRealEstate = RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
+                chosedRealEstate = CurrentUser.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
             }
 
             if (Devices.Any(d => d.DeviceID == deviceToAdd.DeviceID))
@@ -522,8 +537,7 @@ namespace MyHomeBlazorApp.BlazorData
             int userId = 2;
             int realEstateID = 1;
             int deviceId = 2;
-            CurrentUser = GetUser(userId);
-            RealEstates = CurrentUser.RealEstates;
+            CurrentUser = GetUser(userId);      
             CurrentRealEstate = GetRealEstate(realEstateID);
             Device = LastAddedDevice();
             UnassignedProfile = UnassignedDevices();
@@ -544,7 +558,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile Device { get; set; } = new DeviceProfile();
         public UserProfile CurrentUser { get; set; } = new UserProfile();
         public RealEstate CurrentRealEstate { get; set; } = new RealEstate();
-        public List<RealEstate> RealEstates { get; set; } = new List<RealEstate>();
+     //   public List<RealEstate> RealEstates { get; set; } = new List<RealEstate>();
         public Address Adrress { get; set; } = new Address();
         public DeviceWarranty DeviceWarranty { get; set; } = new DeviceWarranty();
         public DeviceProfile FirstExpiringDevice { get; set; } = new DeviceProfile();

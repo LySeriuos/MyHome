@@ -1,6 +1,7 @@
 ﻿using My_Home.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -11,7 +12,7 @@ namespace MyHome.Models
     public class UserProfile
     {
         private int _userID;
-
+        [Key]
         public int UserID
         {
             get { return _userID; }

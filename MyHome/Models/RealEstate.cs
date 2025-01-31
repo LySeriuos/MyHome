@@ -10,7 +10,8 @@ namespace MyHome.Models
     public class RealEstate
     {
         
-        private int _realEstateID;        
+        private int _realEstateID;
+   
         public int RealEstateID
         {
             get { return _realEstateID; }

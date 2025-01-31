@@ -9,6 +9,9 @@ namespace MyHome.Models
 {
     public class Address
     {
+        
+        public int Id { get; set; }
+
         private string _streetName = default;
 
         public string StreetName

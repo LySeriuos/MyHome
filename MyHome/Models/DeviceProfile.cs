@@ -12,7 +12,7 @@ namespace MyHome.Models
     public class DeviceProfile
     {
         private int _deviceID;
-
+        [Key]
         public int DeviceID
         {
             get { return _deviceID; }
