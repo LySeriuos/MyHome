@@ -70,8 +70,9 @@ namespace MyHomeBlazorApp.BlazorData
             return realEstateById;
         }
 
-        void bla()
+        public void moveTestDataFromXmlToDtb()
         {
+
             //load userobj from xml
 
             //get logged in user / useraobj
