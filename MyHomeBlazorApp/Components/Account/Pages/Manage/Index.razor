@@ -20,9 +20,8 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.UserName" class="form-control" placeholder="Please choose your username." />
+                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
                 <label for="username" class="form-label">Username</label>
-                <ValidationMessage For="() => Input.UserName" class="text-danger" />
             </div>
             <div class="form-floating mb-3">
                 <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
@@ -65,15 +64,6 @@
             }
         }
 
-        if (Input.UserName != username)
-        {
-            var setUserNameResult = await UserManager.SetUserNameAsync(user, Input.UserName);
-            if (!setUserNameResult.Succeeded)
-            {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set user name.", HttpContext);
-            }
-        }
-
         await SignInManager.RefreshSignInAsync(user);
         RedirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
     }
@@ -83,8 +73,5 @@
         [Phone]
         [Display(Name = "Phone number")]
         public string? PhoneNumber { get; set; }
-
-        [Display(Name = "User Name")]
-        public string? UserName { get; set; }
     }
 }

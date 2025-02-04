@@ -28,12 +28,7 @@
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="John" />
-                <label for="username">User Name</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="useremail" aria-required="true" placeholder="name@example.com" />
+                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label for="email">Email</label>
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
             </div>
@@ -74,14 +69,12 @@
     {
         var user = CreateUser();
 
-        user.UserProfile.Email = Input.Email;
-        user.UserProfile.UserName = Input.UserName;
-
-        await UserStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
+        await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
         var result = await UserManager.CreateAsync(user, Input.Password);
 
+      
         if (!result.Succeeded)
         {
             identityErrors = result.Errors;
@@ -134,11 +127,6 @@
 
     private sealed class InputModel
     {
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-        [Display(Name = "User Name")]
-        public string UserName { get; set; } = "";
-
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
