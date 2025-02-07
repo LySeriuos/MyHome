@@ -47,6 +47,7 @@ namespace MyHomeBlazorApp.BlazorData
             return uP;
         }
 
+
         #endregion
 
         #region Real Estate
@@ -537,6 +538,7 @@ namespace MyHomeBlazorApp.BlazorData
             int userId = 2;
             int realEstateID = 1;
             int deviceId = 2;
+
             CurrentUser = GetUser(userId);      
             CurrentRealEstate = GetRealEstate(realEstateID);
             Device = LastAddedDevice();

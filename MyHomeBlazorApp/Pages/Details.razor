@@ -9,6 +9,7 @@
 @using MyHome;
 @using MyHomeBlazorApp.Pages
 @using BlazorBootstrap
+@using MyHomeBlazorApp.Components.Account
 @using MyHomeBlazorApp.Components
 @using MyHomeBlazorApp.Components.TabComponents
 @using MyHomeBlazorApp.Shared
@@ -22,6 +23,16 @@
 @inject NavigationManager NavManager
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject IUserStore<MyHomeBlazorAppUser> UserStore
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject IEmailSender<MyHomeBlazorAppUser> EmailSender
+@inject ILogger<Register> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject IdentityUserAccessor UserAccessor
+@using Microsoft.AspNetCore.Identity
 
 
 
@@ -275,6 +286,7 @@
     private IQueryable<DeviceProfile> _devicesListAsQueryable;
     private IQueryable<RealEstate> _realEstatesListAsQueryable;
     private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
+    private MyHomeBlazorAppUser user = default!;
     public string deviceName
     {
         get => currentDevice.DeviceName;
@@ -283,13 +295,18 @@
     private CustomReusableModal _reusableModal = default!;
     private SuccessModal _refSuccessModal = default!;
 
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
-        currentUser = DataService.CurrentUser;
+
+        currentUser = user.UserProfile;
         currentDevice = DataService.GetDeviceById(deviceID); ;
         await _reusableModal.ShowAsync();
     }
-
+    // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
     private async Task OnShowModalAddNewDevice()
     {
         currentUser = DataService.CurrentUser;
@@ -474,8 +491,9 @@
 
     #endregion
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         DataService.CheckIfFileExsist();
