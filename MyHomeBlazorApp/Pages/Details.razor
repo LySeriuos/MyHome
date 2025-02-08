@@ -249,7 +249,7 @@
     <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
         <AddEditDeviceForm CurrentDevice="currentDevice"
         CurrentUser="currentUser"
-        DataChangedEvent="DeviceListDataHasChangedTest"/>
+        DataChangedEvent="DeviceListDataHasChangedTest" />
     </CustomReusableModal>
 </div>
 <div>
@@ -286,7 +286,7 @@
     private IQueryable<DeviceProfile> _devicesListAsQueryable;
     private IQueryable<RealEstate> _realEstatesListAsQueryable;
     private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
-    private MyHomeBlazorAppUser user = default!;
+    public MyHomeBlazorAppUser user = default!;
     public string deviceName
     {
         get => currentDevice.DeviceName;
@@ -298,22 +298,27 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    [Inject]
+    public AuthenticationStateProvider AuthenticationState { get; set; }
+
+
+
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
-
-        currentUser = user.UserProfile;
+        // currentUser = user.UserProfile;
         currentDevice = DataService.GetDeviceById(deviceID); ;
         await _reusableModal.ShowAsync();
     }
     // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
     private async Task OnShowModalAddNewDevice()
     {
-        currentUser = DataService.CurrentUser;
+        currentUser = user.UserProfile;
+        // currentUser = DataService.CurrentUser;
         currentDevice = new();
         await _reusableModal.ShowAsync();
     }
-    
+
     private async Task NavigateToExtraWarrantyFile(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
@@ -429,7 +434,7 @@
     }
 
     private void DeviceListDataHasChangedTest()
-    {        
+    {
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         _refSuccessModal.OnShowModalClick();
         StateHasChanged();
@@ -491,9 +496,22 @@
 
     #endregion
 
+    // // protected override void OnInitialized()
+    // // {
+
+    // //     _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
+    // //     _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+    // //     DataService.CheckIfFileExsist();
+    // //     base.OnInitialized();
+    // // }
+
     protected override async Task OnInitializedAsync()
     {
-        
+        var AuthSate = await AuthenticationState.GetAuthenticationStateAsync();
+        var user = AuthSate.User;
+        // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        // currentUser = 
+        // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
         DataService.CheckIfFileExsist();

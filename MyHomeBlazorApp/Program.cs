@@ -36,27 +36,20 @@ namespace MyHomeBlazorApp
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddScoped<IdentityUserAccessor>();
-
             builder.Services.AddScoped<IdentityRedirectManager>();
+            builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
             builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<MyHomeBlazorAppContext>().AddSignInManager()
-    .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<MyHomeBlazorAppContext>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders();
             // Add services to the container.
             //    builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<DataService>();
             builder.Services.AddBlazorBootstrap();
             builder.Services.AddSingleton<IEmailSender<MyHomeBlazorAppUser>, IdentityNoOpEmailSender>();
-
-
-
-
-
-
-
-            //builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
