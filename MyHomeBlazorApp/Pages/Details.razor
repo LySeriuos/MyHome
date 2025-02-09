@@ -509,7 +509,16 @@
     {
         var AuthSate = await AuthenticationState.GetAuthenticationStateAsync();
         var user = AuthSate.User;
-        // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        if (user.Identity.IsAuthenticated)
+        {
+            currentUser = UserManager.GetUserAsync(user).Result.UserProfile;
+            // // Message = ($"{user.Identity.Name} is authenticated. Email is {currentUser.Email}");
+        }
+        else
+        {
+            // Message = ("The user is NOT authenticated.");
+        }
+        // currentUser = UserAccessor.GetRequiredUserAsync(HttpContext).Result.UserProfile;
         // currentUser = 
         // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
