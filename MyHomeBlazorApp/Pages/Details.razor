@@ -4,6 +4,7 @@
 
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.AspNetCore.Mvc
+@using Microsoft.EntityFrameworkCore
 @using MyHome.Models;
 @using MyHomeBlazorApp.BlazorData;
 @using MyHome;
@@ -32,6 +33,7 @@
 @inject IdentityRedirectManager RedirectManager
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject IdentityUserAccessor UserAccessor
+@inject MyHomeBlazorAppContext _dbcontext;
 @using Microsoft.AspNetCore.Identity
 
 
@@ -511,7 +513,11 @@
         var user = AuthSate.User;
         if (user.Identity.IsAuthenticated)
         {
+            var currentAppUser = await UserManager.GetUserAsync(user);
+
             currentUser = UserManager.GetUserAsync(user).Result.UserProfile;
+
+            var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == currentAppUser.Id);
             // // Message = ($"{user.Identity.Name} is authenticated. Email is {currentUser.Email}");
         }
         else

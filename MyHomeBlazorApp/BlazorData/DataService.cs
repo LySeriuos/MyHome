@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Connections.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.JSInterop;
 using My_Home;
 using My_Home.Models;
@@ -24,6 +25,47 @@ namespace MyHomeBlazorApp.BlazorData
 
     public class DataService
     {
+        public DataService(MyHomeBlazorAppContext dbcontext, UserManager<MyHomeBlazorAppUser> usermanager)
+        {
+            _userManager = usermanager;
+            _users = Data.GetUsersListFromXml(_path);
+            // manually assigned test data
+            int userId = 2;
+            int realEstateID = 1;
+            int deviceId = 2;
+
+            CurrentUser = GetUser(userId);
+            CurrentRealEstate = GetRealEstate(realEstateID);
+            Device = LastAddedDevice();
+            UnassignedProfile = UnassignedDevices();
+            CurrentDevice = GetDeviceById(deviceId);
+            ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
+            DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
+        }
+
+        private UserManager<MyHomeBlazorAppUser> _userManager;
+        // I guess these should be as Parameters 
+        private static readonly string _path = Program.Constants.XML_DATA_PATH;
+        private static List<UserProfile>? _users;
+        public List<UserProfile>? Users => _users;
+        public string XmlPath => _path;
+        public List<DeviceProfile> Devices => CurrentUser.GetAllDevices();
+        public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
+        public DeviceProfile Device { get; set; } = new DeviceProfile();
+        public UserProfile CurrentUser { get; set; } = new UserProfile();
+        public RealEstate CurrentRealEstate { get; set; } = new RealEstate();
+        //   public List<RealEstate> RealEstates { get; set; } = new List<RealEstate>();
+        public Address Adrress { get; set; } = new Address();
+        public DeviceWarranty DeviceWarranty { get; set; } = new DeviceWarranty();
+        public DeviceProfile FirstExpiringDevice { get; set; } = new DeviceProfile();
+        //public List<DeviceProfile> UnassignedDevices { get; set; } = new List<DeviceProfile>();
+        public List<DeviceWarranty> DevicesWarranties { get; set; } = new List<DeviceWarranty>();
+        public DeviceProfile CurrentDevice { get; set; } = new DeviceProfile();
+        public Shop Shop { get; set; } = new Shop();
+        public Unassigned UnassignedProfile { get; set; } = new Unassigned();
+        public List<DeviceProfile> UnassignedDevicesList { get; } = new List<DeviceProfile>();
+
+
         #region User        
 
         // all the method to create a new user
@@ -531,44 +573,6 @@ namespace MyHomeBlazorApp.BlazorData
 
         #endregion
 
-        public DataService()
-        {
-            _users = Data.GetUsersListFromXml(_path);
-            // manually assigned test data
-            int userId = 2;
-            int realEstateID = 1;
-            int deviceId = 2;
 
-            CurrentUser = GetUser(userId);      
-            CurrentRealEstate = GetRealEstate(realEstateID);
-            Device = LastAddedDevice();
-            UnassignedProfile = UnassignedDevices();
-            CurrentDevice = GetDeviceById(deviceId);
-            ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
-            DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
-        }
-
-
-        // I guess these should be as Parameters 
-        private static readonly string _path = Program.Constants.XML_DATA_PATH;
-        private static List<UserProfile>? _users;
-        public List<UserProfile>? Users => _users;
-        public string XmlPath => _path;
-        public List<DeviceProfile> Devices => CurrentUser.GetAllDevices();
-
-        public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
-        public DeviceProfile Device { get; set; } = new DeviceProfile();
-        public UserProfile CurrentUser { get; set; } = new UserProfile();
-        public RealEstate CurrentRealEstate { get; set; } = new RealEstate();
-     //   public List<RealEstate> RealEstates { get; set; } = new List<RealEstate>();
-        public Address Adrress { get; set; } = new Address();
-        public DeviceWarranty DeviceWarranty { get; set; } = new DeviceWarranty();
-        public DeviceProfile FirstExpiringDevice { get; set; } = new DeviceProfile();
-        //public List<DeviceProfile> UnassignedDevices { get; set; } = new List<DeviceProfile>();
-        public List<DeviceWarranty> DevicesWarranties { get; set; } = new List<DeviceWarranty>();
-        public DeviceProfile CurrentDevice { get; set; } = new DeviceProfile();
-        public Shop Shop { get; set; } = new Shop();
-        public Unassigned UnassignedProfile { get; set; } = new Unassigned();
-        public List<DeviceProfile> UnassignedDevicesList { get; } = new List<DeviceProfile>();
     }
 }

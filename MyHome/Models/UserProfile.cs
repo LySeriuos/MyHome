@@ -39,7 +39,7 @@ namespace MyHome.Models
         // not sure about this class here
                
 
-        private List<RealEstate> _realEstates;
+        private List<RealEstate> _realEstates = new();
 
         public List<RealEstate> RealEstates
         {
@@ -49,7 +49,7 @@ namespace MyHome.Models
 
         
 
-        private Unassigned _unassignedDevices;
+        private Unassigned _unassignedDevices = new();
 
         public Unassigned UnassignedDevices
         {
