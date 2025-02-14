@@ -25,7 +25,7 @@ namespace MyHome.Models
             set { _shopWebAdrress = value; }
         }
 
-        private Address _address;
+        private Address _address = new Address();
         public Address Address
         {
             get { return _address; }

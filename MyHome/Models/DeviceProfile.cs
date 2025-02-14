@@ -85,7 +85,7 @@ namespace MyHome.Models
             set { _manualBookLink = value; }
         }
 
-        private DeviceWarranty _deviceWarranty;
+        private DeviceWarranty _deviceWarranty = new DeviceWarranty();
 
         public DeviceWarranty DeviceWarranty
         {

@@ -35,10 +35,6 @@ namespace MyHome.Models
             set { _email = value; }
         }
 
-        // password class will be added later
-        // not sure about this class here
-               
-
         private List<RealEstate> _realEstates = new();
 
         public List<RealEstate> RealEstates
