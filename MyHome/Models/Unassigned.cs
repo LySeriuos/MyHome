@@ -10,7 +10,7 @@ namespace My_Home.Models
     public class Unassigned
     {
         public int Id { get; set; }
-        private List<DeviceProfile> _unassignedDevicesList;
+        private List<DeviceProfile> _unassignedDevicesList = new();
 
         public List<DeviceProfile> UnassignedDevicesList
         {

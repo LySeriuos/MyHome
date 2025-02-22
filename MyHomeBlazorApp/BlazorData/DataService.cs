@@ -56,27 +56,27 @@ namespace MyHomeBlazorApp.BlazorData
         private UserManager<MyHomeBlazorAppUser> _userManager;
         private MyHomeBlazorAppContext _dbcontext;
         private UserProfile _currentUser;
-        public UserProfile CurrentUser;
+        public UserProfile CurrentUser => _currentUser;
         private MyHomeBlazorAppUser CurrentAppUser { get; set; }
         // I guess these should be as Parameters 
         private static readonly string _path = Program.Constants.XML_DATA_PATH;
         private static List<UserProfile>? _users;
         public List<UserProfile>? Users => _users;
         public string XmlPath => _path;
-        public List<DeviceProfile> Devices => _currentUser.GetAllDevices();
-        public List<DeviceProfile> ExpiringDevices { get; set; } = new List<DeviceProfile>();
-        public DeviceProfile Device { get; set; } = new DeviceProfile();
-        public RealEstate CurrentRealEstate { get; set; } = new RealEstate();
+        public List<DeviceProfile>? Devices => _currentUser.GetAllDevices();
+        public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
+        public DeviceProfile? Device { get; set; } = new DeviceProfile();
+        public RealEstate? CurrentRealEstate { get; set; } = new RealEstate();
         //   public List<RealEstate> RealEstates { get; set; } = new List<RealEstate>();
-        public Address Adrress { get; set; } = new Address();
-        public DeviceWarranty DeviceWarranty { get; set; } = new DeviceWarranty();
-        public DeviceProfile FirstExpiringDevice { get; set; } = new DeviceProfile();
+        public Address? Adrress { get; set; } = new Address();
+        public DeviceWarranty? DeviceWarranty { get; set; } = new DeviceWarranty();
+        public DeviceProfile? FirstExpiringDevice { get; set; } = new DeviceProfile();
         //public List<DeviceProfile> UnassignedDevices { get; set; } = new List<DeviceProfile>();
-        public List<DeviceWarranty> DevicesWarranties { get; set; } = new List<DeviceWarranty>();
-        public DeviceProfile CurrentDevice { get; set; } = new DeviceProfile();
-        public Shop Shop { get; set; } = new Shop();
-        public Unassigned UnassignedProfile { get; set; } = new Unassigned();
-        public List<DeviceProfile> UnassignedDevicesList { get; } = new List<DeviceProfile>();
+        public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
+        public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
+        public Shop? Shop { get; set; } = new Shop();
+        public Unassigned? UnassignedProfile { get; set; } = new Unassigned();
+        public List<DeviceProfile>? UnassignedDevicesList { get; } = new List<DeviceProfile>();
         private MyHomeBlazorAppUser userWithData;
 
         #region User        
@@ -297,7 +297,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile LastAddedDevice()
         {
             List<DeviceProfile>? devices = Devices;
-            DeviceProfile? device = devices.Last();
+            DeviceProfile? device = devices.LastOrDefault();
             return device;
         }
 

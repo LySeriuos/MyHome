@@ -12,38 +12,38 @@
 <head>
     <style>
         .grid-container {
-            display: flex;
-            grid-template-columns: auto auto auto;
-            background-color: #f7f9fc;
-            padding: 10px;
-            flex-direction: row;
-            flex-wrap: wrap;
+        display: flex;
+        grid-template-columns: auto auto auto;
+        background-color: #f7f9fc;
+        padding: 10px;
+        flex-direction: row;
+        flex-wrap: wrap;
         }
 
         .grid-item {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            margin: 20px;
-            font-size: 30px;
-            text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        margin: 20px;
+        font-size: 30px;
+        text-align: center;
         }
 
         .body {
-            background-color: #ced4da;
-            color: #6c757d;
+        background-color: #ced4da;
+        color: #6c757d;
         }
 
         .th {
-            column-width: 100px;
+        column-width: 100px;
         }
 
         .a {
-            width: 100px;
-            white-space: nowrap;
-            overflow: hidden;
-            border: 1px solid;
-            text-overflow: ellipsis;
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        border: 1px solid;
+        text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -100,8 +100,16 @@
 
     private List<string> GetLastAddedDevice()
     {
-        DeviceProfile lastDevice = DataService.Device;
-        string deviceID = lastDevice.DeviceID.ToString();
+        DeviceProfile? lastDevice = DataService.Device;
+        string deviceID = "0"; 
+        if(lastDevice != null )
+        {
+            deviceID = lastDevice.DeviceID.ToString();
+        }
+        else
+        {
+            lastDevice = new();
+        }
         string deviceName = lastDevice.DeviceName;
         string finalString = "ID" + ":" + lastDevice.DeviceID.ToString() + " " + lastDevice.DeviceName;
         _deviceItemsList.Add("Last Added Device:");

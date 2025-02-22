@@ -396,7 +396,7 @@
     private async Task OnShowModalAddNewRealEstate()
     {
         currentRealEstate = new();
-        currentChosedRealEsate.RealEstateID = DataService.CurrentUser.RealEstates.Max(e => e.RealEstateID) + 1;
+        // currentChosedRealEsate.RealEstateID = DataService.CurrentUser.RealEstates.Max(e => e.RealEstateID) + 1;
         currentRealEstateAddress = new();
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
