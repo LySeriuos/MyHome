@@ -1,5 +1,6 @@
 ﻿using BlazorBootstrap;
 using com.sun.org.apache.xml.@internal.resolver.helpers;
+using java.util;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
@@ -115,14 +116,16 @@ namespace MyHomeBlazorApp.BlazorData
                 userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
                 //var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == currentAppUser.Id);
                 // // Message = ($"{user.Identity.Name} is authenticated. Email is {_currentUser.Email}");
+                
             }
             return userWithData.UserProfile;
         }
 
-        public async void GetDbUserData()
+        public async Task<UserProfile> GetDbUserData()
         {
             var userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
-
+            UserProfile userToReturn = userWithData.UserProfile;
+            return userToReturn;
         }
 
         #endregion
@@ -168,11 +171,13 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
-        public void AddNewRealEstateDBExample(RealEstate realEstate)
+        public async Task AddNewRealEstateDBExample(RealEstate currentRealEstate)
         {
-            realEstate.RealEstateID = 0;
-            _currentUser.RealEstates.Add(realEstate);
-            //dbcontext.savechanges()
+            RealEstate realEstateToAdd = currentRealEstate;
+            realEstateToAdd.RealEstateID = 0;
+            realEstateToAdd.Address = currentRealEstate.Address;
+            _currentUser.RealEstates.Add(realEstateToAdd);
+            await _dbcontext.SaveChangesAsync();
         }
         /// <summary>
         /// Method to assign Adrress object to RealEstate 
@@ -607,6 +612,14 @@ namespace MyHomeBlazorApp.BlazorData
         public void SaveUpdatedObject()
         {
             Data.SaveUsersListToXml(_users, _path);
+        }
+
+        public async Task SaveDataToDataBase(int id)
+        {
+            var realEstateToChange = CurrentUser.RealEstates.Where(r => r.RealEstateID == id).FirstOrDefault();
+            
+            _dbcontext.UpdateRange(realEstateToChange); 
+            await _dbcontext.SaveChangesAsync();
         }
 
         public void LoadData()

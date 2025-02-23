@@ -389,6 +389,8 @@
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
         currentRealEstate = DataService.GetRealEstate(realEstateID);
+
+        currentRealEstate = DataService.GetDbUserData().Result.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateID);
         currentRealEstateAddress = currentRealEstate.Address;
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
@@ -525,7 +527,7 @@
             // Message = ("The user is NOT authenticated.");
         }
         // currentUser = UserAccessor.GetRequiredUserAsync(HttpContext).Result.UserProfile;
-        // currentUser = 
+        // currentUser =
         // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();

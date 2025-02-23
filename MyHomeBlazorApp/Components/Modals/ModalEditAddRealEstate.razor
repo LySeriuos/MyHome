@@ -15,7 +15,7 @@
                 </label>
                 <div class="col-sm-10">
                     <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                               @bind-Value="CurrentRealEstate.RealEstateName" />
+                    @bind-Value="CurrentRealEstate.RealEstateName" />
 
                 </div>
 
@@ -53,7 +53,7 @@
     public RealEstate? realEstateModel = new();
 
 
-    private void RealEsatateFormSubmitted(EditContext editContext)
+    private async Task RealEsatateFormSubmitted(EditContext editContext)
     {
         // editContext.Field(realEstateModel.RealEstateID.ToString());
         //call form validation
@@ -63,16 +63,19 @@
             if (CurrentRealEstate == null || CurrentRealEstate.RealEstateID == 0)
             {
                 validRealEstate = editContext.Validate();
-                DataService.AddNewRealEstate(CurrentRealEstate);
+                await DataService.AddNewRealEstateDBExample(CurrentRealEstate);
+                // Adding to xml data file
+                // DataService.AddNewRealEstate(CurrentRealEstate);
             }
             else
             {
-                validRealEstate = editContext.Validate();
-                DataService.SaveUpdatedObject();
+                validRealEstate = editContext.Validate();                
+                await DataService.SaveDataToDataBase(CurrentRealEstate.RealEstateID);
+                // DataService.SaveUpdatedObject();
 
             }
             realEstateDataHasChanged();
-            refModalEditAddRealEstate.HideAsync();
+            await refModalEditAddRealEstate.HideAsync();
         }
         else
         {
@@ -127,7 +130,7 @@
         }
         else
         {
-            _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+            _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.ToList().AsQueryable();
         }
         editContext = new(CurrentRealEstate);
         base.OnInitialized();
