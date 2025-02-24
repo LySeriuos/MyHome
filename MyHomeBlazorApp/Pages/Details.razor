@@ -315,8 +315,7 @@
     // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
     private async Task OnShowModalAddNewDevice()
     {
-        currentUser = user.UserProfile;
-        // currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUser;
         currentDevice = new();
         await _reusableModal.ShowAsync();
     }
