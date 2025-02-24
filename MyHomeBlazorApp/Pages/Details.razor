@@ -287,6 +287,7 @@
     private const string BaseApiUrl = "https://www.google.se/search?q=";
     private IQueryable<DeviceProfile> _devicesListAsQueryable;
     private IQueryable<RealEstate> _realEstatesListAsQueryable;
+    private IQueryable<RealEstate> _realEstatesListAsQueryable11;
     private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
     public MyHomeBlazorAppUser user = default!;
     public string deviceName
@@ -510,26 +511,36 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var AuthSate = await AuthenticationState.GetAuthenticationStateAsync();
-        var user = AuthSate.User;
-        if (user.Identity.IsAuthenticated)
-        {
-            var currentAppUser = await UserManager.GetUserAsync(user);
+        // var AuthSate = await AuthenticationState.GetAuthenticationStateAsync();
+        // var user = AuthSate.User;
+        // if (user.Identity.IsAuthenticated)
+        // {
+        //     var currentAppUser = await UserManager.GetUserAsync(user);
 
-            currentUser = UserManager.GetUserAsync(user).Result.UserProfile;
+        //     currentUser = UserManager.GetUserAsync(user).Result.UserProfile;
 
-            var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == currentAppUser.Id);
-            // // Message = ($"{user.Identity.Name} is authenticated. Email is {currentUser.Email}");
-        }
-        else
-        {
-            // Message = ("The user is NOT authenticated.");
-        }
+        //     var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == currentAppUser.Id);
+        //     // // Message = ($"{user.Identity.Name} is authenticated. Email is {currentUser.Email}");
+        // }
+        // else
+        // {
+        //     // Message = ("The user is NOT authenticated.");
+        // }
         // currentUser = UserAccessor.GetRequiredUserAsync(HttpContext).Result.UserProfile;
         // currentUser =
         // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.
+        SelectMany(realEstate => realEstate.DevicesProfiles)
+        .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
+        .ThenBy(d => d.DeviceID).AsQueryable();
+
+        _devicesListAsQueryable = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
+        .Result.UserProfile.RealEstates
+        .SelectMany(realEstate => realEstate.DevicesProfiles)
+        .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
+        .ThenBy(d => d.DeviceID).AsQueryable();
+
+        _realEstatesListAsQueryable = DataService.GetDbUserWithRealEstateAddressData().Result.UserProfile.RealEstates.AsQueryable();
         DataService.CheckIfFileExsist();
         base.OnInitialized();
     }
