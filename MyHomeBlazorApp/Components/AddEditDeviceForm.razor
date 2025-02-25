@@ -253,7 +253,8 @@
 
         if (CurrentDevice.DeviceID == 0 && validDeviceForm == true)
         {
-            DataService.AddNewDevice(CurrentDevice, _chosedRealEstateID);
+            // DataService.AddNewDevice(CurrentDevice, _chosedRealEstateID);
+            DataService.AddNewDeviceToDataBase(CurrentDevice, _chosedRealEstateID);
             _chosedRealEstateID = 0;
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)

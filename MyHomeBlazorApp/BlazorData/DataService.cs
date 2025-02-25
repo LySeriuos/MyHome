@@ -123,20 +123,29 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task<UserProfile> GetDbUserData()
         {
-            var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
+            var userWithData = _dbcontext.Users.Include(u => u.UserProfile)
+                .ThenInclude(p => p.RealEstates)
+                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             UserProfile userToReturn = userWithData.UserProfile;
             return userToReturn;
         }
 
         public Task<MyHomeBlazorAppUser> GetDbUserWithRealEstateAddressData()
         {
-            var userWithAddressData = _dbcontext.Users.Include(u=>u.UserProfile).ThenInclude(r=>r.RealEstates).ThenInclude(a=>a.Address).FirstOrDefault(u => u.Id == CurrentAppUser.Id);            
+            var userWithAddressData = _dbcontext.Users.Include(u=>u.UserProfile)
+                .ThenInclude(r=>r.RealEstates)
+                .ThenInclude(a=>a.Address)
+                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);            
             return Task.FromResult<MyHomeBlazorAppUser>(userWithAddressData);
         }
 
         public Task<MyHomeBlazorAppUser> GetDbUserDeviceProfileWithWarrantyShopAddressData()
         {
-            var userWithDevicesData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(r => r.RealEstates).ThenInclude(r => r.DevicesProfiles).ThenInclude(d=>d.DeviceWarranty).ThenInclude(dw => dw.Shop).ThenInclude(shop => shop.Address).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
+            var userWithDevicesData = _dbcontext.Users.Include(u => u.UserProfile)
+                .ThenInclude(r => r.RealEstates).ThenInclude(r => r.DevicesProfiles)
+                .ThenInclude(d=>d.DeviceWarranty).ThenInclude(dw => dw.Shop)
+                .ThenInclude(shop => shop.Address)
+                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             return Task.FromResult<MyHomeBlazorAppUser>(userWithDevicesData);
         }
 
@@ -185,8 +194,9 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task AddNewRealEstateDBExample(RealEstate currentRealEstate)
         {
+            //check if incoming realestate object has id 0, otherwise error 
             RealEstate realEstateToAdd = currentRealEstate;
-            realEstateToAdd.RealEstateID = 0;
+            realEstateToAdd.RealEstateID = 0;  
             realEstateToAdd.Address = currentRealEstate.Address;
             _currentUser.RealEstates.Add(realEstateToAdd);
             await _dbcontext.SaveChangesAsync();
@@ -305,6 +315,28 @@ namespace MyHomeBlazorApp.BlazorData
 
             Data.SaveUsersListToXml(_users, _path);
             deviceToAdd = new();
+        }
+
+        public async Task AddNewDeviceToDataBase(DeviceProfile deviceToAdd, int chosedRealEstateID)
+        {
+            deviceToAdd.DeviceWarranty = new();
+            deviceToAdd.DeviceWarranty.Shop = new();
+            deviceToAdd.DeviceWarranty.Shop.Address = new();
+            RealEstate chosedRealEstate = new();
+            if (chosedRealEstateID != 0)
+            {
+                chosedRealEstate = _currentUser.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
+            }
+
+            if (Devices.Any(d => d.DeviceID == deviceToAdd.DeviceID))
+            {
+                return;
+            }
+            else
+            {
+                chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
+                await _dbcontext.SaveChangesAsync();
+            }
         }
 
         /// <summary>

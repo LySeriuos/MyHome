@@ -102,13 +102,13 @@
             @if (CurrentDevice.DeviceID != 0 && RealEsatateIdToAddDevice != 0)
             {
                 <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                     DevicesListAsQueryable="_devicesListAsQueryable">
+                DevicesListAsQueryable="_devicesListAsQueryable">
                 </NextPreviuosButtons>
             }
             else if (_unassignedDevicesListAsQueryable.Count() > 1)
             {
                 <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                     DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
+                DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
                 </NextPreviuosButtons>
             }
             <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="OnHideModalEditDeviceClick">Close</Button>
@@ -214,7 +214,8 @@
             else
             {
                 validDeviceForm = editContext.Validate();
-                DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
+                // DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
+                DataService.AddNewDeviceToDataBase(CurrentDevice, RealEsatateIdToAddDevice);
             }
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
