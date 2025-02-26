@@ -56,7 +56,7 @@
     private void ShopDetailsFormSubmitted(EditContext Context)
     {
         // await OnSubmit.InvokeAsync(CurrentDevice);
-        DataService.SaveUpdatedObject();
+        DataService.UpdateObjectInDB(CurrentDevice);
         ShopDataHasChanged();
         refModalEditShopDetails.HideAsync();
     }
