@@ -41,7 +41,6 @@ namespace MyHomeBlazorApp.BlazorData
             int userId = 2;
             int realEstateID = 1;
             int deviceId = 2;
-            //_currentUser = usermanager.GetUserAsync(usermanager.Users.First(u => u.Id == _currentUser.UserID).Result.UserProfile;
 
             _currentUser = GetCurrentUser().Result;
             CurrentRealEstate = GetRealEstate(realEstateID);
@@ -51,8 +50,6 @@ namespace MyHomeBlazorApp.BlazorData
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUser);
         }
-
-
 
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private UserManager<MyHomeBlazorAppUser> _userManager;
@@ -111,13 +108,7 @@ namespace MyHomeBlazorApp.BlazorData
             if (user.Identity.IsAuthenticated)
             {
                 CurrentAppUser = await _userManager.GetUserAsync(user);
-
-                //CurrentUser = _userManager.GetUserAsync(user).Result.UserProfile;
-                //var userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == currentAppUser.Id);
                 userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
-                //var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == currentAppUser.Id);
-                // // Message = ($"{user.Identity.Name} is authenticated. Email is {_currentUser.Email}");
-
             }
             return userWithData.UserProfile;
         }
@@ -171,15 +162,6 @@ namespace MyHomeBlazorApp.BlazorData
                 realEstateById = new();
             }
             return realEstateById;
-        }
-
-        void bla()
-        {
-            //load userobj from xml
-
-            //get logged in user / useraobj
-
-            //save database
         }
 
         /// <summary>
