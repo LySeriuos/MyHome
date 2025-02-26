@@ -85,7 +85,7 @@
                     @* /////// *@
                     <label class="form-label">Choose Real Estate</label>
                     <InputSelect @bind-Value="RealEsatateIdToAddDevice" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
-                        <option selected disabled>Select Real Estate...</option>
+                        <option selected value="0" disabled>Select Real Estate...</option>
                         @foreach (var realEstate in CurrentUser.RealEstates)
                         {
                             <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
