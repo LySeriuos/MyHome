@@ -131,7 +131,7 @@
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
 
-            DataService.SaveUpdatedObject();
+            DataService.UpdateObjectInDB(deviceToAddLink);
             WarrantyDataHasChanged();
             await _refModalEditWarrantyDetails.HideAsync();
         }
