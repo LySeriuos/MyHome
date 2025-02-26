@@ -191,7 +191,6 @@
 </TabControl>
 
 <!--#region Edit Form Modals  -->
-@* Here is the EditForm with button outside the form *@
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
@@ -205,9 +204,6 @@
     CurrentUser="@currentUser"
     RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
     </ModalEditAddDevice>
-</div>
-<div>
-    @* <Modal @ref="refModalEditAddDeviceTest" /> *@
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
@@ -228,7 +224,6 @@
     </ModalDeleteRealEstate>
 </div>
 <div>
-
     <ModalReassignDevices @ref="@refModalReasignDevices"
     SelectedRealEstateID="@SelectedRealEstateID"
     CurrentUser="@currentUser"
@@ -246,6 +241,9 @@
     ObjectName="@_deletedObjectName">
     </ModalDeleteSuccessful>
 </div>
+<div>
+    <SuccessModal @ref="_refSuccessModal" Title="Add/Edit Confirmation" Text="Data updated/added successfully!"></SuccessModal>
+</div>
 
 @* CustomReusableModal is for adding different forms in one modal to save code lines *@
 @* <div>
@@ -255,9 +253,6 @@
         DataChangedEvent="DeviceListDataHasChangedTest" />
     </CustomReusableModal>
 </div> *@
-<div>
-    <SuccessModal @ref="_refSuccessModal" Title="Add/Edit Confirmation" Text="Data updated/added successfully!"></SuccessModal>
-</div>
 
 
 
