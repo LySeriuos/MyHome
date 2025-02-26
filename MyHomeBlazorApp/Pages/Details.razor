@@ -352,17 +352,11 @@
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
             refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
             _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
-            refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
+            refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
         }
         base.OnAfterRender(firstRender);
-    }
-
-    private void RealEstateListDataHasChanged()
-    {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        StateHasChanged();
     }
 
     private void OnModalDeleteSuccess()
