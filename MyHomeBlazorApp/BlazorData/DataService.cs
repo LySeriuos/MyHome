@@ -657,18 +657,8 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
-        ////public async Task SaveDataToDataBase(int id)
-        ////{
-        ////    var realEstateToChange = CurrentUser.RealEstates.Where(r => r.RealEstateID == id).FirstOrDefault();
-
-        ////    _dbcontext.UpdateRange(realEstateToChange); 
-        ////    await _dbcontext.SaveChangesAsync();
-        ////}
-
         public async Task UpdateObjectInDB(object editedObject)
         {
-            //var realEstateToChange = CurrentUser.RealEstates.Where(r => r.RealEstateID == id).FirstOrDefault();
-
             _dbcontext.UpdateRange(editedObject);
             await _dbcontext.SaveChangesAsync();
         }
