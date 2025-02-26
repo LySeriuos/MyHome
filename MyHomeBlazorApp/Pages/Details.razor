@@ -310,8 +310,9 @@
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
-        // currentUser = user.UserProfile;
-        currentDevice = DataService.GetDeviceById(deviceID); ;
+        currentUser = DataService.CurrentUser;
+        currentDevice = DataService.GetDeviceById(deviceID);
+        currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(currentDevice.DeviceID);
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
     // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
@@ -576,7 +577,7 @@
     //     if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
     //     {
     //         currentRealEstate.Address = currentRealEstateAddress;
-    //         DataService.AddNewRealEstate(currentRealEstate);
+    //         DataService.AddNewRealEstateToXML(currentRealEstate);
     //     }
     //     else
     //     {

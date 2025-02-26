@@ -185,14 +185,14 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to save created new RealEstate
         /// </summary>
         /// <param name="realEstate">Created RealEstate</param>
-        public void AddNewRealEstate(RealEstate realEstate)
+        public void AddNewRealEstateToXML(RealEstate realEstate)
         {
             realEstate.RealEstateID = Logic.GetRealEstateMaxId(_currentUser.RealEstates) + 1;
             _currentUser.RealEstates.Add(realEstate);
             Data.SaveUsersListToXml(_users, _path);
         }
 
-        public async Task AddNewRealEstateDBExample(RealEstate currentRealEstate)
+        public async Task AddNewRealEstateToDB(RealEstate currentRealEstate)
         {
             //check if incoming realestate object has id 0, otherwise error 
             RealEstate realEstateToAdd = currentRealEstate;
@@ -395,8 +395,18 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Device Profile from the list with matched device ID</returns>
         public DeviceProfile GetDeviceById(int id)
         {
+            DeviceProfile currentDevice = new();
+            //foreach(DeviceProfile device in _currentUser.GetAllDevices())
+            //{
+            //    if(device.DeviceID == id)
+            //    {
+            //        return device;
+            //    }
+            //    currentDevice = device;
+            //}
+            //return currentDevice;
             int i = 0;
-            DeviceProfile? currentDevice = new DeviceProfile();
+            DeviceProfile? currentDeviceTest = new DeviceProfile();
             DeviceProfile device;
             for (i = 0; i < _currentUser.GetAllDevices().Count; i++)
             {
@@ -404,6 +414,7 @@ namespace MyHomeBlazorApp.BlazorData
                 if (device.DeviceID == id)
                 {
                     currentDevice = device;
+                    break;
                 }
             }
             return currentDevice;
@@ -658,11 +669,19 @@ namespace MyHomeBlazorApp.BlazorData
             Data.SaveUsersListToXml(_users, _path);
         }
 
-        public async Task SaveDataToDataBase(int id)
-        {
-            var realEstateToChange = CurrentUser.RealEstates.Where(r => r.RealEstateID == id).FirstOrDefault();
+        ////public async Task SaveDataToDataBase(int id)
+        ////{
+        ////    var realEstateToChange = CurrentUser.RealEstates.Where(r => r.RealEstateID == id).FirstOrDefault();
             
-            _dbcontext.UpdateRange(realEstateToChange); 
+        ////    _dbcontext.UpdateRange(realEstateToChange); 
+        ////    await _dbcontext.SaveChangesAsync();
+        ////}
+
+        public async Task UpdateObjectInDB(object editedObject)
+        {
+            //var realEstateToChange = CurrentUser.RealEstates.Where(r => r.RealEstateID == id).FirstOrDefault();
+
+            _dbcontext.UpdateRange(editedObject);
             await _dbcontext.SaveChangesAsync();
         }
 

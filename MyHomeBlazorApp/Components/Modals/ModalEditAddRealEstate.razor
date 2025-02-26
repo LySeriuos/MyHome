@@ -63,14 +63,15 @@
             if (CurrentRealEstate == null || CurrentRealEstate.RealEstateID == 0)
             {
                 validRealEstate = editContext.Validate();
-                await DataService.AddNewRealEstateDBExample(CurrentRealEstate);
+                await DataService.AddNewRealEstateToDB(CurrentRealEstate);
                 // Adding to xml data file
-                // DataService.AddNewRealEstate(CurrentRealEstate);
+                // DataService.AddNewRealEstateToXML(CurrentRealEstate);
             }
             else
             {
                 validRealEstate = editContext.Validate();                
-                await DataService.SaveDataToDataBase(CurrentRealEstate.RealEstateID);
+                // // await DataService.UpdateObjectInDB(CurrentRealEstate.RealEstateID);
+                await DataService.UpdateObjectInDB(CurrentRealEstate);
                 // DataService.SaveUpdatedObject();
 
             }

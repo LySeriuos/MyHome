@@ -198,7 +198,7 @@
         return chosedRealEstateIsValid;
     }
 
-    private void DeviceFormSubmitted(EditContext editContext)
+    private async Task DeviceFormSubmitted(EditContext editContext)
     {
         validDeviceForm = editContext.Validate();
         ChosedRealEstateIsValid();
@@ -227,11 +227,12 @@
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);
         }
 
-        DataService.SaveUpdatedObject();
+        await DataService.UpdateObjectInDB(CurrentDevice);
+        // DataService.SaveUpdatedObject();
         changedDeviceListData();
         realEstateToAddDevice = new();
         showErrorMessageVisible = false;
-        refModalEditAddDevice.HideAsync();
+        await refModalEditAddDevice.HideAsync();
     }
 
     // private void TestMethod()
