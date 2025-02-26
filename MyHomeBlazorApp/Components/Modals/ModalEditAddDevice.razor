@@ -227,7 +227,7 @@
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);
         }
 
-        await DataService.UpdateObjectInDB(CurrentDevice);
+        await DataService.UpdateObjectInDB();
         // DataService.SaveUpdatedObject();
         changedDeviceListData();
         realEstateToAddDevice = new();

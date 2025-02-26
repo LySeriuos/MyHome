@@ -654,12 +654,13 @@ namespace MyHomeBlazorApp.BlazorData
         /// </summary>
         public void SaveUpdatedObject()
         {
+
             Data.SaveUsersListToXml(_users, _path);
         }
 
-        public async Task UpdateObjectInDB(object editedObject)
-        {
-            _dbcontext.UpdateRange(editedObject);
+        public async Task UpdateObjectInDB()
+        {           
+            _dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
         }
 
