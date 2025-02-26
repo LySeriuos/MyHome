@@ -69,11 +69,10 @@
             }
             else
             {
-                validRealEstate = editContext.Validate();                
-                // // await DataService.UpdateObjectInDB(CurrentRealEstate.RealEstateID);
+                validRealEstate = editContext.Validate();               
                 await DataService.UpdateObjectInDB(CurrentRealEstate);
+                // Updating data in the xml file
                 // DataService.SaveUpdatedObject();
-
             }
             realEstateDataHasChanged();
             await refModalEditAddRealEstate.HideAsync();
@@ -82,10 +81,8 @@
         {
             validRealEstate = editContext.Validate();
             return;
-        }
-        realEstateDataHasChanged();
+        }        
     }
-
 
     private void OnModalRealEstateNext()
     {

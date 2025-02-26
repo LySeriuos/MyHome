@@ -20,6 +20,7 @@ using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 using Unity;
+using static com.sun.management.VMOption;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -116,7 +117,7 @@ namespace MyHomeBlazorApp.BlazorData
                 userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
                 //var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == currentAppUser.Id);
                 // // Message = ($"{user.Identity.Name} is authenticated. Email is {_currentUser.Email}");
-                
+
             }
             return userWithData.UserProfile;
         }
@@ -132,10 +133,10 @@ namespace MyHomeBlazorApp.BlazorData
 
         public Task<MyHomeBlazorAppUser> GetDbUserWithRealEstateAddressData()
         {
-            var userWithAddressData = _dbcontext.Users.Include(u=>u.UserProfile)
-                .ThenInclude(r=>r.RealEstates)
-                .ThenInclude(a=>a.Address)
-                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);            
+            var userWithAddressData = _dbcontext.Users.Include(u => u.UserProfile)
+                .ThenInclude(r => r.RealEstates)
+                .ThenInclude(a => a.Address)
+                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             return Task.FromResult<MyHomeBlazorAppUser>(userWithAddressData);
         }
 
@@ -143,7 +144,7 @@ namespace MyHomeBlazorApp.BlazorData
         {
             var userWithDevicesData = _dbcontext.Users.Include(u => u.UserProfile)
                 .ThenInclude(r => r.RealEstates).ThenInclude(r => r.DevicesProfiles)
-                .ThenInclude(d=>d.DeviceWarranty).ThenInclude(dw => dw.Shop)
+                .ThenInclude(d => d.DeviceWarranty).ThenInclude(dw => dw.Shop)
                 .ThenInclude(shop => shop.Address)
                 .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             return Task.FromResult<MyHomeBlazorAppUser>(userWithDevicesData);
@@ -195,11 +196,16 @@ namespace MyHomeBlazorApp.BlazorData
         public async Task AddNewRealEstateToDB(RealEstate currentRealEstate)
         {
             //check if incoming realestate object has id 0, otherwise error 
-            RealEstate realEstateToAdd = currentRealEstate;
-            realEstateToAdd.RealEstateID = 0;  
-            realEstateToAdd.Address = currentRealEstate.Address;
-            _currentUser.RealEstates.Add(realEstateToAdd);
-            await _dbcontext.SaveChangesAsync();
+            if (currentRealEstate.RealEstateID == 0)
+            {
+                //currentRealEstate.Address;
+                _currentUser.RealEstates.Add(currentRealEstate);
+                await _dbcontext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ArgumentException("Wrong RealEstate ID", nameof(currentRealEstate.RealEstateID));
+            }
         }
         /// <summary>
         /// Method to assign Adrress object to RealEstate 
@@ -672,7 +678,7 @@ namespace MyHomeBlazorApp.BlazorData
         ////public async Task SaveDataToDataBase(int id)
         ////{
         ////    var realEstateToChange = CurrentUser.RealEstates.Where(r => r.RealEstateID == id).FirstOrDefault();
-            
+
         ////    _dbcontext.UpdateRange(realEstateToChange); 
         ////    await _dbcontext.SaveChangesAsync();
         ////}
