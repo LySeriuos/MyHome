@@ -8,7 +8,7 @@
 
 <Modal @ref="_refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
-        <EditForm Model="@CurrentDevice" Context="WarrantyDetails" OnSubmit="WarrantyDetailsFormSubmitted">
+        <EditForm Model="@CurrentDevice" OnSubmit="WarrantyDetailsFormSubmitted">
             <div class="form-group row">
                 <label for="devicePurchaseDate" class="col-sm-6 col-form-label">Purchase Date</label>
                 <div class="col-sm-6">
