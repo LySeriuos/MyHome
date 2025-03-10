@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Identity
 @using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Components.Account
+@using System.Security.Claims
 
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inject ILogger<Login> Logger
@@ -92,6 +93,27 @@
         // This doesn't count login failures towards account lockout
         // To enable password failures to trigger account lockout, set lockoutOnFailure: true
         var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
+        var roles = await SignInManager.UserManager.GetRolesAsync(user);
+        bool userIsInRole = await SignInManager.UserManager.IsInRoleAsync(user, "user");
+
+        if(userIsInRole == true)
+        {
+            var claims = new List<Claim>();
+
+            claims.Add(new Claim(ClaimTypes.Name, Input.Email));
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+        }
+        else
+        {
+            await SignInManager.UserManager.AddToRoleAsync(user, "User");
+        }
+
+        
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
