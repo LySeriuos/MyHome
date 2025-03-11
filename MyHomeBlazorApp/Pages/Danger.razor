@@ -1,0 +1,20 @@
+﻿@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@using MyHomeBlazorApp.BlazorData
+
+@page "/superdanger"
+<h3>danger</h3>
+<Button @onclick="MakeCurrentAdmin">Dont click</Button>
+@* //make current user admin  *@
+@code {
+    private async Task MakeCurrentAdmin()
+    {
+        currentUser = await DataService.GetCurrentUser();
+        throw new Exception();
+
+        // await UserManager.AddToRoleAsync(user, "Admin");
+        //code to make someone admin
+    }
+
+    private MyHomeBlazorAppUser currentUser { get; set; }
+}

@@ -97,18 +97,7 @@
         var roles = await SignInManager.UserManager.GetRolesAsync(user);
         bool userIsInRole = await SignInManager.UserManager.IsInRoleAsync(user, "user");
 
-        if(userIsInRole == true)
-        {
-            var claims = new List<Claim>();
-
-            claims.Add(new Claim(ClaimTypes.Name, Input.Email));
-
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-        }
-        else
+        if(userIsInRole == false)
         {
             await SignInManager.UserManager.AddToRoleAsync(user, "User");
         }
