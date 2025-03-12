@@ -1,20 +1,55 @@
 ﻿@inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@using Microsoft.AspNetCore.Components.Authorization;
 @using MyHomeBlazorApp.BlazorData
+
 
 @page "/superdanger"
 <h3>danger</h3>
-<Button @onclick="MakeCurrentAdmin">Dont click</Button>
+<AuthorizeView>
+    <Authorized>
+        <Button @onclick="MakeCurrentAdmin">Dont click</Button>
+    </Authorized>
+    <NotAuthorized>
+        <p>You're not authorized.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
 @* //make current user admin  *@
 @code {
     private async Task MakeCurrentAdmin()
     {
-        currentUser = await DataService.GetCurrentUser();
-        throw new Exception();
+        if(_currentUser.Email == _adminEmail)
+        {
+            throw new Exception("Something went wrong");
+        }
+
 
         // await UserManager.AddToRoleAsync(user, "Admin");
         //code to make someone admin
+        var AuthSate = GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = AuthSate.Result.User;
+        // var adminUser = SignInManager.UserManager.FindByEmailAsync("admin@admin.com").Result;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _currentUser = await UserManager.GetUserAsync(user);
+            _userEmail = await SignInManager.UserManager.GetEmailAsync(_currentUser);
+            _userIsInRole = await SignInManager.UserManager.IsInRoleAsync(_currentUser, "Admin");
+        }
+        
+        if (_userEmail.ToLower() == _adminEmail && _userIsInRole == false)
+        {
+            await UserManager.AddToRoleAsync(_currentUser, "Admin");
+            await UserManager.RemoveFromRoleAsync(_currentUser, "User");
+        }
     }
 
-    private MyHomeBlazorAppUser currentUser { get; set; }
+    private MyHomeBlazorAppUser? _currentUser { get; set; }
+    private MyHomeBlazorAppUser? _firstAdminUser { get; set; }
+    private string? _userEmail { get; set; }
+    private string? Error { get; set; }
+    private readonly string? _adminEmail = "bla@gmail.com";
+    private bool _userIsInRole = false;
 }
