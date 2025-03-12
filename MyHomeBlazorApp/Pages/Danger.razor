@@ -20,17 +20,9 @@
 @code {
     private async Task MakeCurrentAdmin()
     {
-        if(_currentUser.Email == _adminEmail)
-        {
-            throw new Exception("Something went wrong");
-        }
-
-
-        // await UserManager.AddToRoleAsync(user, "Admin");
-        //code to make someone admin
+        //code to make someone as first admin
         var AuthSate = GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         var user = AuthSate.Result.User;
-        // var adminUser = SignInManager.UserManager.FindByEmailAsync("admin@admin.com").Result;
 
         if (user.Identity.IsAuthenticated)
         {
@@ -38,7 +30,7 @@
             _userEmail = await SignInManager.UserManager.GetEmailAsync(_currentUser);
             _userIsInRole = await SignInManager.UserManager.IsInRoleAsync(_currentUser, "Admin");
         }
-        
+
         if (_userEmail.ToLower() == _adminEmail && _userIsInRole == false)
         {
             await UserManager.AddToRoleAsync(_currentUser, "Admin");
@@ -52,4 +44,12 @@
     private string? Error { get; set; }
     private readonly string? _adminEmail = "bla@gmail.com";
     private bool _userIsInRole = false;
+    private bool _randomBool = true;
+    protected override void OnParametersSet()
+    {
+        //prevent non devs from accessing the site lol
+        if (_randomBool)
+            throw new Exception();
+        ;
+    }
 }
