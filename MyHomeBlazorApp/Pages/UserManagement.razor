@@ -24,14 +24,12 @@
         </PropertyColumn>
         <PropertyColumn Title="User Name" Property="@(u => u.NormalizedUserName)" Sortable="true" />
         <TemplateColumn Title="UserRole">
-            @* @dbcontext.UserRoles.Where(x => x.UserId == context.Id).FirstOrDefault(); *@
-            @* @SignInManager.UserManager.GetRolesAsync(context).Result.ToString(); *@
-            @UserRole(context);
+            @UserRole(context).Result.ToString()
         </TemplateColumn>
         @* <TemplateColumn Title="End" SortBy="@marketingEndSort">
             @context.MarketingEnd?.ToShortDateString()
         </TemplateColumn@* > *@
-        <PropertyColumn Title="User Role" Property="@(u => u)" Sortable="true" />
+        <PropertyColumn Title="Default" Property="@(u => u)" Sortable="true" />
     </QuickGrid>
 </div>
 
@@ -51,49 +49,57 @@
 
     QuickGrid<MyHomeBlazorAppUser>? grid;
     GridItemsProvider<MyHomeBlazorAppUser>? usersFromDB;
-    private string? userRole;
+    String? userRole { get; set; }
+
+    // private string? userRole;
     int numResults;
     string nameSearch;
     private List<MyHomeBlazorAppUser>? _users { get; set; }
-    GridSort<MyHomeBlazorAppUser> marketingStartSort = GridSort<MyHomeBlazorAppUser>.ByAscending(x => x.Email);
-    GridSort<MyHomeBlazorAppUser> marketingEndSort = GridSort<MyHomeBlazorAppUser>.ByAscending(x => x.Email);
     private MyHomeBlazorAppContext _dbcontext;
     private string roleName;
-    private string UserRole(MyHomeBlazorAppUser context)
+
+    // private async UserRoleTest(MyHomeBlazorAppUser user)
+    // {
+    //     var userRoles = await UserManager.GetRolesAsync(user);
+    // }
+    private async Task<string> UserRole(MyHomeBlazorAppUser user)
     {
-        var userRoles = dbcontext.UserRoles;
-        var userRole = userRoles.FirstOrDefault();
-        var roles = dbcontext.Roles;
-        foreach (var role in roles)
+        bool userIsInRole = await UserManager.IsInRoleAsync(user, "User");
+        bool userIsInAdminRole = await UserManager.IsInRoleAsync(user, "Admin");
+
+        if (userIsInRole || userIsInAdminRole)
         {
-            if (userRole.RoleId == role.Id)
+            //if user has two roles it is printing the right one only because the Admin role goes second, but it is wrong, need to fix it
+            var userRoles = await UserManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
             {
-                roleName = role.Name;
-                break;
+                if (role == "User")
+                {
+                    userRole = "User";
+                }
+                if (role == "Admin")
+                {
+                    userRole = "Admin";
+                }
             }
         }
-        return roleName;
+        else
+        {
+            await UserManager.AddToRoleAsync(user, "User");
+        }
+
+        return userRole;
     }
 
-    private async Task GetUsersWithData()
-    {
-        var users = _dbcontext.Users;
-        var userRoles = dbcontext.UserRoles;
-        var userRole = userRoles.FirstOrDefault();
-        var bla = _dbcontext.Roles.Where(r => r.Id == userRole.RoleId);
-        var roleName = bla.ToString();
-    }
-
-    protected override async Task OnInitializedAsync()
+    
+    protected override void OnInitialized()
     {
         var usersFromDB = dbcontext.Users;
         _users = UserManager.Users.ToList();
-        // var bla = dbcontext.Roles.Where(r => r.Id == userRole.RoleId).Select(r=>r.Name);
-        // var roleName = bla.ToString();
-        _dbcontext = dbcontext;
-        // itemsProvider = async request =>
+        
+        // usersFromDB = async request =>
         // {
-        //     var result = dbcontext.Users;
+        //     var result = await _users;
 
         //     // Separately display the item count
         //     if (result.TotalItemCount != numResults && !request.CancellationToken.IsCancellationRequested)
