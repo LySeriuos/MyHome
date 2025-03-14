@@ -96,12 +96,12 @@
         var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
         var roles = await SignInManager.UserManager.GetRolesAsync(user);
         bool userIsInRole = await SignInManager.UserManager.IsInRoleAsync(user, "user");
-
-        if(userIsInRole == false)
+        bool userIsInAdminRole = await SignInManager.UserManager.IsInRoleAsync(user, "admin");
+        if(!userIsInRole && !userIsInAdminRole)
         {
             await SignInManager.UserManager.AddToRoleAsync(user, "User");
         }
-
+        
         
         if (result.Succeeded)
         {

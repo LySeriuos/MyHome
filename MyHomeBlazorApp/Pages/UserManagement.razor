@@ -22,7 +22,7 @@
                 </div>
             </ColumnOptions>
         </PropertyColumn>
-        <PropertyColumn Title="User Name" Property="@(u => u.NormalizedUserName)" Sortable="true" />
+        <PropertyColumn Title="User ID" Property="@(u => u.Id)" Sortable="true" />
         <TemplateColumn Title="UserRole">
             @UserRole(context).Result.ToString()
         </TemplateColumn>
@@ -54,41 +54,56 @@
     // private string? userRole;
     int numResults;
     string nameSearch;
-    private List<MyHomeBlazorAppUser>? _users { get; set; }
+    private List<MyHomeBlazorAppUser> _users { get; set; }
     private MyHomeBlazorAppContext _dbcontext;
-    private string roleName;
+    private string? roleName;
 
-    // private async UserRoleTest(MyHomeBlazorAppUser user)
-    // {
-    //     var userRoles = await UserManager.GetRolesAsync(user);
-    // }
     private async Task<string> UserRole(MyHomeBlazorAppUser user)
     {
-        bool userIsInRole = await UserManager.IsInRoleAsync(user, "User");
-        bool userIsInAdminRole = await UserManager.IsInRoleAsync(user, "Admin");
+        var userRoles = await UserManager.GetRolesAsync(user);
+        roleName = userRoles.FirstOrDefault();
+        return roleName.ToString();
+    }
+    // private async Task<string> UserRole(MyHomeBlazorAppUser user)
+    // {
+    //     bool userIsInRole = await UserManager.IsInRoleAsync(user, "User");
+    //     bool userIsInAdminRole = await UserManager.IsInRoleAsync(user, "Admin");
+        
+    //     if (userIsInRole || userIsInAdminRole)
+    //     {
+    //         //if user has two roles it is printing the right one only because the Admin role goes second, but it is wrong, need to fix it
+    //         var userRoles = await UserManager.GetRolesAsync(user);
+    //         foreach (var role in userRoles)
+    //         {
+    //             if (role == "User")
+    //             {
+    //                 userRole = "User";
+    //             }
+    //             if (role == "Admin")
+    //             {
+    //                 userRole = "Admin";
+    //             }
+    //         }
+    //     }
+    //     else
+    //     {
+    //         await UserManager.AddToRoleAsync(user, "User");
+    //     }
 
-        if (userIsInRole || userIsInAdminRole)
+    //     return userRole;
+    // }
+    //app user should have only one Role, but if error and user have more than one so this method will remove "User" role.
+    private async Task RemoveUserRole()
+    {
+        foreach (var userFromDB in _users)
         {
-            //if user has two roles it is printing the right one only because the Admin role goes second, but it is wrong, need to fix it
-            var userRoles = await UserManager.GetRolesAsync(user);
-            foreach (var role in userRoles)
+            var userRoles = await UserManager.GetRolesAsync(userFromDB);
+            if (userRoles.Count > 1)
             {
-                if (role == "User")
-                {
-                    userRole = "User";
-                }
-                if (role == "Admin")
-                {
-                    userRole = "Admin";
-                }
+                await UserManager.RemoveFromRoleAsync(userFromDB, "User");
+                await UserManager.UpdateAsync(userFromDB);
             }
-        }
-        else
-        {
-            await UserManager.AddToRoleAsync(user, "User");
-        }
-
-        return userRole;
+        }        
     }
 
     
