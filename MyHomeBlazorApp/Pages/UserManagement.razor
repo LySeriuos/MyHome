@@ -14,7 +14,7 @@
 @* @inject DataSurcoe Data *@
 
 <div class="grid" tabindex="-1">
-    <QuickGrid Items="@_users.AsQueryable()" Virtualize="true" @ref="grid">
+    <QuickGrid Items="@FilteredNames.AsQueryable()" Virtualize="true" @ref="grid">
         <PropertyColumn Title="User Email" Property="@(u => u.NormalizedEmail)" Sortable="true" IsDefaultSortColumn="true">
             <ColumnOptions>
                 <div class="search-box">
@@ -39,24 +39,21 @@
     </div>
 
     <div class="inline-block my-1">
-        Total: <strong>@numResults results found</strong>
+        Total: <strong>@FilteredNames.Count() Names found</strong>
     </div>
 </div>
 
 
 @code
 {
-
     QuickGrid<MyHomeBlazorAppUser>? grid;
-    GridItemsProvider<MyHomeBlazorAppUser>? usersFromDB;
     String? userRole { get; set; }
 
-    // private string? userRole;
-    int numResults;
-    string nameSearch;
+    string nameSearch = "";
     private List<MyHomeBlazorAppUser> _users { get; set; }
-    private MyHomeBlazorAppContext _dbcontext;
     private string? roleName;
+    List<MyHomeBlazorAppUser> FilteredNames => _users.Where(
+    u => u.Email.ToLower().Contains(nameSearch.ToLower())).ToList();
 
     private async Task<string> UserRole(MyHomeBlazorAppUser user)
     {
@@ -64,34 +61,7 @@
         roleName = userRoles.FirstOrDefault();
         return roleName.ToString();
     }
-    // private async Task<string> UserRole(MyHomeBlazorAppUser user)
-    // {
-    //     bool userIsInRole = await UserManager.IsInRoleAsync(user, "User");
-    //     bool userIsInAdminRole = await UserManager.IsInRoleAsync(user, "Admin");
-        
-    //     if (userIsInRole || userIsInAdminRole)
-    //     {
-    //         //if user has two roles it is printing the right one only because the Admin role goes second, but it is wrong, need to fix it
-    //         var userRoles = await UserManager.GetRolesAsync(user);
-    //         foreach (var role in userRoles)
-    //         {
-    //             if (role == "User")
-    //             {
-    //                 userRole = "User";
-    //             }
-    //             if (role == "Admin")
-    //             {
-    //                 userRole = "Admin";
-    //             }
-    //         }
-    //     }
-    //     else
-    //     {
-    //         await UserManager.AddToRoleAsync(user, "User");
-    //     }
 
-    //     return userRole;
-    // }
     //app user should have only one Role, but if error and user have more than one so this method will remove "User" role.
     private async Task RemoveUserRole()
     {
@@ -103,27 +73,13 @@
                 await UserManager.RemoveFromRoleAsync(userFromDB, "User");
                 await UserManager.UpdateAsync(userFromDB);
             }
-        }        
+        }
     }
 
-    
+
     protected override void OnInitialized()
     {
-        var usersFromDB = dbcontext.Users;
         _users = UserManager.Users.ToList();
-        
-        // usersFromDB = async request =>
-        // {
-        //     var result = await _users;
-
-        //     // Separately display the item count
-        //     if (result.TotalItemCount != numResults && !request.CancellationToken.IsCancellationRequested)
-        //     {
-        //         numResults = result.TotalItemCount;
-        //         StateHasChanged();
-        //     }
-
-        //     return result;
-        // };
     }
 }
+

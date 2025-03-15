@@ -122,6 +122,13 @@ namespace MyHomeBlazorApp.BlazorData
             return userToReturn;
         }
 
+        public async Task GetDBUsers()
+        {
+            IQueryable<MyHomeBlazorAppUser> users = _userManager.Users;
+            //var userWithData = _userManager.Users.ToList();
+            return;
+        }
+
         public Task<MyHomeBlazorAppUser> GetDbUserWithRealEstateAddressData()
         {
             var userWithAddressData = _dbcontext.Users.Include(u => u.UserProfile)
