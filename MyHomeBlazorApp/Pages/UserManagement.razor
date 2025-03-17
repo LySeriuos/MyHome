@@ -26,7 +26,7 @@
             @UserRole(context).Result.ToString()
         </TemplateColumn>
         <TemplateColumn Title="Change Role">
-            <Button Class="btn btn-outline-info">Change Role</Button>
+            <Button Class="btn btn-outline-info" @onclick="ChangeUserRole">Change Role</Button>
         </TemplateColumn>
         <TemplateColumn Title="Delete User">
             <Button Class="btn btn-outline-danger">Delete User</Button>
@@ -51,14 +51,29 @@
 </div>
 
 
+<EditForm Model="@userRoles">
+    <InputSelect @bind-Value="dbcontext.UserRoles">
+        <option>Select Role</option>
+        @foreach(var role in dbcontext.Roles)
+        {
+            <option value="@role.Name">@role.Name</option>
+        }
+    </InputSelect>
+</EditForm>
+
+
+
 @code
 {
     QuickGrid<MyHomeBlazorAppUser>? grid;
     String? userRole { get; set; }
-
+    private string refUserRole { get; set; }
     string nameSearch = "";
+    private MyHomeBlazorAppUser userRoles { get; set; } = new();
+    private EditContext editContext;
     private List<MyHomeBlazorAppUser> _users { get; set; }
     private string? roleName;
+    List<MyHomeBlazorAppUser> userRolesss { get; set; }
     List<MyHomeBlazorAppUser> FilteredNames => _users.Where(
     u => u.Email.ToLower().Contains(nameSearch.ToLower())).ToList();
 
@@ -83,10 +98,16 @@
         }
     }
 
+    private void ChangeUserRole()
+    {
+
+    }
+
 
     protected override void OnInitialized()
     {
         _users = UserManager.Users.ToList();
+        editContext = new(userRoles);
     }
 }
 
