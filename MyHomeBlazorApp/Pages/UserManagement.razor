@@ -22,14 +22,21 @@
                 </div>
             </ColumnOptions>
         </PropertyColumn>
-        <PropertyColumn Title="User ID" Property="@(u => u.Id)" Sortable="true" />
         <TemplateColumn Title="UserRole">
             @UserRole(context).Result.ToString()
         </TemplateColumn>
-        @* <TemplateColumn Title="End" SortBy="@marketingEndSort">
-            @context.MarketingEnd?.ToShortDateString()
-        </TemplateColumn@* > *@
-        <PropertyColumn Title="Default" Property="@(u => u)" Sortable="true" />
+        <TemplateColumn Title="Change Role">
+            <Button Class="btn btn-outline-info">Change Role</Button>
+        </TemplateColumn>
+        <TemplateColumn Title="Delete User">
+            <Button Class="btn btn-outline-danger">Delete User</Button>
+        </TemplateColumn>
+        <TemplateColumn Title="Login As User">
+            <Button Class="btn btn-outline-primary">Login as this User</Button>
+        </TemplateColumn>
+        <TemplateColumn Title="Password Reset">
+            <Button Class="btn btn-outline-dark">Send password reset</Button>
+        </TemplateColumn>
     </QuickGrid>
 </div>
 
