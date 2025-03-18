@@ -26,7 +26,7 @@
             @UserRole(context).Result
         </TemplateColumn>
         <TemplateColumn Title="Change Role">
-            <Button Class="btn btn-outline-info" @onclick="()=>ChangeUserRole(context)">Change Role</Button>
+            <Button Class="btn btn-outline-info" @onclick="()=>OnShowModalChooseRole(context)">Change Role</Button>
         </TemplateColumn>
         <TemplateColumn Title="Delete User">
             <Button Class="btn btn-outline-danger">Delete User</Button>
@@ -51,17 +51,24 @@
 </div>
 
 
-
-<EditForm Model="@_user">
-    <label class="form-label">Choose a Role:</label>
-    <InputSelect @bind-Value="roleName">
-        <option selected value="0" disabled>Select Role</option>
-        @foreach (var role in dbcontext.Roles)
-        {
-            <option value="@role.Name">@role.Name</option>
-        }
-    </InputSelect>
-</EditForm>
+<Modal @ref="refModalChooseRole" Title="Choose Role For The User">
+    <BodyTemplate>
+        <EditForm Model="@_user">
+            <label class="form-label">Choose a Role:</label>
+            <InputSelect @bind-Value="chosedRole">
+                <option selected value="-1" disabled>Select Role</option>
+                @foreach (var role in dbcontext.Roles)
+                {
+                    <option value="@role.Name">@role.Name</option>
+                }
+            </InputSelect>
+        </EditForm>
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Class="btn btn-outline-success" @onclick="SaveChanges">Save</Button>
+        <Button Class="btn btn-outline-danger" @onclick="refModalChooseRole.HideAsync">Close</Button>
+    </FooterTemplate>
+</Modal>
 
 
 
@@ -73,25 +80,32 @@
     private MyHomeBlazorAppUser _user { get; set; } = new();
     private EditContext editContext;
     private List<MyHomeBlazorAppUser> _users { get; set; }
-    private string? roleName { get; set; } = "";
+    private string? chosedRole { get; set; }
+    Modal refModalChooseRole { get; set; } = default!;
     List<MyHomeBlazorAppUser> FilteredNames => _users.Where(
     u => u.Email.ToLower().Contains(nameSearch.ToLower())).ToList();
 
     private async Task<string> UserRole(MyHomeBlazorAppUser user)
     {
         var userRoles = await UserManager.GetRolesAsync(user);
-        roleName = userRoles.FirstOrDefault();
+        var roleName = userRoles.FirstOrDefault();
         return roleName.ToString();
     }
 
-
-    private async void ChangeUserRole(MyHomeBlazorAppUser user)
+    public async Task OnShowModalChooseRole(MyHomeBlazorAppUser user)
     {
         ChosedUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
-        if (!String.IsNullOrEmpty(roleName))
+        await refModalChooseRole.ShowAsync();
+    }    
+
+    private async void SaveChanges()
+    {
+        if (!String.IsNullOrEmpty(chosedRole))
         {
-            await SetRole(ChosedUser, roleName);
+            await SetRole(ChosedUser, chosedRole);
         }
+        await UserManager.UpdateAsync(ChosedUser);
+        await refModalChooseRole.HideAsync();
     }
 
     private async Task SetRole(MyHomeBlazorAppUser user, string role)
@@ -99,10 +113,6 @@
         var chosedUserRoles = await SignInManager.UserManager.GetRolesAsync(user);
         await UserManager.RemoveFromRolesAsync(user, chosedUserRoles);
         await UserManager.AddToRoleAsync(user, role);
-        await UserManager.UpdateAsync(ChosedUser);
-        //TODO: implement
-        //remove all roles of user
-        //set wanted role
     }
 
 
