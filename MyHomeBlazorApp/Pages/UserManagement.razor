@@ -23,10 +23,10 @@
             </ColumnOptions>
         </PropertyColumn>
         <TemplateColumn Title="UserRole">
-            @UserRole(context).Result.ToString()
+            @UserRole(context).Result
         </TemplateColumn>
         <TemplateColumn Title="Change Role">
-            <Button Class="btn btn-outline-info" @onclick="ChangeUserRole">Change Role</Button>
+            <Button Class="btn btn-outline-info" @onclick="()=>ChangeUserRole(context)">Change Role</Button>
         </TemplateColumn>
         <TemplateColumn Title="Delete User">
             <Button Class="btn btn-outline-danger">Delete User</Button>
@@ -51,10 +51,12 @@
 </div>
 
 
-<EditForm Model="@userRoles">
-    <InputSelect @bind-Value="dbcontext.UserRoles">
-        <option>Select Role</option>
-        @foreach(var role in dbcontext.Roles)
+
+<EditForm Model="@_user">
+    <label class="form-label">Choose a Role:</label>
+    <InputSelect @bind-Value="roleName">
+        <option selected value="0" disabled>Select Role</option>
+        @foreach (var role in dbcontext.Roles)
         {
             <option value="@role.Name">@role.Name</option>
         }
@@ -66,14 +68,12 @@
 @code
 {
     QuickGrid<MyHomeBlazorAppUser>? grid;
-    String? userRole { get; set; }
-    private string refUserRole { get; set; }
     string nameSearch = "";
-    private MyHomeBlazorAppUser userRoles { get; set; } = new();
+    public MyHomeBlazorAppUser? ChosedUser { get; set; }
+    private MyHomeBlazorAppUser _user { get; set; } = new();
     private EditContext editContext;
     private List<MyHomeBlazorAppUser> _users { get; set; }
-    private string? roleName;
-    List<MyHomeBlazorAppUser> userRolesss { get; set; }
+    private string? roleName { get; set; } = "";
     List<MyHomeBlazorAppUser> FilteredNames => _users.Where(
     u => u.Email.ToLower().Contains(nameSearch.ToLower())).ToList();
 
@@ -84,30 +84,32 @@
         return roleName.ToString();
     }
 
-    //app user should have only one Role, but if error and user have more than one so this method will remove "User" role.
-    private async Task RemoveUserRole()
+
+    private async void ChangeUserRole(MyHomeBlazorAppUser user)
     {
-        foreach (var userFromDB in _users)
+        ChosedUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
+        if (!String.IsNullOrEmpty(roleName))
         {
-            var userRoles = await UserManager.GetRolesAsync(userFromDB);
-            if (userRoles.Count > 1)
-            {
-                await UserManager.RemoveFromRoleAsync(userFromDB, "User");
-                await UserManager.UpdateAsync(userFromDB);
-            }
+            await SetRole(ChosedUser, roleName);
         }
     }
 
-    private void ChangeUserRole()
+    private async Task SetRole(MyHomeBlazorAppUser user, string role)
     {
-
+        var chosedUserRoles = await SignInManager.UserManager.GetRolesAsync(user);
+        await UserManager.RemoveFromRolesAsync(user, chosedUserRoles);
+        await UserManager.AddToRoleAsync(user, role);
+        await UserManager.UpdateAsync(ChosedUser);
+        //TODO: implement
+        //remove all roles of user
+        //set wanted role
     }
 
 
     protected override void OnInitialized()
     {
         _users = UserManager.Users.ToList();
-        editContext = new(userRoles);
+        editContext = new(_user);
     }
 }
 
