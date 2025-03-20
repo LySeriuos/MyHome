@@ -6,13 +6,23 @@
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject MyHomeBlazorAppContext dbcontext;
 @using Microsoft.AspNetCore.Components.Authorization;
-<h3>UserManagement</h3>
+<h3 class="my-3">User Management Dashboard</h3>
 
 @* 1.Show all user list  *@
 @* 2. Find user by email, when typing in search bar *@
 @* 3. Buttons connect as user, send reset pasword email for user email, add as admin, remove user, change role from admin to user*@
 @* @inject DataSurcoe Data *@
 
+
+<div class="my-3">
+    <div class="search-box inline-block mr-4 my-1">
+        <input type="search" autofocus @bind="nameSearch" @bind:event="oninput" @bind:after="()=>grid.RefreshDataAsync()" placeholder="Product name..." />
+    </div>
+
+    <div class="inline-block my-1">
+        Total: <strong>@FilteredNames.Count() Names found</strong>
+    </div>
+</div>
 <div class="grid" tabindex="-1">
     <QuickGrid Items="@FilteredNames.AsQueryable()" Virtualize="true" @ref="grid">
         <PropertyColumn Title="User Email" Property="@(u => u.NormalizedEmail)" Sortable="true" IsDefaultSortColumn="true">
@@ -29,26 +39,20 @@
             <Button Class="btn btn-outline-info" @onclick="()=>OnShowModalChooseRole(context)">Change Role</Button>
         </TemplateColumn>
         <TemplateColumn Title="Delete User">
-            <Button Class="btn btn-outline-danger">Delete User</Button>
+            <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteUser(context)">Delete User</Button>
         </TemplateColumn>
         <TemplateColumn Title="Login As User">
-            <Button Class="btn btn-outline-primary">Login as this User</Button>
+            <Button Class="btn btn-outline-primary" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
         </TemplateColumn>
         <TemplateColumn Title="Password Reset">
             <Button Class="btn btn-outline-dark">Send password reset</Button>
         </TemplateColumn>
     </QuickGrid>
 </div>
-
-<div class="my-2">
-    <div class="search-box inline-block mr-4 my-1">
-        <input type="search" autofocus @bind="nameSearch" @bind:event="oninput" @bind:after="()=>grid.RefreshDataAsync()" placeholder="Product name..." />
-    </div>
-
-    <div class="inline-block my-1">
-        Total: <strong>@FilteredNames.Count() Names found</strong>
-    </div>
+<div>
+    <p>@userSignInAs</p>
 </div>
+
 
 
 <Modal @ref="refModalChooseRole" Title="Choose Role For The User">
@@ -69,34 +73,68 @@
         <Button Class="btn btn-outline-danger" @onclick="refModalChooseRole.HideAsync">Close</Button>
     </FooterTemplate>
 </Modal>
-
+<Modal @ref="refModalDeleteUser" ShowCloseButton>
+    <BodyTemplate>
+        <p>Are you sure you want To Delete @ChosedUser.Email?</p>
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button @onclick="()=>DeleteUser()">Delete</Button>
+        <Button @onclick="refModalDeleteUser.HideAsync">Cancel</Button>
+    </FooterTemplate>
+</Modal>
 
 
 @code
 {
     QuickGrid<MyHomeBlazorAppUser>? grid;
     string nameSearch = "";
+    [Parameter]
     public MyHomeBlazorAppUser? ChosedUser { get; set; }
     private MyHomeBlazorAppUser _user { get; set; } = new();
     private EditContext editContext;
+    public Action DataChanged;
     private List<MyHomeBlazorAppUser> _users { get; set; }
     private string? chosedRole { get; set; }
+    private string? userRole { get; set; } = String.Empty;
+    private string? testUserRole { get; set; } = String.Empty;
     Modal refModalChooseRole { get; set; } = default!;
+    Modal refModalDeleteUser { get; set; } = default!;
+    string userSignInAs { get; set; }
     List<MyHomeBlazorAppUser> FilteredNames => _users.Where(
     u => u.Email.ToLower().Contains(nameSearch.ToLower())).ToList();
 
-    private async Task<string> UserRole(MyHomeBlazorAppUser user)
+    private async Task SignInAsChosedUser(MyHomeBlazorAppUser user)
     {
-        var userRoles = await UserManager.GetRolesAsync(user);
-        var roleName = userRoles.FirstOrDefault();
-        return roleName.ToString();
+        var userToBeLogedIn = await SignInManager.UserManager.FindByEmailAsync(user.Email);
+        await SignInManager.SignInAsync(userToBeLogedIn, false, userToBeLogedIn.PasswordHash);        
+    }
+
+    public async Task<string> UserRole(MyHomeBlazorAppUser user)
+    {
+        var dbUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
+        if (dbUser == null)
+            return "";
+        else
+        {
+            var userRoles = await UserManager.GetRolesAsync(user);
+            userRole = userRoles.FirstOrDefault();
+        }        
+        return userRole.ToString();
+    }
+
+    public async Task OnShowModalDeleteUser(MyHomeBlazorAppUser user)
+    {
+        ChosedUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
+
+        await refModalDeleteUser.ShowAsync();
     }
 
     public async Task OnShowModalChooseRole(MyHomeBlazorAppUser user)
     {
         ChosedUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
+
         await refModalChooseRole.ShowAsync();
-    }    
+    }
 
     private async void SaveChanges()
     {
@@ -115,11 +153,32 @@
         await UserManager.AddToRoleAsync(user, role);
     }
 
+    private async Task DeleteUser()
+    {        
+        if (ChosedUser != null)
+        {
+            await UserManager.DeleteAsync(ChosedUser);
+        }
+        else
+        {
+            return;
+        }
+
+        UsersDataHasChanged();
+        await refModalDeleteUser.HideAsync();
+    }
 
     protected override void OnInitialized()
     {
+        // _users = dbcontext.Users.ToList();
         _users = UserManager.Users.ToList();
         editContext = new(_user);
+    }
+
+    private void UsersDataHasChanged()
+    {
+        _users = UserManager.Users.ToList();
+        StateHasChanged();
     }
 }
 
