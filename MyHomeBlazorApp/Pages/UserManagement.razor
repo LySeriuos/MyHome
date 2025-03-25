@@ -4,7 +4,10 @@
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
-@inject MyHomeBlazorAppContext dbcontext;
+@inject MyHomeBlazorAppContext dbcontext
+@inject NavigationManager NavManager
+@inject IdentityRedirectManager RedirectManager
+
 @using Microsoft.AspNetCore.Components.Authorization;
 <h3 class="my-3">User Management Dashboard</h3>
 
@@ -106,7 +109,10 @@
     private async Task SignInAsChosedUser(MyHomeBlazorAppUser user)
     {
         var userToBeLogedIn = await SignInManager.UserManager.FindByEmailAsync(user.Email);
-        await SignInManager.SignInAsync(userToBeLogedIn, false, userToBeLogedIn.PasswordHash);        
+        // var userClaims = await SignInManager.UserManager.GetClaimsAsync(userToBeLogedIn);
+        // var result = SignInManager.SignInWithClaimsAsync(userToBeLogedIn, false, userClaims);
+        
+        NavManager.NavigateTo("/Account/LoginChosedUser/" + userToBeLogedIn.Id, true);
     }
 
     public async Task<string> UserRole(MyHomeBlazorAppUser user)

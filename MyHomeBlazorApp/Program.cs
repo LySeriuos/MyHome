@@ -72,6 +72,7 @@ namespace MyHomeBlazorApp
 
             //      app.UseRouting();
             app.UseAuthorization();
+            app.UseAuthentication();
             //      app.MapControllers();
             //      app.MapBlazorHub();
             app.UseAntiforgery();

@@ -1,0 +1,28 @@
+﻿@page "/Account/LoginChosedUser/{Id}"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using MyHomeBlazorApp.BlazorData
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject MyHomeBlazorAppContext dbcontext
+@inject NavigationManager NavManager
+@inject IdentityRedirectManager RedirectManager
+
+Logged in as @user - @Id
+<h3>LogInChosedUser</h3>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    MyHomeBlazorAppUser? user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //TODO: implement check here if caller is actually admin!
+
+        user = UserManager.Users.First(u => u.Id == Id);
+        await SignInManager.SignInAsync(user, false);
+
+    }
+}
