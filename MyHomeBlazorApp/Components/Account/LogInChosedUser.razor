@@ -23,6 +23,12 @@ Logged in as @user - @Id
 
         user = UserManager.Users.First(u => u.Id == Id);
         await SignInManager.SignInAsync(user, false);
-
+        RedirectManager.RedirectTo("/");
     }
+
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     NavManager.NavigateTo("/pages/index");
+    //     base.OnAfterRender(firstRender);
+    // }
 }
