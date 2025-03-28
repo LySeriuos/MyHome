@@ -3,7 +3,7 @@
 @using MyHomeBlazorApp.BlazorData
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
-@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject AuthenticationStateProvider authenticationStateProvider
 @inject MyHomeBlazorAppContext dbcontext
 @inject NavigationManager NavManager
 @inject IdentityRedirectManager RedirectManager
@@ -14,16 +14,25 @@ Logged in as @user - @Id
 @code {
     [Parameter]
     public string Id { get; set; }
+    MyHomeBlazorAppUser? user { get; set; }
 
-    MyHomeBlazorAppUser? user;
 
     protected override async Task OnParametersSetAsync()
     {
         //TODO: implement check here if caller is actually admin!
-
         user = UserManager.Users.First(u => u.Id == Id);
-        await SignInManager.SignInAsync(user, false);
-        RedirectManager.RedirectTo("/");
+        var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
+        var userCaller = AuthSate.Result.User;
+
+        if (userCaller.IsInRole("Admin"))
+        {
+            await SignInManager.SignInAsync(user, false);
+            RedirectManager.RedirectTo("/");
+        }
+        else
+        {
+            RedirectManager.RedirectTo("Account/Login");
+        }
     }
 
     // protected override void OnAfterRender(bool firstRender)
