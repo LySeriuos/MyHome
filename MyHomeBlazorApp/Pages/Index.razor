@@ -1,4 +1,8 @@
-﻿@page "/"
+﻿@inject UserManager<MyHomeBlazorAppUser> UserManager
+
+@page "/"
+@page "/index/{Id}"
+@using MyHomeBlazorApp.BlazorData
 
 <PageTitle>Index</PageTitle>
 
@@ -6,4 +10,64 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<Modal @ref="refWarningModal" Title="Warning!">
+    <BodyTemplate>
+        <p>You are Loged in as:</p>
+        <ul>
+            <li>
+                User: @userToLogIn
+            </li>
+            <li>
+                ID: @userToLogIn.Id
+            </li>
+        </ul>
+        <p>Change to Admin requires Log Out from user and Login as Admin!</p>
+        <Button Color="ButtonColor.Primary" @onclick="refWarningModal.HideAsync">Close</Button>
+    </BodyTemplate>
+</Modal>
+
+@code
+{
+    [Parameter]
+    public string? Id { get; set; }
+
+    Modal refWarningModal { get; set; } = default!;
+    private MyHomeBlazorAppUser? userToLogIn { get; set; }
+    private bool isLoaded;
+    // protected override void OnParametersSet() => Text = Text ?? "fantastic";
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     refWarningModal = new();
+    //     if (Id != null && !isLoaded)
+    //     {
+    //         await Task.Delay(1);
+    //         await refWarningModal.ShowAsync();
+    //     }
+
+    //     await base.OnInitializedAsync();
+    // }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //TODO: implement check here if caller is actually admin!
+        if (Id != null)
+        {
+            userToLogIn = UserManager.Users.First(u => u.Id == Id);
+
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (Id != null && !isLoaded)
+        {
+            await refWarningModal.ShowAsync();
+            isLoaded = true;
+            
+        }
+        Id = null;
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

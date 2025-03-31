@@ -36,8 +36,8 @@
                 </div>
 
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                    <NavLink class="nav-link text-danger" id="colorChange" href="Account/Manage">
+                        <span class="bi bi-person-fill-nav-menu text-warning" aria-hidden="true"></span> @context.User.Identity?.Name
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
@@ -70,7 +70,7 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
+    private LogInChosedUser? logInChosedUser { get; set; }
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
@@ -92,5 +92,16 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
-    }    
+    } 
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            
+        }
+        base.OnAfterRender(firstRender);
+    }
+
+
 }

@@ -148,6 +148,7 @@ namespace MyHomeBlazorApp.BlazorData
             return Task.FromResult<MyHomeBlazorAppUser>(userWithDevicesData);
         }
 
+
         #endregion
 
         #region Real Estate

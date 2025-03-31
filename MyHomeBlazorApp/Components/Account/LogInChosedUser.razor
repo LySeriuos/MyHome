@@ -8,36 +8,55 @@
 @inject NavigationManager NavManager
 @inject IdentityRedirectManager RedirectManager
 
-Logged in as @user - @Id
-<h3>LogInChosedUser</h3>
+<h3>LogIn Chosed User</h3>
+
+<Modal @ref="refWarningModal" Title="Warning!">
+    <BodyTemplate>
+        <p>You are Loged in as:</p>
+        <ul>
+            <li>
+                User: @userToLogIn
+            </li>
+            <li>
+                ID: @userToLogIn.Id
+            </li>
+        </ul>
+        <p>Change to Admin requires Log Out from user and Login as Admin!</p>
+        <Button Color="ButtonColor.Primary" @onclick="refWarningModal.HideAsync">Close</Button>
+    </BodyTemplate>
+</Modal>
 
 @code {
     [Parameter]
     public string Id { get; set; }
-    MyHomeBlazorAppUser? user { get; set; }
-
-
+    MyHomeBlazorAppUser? userToLogIn { get; set; }
+    Modal refWarningModal { get; set; } = default!;
     protected override async Task OnParametersSetAsync()
     {
         //TODO: implement check here if caller is actually admin!
-        user = UserManager.Users.First(u => u.Id == Id);
+        userToLogIn = UserManager.Users.First(u => u.Id == Id);
         var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
         var userCaller = AuthSate.Result.User;
-
         if (userCaller.IsInRole("Admin"))
         {
-            await SignInManager.SignInAsync(user, false);
-            RedirectManager.RedirectTo("/");
+            await SignInManager.SignInAsync(userToLogIn, false);
+            StateHasChanged();
+            NavManager.NavigateTo("/index/" + userToLogIn.Id, true);
         }
         else
-        {
+        {            
             RedirectManager.RedirectTo("Account/Login");
         }
     }
 
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     NavManager.NavigateTo("/pages/index");
-    //     base.OnAfterRender(firstRender);
-    // }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (Id != null)
+        {
+            await refWarningModal.ShowAsync();
+
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }
