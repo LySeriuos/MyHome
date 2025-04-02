@@ -1,8 +1,9 @@
 ﻿@inject UserManager<MyHomeBlazorAppUser> UserManager
-
+@inject LogInChosedUser LogInChosedUser
 @page "/"
-@page "/index/{Id}"
+@* @page "/index/{Id}" *@
 @using MyHomeBlazorApp.BlazorData
+@implements IDisposable
 
 <PageTitle>Index</PageTitle>
 
@@ -10,7 +11,7 @@
 
 Welcome to your new app.
 
-<Modal @ref="refWarningModal" Title="Warning!">
+<Modal @ref="refWarningModal" Title="Warning!" @onclose="ClosedModalEvent">
     <BodyTemplate>
         <p>You are Loged in as:</p>
         <ul>
@@ -30,44 +31,64 @@ Welcome to your new app.
 {
     [Parameter]
     public string? Id { get; set; }
-
+    EventCallback ClosedModalEvent { get; set; }
+    private string? id;
     Modal refWarningModal { get; set; } = default!;
     private MyHomeBlazorAppUser? userToLogIn { get; set; }
     private bool isLoaded;
-    // protected override void OnParametersSet() => Text = Text ?? "fantastic";
+    public event Action OnChange;
 
+    // void ClickHandler(string userId)
+    // {
+    //     userToLogIn = UserManager.Users.First(u => u.Id == userId);
+    //     refWarningModal.ShowAsync();
+    // }
+    // protected override void OnParametersSet() => Text = Text ?? "fantastic";
+    // private async Task CloseModalEvent()
+    // {
+    //     isLoaded = true;
+    // }
     // protected override async Task OnInitializedAsync()
     // {
-    //     refWarningModal = new();
-    //     if (Id != null && !isLoaded)
-    //     {
-    //         await Task.Delay(1);
-    //         await refWarningModal.ShowAsync();
-    //     }
-
+    //     // Id = null;
+        
     //     await base.OnInitializedAsync();
     // }
-
-    protected override async Task OnParametersSetAsync()
+    void SetUserParameter(string userId)
     {
-        //TODO: implement check here if caller is actually admin!
-        if (Id != null)
-        {
-            userToLogIn = UserManager.Users.First(u => u.Id == Id);
-
-        }
+        userToLogIn = UserManager.Users.First(u => u.Id == userId);
+        refWarningModal.ShowAsync();
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-
-        if (Id != null && !isLoaded)
-        {
-            await refWarningModal.ShowAsync();
-            isLoaded = true;
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     //TODO: implement check here if caller is actually admin!
+    //     if (Id != null)
+    //     {
+    //         userToLogIn = UserManager.Users.First(u => u.Id == Id);
             
-        }
-        Id = null;
-        await base.OnAfterRenderAsync(firstRender);
+    //     }
+    // }
+    protected override void OnInitialized()
+    {
+       LogInChosedUser.OnChange += SetUserParameter;
     }
+
+    public void Dispose()
+    {
+        LogInChosedUser.OnChange -= SetUserParameter;
+    }
+    
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+        
+    //     if (Id != null && isLoaded == true)
+    //     {
+    //         await refWarningModal.ShowAsync();
+    //         isLoaded = true;
+    //     }
+    //     Id = null;
+        
+    //     await base.OnAfterRenderAsync(firstRender);
+    // }
 }

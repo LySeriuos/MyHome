@@ -48,6 +48,7 @@ namespace MyHomeBlazorApp
             //    builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<DataService>();
+            builder.Services.AddScoped<LogInChosedUser>();
             builder.Services.AddBlazorBootstrap();
             builder.Services.AddSingleton<IEmailSender<MyHomeBlazorAppUser>, IdentityNoOpEmailSender>();
             var app = builder.Build();

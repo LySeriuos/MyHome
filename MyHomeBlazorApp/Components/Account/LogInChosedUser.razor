@@ -29,22 +29,26 @@
 @code {
     [Parameter]
     public string Id { get; set; }
-    MyHomeBlazorAppUser? userToLogIn { get; set; }
+    MyHomeBlazorAppUser? userToLogIn { get; set; } = new();
     Modal refWarningModal { get; set; } = default!;
+    [Parameter] public EventCallback<string> OnClick { get; set; }
+    public Action<string> OnChange;
     protected override async Task OnParametersSetAsync()
     {
         //TODO: implement check here if caller is actually admin!
-        userToLogIn = UserManager.Users.First(u => u.Id == Id);
+        
         var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
         var userCaller = AuthSate.Result.User;
         if (userCaller.IsInRole("Admin"))
         {
+            userToLogIn = UserManager.Users.First(u => u.Id == Id);
             await SignInManager.SignInAsync(userToLogIn, false);
-            StateHasChanged();
+            // // await OnClick.InvokeAsync(userToLogIn.Id);
+            OnChange(userToLogIn.Id);
             NavManager.NavigateTo("/index/" + userToLogIn.Id, true);
         }
         else
-        {            
+        {   
             RedirectManager.RedirectTo("Account/Login");
         }
     }
