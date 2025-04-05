@@ -31,8 +31,8 @@
     public string Id { get; set; }
     MyHomeBlazorAppUser? userToLogIn { get; set; } = new();
     Modal refWarningModal { get; set; } = default!;
-    [Parameter] public EventCallback<string> OnClick { get; set; }
-    public Action<string> OnChange;
+
+
     protected override async Task OnParametersSetAsync()
     {
         //TODO: implement check here if caller is actually admin!
@@ -43,24 +43,11 @@
         {
             userToLogIn = UserManager.Users.First(u => u.Id == Id);
             await SignInManager.SignInAsync(userToLogIn, false);
-            // // await OnClick.InvokeAsync(userToLogIn.Id);
-            OnChange(userToLogIn.Id);
             NavManager.NavigateTo("/index/" + userToLogIn.Id, true);
         }
         else
         {   
             RedirectManager.RedirectTo("Account/Login");
         }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-
-        if (Id != null)
-        {
-            await refWarningModal.ShowAsync();
-
-        }
-        await base.OnAfterRenderAsync(firstRender);
     }
 }

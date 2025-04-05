@@ -1,9 +1,15 @@
 ﻿@inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject LogInChosedUser LogInChosedUser
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject MyHomeBlazorAppContext dbcontext
+@inject NavigationManager NavManager
+@inject IdentityRedirectManager RedirectManager
+
 @page "/"
-@* @page "/index/{Id}" *@
+@page "/index/{IdParameter}"
 @using MyHomeBlazorApp.BlazorData
-@implements IDisposable
 
 <PageTitle>Index</PageTitle>
 
@@ -11,7 +17,7 @@
 
 Welcome to your new app.
 
-<Modal @ref="refWarningModal" Title="Warning!" @onclose="ClosedModalEvent">
+<Modal @ref="refWarningModal" Title="Warning!">
     <BodyTemplate>
         <p>You are Loged in as:</p>
         <ul>
@@ -30,65 +36,37 @@ Welcome to your new app.
 @code
 {
     [Parameter]
-    public string? Id { get; set; }
+    public string? IdParameter { get; set; }
     EventCallback ClosedModalEvent { get; set; }
     private string? id;
     Modal refWarningModal { get; set; } = default!;
-    private MyHomeBlazorAppUser? userToLogIn { get; set; }
-    private bool isLoaded;
-    public event Action OnChange;
+    private MyHomeBlazorAppUser? userToLogIn { get; set; } = new();
 
-    // void ClickHandler(string userId)
-    // {
-    //     userToLogIn = UserManager.Users.First(u => u.Id == userId);
-    //     refWarningModal.ShowAsync();
-    // }
-    // protected override void OnParametersSet() => Text = Text ?? "fantastic";
-    // private async Task CloseModalEvent()
-    // {
-    //     isLoaded = true;
-    // }
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     // Id = null;
-        
-    //     await base.OnInitializedAsync();
-    // }
-    void SetUserParameter(string userId)
+    protected override async Task OnParametersSetAsync()
     {
-        userToLogIn = UserManager.Users.First(u => u.Id == userId);
-        refWarningModal.ShowAsync();
-    }
-    // protected override async Task OnParametersSetAsync()
-    // {
-    //     //TODO: implement check here if caller is actually admin!
-    //     if (Id != null)
-    //     {
-    //         userToLogIn = UserManager.Users.First(u => u.Id == Id);
-            
-    //     }
-    // }
-    protected override void OnInitialized()
-    {
-       LogInChosedUser.OnChange += SetUserParameter;
-    }
-
-    public void Dispose()
-    {
-        LogInChosedUser.OnChange -= SetUserParameter;
+        //TODO: implement check here if caller is actually admin!
+        var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
+        var currentUser = AuthSate.Result.User;
+        if (currentUser.Identity.IsAuthenticated && IdParameter != null)
+        {
+            id = IdParameter;
+            userToLogIn = UserManager.Users.First(u => u.Id == IdParameter);
+        }
+        else
+        {
+            id = null;            
+        }
     }
     
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
         
-    //     if (Id != null && isLoaded == true)
-    //     {
-    //         await refWarningModal.ShowAsync();
-    //         isLoaded = true;
-    //     }
-    //     Id = null;
+        if (id != null)
+        {
+            await refWarningModal.ShowAsync();            
+        }        
         
-    //     await base.OnAfterRenderAsync(firstRender);
-    // }
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }
