@@ -46,10 +46,7 @@
         </TemplateColumn>
         <TemplateColumn Title="Login As User">
             <Button Class="btn btn-outline-primary" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
-        </TemplateColumn>
-        <TemplateColumn Title="Password Reset">
-            <Button Class="btn btn-outline-dark">Send password reset</Button>
-        </TemplateColumn>
+        </TemplateColumn>        
     </QuickGrid>
 </div>
 <div>
@@ -111,7 +108,7 @@
         var userToBeLogedIn = await SignInManager.UserManager.FindByEmailAsync(user.Email);
         // var userClaims = await SignInManager.UserManager.GetClaimsAsync(userToBeLogedIn);
         // var result = SignInManager.SignInWithClaimsAsync(userToBeLogedIn, false, userClaims);
-        
+
         NavManager.NavigateTo("/Account/LoginChosedUser/" + userToBeLogedIn.Id, true);
     }
 
