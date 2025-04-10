@@ -1,9 +1,18 @@
-﻿@* @page "/createEmail" *@
-@page "/createEmail/{currentUserID:int}"
+﻿@page "/createEmail"
+@* @page "/createEmail/{currentUserID:int}" *@
 @using MailKit.Net.Smtp
+@using Microsoft.EntityFrameworkCore
 @using MimeKit
+@using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Components.Modals
 @using My_Home.Models
+@using System;
+@using SendGrid;
+@using SendGrid.Helpers.Mail;
+@inject MyHomeBlazorAppContext dbcontext
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject AuthenticationStateProvider authenticationStateProvider
 
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
@@ -12,8 +21,8 @@
 @* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
 <label class="form-label">Choose The Device</label>
 <InputSelect @bind-Value="_chosedDeviceID" @bind-Value:after="init" class="form-select">
-    <option selected value="0" disabled>Select Real Estate...</option>
-    @foreach (var device in _currentUser.GetAllDevices())
+    <option selected value="0" disabled>Choose a Device...</option>
+    @foreach (var device in _devices)
     {
         <option value="@device.DeviceID">@device.DeviceName</option>
     }
@@ -144,7 +153,9 @@
     private DeviceProfile _chosedDevice { get; set; } = new();
     private UserProfile _currentUser = new();
     private SuccessModal _refSuccessModal = default!;
+    private string? _currentUserEmail { get; set; }
     private int _chosedDeviceID { get; set; } = new();
+    private List<DeviceProfile>? _devices { get; set; }
     private bool _produserChecked { get; set; }
     private bool _serialNumberChecked { get; set; }
     private bool _modelNumberChecked { get; set; }
@@ -169,6 +180,34 @@
     private string _exrtraWarrantyFileLinkConfirmation = "";
     private string _receiptFileLinkConfirmation = "";
 
+    protected override async Task OnInitializedAsync()
+    {
+        _currentUser = DataService.CurrentUser;
+        _devices = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
+        .Result.UserProfile.RealEstates.SelectMany(r => r.DevicesProfiles).ToList();
+        // var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
+        // var user = AuthSate.Result.User;
+        // var userProfile = await UserManager.GetUserAsync(user);
+        // var userWithData = dbcontext.Users.Include(u => u.UserProfile)
+        //         .ThenInclude(p => p.RealEstates)
+        //         .FirstOrDefault(u => u.Id == userProfile.Id);
+        // _currentUser = userWithData.UserProfile;
+        _currentUserEmail = _currentUser.Email;
+    }
+
+    // protected override Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
+    //     var user = AuthSate.Result.User;
+    //     var userProfile = UserManager.GetUserAsync(user).Result;
+    //     var userWithData = dbcontext.Users.Include(u => u.UserProfile)
+    //             .ThenInclude(p => p.RealEstates)
+    //             .FirstOrDefault(u => u.Id == userProfile.Id);
+    //     _currentUser = userWithData.UserProfile;
+    //     _currentUserEmail = userProfile.Email;
+    //     return base.OnAfterRenderAsync(firstRender);
+    // }
+
 
     private async Task NavigateToExtraWarrantyFile()
     {
@@ -184,37 +223,51 @@
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private void SendEmail()
+    private async Task SendEmail()
     {
         try
         {
-            var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
-            email.To.Add(MailboxAddress.Parse(EmailRequest.To));
-            email.Subject = EmailRequest.Subject;
-            var builder = new BodyBuilder();
-            // builder.HtmlBody = EmailRequest.Body;
-            builder.TextBody = EmailRequest.Body;
-            var attachments = new List<MimeEntity>();
+            var apiKey = Environment.GetEnvironmentVariable("EmailApiKey");
+            var client = new SendGridClient(apiKey);
+            var from_email = new EmailAddress($"{_currentUserEmail}", "Example User");
+            var subject = "Sending with Twilio SendGrid is Fun";
+            var to_email = new EmailAddress("test@example.com", "Example User");
+            var plainTextContent = "and easy to do anywhere, even with C#";
+            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+            var msg = MailHelper.CreateSingleEmail(from_email, to_email, subject, plainTextContent, htmlContent);
+            var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
 
-            if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
-            {
-                // MimeEntity.Load($"{_recieptLink}");
-                builder.Attachments.Add($"{_recieptLink}");
-            }
 
-            if (_chosedDeviceExtraWarrantyRecieptChecked && !String.IsNullOrEmpty(_extraWarrantyRecieptLink))
-            {
-                // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
-                builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
-            }
-            email.Body = builder.ToMessageBody();
-            // EmailRequest.Body = email.Body.ToString();
-            using var smtp = new SmtpClient();
-            smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
-            smtp.Send(email);
-            smtp.Disconnect(true);
+
+
+
+            // var email = new MimeMessage();
+            // email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
+            // email.To.Add(MailboxAddress.Parse(EmailRequest.To));
+            // email.Subject = EmailRequest.Subject;
+            // var builder = new BodyBuilder();
+            // // builder.HtmlBody = EmailRequest.Body;
+            // builder.TextBody = EmailRequest.Body;
+            // var attachments = new List<MimeEntity>();
+
+            // if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
+            // {
+            //     // MimeEntity.Load($"{_recieptLink}");
+            //     builder.Attachments.Add($"{_recieptLink}");
+            // }
+
+            // if (_chosedDeviceExtraWarrantyRecieptChecked && !String.IsNullOrEmpty(_extraWarrantyRecieptLink))
+            // {
+            //     // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
+            //     builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
+            // }
+            // email.Body = builder.ToMessageBody();
+            // // EmailRequest.Body = email.Body.ToString();
+            // using var smtp = new SmtpClient();
+            // smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            // smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
+            // smtp.Send(email);
+            // smtp.Disconnect(true);
             _refSuccessModal.OnShowModalClick();
             EmailRequest = new();
             init();
@@ -317,13 +370,13 @@
         EmailRequest.Body = _preparedMessage;
     }
 
-    protected override void OnParametersSet()
-    {
-        if (currentUserID != 0)
-        {
-            _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
-        }
-    }
+    // protected override void OnParametersSet()
+    // {
+    //     if (currentUserID != 0)
+    //     {
+    //         _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
+    //     }
+    // }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -334,6 +387,5 @@
             extraWarrantyFileName = GetFileName(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink);
         }
         base.OnAfterRender(firstRender);
-        StateHasChanged();
     }
 }
