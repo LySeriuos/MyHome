@@ -22,16 +22,23 @@
 <label class="form-label">Choose The Device</label>
 <InputSelect @bind-Value="_chosedDeviceID" @bind-Value:after="init" class="form-select">
     <option selected value="0" disabled>Choose a Device...</option>
-    @foreach (var device in _devices)
+    @if (_devicesList.Count > 0)
     {
-        <option value="@device.DeviceID">@device.DeviceName</option>
+        @foreach (var device in _devicesList)
+        {
+            <option value="@device.DeviceID">@device.DeviceName</option>
+        }
+    }
+    else
+    {
+        <p>There is no devices!</p>
     }
 </InputSelect>
 <p>@_chosedDeviceID</p>
 
 @if (_chosedDeviceID != 0)
 {
-    <EditForm Model="_deviceProfile">
+    <EditForm Model="_currentUser">
         <div class="row w-50 mr-0">
             @if (!String.IsNullOrEmpty(_chosedDevice.DeviceProduser))
             {
@@ -155,7 +162,7 @@
     private SuccessModal _refSuccessModal = default!;
     private string? _currentUserEmail { get; set; }
     private int _chosedDeviceID { get; set; } = new();
-    private List<DeviceProfile>? _devices { get; set; }
+    private List<DeviceProfile>? _devicesList { get; set; } = new();
     private bool _produserChecked { get; set; }
     private bool _serialNumberChecked { get; set; }
     private bool _modelNumberChecked { get; set; }
@@ -182,31 +189,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _currentUser = DataService.CurrentUser;
-        _devices = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
+        _currentUser = DataService.GetCurrentUser().Result;        
+        _devicesList = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
         .Result.UserProfile.RealEstates.SelectMany(r => r.DevicesProfiles).ToList();
-        // var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
-        // var user = AuthSate.Result.User;
-        // var userProfile = await UserManager.GetUserAsync(user);
-        // var userWithData = dbcontext.Users.Include(u => u.UserProfile)
-        //         .ThenInclude(p => p.RealEstates)
-        //         .FirstOrDefault(u => u.Id == userProfile.Id);
-        // _currentUser = userWithData.UserProfile;
         _currentUserEmail = _currentUser.Email;
+        _chosedDevice.DeviceWarranty = new();
+        _chosedDevice.DeviceWarranty.Shop = new();
+        _chosedDevice.DeviceWarranty.Shop.Address = new();
     }
-
-    // protected override Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
-    //     var user = AuthSate.Result.User;
-    //     var userProfile = UserManager.GetUserAsync(user).Result;
-    //     var userWithData = dbcontext.Users.Include(u => u.UserProfile)
-    //             .ThenInclude(p => p.RealEstates)
-    //             .FirstOrDefault(u => u.Id == userProfile.Id);
-    //     _currentUser = userWithData.UserProfile;
-    //     _currentUserEmail = userProfile.Email;
-    //     return base.OnAfterRenderAsync(firstRender);
-    // }
 
 
     private async Task NavigateToExtraWarrantyFile()
@@ -227,48 +217,46 @@
     {
         try
         {
-            var apiKey = Environment.GetEnvironmentVariable("EmailApiKey");
-            var client = new SendGridClient(apiKey);
-            var from_email = new EmailAddress($"{_currentUserEmail}", "Example User");
-            var subject = "Sending with Twilio SendGrid is Fun";
-            var to_email = new EmailAddress("test@example.com", "Example User");
-            var plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var msg = MailHelper.CreateSingleEmail(from_email, to_email, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
 
 
+            // var apiKey = Environment.GetEnvironmentVariable("EmailApiKey");
+            // var client = new SendGridClient(apiKey);
+            // var from_email = new EmailAddress("drungilas.p@gmail.com", "Example User");
+            // var subject = $"{EmailRequest.Subject}";
+            // var to_email = new EmailAddress($"{EmailRequest.To}");
+            // var plainTextContent = $"{EmailRequest.Body}";
+            // var htmlContent = $"{EmailRequest.Body}";
+            // var msg = MailHelper.CreateSingleEmail(from_email, to_email, subject, plainTextContent, htmlContent);
+            // var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
 
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
+            email.To.Add(MailboxAddress.Parse(EmailRequest.To));
+            email.Subject = EmailRequest.Subject;
+            var builder = new BodyBuilder();
+            // builder.HtmlBody = EmailRequest.Body;
+            builder.TextBody = EmailRequest.Body;
+            var attachments = new List<MimeEntity>();
 
+            if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
+            {
+                // MimeEntity.Load($"{_recieptLink}");
+                builder.Attachments.Add($"{_recieptLink}");
+            }
 
-            // var email = new MimeMessage();
-            // email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
-            // email.To.Add(MailboxAddress.Parse(EmailRequest.To));
-            // email.Subject = EmailRequest.Subject;
-            // var builder = new BodyBuilder();
-            // // builder.HtmlBody = EmailRequest.Body;
-            // builder.TextBody = EmailRequest.Body;
-            // var attachments = new List<MimeEntity>();
-
-            // if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
-            // {
-            //     // MimeEntity.Load($"{_recieptLink}");
-            //     builder.Attachments.Add($"{_recieptLink}");
-            // }
-
-            // if (_chosedDeviceExtraWarrantyRecieptChecked && !String.IsNullOrEmpty(_extraWarrantyRecieptLink))
-            // {
-            //     // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
-            //     builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
-            // }
-            // email.Body = builder.ToMessageBody();
-            // // EmailRequest.Body = email.Body.ToString();
-            // using var smtp = new SmtpClient();
-            // smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            // smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
-            // smtp.Send(email);
-            // smtp.Disconnect(true);
-            _refSuccessModal.OnShowModalClick();
+            if (_chosedDeviceExtraWarrantyRecieptChecked && !String.IsNullOrEmpty(_extraWarrantyRecieptLink))
+            {
+                // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
+                builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
+            }
+            email.Body = builder.ToMessageBody();
+            // EmailRequest.Body = email.Body.ToString();
+            using var smtp = new SmtpClient();
+            smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate("xirim94345@ptiong.com", "pXcJDCMXPmZpw1XMfY");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+            await _refSuccessModal.OnShowModalClick();
             EmailRequest = new();
             init();
         }
@@ -280,6 +268,7 @@
 
     private void init()
     {
+        _chosedDevice = _currentUser.GetAllDevices().First(d => d.DeviceID == _chosedDeviceID);
         _produserChecked = false;
         _serialNumberChecked = false;
         _modelNumberChecked = false;
@@ -301,14 +290,6 @@
             fileName = splitedString;
         }
         return fileName;
-    }
-
-    protected override void OnInitialized()
-    {
-        _chosedDevice.DeviceWarranty = new();
-        _chosedDevice.DeviceWarranty.Shop = new();
-        _chosedDevice.DeviceWarranty.Shop.Address = new();
-        base.OnInitialized();
     }
 
     private void AddDetailsToTheEmailMessage()

@@ -105,10 +105,17 @@ namespace MyHomeBlazorApp.BlazorData
         {
             var AuthSate = _authenticationStateProvider.GetAuthenticationStateAsync();
             var user = AuthSate.Result.User;
-            if (user.Identity.IsAuthenticated)
+            if (user != null)
             {
-                CurrentAppUser = await _userManager.GetUserAsync(user);
-                userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
+                if (user.Identity.IsAuthenticated)
+                {
+                    CurrentAppUser = await _userManager.GetUserAsync(user);
+                    userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
+                }
+            }
+            else
+            {
+                userWithData.UserProfile = null;
             }
             return userWithData.UserProfile;
         }
