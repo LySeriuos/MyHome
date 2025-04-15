@@ -17,6 +17,8 @@
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
 
+@attribute [Authorize]
+
 <h3>CreateEmail</h3>
 @* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
 <label class="form-label">Choose The Device</label>
@@ -187,18 +189,31 @@
     private string _exrtraWarrantyFileLinkConfirmation = "";
     private string _receiptFileLinkConfirmation = "";
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        _currentUser = DataService.GetCurrentUser().Result;        
-        _devicesList = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
-        .Result.UserProfile.RealEstates.SelectMany(r => r.DevicesProfiles).ToList();
+        _currentUser = DataService.GetCurrentUser().Result;
+        // _devicesList = _currentUser.RealEstates.SelectMany(r => r.DevicesProfiles).ToList();
+        if (_currentUser.UserID > 0)
+        {
+            _devicesList = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
+            .Result.UserProfile.RealEstates.SelectMany(r => r.DevicesProfiles).ToList();
+        }
+        else 
+        {
+            _devicesList = new();
+        }
         _currentUserEmail = _currentUser.Email;
         _chosedDevice.DeviceWarranty = new();
         _chosedDevice.DeviceWarranty.Shop = new();
         _chosedDevice.DeviceWarranty.Shop.Address = new();
+            
     }
 
+    // protected override void OnInitialized()
+    // {
 
+    //     base.OnInitialized();
+    // }
     private async Task NavigateToExtraWarrantyFile()
     {
         string currentExtraWarrrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;

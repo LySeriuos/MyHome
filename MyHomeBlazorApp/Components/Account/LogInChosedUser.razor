@@ -7,7 +7,7 @@
 @inject MyHomeBlazorAppContext dbcontext
 @inject NavigationManager NavManager
 @inject IdentityRedirectManager RedirectManager
-
+@attribute [Authorize]
 <h3>LogIn Chosed User</h3>
 
 <Modal @ref="refWarningModal" Title="Warning!">
