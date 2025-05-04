@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MyHomeBlazorApp.BlazorData;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace WebPWrecover.Services;
 
@@ -21,31 +21,49 @@ public class EmailSender : IEmailSender
 
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
-        if (string.IsNullOrEmpty(Options.SendGridKey))
+        if (string.IsNullOrEmpty(Options.MyHomeGmailPassword))
         {
-            throw new Exception("Null SendGridKey");
+            throw new Exception("Null MailSenderKey");
         }
-        await Execute(Options.SendGridKey, subject, message, toEmail);
+        await Execute(Options.MyHomeGmailPassword, subject, message, toEmail);
     }
+    // Todo: Add response to _logger from smtp client. Example:
+    //    var response = await client.SendEmailAsync(msg);
+    //    _logger.LogInformation(response.IsSuccessStatusCode
+    //                           ? $"Email to {toEmail} queued successfully!"
+    //                           : $"Failure Email to {toEmail}");
 
-    public async Task Execute(string apiKey, string subject, string message, string toEmail)
+    public async Task<string> Execute(string apiKey, string subject, string message, string toEmail)
     {
-        var client = new SendGridClient(apiKey);
-        var msg = new SendGridMessage()
+        using var smtp = new SmtpClient();
+        var msg = new MimeMessage();
+        try
         {
-            From = new EmailAddress("drungilas.p@gmail.com", "Password Recovery"),
-            Subject = subject,
-            PlainTextContent = message,
-            HtmlContent = message
-        };
-        msg.AddTo(new EmailAddress(toEmail));
+            //Message
+            msg.From.Add(MailboxAddress.Parse("yourhomesupervisor@gmail.com"));
+            msg.To.Add(MailboxAddress.Parse(toEmail));
+            msg.Subject = subject;
+            var builder = new BodyBuilder();
+            // builder.HtmlBody = EmailRequest.Body;
+            builder.TextBody = message;
+            msg.Body = builder.ToMessageBody();
 
-        // Disable click tracking.
-        // See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
-        msg.SetClickTracking(false, false);
-        var response = await client.SendEmailAsync(msg);
-        _logger.LogInformation(response.IsSuccessStatusCode
-                               ? $"Email to {toEmail} queued successfully!"
-                               : $"Failure Email to {toEmail}");
+            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            //if (!string.IsNullOrEmpty(username))
+                //                    smtp.Authenticate(username, password);
+                await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", apiKey);
+            await smtp.SendAsync(msg);
+            msg.Dispose();
+            await smtp.DisconnectAsync(true);
+
+            return "Email sent successfully!";
+        }
+        catch (Exception ex)
+        {
+            {
+                return $"Email sending failed. Error: {ex.Message}";
+            }
+        }
+       
     }
 }

@@ -8,6 +8,7 @@
     <None Include="wwwroot\images\user-svgrepo-com.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Aspose.PDF" Version="25.4.0" />
     <PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
     <PackageReference Include="bootstrap" Version="5.3.3" />
     <PackageReference Include="IKVM" Version="8.10.3" />

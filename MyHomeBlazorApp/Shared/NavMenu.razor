@@ -84,6 +84,11 @@
     protected override void OnInitialized()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        //If website on Local Host is open too long getting 404 on all pages, no redirection to Login or Index pages
+        // if(currentUrl == "")
+        // {
+        //     currentUrl = NavigationManager.Uri;
+        // }
         NavigationManager.LocationChanged += OnLocationChanged;
     }
 

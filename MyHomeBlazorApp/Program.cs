@@ -51,11 +51,11 @@ namespace MyHomeBlazorApp
             //    builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<DataService>();
-            builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+            
             builder.Services.AddBlazorBootstrap();
-            //builder.Services.AddSingleton<IEmailSender<MyHomeBlazorAppUser>, EmailSender>();
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

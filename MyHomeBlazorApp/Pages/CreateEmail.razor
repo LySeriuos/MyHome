@@ -206,14 +206,8 @@
         _chosedDevice.DeviceWarranty = new();
         _chosedDevice.DeviceWarranty.Shop = new();
         _chosedDevice.DeviceWarranty.Shop.Address = new();
-            
+
     }
-
-    // protected override void OnInitialized()
-    // {
-
-    //     base.OnInitialized();
-    // }
     private async Task NavigateToExtraWarrantyFile()
     {
         string currentExtraWarrrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
@@ -228,26 +222,16 @@
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private async Task SendEmail()
+    private async Task <string> SendEmail()
     {
         try
         {
-
-
-            // var apiKey = Environment.GetEnvironmentVariable("EmailApiKey");
-            // var client = new SendGridClient(apiKey);
-            // var from_email = new EmailAddress("drungilas.p@gmail.com", "Example User");
-            // var subject = $"{EmailRequest.Subject}";
-            // var to_email = new EmailAddress($"{EmailRequest.To}");
-            // var plainTextContent = $"{EmailRequest.Body}";
-            // var htmlContent = $"{EmailRequest.Body}";
-            // var msg = MailHelper.CreateSingleEmail(from_email, to_email, subject, plainTextContent, htmlContent);
-            // var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
-
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
+            email.From.Add(MailboxAddress.Parse("yourhomesupervisor@gmail.com"));
+            email.Cc.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
             email.To.Add(MailboxAddress.Parse(EmailRequest.To));
             email.Subject = EmailRequest.Subject;
+            email.ReplyTo.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
             var builder = new BodyBuilder();
             // builder.HtmlBody = EmailRequest.Body;
             builder.TextBody = EmailRequest.Body;
@@ -265,19 +249,24 @@
                 builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
             }
             email.Body = builder.ToMessageBody();
-            // EmailRequest.Body = email.Body.ToString();
+
             using var smtp = new SmtpClient();
-            smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("xirim94345@ptiong.com", "pXcJDCMXPmZpw1XMfY");
-            smtp.Send(email);
-            smtp.Disconnect(true);
+            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            string? pass = Environment.GetEnvironmentVariable("MyHomeGmailPassword");
+            await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", pass);
+            await smtp.SendAsync(email);
+            email.Dispose();
+            await smtp.DisconnectAsync(true);
             await _refSuccessModal.OnShowModalClick();
             EmailRequest = new();
             init();
+            return "Email sent successfully!";
         }
-        catch
+        catch (Exception ex)
         {
-
+            {
+                return $"Email sending failed. Error: {ex.Message}";
+            }
         }
     }
 
