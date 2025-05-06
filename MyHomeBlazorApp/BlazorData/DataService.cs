@@ -105,17 +105,11 @@ namespace MyHomeBlazorApp.BlazorData
         {
             var AuthSate = _authenticationStateProvider.GetAuthenticationStateAsync();
             var user = AuthSate.Result.User;
-
             if (user.Identity.IsAuthenticated)
             {
                 CurrentAppUser = await _userManager.GetUserAsync(user);
                 userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             }
-            else
-            {
-                return new UserProfile();
-            }
-
             return userWithData.UserProfile;
         }
 
@@ -125,37 +119,16 @@ namespace MyHomeBlazorApp.BlazorData
                 .ThenInclude(p => p.RealEstates)
                 .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             UserProfile userToReturn = userWithData.UserProfile;
-            if (userWithData == null)
-            {
-                return new UserProfile();
-            }
-            else
-            {
-                return userToReturn;
-            }
-        }
-
-        public async Task GetDBUsers()
-        {
-            IQueryable<MyHomeBlazorAppUser> users = _userManager.Users;
-            //var userWithData = _userManager.Users.ToList();
-            return;
+            return userToReturn;
         }
 
         public Task<MyHomeBlazorAppUser> GetDbUserWithRealEstateAddressData()
         {
-            if (CurrentAppUser.Id != null)
-            {
-                var userWithAddressData = _dbcontext.Users.Include(u => u.UserProfile)
-                    .ThenInclude(r => r.RealEstates)
-                    .ThenInclude(a => a.Address)
-                    .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
-                return Task.FromResult<MyHomeBlazorAppUser>(userWithAddressData);
-            }
-            else
-            {
-                return Task.FromResult<MyHomeBlazorAppUser>(new MyHomeBlazorAppUser());
-            }
+            var userWithAddressData = _dbcontext.Users.Include(u => u.UserProfile)
+                .ThenInclude(r => r.RealEstates)
+                .ThenInclude(a => a.Address)
+                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
+            return Task.FromResult<MyHomeBlazorAppUser>(userWithAddressData);
         }
 
         public Task<MyHomeBlazorAppUser> GetDbUserDeviceProfileWithWarrantyShopAddressData()
@@ -167,7 +140,6 @@ namespace MyHomeBlazorApp.BlazorData
                 .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             return Task.FromResult<MyHomeBlazorAppUser>(userWithDevicesData);
         }
-
 
         #endregion
 
@@ -687,7 +659,7 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         public async Task UpdateObjectInDB()
-        {
+        {           
             _dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
         }

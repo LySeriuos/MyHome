@@ -4,30 +4,17 @@
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
-@inject MyHomeBlazorAppContext dbcontext
-@inject NavigationManager NavManager
-@inject IdentityRedirectManager RedirectManager
-
+@inject MyHomeBlazorAppContext dbcontext;
 @using Microsoft.AspNetCore.Components.Authorization;
-<h3 class="my-3">User Management Dashboard</h3>
+<h3>UserManagement</h3>
 
 @* 1.Show all user list  *@
 @* 2. Find user by email, when typing in search bar *@
 @* 3. Buttons connect as user, send reset pasword email for user email, add as admin, remove user, change role from admin to user*@
 @* @inject DataSurcoe Data *@
 
-
-<div class="my-3">
-    <div class="search-box inline-block mr-4 my-1">
-        <input type="search" autofocus @bind="nameSearch" @bind:event="oninput" @bind:after="()=>grid.RefreshDataAsync()" placeholder="Product name..." />
-    </div>
-
-    <div class="inline-block my-1">
-        Total: <strong>@FilteredNames.Count() Names found</strong>
-    </div>
-</div>
 <div class="grid" tabindex="-1">
-    <QuickGrid Items="@FilteredNames.AsQueryable()" Virtualize="true" @ref="grid">
+    <QuickGrid Items="@_users.AsQueryable()" Virtualize="true" @ref="grid">
         <PropertyColumn Title="User Email" Property="@(u => u.NormalizedEmail)" Sortable="true" IsDefaultSortColumn="true">
             <ColumnOptions>
                 <div class="search-box">
@@ -35,153 +22,87 @@
                 </div>
             </ColumnOptions>
         </PropertyColumn>
+        <PropertyColumn Title="User Name" Property="@(u => u.NormalizedUserName)" Sortable="true" />
         <TemplateColumn Title="UserRole">
-            @UserRole(context).Result
+            @* @dbcontext.UserRoles.Where(x => x.UserId == context.Id).FirstOrDefault(); *@
+            @* @SignInManager.UserManager.GetRolesAsync(context).Result.ToString(); *@
+            @UserRole(context);
         </TemplateColumn>
-        <TemplateColumn Title="Change Role">
-            <Button Class="btn btn-outline-info" @onclick="()=>OnShowModalChooseRole(context)">Change Role</Button>
-        </TemplateColumn>
-        <TemplateColumn Title="Delete User">
-            <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteUser(context)">Delete User</Button>
-        </TemplateColumn>
-        <TemplateColumn Title="Login As User">
-            <Button Class="btn btn-outline-primary" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
-        </TemplateColumn>        
+        @* <TemplateColumn Title="End" SortBy="@marketingEndSort">
+            @context.MarketingEnd?.ToShortDateString()
+        </TemplateColumn@* > *@
+        <PropertyColumn Title="User Role" Property="@(u => u)" Sortable="true" />
     </QuickGrid>
 </div>
-<div>
-    <p>@userSignInAs</p>
+
+<div class="my-2">
+    <div class="search-box inline-block mr-4 my-1">
+        <input type="search" autofocus @bind="nameSearch" @bind:event="oninput" @bind:after="()=>grid.RefreshDataAsync()" placeholder="Product name..." />
+    </div>
+
+    <div class="inline-block my-1">
+        Total: <strong>@numResults results found</strong>
+    </div>
 </div>
-
-
-
-<Modal @ref="refModalChooseRole" Title="Choose Role For The User">
-    <BodyTemplate>
-        <EditForm Model="@_user">
-            <label class="form-label">Choose a Role:</label>
-            <InputSelect @bind-Value="chosedRole">
-                <option selected value="-1" disabled>Select Role</option>
-                @foreach (var role in dbcontext.Roles)
-                {
-                    <option value="@role.Name">@role.Name</option>
-                }
-            </InputSelect>
-        </EditForm>
-    </BodyTemplate>
-    <FooterTemplate>
-        <Button Class="btn btn-outline-success" @onclick="SaveChanges">Save</Button>
-        <Button Class="btn btn-outline-danger" @onclick="refModalChooseRole.HideAsync">Close</Button>
-    </FooterTemplate>
-</Modal>
-<Modal @ref="refModalDeleteUser" ShowCloseButton>
-    <BodyTemplate>
-        <p>Are you sure you want To Delete @ChosedUser.Email?</p>
-    </BodyTemplate>
-    <FooterTemplate>
-        <Button @onclick="()=>DeleteUser()">Delete</Button>
-        <Button @onclick="refModalDeleteUser.HideAsync">Cancel</Button>
-    </FooterTemplate>
-</Modal>
 
 
 @code
 {
+
     QuickGrid<MyHomeBlazorAppUser>? grid;
-    string nameSearch = "";
-    [Parameter]
-    public MyHomeBlazorAppUser? ChosedUser { get; set; }
-    private MyHomeBlazorAppUser _user { get; set; } = new();
-    private EditContext editContext;
-    public Action DataChanged;
-    private List<MyHomeBlazorAppUser> _users { get; set; }
-    private string? chosedRole { get; set; }
-    private string? userRole { get; set; } = String.Empty;
-    private string? testUserRole { get; set; } = String.Empty;
-    Modal refModalChooseRole { get; set; } = default!;
-    Modal refModalDeleteUser { get; set; } = default!;
-    string userSignInAs { get; set; }
-    List<MyHomeBlazorAppUser> FilteredNames => _users.Where(
-    u => u.Email.ToLower().Contains(nameSearch.ToLower())).ToList();
-
-    private async Task SignInAsChosedUser(MyHomeBlazorAppUser user)
+    GridItemsProvider<MyHomeBlazorAppUser>? usersFromDB;
+    private string? userRole;
+    int numResults;
+    string nameSearch;
+    private List<MyHomeBlazorAppUser>? _users { get; set; }
+    GridSort<MyHomeBlazorAppUser> marketingStartSort = GridSort<MyHomeBlazorAppUser>.ByAscending(x => x.Email);
+    GridSort<MyHomeBlazorAppUser> marketingEndSort = GridSort<MyHomeBlazorAppUser>.ByAscending(x => x.Email);
+    private MyHomeBlazorAppContext _dbcontext;
+    private string roleName;
+    private string UserRole(MyHomeBlazorAppUser context)
     {
-        var userToBeLogedIn = await SignInManager.UserManager.FindByEmailAsync(user.Email);
-        // var userClaims = await SignInManager.UserManager.GetClaimsAsync(userToBeLogedIn);
-        // var result = SignInManager.SignInWithClaimsAsync(userToBeLogedIn, false, userClaims);
-
-        NavManager.NavigateTo("/Account/LoginChosedUser/" + userToBeLogedIn.Id, true);
-    }
-
-    public async Task<string> UserRole(MyHomeBlazorAppUser user)
-    {
-        var dbUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
-        if (dbUser == null)
-            return "";
-        else
+        var userRoles = dbcontext.UserRoles;
+        var userRole = userRoles.FirstOrDefault();
+        var roles = dbcontext.Roles;
+        foreach (var role in roles)
         {
-            var userRoles = await UserManager.GetRolesAsync(user);
-            userRole = userRoles.FirstOrDefault();
-        }        
-        return userRole.ToString();
-    }
-
-    public async Task OnShowModalDeleteUser(MyHomeBlazorAppUser user)
-    {
-        ChosedUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
-
-        await refModalDeleteUser.ShowAsync();
-    }
-
-    public async Task OnShowModalChooseRole(MyHomeBlazorAppUser user)
-    {
-        ChosedUser = await SignInManager.UserManager.FindByEmailAsync(user.Email);
-
-        await refModalChooseRole.ShowAsync();
-    }
-
-    private async void SaveChanges()
-    {
-        if (!String.IsNullOrEmpty(chosedRole))
-        {
-            await SetRole(ChosedUser, chosedRole);
+            if (userRole.RoleId == role.Id)
+            {
+                roleName = role.Name;
+                break;
+            }
         }
-        await UserManager.UpdateAsync(ChosedUser);
-        await refModalChooseRole.HideAsync();
+        return roleName;
     }
 
-    private async Task SetRole(MyHomeBlazorAppUser user, string role)
+    private async Task GetUsersWithData()
     {
-        var chosedUserRoles = await SignInManager.UserManager.GetRolesAsync(user);
-        await UserManager.RemoveFromRolesAsync(user, chosedUserRoles);
-        await UserManager.AddToRoleAsync(user, role);
+        var users = _dbcontext.Users;
+        var userRoles = dbcontext.UserRoles;
+        var userRole = userRoles.FirstOrDefault();
+        var bla = _dbcontext.Roles.Where(r => r.Id == userRole.RoleId);
+        var roleName = bla.ToString();
     }
 
-    private async Task DeleteUser()
-    {        
-        if (ChosedUser != null)
-        {
-            await UserManager.DeleteAsync(ChosedUser);
-        }
-        else
-        {
-            return;
-        }
-
-        UsersDataHasChanged();
-        await refModalDeleteUser.HideAsync();
-    }
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // _users = dbcontext.Users.ToList();
+        var usersFromDB = dbcontext.Users;
         _users = UserManager.Users.ToList();
-        editContext = new(_user);
-    }
+        // var bla = dbcontext.Roles.Where(r => r.Id == userRole.RoleId).Select(r=>r.Name);
+        // var roleName = bla.ToString();
+        _dbcontext = dbcontext;
+        // itemsProvider = async request =>
+        // {
+        //     var result = dbcontext.Users;
 
-    private void UsersDataHasChanged()
-    {
-        _users = UserManager.Users.ToList();
-        StateHasChanged();
+        //     // Separately display the item count
+        //     if (result.TotalItemCount != numResults && !request.CancellationToken.IsCancellationRequested)
+        //     {
+        //         numResults = result.TotalItemCount;
+        //         StateHasChanged();
+        //     }
+
+        //     return result;
+        // };
     }
 }
-

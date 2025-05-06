@@ -28,27 +28,21 @@
         {
             _currentUser = await UserManager.GetUserAsync(user);
             _userEmail = await SignInManager.UserManager.GetEmailAsync(_currentUser);
-            var userRoles = await UserManager.GetRolesAsync(_currentUser);
-            if(userRoles.Count > 1)
-            {
-                await UserManager.RemoveFromRoleAsync(_currentUser, "User");
-            }
             _userIsInRole = await SignInManager.UserManager.IsInRoleAsync(_currentUser, "Admin");
         }
 
         if (_userEmail.ToLower() == _adminEmail && _userIsInRole == false)
-        {            
+        {
             await UserManager.AddToRoleAsync(_currentUser, "Admin");
-            await UserManager.RemoveFromRoleAsync(_currentUser, "User");            
+            await UserManager.RemoveFromRoleAsync(_currentUser, "User");
         }
-        await UserManager.UpdateAsync(_currentUser);
     }
 
     private MyHomeBlazorAppUser? _currentUser { get; set; }
     private MyHomeBlazorAppUser? _firstAdminUser { get; set; }
     private string? _userEmail { get; set; }
     private string? Error { get; set; }
-    private readonly string? _adminEmail = "qqq@gmail.com";
+    private readonly string? _adminEmail = "bla@gmail.com";
     private bool _userIsInRole = false;
     private bool _randomBool = true;
     protected override void OnParametersSet()

@@ -31,17 +31,13 @@
                 </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="QrCoder">
-                        <span class="oi oi-pencil" aria-hidden="true"></span> Create Qr Code
+                        <span class="oi oi-pencil" aria-hidden="true"></span> QrCoder
                     </NavLink>
                 </div>
+
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="createEmail">
-                        <span class="oi oi-pencil" aria-hidden="true"></span> Create Email
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link text-danger" id="colorChange" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu text-warning" aria-hidden="true"></span> @context.User.Identity?.Name
+                    <NavLink class="nav-link" href="Account/Manage">
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
@@ -74,7 +70,7 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private LogInChosedUser? logInChosedUser { get; set; }
+
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
@@ -84,11 +80,6 @@
     protected override void OnInitialized()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-        //If website on Local Host is open too long getting 404 on all pages, no redirection to Login or Index pages
-        // if(currentUrl == "")
-        // {
-        //     currentUrl = NavigationManager.Uri;
-        // }
         NavigationManager.LocationChanged += OnLocationChanged;
     }
 
@@ -101,16 +92,5 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
-    } 
-    
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            
-        }
-        base.OnAfterRender(firstRender);
-    }
-
-
+    }    
 }

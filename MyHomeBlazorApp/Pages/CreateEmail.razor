@@ -1,46 +1,28 @@
-﻿@page "/createEmail"
-@* @page "/createEmail/{currentUserID:int}" *@
+﻿@* @page "/createEmail" *@
+@page "/createEmail/{currentUserID:int}"
 @using MailKit.Net.Smtp
-@using Microsoft.EntityFrameworkCore
 @using MimeKit
-@using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Components.Modals
 @using My_Home.Models
-@using System;
-@using SendGrid;
-@using SendGrid.Helpers.Mail;
-@inject MyHomeBlazorAppContext dbcontext
-@inject UserManager<MyHomeBlazorAppUser> UserManager
-@inject SignInManager<MyHomeBlazorAppUser> SignInManager
-@inject AuthenticationStateProvider authenticationStateProvider
 
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
-
-@attribute [Authorize]
 
 <h3>CreateEmail</h3>
 @* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
 <label class="form-label">Choose The Device</label>
 <InputSelect @bind-Value="_chosedDeviceID" @bind-Value:after="init" class="form-select">
-    <option selected value="0" disabled>Choose a Device...</option>
-    @if (_devicesList.Count > 0)
+    <option selected value="0" disabled>Select Real Estate...</option>
+    @foreach (var device in _currentUser.GetAllDevices())
     {
-        @foreach (var device in _devicesList)
-        {
-            <option value="@device.DeviceID">@device.DeviceName</option>
-        }
-    }
-    else
-    {
-        <p>There is no devices!</p>
+        <option value="@device.DeviceID">@device.DeviceName</option>
     }
 </InputSelect>
 <p>@_chosedDeviceID</p>
 
 @if (_chosedDeviceID != 0)
 {
-    <EditForm Model="_currentUser">
+    <EditForm Model="_deviceProfile">
         <div class="row w-50 mr-0">
             @if (!String.IsNullOrEmpty(_chosedDevice.DeviceProduser))
             {
@@ -162,9 +144,7 @@
     private DeviceProfile _chosedDevice { get; set; } = new();
     private UserProfile _currentUser = new();
     private SuccessModal _refSuccessModal = default!;
-    private string? _currentUserEmail { get; set; }
     private int _chosedDeviceID { get; set; } = new();
-    private List<DeviceProfile>? _devicesList { get; set; } = new();
     private bool _produserChecked { get; set; }
     private bool _serialNumberChecked { get; set; }
     private bool _modelNumberChecked { get; set; }
@@ -189,25 +169,7 @@
     private string _exrtraWarrantyFileLinkConfirmation = "";
     private string _receiptFileLinkConfirmation = "";
 
-    protected override void OnInitialized()
-    {
-        _currentUser = DataService.GetCurrentUser().Result;
-        // _devicesList = _currentUser.RealEstates.SelectMany(r => r.DevicesProfiles).ToList();
-        if (_currentUser.UserID > 0)
-        {
-            _devicesList = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
-            .Result.UserProfile.RealEstates.SelectMany(r => r.DevicesProfiles).ToList();
-        }
-        else 
-        {
-            _devicesList = new();
-        }
-        _currentUserEmail = _currentUser.Email;
-        _chosedDevice.DeviceWarranty = new();
-        _chosedDevice.DeviceWarranty.Shop = new();
-        _chosedDevice.DeviceWarranty.Shop.Address = new();
 
-    }
     private async Task NavigateToExtraWarrantyFile()
     {
         string currentExtraWarrrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
@@ -222,16 +184,14 @@
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private async Task <string> SendEmail()
+    private void SendEmail()
     {
         try
         {
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse("yourhomesupervisor@gmail.com"));
-            email.Cc.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
+            email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
             email.To.Add(MailboxAddress.Parse(EmailRequest.To));
             email.Subject = EmailRequest.Subject;
-            email.ReplyTo.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
             var builder = new BodyBuilder();
             // builder.HtmlBody = EmailRequest.Body;
             builder.TextBody = EmailRequest.Body;
@@ -249,30 +209,24 @@
                 builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
             }
             email.Body = builder.ToMessageBody();
-
+            // EmailRequest.Body = email.Body.ToString();
             using var smtp = new SmtpClient();
-            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            string? pass = Environment.GetEnvironmentVariable("MyHomeGmailPassword");
-            await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", pass);
-            await smtp.SendAsync(email);
-            email.Dispose();
-            await smtp.DisconnectAsync(true);
-            await _refSuccessModal.OnShowModalClick();
+            smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+            _refSuccessModal.OnShowModalClick();
             EmailRequest = new();
             init();
-            return "Email sent successfully!";
         }
-        catch (Exception ex)
+        catch
         {
-            {
-                return $"Email sending failed. Error: {ex.Message}";
-            }
+
         }
     }
 
     private void init()
     {
-        _chosedDevice = _currentUser.GetAllDevices().First(d => d.DeviceID == _chosedDeviceID);
         _produserChecked = false;
         _serialNumberChecked = false;
         _modelNumberChecked = false;
@@ -294,6 +248,14 @@
             fileName = splitedString;
         }
         return fileName;
+    }
+
+    protected override void OnInitialized()
+    {
+        _chosedDevice.DeviceWarranty = new();
+        _chosedDevice.DeviceWarranty.Shop = new();
+        _chosedDevice.DeviceWarranty.Shop.Address = new();
+        base.OnInitialized();
     }
 
     private void AddDetailsToTheEmailMessage()
@@ -355,13 +317,13 @@
         EmailRequest.Body = _preparedMessage;
     }
 
-    // protected override void OnParametersSet()
-    // {
-    //     if (currentUserID != 0)
-    //     {
-    //         _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
-    //     }
-    // }
+    protected override void OnParametersSet()
+    {
+        if (currentUserID != 0)
+        {
+            _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
+        }
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -372,5 +334,6 @@
             extraWarrantyFileName = GetFileName(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink);
         }
         base.OnAfterRender(firstRender);
+        StateHasChanged();
     }
 }

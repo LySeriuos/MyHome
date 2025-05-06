@@ -1,13 +1,4 @@
-﻿@inject UserManager<MyHomeBlazorAppUser> UserManager
-@inject SignInManager<MyHomeBlazorAppUser> SignInManager
-@inject AuthenticationStateProvider authenticationStateProvider
-@inject MyHomeBlazorAppContext dbcontext
-@inject NavigationManager NavManager
-@inject IdentityRedirectManager RedirectManager
-
-@page "/"
-@page "/index/{IdParameter}"
-@using MyHomeBlazorApp.BlazorData
+﻿@page "/"
 
 <PageTitle>Index</PageTitle>
 
@@ -15,56 +6,4 @@
 
 Welcome to your new app.
 
-<Modal @ref="refWarningModal" Title="Warning!">
-    <BodyTemplate>
-        <p>You are Loged in as:</p>
-        <ul>
-            <li>
-                User: @userToLogIn
-            </li>
-            <li>
-                ID: @userToLogIn.Id
-            </li>
-        </ul>
-        <p>Change to Admin requires Log Out from user and Login as Admin!</p>
-        <Button Color="ButtonColor.Primary" @onclick="refWarningModal.HideAsync">Close</Button>
-    </BodyTemplate>
-</Modal>
-
-@code
-{
-    [Parameter]
-    public string? IdParameter { get; set; }
-    EventCallback ClosedModalEvent { get; set; }
-    private string? id;
-    Modal refWarningModal { get; set; } = default!;
-    private MyHomeBlazorAppUser? userToLogIn { get; set; } = new();
-
-    protected override async Task OnParametersSetAsync()
-    {
-        //TODO: implement check here if caller is actually admin!
-        var AuthSate = authenticationStateProvider.GetAuthenticationStateAsync();
-        var currentUser = AuthSate.Result.User;
-        if (currentUser.Identity.IsAuthenticated && IdParameter != null)
-        {
-            id = IdParameter;
-            userToLogIn = UserManager.Users.First(u => u.Id == IdParameter);
-        }
-        else
-        {
-            id = null;            
-        }
-    }
-    
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        
-        if (id != null)
-        {
-            await refWarningModal.ShowAsync();            
-        }        
-        
-        await base.OnAfterRenderAsync(firstRender);
-    }
-}
+<SurveyPrompt Title="How is Blazor working for you?" />
