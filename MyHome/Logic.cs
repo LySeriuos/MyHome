@@ -136,7 +136,7 @@ namespace MyHome
         {
             //TODO:
             // This is used for test on local environment, new Url every time visual studio started. 
-            Url absoluteUrl = new Url("https://j3241878-7211.euw.devtunnels.ms");
+            Url absoluteUrl = new Url("https://dlvqw053-5067.euw.devtunnels.ms");
             //
             Url qrCodeUrl = new Url($"{absoluteUrl}/mobileDeviceInfo/{userID}/{deviceID}");
             string generatedQrCodeLink = qrCodeUrl.ToString();

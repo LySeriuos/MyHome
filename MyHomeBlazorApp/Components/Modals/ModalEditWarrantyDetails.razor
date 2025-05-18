@@ -80,7 +80,7 @@
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
-    public Action WarrantyDataHasChanged;
+    public Action? WarrantyDataHasChanged;
     private Modal _refModalEditWarrantyDetails { get; set; } = new();
     private IBrowserFile? _warrantyReceiptFile;
     private IBrowserFile? _extraWarrantyReceiptFile;
@@ -131,7 +131,7 @@
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
 
-            DataService.UpdateObjectInDB();
+            await DataService.UpdateObjectInDB();
             WarrantyDataHasChanged();
             await _refModalEditWarrantyDetails.HideAsync();
         }

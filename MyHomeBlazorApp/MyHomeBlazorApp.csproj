@@ -33,6 +33,8 @@
     <ProjectReference Include="..\MyHome\MyHome.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Files\11\" />
+    <Folder Include="Files\11\qrCodes\" />
     <Folder Include="Files\2\" />
   </ItemGroup>
 	

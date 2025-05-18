@@ -11,9 +11,9 @@
 
 <h3>MobileDeviceInfo</h3>
 <div class="w-25 p-3">
-<AddEditDeviceForm CurrentDevice="_currentDevice"
-                    CurrentUser="_userProfile">
-                </AddEditDeviceForm>
+    <AddEditDeviceForm CurrentDevice="_currentDevice"
+    CurrentUser="_userProfile">
+    </AddEditDeviceForm>
 </div>
 
 @code {
@@ -28,6 +28,7 @@
 
     protected override void OnParametersSet()
     {
+        // _userProfile = DataService.CurrentUser;
         _userProfile = DataService.Users.First(d => d.UserID == UserID);
         _currentDevice = _userProfile.GetAllDevices().First(d => d.DeviceID == DeviceID);
     }

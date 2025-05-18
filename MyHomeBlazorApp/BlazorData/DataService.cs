@@ -41,7 +41,6 @@ namespace MyHomeBlazorApp.BlazorData
             int userId = 2;
             int realEstateID = 1;
             int deviceId = 2;
-
             _currentUser = GetCurrentUser().Result;
             CurrentRealEstate = GetRealEstate(realEstateID);
             Device = LastAddedDevice();
@@ -108,7 +107,11 @@ namespace MyHomeBlazorApp.BlazorData
             if (user.Identity.IsAuthenticated)
             {
                 CurrentAppUser = await _userManager.GetUserAsync(user);
-                userWithData = _dbcontext.Users.Include(u => u.UserProfile).FirstOrDefault(u => u.Id == CurrentAppUser.Id);
+                userWithData = _dbcontext.Users.Include(u => u.UserProfile)
+                .ThenInclude(r => r.RealEstates).ThenInclude(r => r.DevicesProfiles)
+                .ThenInclude(d => d.DeviceWarranty).ThenInclude(dw => dw.Shop)
+                .ThenInclude(shop => shop.Address)
+                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             }
             return userWithData.UserProfile;
         }
