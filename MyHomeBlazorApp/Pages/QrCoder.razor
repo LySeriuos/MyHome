@@ -19,7 +19,7 @@
 
 <h5>Generate link to Device QrCode </h5>
 
-<EditForm Model="@_selectedDeviceProfile" OnSubmit="HandleQrCode" FormName="QrC">
+<EditForm Model="_selectedDeviceProfile" OnSubmit="HandleQrCode" FormName="QrC">
     <label class="form-label">Choose Device</label>
     <InputSelect @bind-Value="_chosedDeviceID">
         <option selected disabled value="-1">Select Device...</option>
@@ -41,7 +41,7 @@
 <br />
 <br />
 <h5>Create Wifi Sharing Qr Code</h5>
-<EditForm Context="editWifiContext" OnSubmit="HandleWifiSharingQrCode">
+<EditForm Model="wifiModel" OnSubmit="HandleWifiSharingQrCode">
     <DataAnnotationsValidator />
     <div>
         <label class="form-check-label" for="wifiName">
@@ -75,7 +75,8 @@
 @code {
     private DeviceProfile _selectedDeviceProfile { get; set; } = new();
     private WifiModel wifiModel = new();
-    private EditContext editWifiContext;
+    private EditContext? editWifiContext;
+    private EditContext? editDeviceContext;
     [Parameter]
     public int _chosedDeviceID { get; set; }
     [Parameter]
@@ -164,6 +165,7 @@
     {
         currentUser = DataService.CurrentUser;
         editWifiContext = new(wifiModel);
+        editDeviceContext = new(_selectedDeviceProfile);
         base.OnInitializedAsync();
     }
 
