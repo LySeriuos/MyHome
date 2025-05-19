@@ -2,12 +2,18 @@
 
 @using MyHome.Models;
 @using MyHome;
+@using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Pages
 @using System.ComponentModel.DataAnnotations
 @using static QRCoder.PayloadGenerator
 @inject BlazorData.DataService DataService
 @inject IJSRuntime JSRuntime
-
+@inject NavigationManager uriHelper
+@inject NavigationManager NavManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject UserManager<MyHomeBlazorAppUser> UserManager
 
 <h3>QrCoder</h3>
 

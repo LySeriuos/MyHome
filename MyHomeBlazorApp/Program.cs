@@ -38,14 +38,21 @@ namespace MyHomeBlazorApp
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+    .AddIdentityCookies();
 
-            builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddIdentityCore<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MyHomeBlazorAppContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
             // Add services to the container.
             //    builder.Services.AddRazorPages();
+            builder.Services.AddAuthorizationCore();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<DataService>();
             builder.Services.AddBlazorBootstrap();
@@ -55,14 +62,12 @@ namespace MyHomeBlazorApp
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Error", createScopeForErrors: true);
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
             // routing url to physical path "Files"
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -71,12 +76,19 @@ namespace MyHomeBlazorApp
             });
 
             //      app.UseRouting();
-            app.UseAuthorization();
             //      app.MapControllers();
             //      app.MapBlazorHub();
+            
+            //app.UseHttpsRedirection();
+
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseStaticFiles();
             app.UseAntiforgery();
+            //app.UseAuthentication();
             app.MapRazorComponents<App>()
                .AddInteractiveServerRenderMode();
+
             app.MapAdditionalIdentityEndpoints();
             app.Run();
         }
