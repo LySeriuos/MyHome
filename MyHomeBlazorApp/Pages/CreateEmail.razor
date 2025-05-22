@@ -1,5 +1,5 @@
-﻿@* @page "/createEmail" *@
-@page "/createEmail/{currentUserID:int}"
+﻿@page "/createEmail" 
+@* @page "/createEmail/{@* currentUserID:int *@}
 @using MailKit.Net.Smtp
 @using MimeKit
 @using MyHomeBlazorApp.Components.Modals
@@ -184,14 +184,16 @@
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private void SendEmail()
+    private async Task<string> SendEmail()
     {
         try
         {
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
+            email.From.Add(MailboxAddress.Parse("yourhomesupervisor@gmail.com"));
+            email.Cc.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
             email.To.Add(MailboxAddress.Parse(EmailRequest.To));
             email.Subject = EmailRequest.Subject;
+            email.ReplyTo.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
             var builder = new BodyBuilder();
             // builder.HtmlBody = EmailRequest.Body;
             builder.TextBody = EmailRequest.Body;
@@ -208,22 +210,28 @@
                 // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
                 builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
             }
+
             email.Body = builder.ToMessageBody();
-            // EmailRequest.Body = email.Body.ToString();
             using var smtp = new SmtpClient();
-            smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
-            smtp.Send(email);
-            smtp.Disconnect(true);
-            _refSuccessModal.OnShowModalClick();
+            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            string? pass = Environment.GetEnvironmentVariable("MyHomeGmailPassword");
+            await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", pass);
+            await smtp.SendAsync(email);
+            email.Dispose();
+            await smtp.DisconnectAsync(true);
+            await _refSuccessModal.OnShowModalClick();
             EmailRequest = new();
             init();
+            return "Email sent successfully!";
         }
-        catch
+        catch (Exception ex)
         {
-
+            {
+                return $"Email sending failed. Error: {ex.Message}";
+            }
         }
     }
+
 
     private void init()
     {
@@ -252,6 +260,7 @@
 
     protected override void OnInitialized()
     {
+        _currentUser = DataService.CurrentUser;
         _chosedDevice.DeviceWarranty = new();
         _chosedDevice.DeviceWarranty.Shop = new();
         _chosedDevice.DeviceWarranty.Shop.Address = new();

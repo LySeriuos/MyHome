@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using MyHomeBlazorApp.Components.Account;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using WebPWrecover.Services;
 //using MyHomeBlazorApp.Components.Account;
 namespace MyHomeBlazorApp
 {
@@ -56,7 +58,10 @@ namespace MyHomeBlazorApp
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<DataService>();
             builder.Services.AddBlazorBootstrap();
-            builder.Services.AddSingleton<IEmailSender<MyHomeBlazorAppUser>, IdentityNoOpEmailSender>();
+            builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            //builder.Services.AddSingleton<IEmailSender, EmailSender>();
+            //builder.Services.AddSingleton<IEmailSender<MyHomeBlazorAppUser>, IdentityNoOpEmailSender>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
