@@ -1,5 +1,4 @@
 ﻿@page "/createEmail" 
-@* @page "/createEmail/{@* currentUserID:int *@}
 @using MailKit.Net.Smtp
 @using MimeKit
 @using MyHomeBlazorApp.Components.Modals
@@ -18,7 +17,6 @@
         <option value="@device.DeviceID">@device.DeviceName</option>
     }
 </InputSelect>
-<p>@_chosedDeviceID</p>
 
 @if (_chosedDeviceID != 0)
 {
@@ -212,6 +210,7 @@
             }
 
             email.Body = builder.ToMessageBody();
+            
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
             string? pass = Environment.GetEnvironmentVariable("MyHomeGmailPassword");
