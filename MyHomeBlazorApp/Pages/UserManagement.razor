@@ -7,8 +7,10 @@
 @inject MyHomeBlazorAppContext dbcontext
 @inject NavigationManager NavManager
 @inject IdentityRedirectManager RedirectManager
-
 @using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize(Roles = "Admin")]
+
+
 <h3 class="my-3">User Management Dashboard</h3>
 
 @* 1.Show all user list  *@
