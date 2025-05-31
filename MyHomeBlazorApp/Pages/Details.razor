@@ -162,11 +162,11 @@
             </QuickGrid>
         </div>
     </TabPage>
-    @if (DataService.UnassignedProfile.UnassignedDevicesList.Count > 0)
+    @if (DataService.UnassignedDevicesList.Count > 0)
     {
         <TabPage Text="Unassigned Devices">
             <div class="grid">
-                <QuickGrid tabindex="2" Items="DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
+                <QuickGrid tabindex="2" Items="DataService.UnassignedDevicesList.AsQueryable()">
                     <TemplateColumn>
                         <div>
                             <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
