@@ -43,37 +43,29 @@ namespace MyHome.Models
             set { _realEstates = value; }
         }
 
+        
 
+        private Unassigned _unassignedDevices = new();
 
-        private List<DeviceProfile> _unassignedDevicesList = new();
-
-        public List<DeviceProfile> UnassignedDevicesList
+        public Unassigned UnassignedDevices
         {
-            get { return _unassignedDevicesList; }
-            set { _unassignedDevicesList = value; }
+            get { return _unassignedDevices; }
+            set { _unassignedDevices = value; }
         }
-
 
         public List<DeviceProfile> GetAllDevices()
         {
             List<DeviceProfile> allDevices = new List<DeviceProfile>();
             var devices = RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
-            if (UnassignedDevicesList != null)
+            if(UnassignedDevices != null )
             {
-                foreach (DeviceProfile device in UnassignedDevicesList)
+                var unassignedDevices = UnassignedDevices.UnassignedDevicesList;
+                foreach (DeviceProfile device in unassignedDevices)
                 {
                     allDevices.Add(device);
                 }
             }
-            //if (UnassignedDevices != null)
-            //{
-            //    var unassignedDevices = UnassignedDevices.UnassignedDevicesList;
-            //    foreach (DeviceProfile device in unassignedDevices)
-            //    {
-            //        allDevices.Add(device);
-            //    }
-            //}
-
+            
             foreach (DeviceProfile device in devices)
             {
                 allDevices.Add(device);

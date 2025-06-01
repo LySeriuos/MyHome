@@ -12,7 +12,6 @@ using My_Home;
 using My_Home.Models;
 using MyHome;
 using MyHome.Models;
-using MyHomeBlazorApp.Components;
 using MyHomeBlazorApp.Pages;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -45,8 +44,7 @@ namespace MyHomeBlazorApp.BlazorData
             _currentUser = GetCurrentUser().Result;
             CurrentRealEstate = GetRealEstate(realEstateID);
             Device = LastAddedDevice();
-            //UnassignedDevicesList = 
-            //UnassignedProfile = UnassignedDevices();
+            UnassignedProfile = UnassignedDevices();
             CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUser, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUser);
@@ -75,8 +73,8 @@ namespace MyHomeBlazorApp.BlazorData
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public Shop? Shop { get; set; } = new Shop();
-        //public Unassigned? UnassignedProfile { get; set; } = new Unassigned();
-        public List<DeviceProfile>? UnassignedDevicesList { get; set; } = new List<DeviceProfile>();
+        public Unassigned? UnassignedProfile { get; set; } = new Unassigned();
+        public List<DeviceProfile>? UnassignedDevicesList { get; } = new List<DeviceProfile>();
         private MyHomeBlazorAppUser userWithData;
 
         #region User        
@@ -116,17 +114,6 @@ namespace MyHomeBlazorApp.BlazorData
                 .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             }
             return userWithData.UserProfile;
-        }
-
-        public async Task<MyHomeBlazorAppUser> GetCurrentAppUser()
-        {
-            var AuthSate = _authenticationStateProvider.GetAuthenticationStateAsync();
-            var user = AuthSate.Result.User;
-            if (user.Identity.IsAuthenticated)
-            {
-                CurrentAppUser = await _userManager.GetUserAsync(user);
-            }
-            return CurrentAppUser;
         }
 
         public async Task<UserProfile> GetDbUserData()
@@ -389,8 +376,7 @@ namespace MyHomeBlazorApp.BlazorData
         public void MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUser, int realEstateToAddDevice, DeviceProfile currentDevice)
         {
             _currentUser.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
-            _currentUser.UnassignedDevicesList.Remove(currentDevice);
-            //_currentUser.UnassignedDevices.UnassignedDevicesList.Remove(currentDevice);
+            _currentUser.UnassignedDevices.UnassignedDevicesList.Remove(currentDevice);
         }
 
         /// <summary>
@@ -554,28 +540,27 @@ namespace MyHomeBlazorApp.BlazorData
         /// Need to work through methods MoveDevices and LeaveDevicesUnassigned to be more flexible.
         /// </summary>
         /// <param name="currentRealEstate">The Real Estate to be Removed</param>
-        public async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
+        public void LeaveDevicesUnassigned(RealEstate currentRealEstate)
         {
             List<DeviceProfile> devicesToDelete = _currentUser.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID).DevicesProfiles;
 
             foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
             {
-                UnassignedDevicesList.Add(deviceProfile);
+                UnassignedProfile.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-            await _dbcontext.SaveChangesAsync();
-            //Data.SaveUsersListToXml(_users, _path);
+            Data.SaveUsersListToXml(_users, _path);
         }
 
-        //public Unassigned UnassignedDevices()
-        //{
-        //    if (_currentUser.UnassignedDevices == null)
-        //    {
-        //        _currentUser.UnassignedDevices = new();
-        //        _currentUser.UnassignedDevices.UnassignedDevicesList = new();
-        //    }
-        //    return _currentUser.UnassignedDevices;
-        //}
+        public Unassigned UnassignedDevices()
+        {
+            if (_currentUser.UnassignedDevices == null)
+            {
+                _currentUser.UnassignedDevices = new();
+                _currentUser.UnassignedDevices.UnassignedDevicesList = new();
+            }
+            return _currentUser.UnassignedDevices;
+        }
         #endregion
 
         #region Should be moved?
