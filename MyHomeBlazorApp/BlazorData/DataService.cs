@@ -118,6 +118,17 @@ namespace MyHomeBlazorApp.BlazorData
             return userWithData.UserProfile;
         }
 
+        public async Task<MyHomeBlazorAppUser> GetCurrentAppUser()
+        {
+            var AuthSate = _authenticationStateProvider.GetAuthenticationStateAsync();
+            var user = AuthSate.Result.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                CurrentAppUser = await _userManager.GetUserAsync(user);
+            }
+            return CurrentAppUser;
+        }
+
         public async Task<UserProfile> GetDbUserData()
         {
             var userWithData = _dbcontext.Users.Include(u => u.UserProfile)
