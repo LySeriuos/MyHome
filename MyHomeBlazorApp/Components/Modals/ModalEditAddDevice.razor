@@ -158,7 +158,7 @@
     void Init()
     {
         editContext = new(CurrentDevice);
-        _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.UnassignedDevicesList.AsQueryable();
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
     }
 
