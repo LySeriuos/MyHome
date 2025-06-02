@@ -45,15 +45,15 @@ namespace MyHomeBlazorApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c68a377e-cb49-4595-ac3b-b2a6220b1815",
-                            ConcurrencyStamp = "3211d062-866f-4498-8de9-02e4d89fc00b",
+                            Id = "63fabfa1-3fff-475c-86cb-662bf09c77cd",
+                            ConcurrencyStamp = "91ec19c0-e34a-4ddf-9850-3cc64a19a3ef",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "42325ae1-d052-469c-9355-98b2ae1da43d",
-                            ConcurrencyStamp = "d5d04c3a-7bfe-4273-b170-75845fe5fa63",
+                            Id = "b0264440-9182-4196-8e45-fe4895e981c4",
+                            ConcurrencyStamp = "44f78c35-8f87-4fbf-a05b-98531844a0ac",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -108,9 +108,11 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
@@ -148,9 +150,11 @@ namespace MyHomeBlazorApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -187,7 +191,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address");
+                    b.ToTable("Address", (string)null);
                 });
 
             modelBuilder.Entity("MyHome.Models.DeviceProfile", b =>
@@ -227,7 +231,7 @@ namespace MyHomeBlazorApp.Migrations
                     b.Property<int?>("RealEstateID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("UserProfileUserID")
+                    b.Property<int?>("UnassignedId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("DeviceID");
@@ -236,9 +240,9 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("RealEstateID");
 
-                    b.HasIndex("UserProfileUserID");
+                    b.HasIndex("UnassignedId");
 
-                    b.ToTable("DeviceProfile");
+                    b.ToTable("DeviceProfile", (string)null);
                 });
 
             modelBuilder.Entity("MyHome.Models.DeviceWarranty", b =>
@@ -275,7 +279,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("ShopId");
 
-                    b.ToTable("DeviceWarranty");
+                    b.ToTable("DeviceWarranty", (string)null);
                 });
 
             modelBuilder.Entity("MyHome.Models.RealEstate", b =>
@@ -300,7 +304,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("UserProfileUserID");
 
-                    b.ToTable("RealEstate");
+                    b.ToTable("RealEstate", (string)null);
                 });
 
             modelBuilder.Entity("MyHome.Models.Shop", b =>
@@ -325,7 +329,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.ToTable("Shop");
+                    b.ToTable("Shop", (string)null);
                 });
 
             modelBuilder.Entity("MyHome.Models.UserProfile", b =>
@@ -337,12 +341,17 @@ namespace MyHomeBlazorApp.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UnassignedDevicesId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserID");
 
-                    b.ToTable("UserProfile");
+                    b.HasIndex("UnassignedDevicesId");
+
+                    b.ToTable("UserProfile", (string)null);
                 });
 
             modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>
@@ -414,6 +423,17 @@ namespace MyHomeBlazorApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("My_Home.Models.Unassigned", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Unassigned", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -475,9 +495,9 @@ namespace MyHomeBlazorApp.Migrations
                         .WithMany("DevicesProfiles")
                         .HasForeignKey("RealEstateID");
 
-                    b.HasOne("MyHome.Models.UserProfile", null)
+                    b.HasOne("My_Home.Models.Unassigned", null)
                         .WithMany("UnassignedDevicesList")
-                        .HasForeignKey("UserProfileUserID");
+                        .HasForeignKey("UnassignedId");
 
                     b.Navigation("DeviceWarranty");
                 });
@@ -513,6 +533,15 @@ namespace MyHomeBlazorApp.Migrations
                     b.Navigation("Address");
                 });
 
+            modelBuilder.Entity("MyHome.Models.UserProfile", b =>
+                {
+                    b.HasOne("My_Home.Models.Unassigned", "UnassignedDevices")
+                        .WithMany()
+                        .HasForeignKey("UnassignedDevicesId");
+
+                    b.Navigation("UnassignedDevices");
+                });
+
             modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>
                 {
                     b.HasOne("MyHome.Models.UserProfile", "UserProfile")
@@ -530,7 +559,10 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("MyHome.Models.UserProfile", b =>
                 {
                     b.Navigation("RealEstates");
+                });
 
+            modelBuilder.Entity("My_Home.Models.Unassigned", b =>
+                {
                     b.Navigation("UnassignedDevicesList");
                 });
 #pragma warning restore 612, 618
