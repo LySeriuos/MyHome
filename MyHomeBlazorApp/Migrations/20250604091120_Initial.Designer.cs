@@ -11,8 +11,8 @@ using MyHomeBlazorApp.BlazorData;
 namespace MyHomeBlazorApp.Migrations
 {
     [DbContext(typeof(MyHomeBlazorAppContext))]
-    [Migration("20250131104047_init")]
-    partial class init
+    [Migration("20250604091120_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,22 @@ namespace MyHomeBlazorApp.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "17a3c51c-33fd-4f8d-bd44-b33542eca3ea",
+                            ConcurrencyStamp = "132c5d22-6f38-4a39-af18-93d99e2a1ab3",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "e86005de-c018-4241-ad42-4c2a2963edfc",
+                            ConcurrencyStamp = "5105ce72-953c-48b8-bcd0-6601e53713cd",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -95,11 +111,9 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
@@ -137,11 +151,9 @@ namespace MyHomeBlazorApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -218,7 +230,7 @@ namespace MyHomeBlazorApp.Migrations
                     b.Property<int?>("RealEstateID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("UnassignedId")
+                    b.Property<int?>("UserProfileUserID")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("DeviceID");
@@ -227,7 +239,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("RealEstateID");
 
-                    b.HasIndex("UnassignedId");
+                    b.HasIndex("UserProfileUserID");
 
                     b.ToTable("DeviceProfile");
                 });
@@ -328,15 +340,10 @@ namespace MyHomeBlazorApp.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UnassignedDevicesId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserID");
-
-                    b.HasIndex("UnassignedDevicesId");
 
                     b.ToTable("UserProfile");
                 });
@@ -410,17 +417,6 @@ namespace MyHomeBlazorApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("My_Home.Models.Unassigned", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Unassigned");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -482,9 +478,9 @@ namespace MyHomeBlazorApp.Migrations
                         .WithMany("DevicesProfiles")
                         .HasForeignKey("RealEstateID");
 
-                    b.HasOne("My_Home.Models.Unassigned", null)
+                    b.HasOne("MyHome.Models.UserProfile", null)
                         .WithMany("UnassignedDevicesList")
-                        .HasForeignKey("UnassignedId");
+                        .HasForeignKey("UserProfileUserID");
 
                     b.Navigation("DeviceWarranty");
                 });
@@ -520,15 +516,6 @@ namespace MyHomeBlazorApp.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("MyHome.Models.UserProfile", b =>
-                {
-                    b.HasOne("My_Home.Models.Unassigned", "UnassignedDevices")
-                        .WithMany()
-                        .HasForeignKey("UnassignedDevicesId");
-
-                    b.Navigation("UnassignedDevices");
-                });
-
             modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>
                 {
                     b.HasOne("MyHome.Models.UserProfile", "UserProfile")
@@ -546,10 +533,7 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("MyHome.Models.UserProfile", b =>
                 {
                     b.Navigation("RealEstates");
-                });
 
-            modelBuilder.Entity("My_Home.Models.Unassigned", b =>
-                {
                     b.Navigation("UnassignedDevicesList");
                 });
 #pragma warning restore 612, 618
