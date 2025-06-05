@@ -11,7 +11,7 @@ namespace MyHome.Models
     {
         
         private int _realEstateID;
-   
+        [Key]
         public int RealEstateID
         {
             get { return _realEstateID; }

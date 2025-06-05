@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyHomeBlazorApp.BlazorData;
 
@@ -10,9 +11,11 @@ using MyHomeBlazorApp.BlazorData;
 namespace MyHomeBlazorApp.Migrations
 {
     [DbContext(typeof(MyHomeBlazorAppContext))]
-    partial class MyHomeBlazorAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250604100318_removedKeyFromDeviceProfile")]
+    partial class removedKeyFromDeviceProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.12");
