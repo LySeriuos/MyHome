@@ -74,7 +74,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public Shop? Shop { get; set; } = new Shop();
         //public Unassigned? UnassignedProfile { get; set; } = new Unassigned();
-        public List<DeviceProfile>? UnassignedDevicesList { get; } = new List<DeviceProfile>();
+        public List<DeviceProfile>? UnassignedDevicesList { get; set; }
         private MyHomeBlazorAppUser userWithData;
 
         #region User        
@@ -113,7 +113,24 @@ namespace MyHomeBlazorApp.BlazorData
                 .ThenInclude(shop => shop.Address)
                 .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
             }
+            var userUnnasigned = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(u => u.UnassignedDevicesList);
             return userWithData.UserProfile;
+        }
+
+        public async Task<List<DeviceProfile>> GetUserWithUnassignedDevicesList()
+        {
+            var userWithUnnasignedListData = _dbcontext.Users.Include(u => u.UserProfile)
+                .ThenInclude(u => u.UnassignedDevicesList)
+                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
+            if (userWithUnnasignedListData != null)
+            {
+                UnassignedDevicesList = userWithUnnasignedListData.UserProfile.UnassignedDevicesList;
+            }
+            else
+            {
+                UnassignedDevicesList = new List<DeviceProfile>();
+            }
+            return UnassignedDevicesList;
         }
 
         public async Task<UserProfile> GetDbUserData()
@@ -373,10 +390,10 @@ namespace MyHomeBlazorApp.BlazorData
             realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
         }
 
-        public void MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUser, int realEstateToAddDevice, DeviceProfile currentDevice)
+        public async Task MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUser, int realEstateToAddDevice, DeviceProfile currentDevice)
         {
             _currentUser.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
-            _currentUser.UnassignedDevicesList.Remove(currentDevice);
+            _currentUser.UnassignedDevicesList.Remove(currentDevice);            
         }
 
         /// <summary>
@@ -431,22 +448,22 @@ namespace MyHomeBlazorApp.BlazorData
         /// Adding new warranties profile to the shop
         /// </summary>
         /// <param name="shop">Shop profile to add warranties profile</param>
-        public void AddShopInfo(Shop shop)
+        public async Task AddShopInfo(Shop shop)
         {
             DeviceWarranty currentWarranty = CurrentDevice.DeviceWarranty;
             currentWarranty.Shop = shop;
-            Data.SaveUsersListToXml(_users, _path);
+            await UpdateObjectInDB();
         }
 
         /// <summary>
         /// Creating new Shop object and assigning adrress object to it
         /// </summary>
         /// <param name="address"></param>
-        public void AddShopAdrress(Address address)
+        public async Task AddShopAdrress(Address address)
         {
             Shop shop = CurrentDevice.DeviceWarranty.Shop;
             shop.Address = address;
-            Data.SaveUsersListToXml(_users, _path);
+            await UpdateObjectInDB();
         }
 
         #endregion
@@ -478,12 +495,12 @@ namespace MyHomeBlazorApp.BlazorData
 
             return firstExpiringDevice;
         }
-        public void AddDeviceWarrantyInfo(DeviceWarranty deviceWarranty)
+        public async Task AddDeviceWarrantyInfo(DeviceWarranty deviceWarranty)
         {       // Do I need to take Years to database? How to awoid it ?   
             deviceWarranty.WarrantyPeriod = GetTimeSpanFromYears(deviceWarranty.Years);
             deviceWarranty.ExtraInsuranceWarrantyLenght = GetTimeSpanFromYears(deviceWarranty.ExtendedWarrantyinYears);
             CurrentDevice.DeviceWarranty = deviceWarranty;
-            Data.SaveUsersListToXml(_users, _path);
+            await UpdateObjectInDB();
         }
 
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
@@ -540,16 +557,16 @@ namespace MyHomeBlazorApp.BlazorData
         /// Need to work through methods MoveDevices and LeaveDevicesUnassigned to be more flexible.
         /// </summary>
         /// <param name="currentRealEstate">The Real Estate to be Removed</param>
-        public void LeaveDevicesUnassigned(RealEstate currentRealEstate)
+        public async void LeaveDevicesUnassigned(RealEstate currentRealEstate)
         {
             List<DeviceProfile> devicesToDelete = _currentUser.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID).DevicesProfiles;
 
             foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
             {
-                UnassignedDevicesList.Add(deviceProfile);
+                _currentUser.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-            Data.SaveUsersListToXml(_users, _path);
+           await UpdateObjectInDB();
         }
 
         //public Unassigned UnassignedDevices()

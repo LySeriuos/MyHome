@@ -162,7 +162,7 @@
             </QuickGrid>
         </div>
     </TabPage>
-    @if (DataService.UnassignedDevicesList.Count > 0)
+    @if (currentUser.UnassignedDevicesList.Count > 0)
     {
         <TabPage Text="Unassigned Devices">
             <div class="grid">
@@ -281,10 +281,10 @@
     private DeviceProfile currentDevice { get; set; } = new();
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
-    private IQueryable<DeviceProfile> _devicesListAsQueryable;
-    private IQueryable<RealEstate> _realEstatesListAsQueryable;
-    private IQueryable<RealEstate> _realEstatesListAsQueryable11;
-    private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
+    private IQueryable<DeviceProfile>? _devicesListAsQueryable;
+    private IQueryable<RealEstate>? _realEstatesListAsQueryable;
+    private IQueryable<RealEstate>? _realEstatesListAsQueryable11;
+    private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable;
     public MyHomeBlazorAppUser user = default!;
     public string deviceName
     {
@@ -521,6 +521,10 @@
         // currentUser = UserAccessor.GetRequiredUserAsync(HttpContext).Result.UserProfile;
         // currentUser =
         // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
+        currentUser = DataService.CurrentUser;
+        
+        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+
         _devicesListAsQueryable = DataService.CurrentUser.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
