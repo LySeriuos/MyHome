@@ -117,7 +117,7 @@ namespace MyHomeBlazorApp.BlazorData
             return UnassignedDevicesList;
         }
 
-        public async Task<UserProfile> GetDbUserData()
+        public async Task<UserProfile> CurrentDbUserWithRealEstatesData()
         {
             var userWithData = _dbcontext.Users.Include(u => u.UserProfile)
                 .ThenInclude(p => p.RealEstates)

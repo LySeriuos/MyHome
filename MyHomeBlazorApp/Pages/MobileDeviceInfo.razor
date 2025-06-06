@@ -49,7 +49,7 @@
     protected override void OnParametersSet()
     {
         // _userProfile = DataService.CurrentUser;
-        _userProfile = DataService.GetDbUserData().Result;
+        _userProfile = DataService.CurrentDbUserWithRealEstatesData().Result;
         _currentDevice = _userProfile.GetAllDevices().First(d => d.DeviceID == DeviceID);
     }
 

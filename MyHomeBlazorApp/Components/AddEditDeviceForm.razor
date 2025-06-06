@@ -266,7 +266,7 @@
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, _chosedRealEstateID);
         }
 
-        DataService.SaveUpdatedObject();
+        DataService.UpdateObjectInDB();
         await DataChangedEvent.InvokeAsync();
         fieldHasBeenChanged = false;
         showErrorMessageVisible = false;
