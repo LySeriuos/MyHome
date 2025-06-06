@@ -23,7 +23,7 @@
     <label class="form-label">Choose Device</label>
     <InputSelect @bind-Value="_chosedDeviceID">
         <option selected disabled value="-1">Select Device...</option>
-        @foreach (var device in DataService.CurrentUser.GetAllDevices())
+        @foreach (var device in DataService.CurrentUserWithAllData.GetAllDevices())
         {
             <option value="@device.DeviceID">@device.DeviceName</option>
         }
@@ -144,7 +144,7 @@
         Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode");
         string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode\\Wifi.png";
         valid = editWifiContext.Validate();
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         if (valid == true)
         {
             valid = editWifiContext.Validate();
@@ -163,7 +163,7 @@
 
     protected override void OnInitialized()
     {
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         editWifiContext = new(wifiModel);
         editDeviceContext = new(_selectedDeviceProfile);
         base.OnInitializedAsync();

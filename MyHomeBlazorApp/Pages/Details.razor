@@ -305,7 +305,7 @@
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         currentDevice = DataService.GetDeviceById(deviceID);
         currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(currentDevice.DeviceID);
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
@@ -313,7 +313,7 @@
     // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
     private async Task OnShowModalAddNewDevice()
     {
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         currentDevice = new();
         currentChosedRealEsate.RealEstateID = 0;
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
@@ -367,13 +367,13 @@
 
     private void RealEstateDataHasChanged()
     {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
     }
 
     private void OnModalRealEstateDeleteRequest()
     {
-        // currentUser = DataService.CurrentUser;
+        // currentUser = DataService.CurrentUserWithAllData;
         // currentRealEstate = DataService.GetRealEstate(realEstateID);
         refModalRealEstateDelete.DeleteRealEstate_Click(true);
     }
@@ -390,14 +390,14 @@
     private async Task OnShowModalAddNewRealEstate()
     {
         currentRealEstate = new();
-        // currentChosedRealEsate.RealEstateID = DataService.CurrentUser.RealEstates.Max(e => e.RealEstateID) + 1;
+        // currentChosedRealEsate.RealEstateID = DataService.CurrentUserWithAllData.RealEstates.Max(e => e.RealEstateID) + 1;
         currentRealEstateAddress = new();
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
 
     private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
     {
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
         //TODO fixthis variable to give value only if after realEstate was deleted
         _deletedObjectName = currentRealEstate.RealEstateName;
@@ -419,19 +419,19 @@
 
     private void DeviceDataHasChanged()
     {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         StateHasChanged();
     }
 
     private void DeviceListDataHasChanged()
     {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         StateHasChanged();
     }
 
     private void DeviceListDataHasChangedTest()
     {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         _refSuccessModal.OnShowModalClick();
         StateHasChanged();
     }
@@ -448,7 +448,7 @@
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
         currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(deviceID);
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         currentDevice = DataService.GetDeviceById(deviceID);
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
@@ -461,7 +461,7 @@
 
     private void WarrantyDataHasChanged()
     {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
     }
 
@@ -479,7 +479,7 @@
 
     private void ShopDataHasChanged()
     {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
     }
 
@@ -495,8 +495,8 @@
     // // protected override void OnInitialized()
     // // {
 
-    // //     _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
-    // //     _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+    // //     _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
+    // //     _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
     // //     DataService.CheckIfFileExsist();
     // //     base.OnInitialized();
     // // }
@@ -521,11 +521,11 @@
         // currentUser = UserAccessor.GetRequiredUserAsync(HttpContext).Result.UserProfile;
         // currentUser =
         // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
-        currentUser = DataService.CurrentUser;
+        // currentUser = DataService.CurrentUserWithAllData;
         
         _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
 
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
         .ThenBy(d => d.DeviceID).AsQueryable();

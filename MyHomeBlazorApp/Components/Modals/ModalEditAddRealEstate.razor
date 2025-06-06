@@ -122,13 +122,13 @@
 
     protected override void OnInitialized()
     {
-        if (DataService.CurrentUser.RealEstates == null)
+        if (DataService.CurrentUserWithAllData.RealEstates == null)
         {
-            _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.DefaultIfEmpty<RealEstate>().AsQueryable();
+            _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.DefaultIfEmpty<RealEstate>().AsQueryable();
         }
         else
         {
-            _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.ToList().AsQueryable();
+            _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.ToList().AsQueryable();
         }
         editContext = new(CurrentRealEstate);
         base.OnInitialized();
