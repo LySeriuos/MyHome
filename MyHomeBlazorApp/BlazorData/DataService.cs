@@ -37,16 +37,8 @@ namespace MyHomeBlazorApp.BlazorData
             //_users = Data.GetUsersListFromXml(_path);
             _authenticationStateProvider = authenticationStateProvider;
             _dbcontext = dbcontext;
-            // manually assigned test data
-            int userId = 2;
-            int realEstateID = 1;
-            int deviceId = 2;
             CurrentAppUser = GetCurrentUser().Result;
             _currentUserWithData = GetDbUserDeviceProfileWithWarrantyShopAddressData().Result.UserProfile;
-            CurrentRealEstate = GetRealEstate(realEstateID);
-            Device = LastAddedDevice();
-            //UnassignedProfile = UnassignedDevices();
-            CurrentDevice = GetDeviceById(deviceId);
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
         }
@@ -56,8 +48,7 @@ namespace MyHomeBlazorApp.BlazorData
         private MyHomeBlazorAppContext _dbcontext;
         private UserProfile _currentUserWithData;
         public UserProfile CurrentUserWithAllData => _currentUserWithData;
-        private MyHomeBlazorAppUser CurrentAppUser;
-        // I guess these should be as Parameters 
+        public MyHomeBlazorAppUser CurrentAppUser;
         private static readonly string _path = Program.Constants.XML_DATA_PATH;
         private static List<UserProfile>? _users;
         public List<UserProfile>? Users => _users;
@@ -74,24 +65,22 @@ namespace MyHomeBlazorApp.BlazorData
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public Shop? Shop { get; set; } = new Shop();
-        //public Unassigned? UnassignedProfile { get; set; } = new Unassigned();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
-        private MyHomeBlazorAppUser userWithData;
 
         #region User        
 
         // all the method to create a new user
-        public void AddUser(UserProfile u)
-        {
-            _users.Add(u);
-            Data.SaveUsersListToXml(_users, _path);
-        }
+        //public void AddUser(UserProfile u)
+        //{
+        //    _users.Add(u);
+        //    Data.SaveUsersListToXml(_users, _path);
+        //}
 
-        public int UserMaxID(List<UserProfile> _users)
-        {
-            int maxID = _users.Max(u => u.UserID);
-            return maxID;
-        }
+        //public int UserMaxID(List<UserProfile> _users)
+        //{
+        //    int maxID = _users.Max(u => u.UserID);
+        //    return maxID;
+        //}
 
         //public UserProfile GetUser(int id)
         //{
@@ -190,12 +179,12 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to save created new RealEstate
         /// </summary>
         /// <param name="realEstate">Created RealEstate</param>
-        public void AddNewRealEstateToXML(RealEstate realEstate)
-        {
-            realEstate.RealEstateID = Logic.GetRealEstateMaxId(_currentUserWithData.RealEstates) + 1;
-            _currentUserWithData.RealEstates.Add(realEstate);
-            Data.SaveUsersListToXml(_users, _path);
-        }
+        //public void AddNewRealEstateToXML(RealEstate realEstate)
+        //{
+        //    realEstate.RealEstateID = Logic.GetRealEstateMaxId(_currentUserWithData.RealEstates) + 1;
+        //    _currentUserWithData.RealEstates.Add(realEstate);
+        //    Data.SaveUsersListToXml(_users, _path);
+        //}
 
         public async Task AddNewRealEstateToDB(RealEstate currentRealEstate)
         {
@@ -215,11 +204,11 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to assign Adrress object to RealEstate 
         /// </summary>
         /// <param name="adrress">Newly created adress</param>
-        public void AddRealEstateAdrress(Address adrress)
-        {
-            CurrentRealEstate.Address = adrress;
-            Data.SaveUsersListToXml(_users, _path);
-        }
+        //public void AddRealEstateAdrress(Address adrress)
+        //{
+        //    CurrentRealEstate.Address = adrress;
+        //    Data.SaveUsersListToXml(_users, _path);
+        //}
 
         /// <summary>
         /// Method to get RealEstate object by Device ID parameter

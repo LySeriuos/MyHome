@@ -71,8 +71,6 @@
             {
                 validRealEstate = editContext.Validate();               
                 await DataService.UpdateObjectInDB();
-                // Updating data in the xml file
-                // DataService.SaveUpdatedObject();
             }
             realEstateDataHasChanged();
             await refModalEditAddRealEstate.HideAsync();
