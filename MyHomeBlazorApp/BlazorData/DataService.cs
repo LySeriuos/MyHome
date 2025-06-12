@@ -11,10 +11,12 @@ using Microsoft.JSInterop;
 using My_Home;
 using My_Home.Models;
 using MyHome;
+using Microsoft.Data.Sqlite;
 using MyHome.Models;
 using MyHomeBlazorApp.Pages;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+//using System.Data.Entity;
 using System.IO;
 using System.Net;
 using System.Reflection.Metadata.Ecma335;
@@ -23,6 +25,7 @@ using Unity;
 using static com.sun.management.VMOption;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using MailKit.Search;
 
 
 namespace MyHomeBlazorApp.BlazorData
@@ -96,7 +99,7 @@ namespace MyHomeBlazorApp.BlazorData
             var user = AuthSate.Result.User;
             if (user.Identity.IsAuthenticated)
             {
-                CurrentAppUser = await _userManager.GetUserAsync(user);                
+                CurrentAppUser = await _userManager.GetUserAsync(user);
             }
             return CurrentAppUser;
         }
@@ -136,7 +139,7 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         public async Task<MyHomeBlazorAppUser> GetDbUserDeviceProfileWithWarrantyShopAddressData()
-        {           
+        {
             var userWithDevicesData = _dbcontext.Users.Include(u => u.UserProfile)
                 .ThenInclude(r => r.RealEstates).ThenInclude(r => r.DevicesProfiles)
                 .ThenInclude(d => d.DeviceWarranty).ThenInclude(dw => dw.Shop)
@@ -254,14 +257,14 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to delete(remove) RealEstate from the RealEstates list
         /// </summary>
         /// <param name="contextChosedRealEstateID">Chosed RealEstate</param>
-        public void RemoveRealEstate(int contextChosedRealEstateID)
+        public async Task RemoveRealEstate(int contextChosedRealEstateID)
         {
             bool realEstateExsits = _currentUserWithData.RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
             if (realEstateExsits == true)
             {
                 RealEstate realEstateToDelete = _currentUserWithData.RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
-                _currentUserWithData.RealEstates.Remove(realEstateToDelete);
-                Data.SaveUsersListToXml(_users, _path);
+                _dbcontext.Remove(realEstateToDelete);
+                await UpdateObjectInDB();
             }
             else
             {
@@ -338,6 +341,19 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        public async Task RemoveDeviceFromDb (RealEstate currentRealEstate, DeviceProfile deviceToDelete)
+        {
+            if (currentRealEstate.DevicesProfiles.Contains(deviceToDelete))
+            {
+                _dbcontext.Remove(deviceToDelete);
+                await UpdateObjectInDB();
+            }
+            else
+            {
+                return;
+            }
+        }
+
         /// <summary>
         /// Getting last item in the sequence
         /// </summary>
@@ -384,7 +400,7 @@ namespace MyHomeBlazorApp.BlazorData
         public async Task MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUserWithData, int realEstateToAddDevice, DeviceProfile currentDevice)
         {
             _currentUserWithData.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
-            _currentUserWithData.UnassignedDevicesList.Remove(currentDevice);            
+            _currentUserWithData.UnassignedDevicesList.Remove(currentDevice);
         }
 
         /// <summary>
@@ -557,7 +573,7 @@ namespace MyHomeBlazorApp.BlazorData
                 _currentUserWithData.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-           await _dbcontext.SaveChangesAsync();
+            await _dbcontext.SaveChangesAsync();
         }
 
         //public Unassigned UnassignedDevices()
@@ -670,7 +686,7 @@ namespace MyHomeBlazorApp.BlazorData
         //}
 
         public async Task UpdateObjectInDB()
-        {           
+        {
             _dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
         }

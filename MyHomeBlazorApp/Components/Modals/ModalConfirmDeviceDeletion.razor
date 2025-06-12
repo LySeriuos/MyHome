@@ -34,7 +34,8 @@
             if (deviceToDelete != null)
             {
                 _deletedDeviceName = deviceToDelete.DeviceName;
-                Logic.RemoveDevice(CurrentRealEstateToDeleteFrom, deviceToDelete, DataService.Users, DataService.XmlPath);
+                await DataService.RemoveDeviceFromDb(CurrentRealEstateToDeleteFrom, deviceToDelete);
+                
                 onDataChanged();
             }
             else

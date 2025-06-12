@@ -162,11 +162,11 @@
             </QuickGrid>
         </div>
     </TabPage>
-    @if (currentUser.UnassignedDevicesList.Count > 0)
+    @if (_unassignedDevicesListAsQueryable.Count() > 0)
     {
         <TabPage Text="Unassigned Devices">
             <div class="grid">
-                <QuickGrid tabindex="2" Items="DataService.UnassignedDevicesList.AsQueryable()">
+                <QuickGrid tabindex="2" Items="_unassignedDevicesListAsQueryable">
                     <TemplateColumn>
                         <div>
                             <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
@@ -366,7 +366,7 @@
     private ModalReassignDevices refModalReasignDevices = default!;
 
     private void RealEstateDataHasChanged()
-    {
+    {        
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
     }
@@ -522,7 +522,7 @@
         // currentUser =
         // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
         // currentUser = DataService.CurrentUserWithAllData;
-        
+
         _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
 
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
