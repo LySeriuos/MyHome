@@ -26,6 +26,7 @@ using static com.sun.management.VMOption;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using MailKit.Search;
+using Unity.Injection;
 
 
 namespace MyHomeBlazorApp.BlazorData
@@ -42,6 +43,7 @@ namespace MyHomeBlazorApp.BlazorData
             _dbcontext = dbcontext;
             CurrentAppUser = GetCurrentUser().Result;
             _currentUserWithData = GetDbUserDeviceProfileWithWarrantyShopAddressData().Result.UserProfile;
+            //UnassignedDevicesList = GetUserWithUnassignedDevicesList().Result.ToList();
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
             DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
         }
@@ -341,17 +343,11 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
-        public async Task RemoveDeviceFromDb (RealEstate currentRealEstate, DeviceProfile deviceToDelete)
+        public async Task RemoveDeviceFromDb(DeviceProfile deviceToDelete)
         {
-            if (currentRealEstate.DevicesProfiles.Contains(deviceToDelete))
-            {
-                _dbcontext.Remove(deviceToDelete);
-                await UpdateObjectInDB();
-            }
-            else
-            {
-                return;
-            }
+            _dbcontext.Remove(deviceToDelete);
+            await UpdateObjectInDB();
+
         }
 
         /// <summary>
@@ -573,7 +569,7 @@ namespace MyHomeBlazorApp.BlazorData
                 _currentUserWithData.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-            await _dbcontext.SaveChangesAsync();
+            await UpdateObjectInDB();
         }
 
         //public Unassigned UnassignedDevices()

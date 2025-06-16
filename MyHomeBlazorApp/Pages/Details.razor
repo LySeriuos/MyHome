@@ -232,8 +232,7 @@
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-    CurrentDeviceToDelete="@currentDevice"
-    CurrentRealEstateToDeleteFrom="@currentRealEstate">
+    CurrentDeviceToDelete="@currentDevice">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
@@ -420,6 +419,7 @@
     private void DeviceDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
         StateHasChanged();
     }
 
@@ -432,14 +432,13 @@
     private void DeviceListDataHasChangedTest()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
         _refSuccessModal.OnShowModalClick();
         StateHasChanged();
     }
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
-        int ChosedRealEsatateID = DataService.GetRealEstateByDeviceID(deviceId);
-        currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         currentDevice = DataService.GetDeviceById(deviceId);
         _deletedObjectName = currentDevice.DeviceName;
         await refModalConfirmDeviceDeletion.OnShowModalClick();
@@ -523,8 +522,8 @@
         // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
         // currentUser = DataService.CurrentUserWithAllData;
 
+        // _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
         _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
