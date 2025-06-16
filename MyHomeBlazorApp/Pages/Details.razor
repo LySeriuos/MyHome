@@ -460,7 +460,8 @@
 
     private void WarrantyDataHasChanged()
     {
-        _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
         StateHasChanged();
     }
 

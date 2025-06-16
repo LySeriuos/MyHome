@@ -45,6 +45,7 @@ namespace MyHomeBlazorApp.BlazorData
             _currentUserWithData = GetDbUserDeviceProfileWithWarrantyShopAddressData().Result.UserProfile;
             //UnassignedDevicesList = GetUserWithUnassignedDevicesList().Result.ToList();
             ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
+            FirstExpiringDevice = FirstExpiringWarranty();
             DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
         }
 
@@ -407,15 +408,6 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile GetDeviceById(int id)
         {
             DeviceProfile currentDevice = new();
-            //foreach(DeviceProfile device in _currentUserWithData.GetAllDevices())
-            //{
-            //    if(device.DeviceID == id)
-            //    {
-            //        return device;
-            //    }
-            //    currentDevice = device;
-            //}
-            //return currentDevice;
             int i = 0;
             DeviceProfile? currentDeviceTest = new DeviceProfile();
             DeviceProfile device;
@@ -473,6 +465,10 @@ namespace MyHomeBlazorApp.BlazorData
 
         #region Warranties
 
+        /// <summary>
+        /// Method to get a device with closest expirig date to the actual date 
+        /// </summary>
+        /// <returns>Expiring device profile</returns>
         public DeviceProfile FirstExpiringWarranty()
         {
             List<DeviceProfile>? devicesList = _currentUserWithData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
@@ -498,6 +494,12 @@ namespace MyHomeBlazorApp.BlazorData
 
             return firstExpiringDevice;
         }
+
+        /// <summary>
+        /// Method to update device warranty details 
+        /// </summary>
+        /// <param name="deviceWarranty">Chosed device warranty profile</param>
+        /// <returns>Updating warranty details</returns>
         public async Task AddDeviceWarrantyInfo(DeviceWarranty deviceWarranty)
         {       // Do I need to take Years to database? How to awoid it ?   
             deviceWarranty.WarrantyPeriod = GetTimeSpanFromYears(deviceWarranty.Years);
@@ -506,6 +508,7 @@ namespace MyHomeBlazorApp.BlazorData
             await _dbcontext.SaveChangesAsync();
         }
 
+        
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
         {
             int totalDaysInTheYear = 365;
