@@ -1,6 +1,6 @@
 ﻿@using BlazorBootstrap
 
-<div>This is a TabControl</div>
+
 <CascadingValue Value="this">
     <div class="btn-group" role="group">
         @foreach (TabPage tabPage in Pages)
@@ -47,6 +47,10 @@
             else if (TabID == 3)
             {
                 ActivePage = Pages[2];
+            }
+            else if (TabID == 4)
+            {
+                ActivePage = Pages[3];
             }
             else
             {

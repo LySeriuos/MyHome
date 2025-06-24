@@ -162,11 +162,11 @@
             </QuickGrid>
         </div>
     </TabPage>
-    @if (_unassignedDevicesListAsQueryable.Count() > 0)
+    @if (DataService.GetUserWithUnassignedDevicesList().Result.Count > 0)
     {
         <TabPage Text="Unassigned Devices">
             <div class="grid">
-                <QuickGrid tabindex="2" Items="_unassignedDevicesListAsQueryable">
+                <QuickGrid tabindex="5" Items="_unassignedDevicesListAsQueryable">
                     <TemplateColumn>
                         <div>
                             <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
@@ -187,6 +187,12 @@
                 </QuickGrid>
             </div>
         </TabPage>
+    }
+    else
+    {
+        <br />
+        <br />
+        <p>There are not Unassigned Devices!</p>
     }
 </TabControl>
 
@@ -273,6 +279,7 @@
     private string _chooseOptionValue = "Choose Real Estate";
     private string? _deletedObjectName;
     private string message = "";
+    public bool listHasBeenChanged = false;
     private RealEstate currentChosedRealEsate = new();
     private RealEstate currentRealEstate = new();
     private Address currentRealEstateAddress = new();
@@ -285,6 +292,7 @@
     private IQueryable<RealEstate>? _realEstatesListAsQueryable11;
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable;
     public MyHomeBlazorAppUser user = default!;
+    public Action? UnassignedDevicesListChanged;
     public string deviceName
     {
         get => currentDevice.DeviceName;
@@ -418,24 +426,32 @@
 
     private void DeviceDataHasChanged()
     {
+
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
+        // _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
+        listHasBeenChanged = true;
+        UnassignedDevicesListChanged();
         StateHasChanged();
     }
 
     private void DeviceListDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        // _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
+        listHasBeenChanged = true;
+        UnassignedDevicesListChanged();
         StateHasChanged();
     }
 
-    private void DeviceListDataHasChangedTest()
-    {
-        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
-        _refSuccessModal.OnShowModalClick();
-        StateHasChanged();
-    }
+    // private void DeviceListDataHasChangedTest()
+    // {
+    //     _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+    //     _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+    //     _refSuccessModal.OnShowModalClick();
+    //     StateHasChanged();
+    // }
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
@@ -461,7 +477,8 @@
     private void WarrantyDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
+        // _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
         StateHasChanged();
     }
 
@@ -500,7 +517,11 @@
     // //     DataService.CheckIfFileExsist();
     // //     base.OnInitialized();
     // // }
-
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+    //     return base.OnAfterRenderAsy(firstRender);
+    // }
     protected override async Task OnInitializedAsync()
     {
         // var AuthSate = await AuthenticationState.GetAuthenticationStateAsync();
@@ -525,6 +546,8 @@
 
         // _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
         _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+        // _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
+        
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))

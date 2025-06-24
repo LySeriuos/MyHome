@@ -60,7 +60,7 @@
                     <CardTitle><h3>Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
                 <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkTo="/details/2" LinkName="Go To Devices Details">
-                    <CardTitle><h3>Devices: @DataService.Devices.Count</h3></CardTitle>
+                    <CardTitle><h3>Devices: @DataService.Devices?.Count</h3></CardTitle>
                 </CardComponent>
                 @if (GetExpiringDevice != null)
                 {
