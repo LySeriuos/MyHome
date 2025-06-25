@@ -162,7 +162,7 @@
             </QuickGrid>
         </div>
     </TabPage>
-    @if (DataService.GetUserWithUnassignedDevicesList().Result.Count > 0)
+    @if (_unassignedDevicesListAsQueryable.AsQueryable().ToList().Count > 0)
     {
         <TabPage Text="Unassigned Devices">
             <div class="grid">
@@ -187,12 +187,6 @@
                 </QuickGrid>
             </div>
         </TabPage>
-    }
-    else
-    {
-        <br />
-        <br />
-        <p>There are not Unassigned Devices!</p>
     }
 </TabControl>
 
@@ -397,7 +391,6 @@
     private async Task OnShowModalAddNewRealEstate()
     {
         currentRealEstate = new();
-        // currentChosedRealEsate.RealEstateID = DataService.CurrentUserWithAllData.RealEstates.Max(e => e.RealEstateID) + 1;
         currentRealEstateAddress = new();
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
@@ -428,30 +421,16 @@
     {
 
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        // _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
-        listHasBeenChanged = true;
-        UnassignedDevicesListChanged();
+        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
         StateHasChanged();
     }
 
     private void DeviceListDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        // _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
-        listHasBeenChanged = true;
-        UnassignedDevicesListChanged();
+        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
         StateHasChanged();
     }
-
-    // private void DeviceListDataHasChangedTest()
-    // {
-    //     _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-    //     _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-    //     _refSuccessModal.OnShowModalClick();
-    //     StateHasChanged();
-    // }
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
@@ -509,53 +488,12 @@
 
     #endregion
 
-    // // protected override void OnInitialized()
-    // // {
-
-    // //     _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
-    // //     _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
-    // //     DataService.CheckIfFileExsist();
-    // //     base.OnInitialized();
-    // // }
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-    //     return base.OnAfterRenderAsy(firstRender);
-    // }
     protected override async Task OnInitializedAsync()
     {
-        // var AuthSate = await AuthenticationState.GetAuthenticationStateAsync();
-        // var user = AuthSate.User;
-        // if (user.Identity.IsAuthenticated)
-        // {
-        //     var currentAppUser = await UserManager.GetUserAsync(user);
-
-        //     currentUser = UserManager.GetUserAsync(user).Result.UserProfile;
-
-        //     var userWithData = _dbcontext.Users.Include(u => u.UserProfile).ThenInclude(p => p.RealEstates).FirstOrDefault(u => u.Id == currentAppUser.Id);
-        //     // // Message = ($"{user.Identity.Name} is authenticated. Email is {currentUser.Email}");
-        // }
-        // else
-        // {
-        //     // Message = ("The user is NOT authenticated.");
-        // }
-        // currentUser = UserAccessor.GetRequiredUserAsync(HttpContext).Result.UserProfile;
-        // currentUser =
-        // MyHomeBlazorAppUser _user = await UserManager.FindByIdAsync(user.Id);
-        // currentUser = DataService.CurrentUserWithAllData;
-
-        // _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
         _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-        // _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
         
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
-        .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
-        .ThenBy(d => d.DeviceID).AsQueryable();
-
-        _devicesListAsQueryable = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
-        .Result.UserProfile.RealEstates
-        .SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
         .ThenBy(d => d.DeviceID).AsQueryable();
 
@@ -585,56 +523,7 @@
     }
 
 
-    // // // // // // // //
-
-
-    // moved to validation method to keep one button
-    // public async Task AddOrSave()
-    // {
-    //     if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
-    //     {
-    //         currentRealEstate.Address = currentRealEstateAddress;
-    //         DataService.AddNewRealEstateToXML(currentRealEstate);
-    //     }
-    //     else
-    //     {
-    //         DataService.SaveUpdatedRealEstate();
-    //     }
-    //     await refModalEditAddRealEstate.HideAsync();
-    // }
-
-    // Void or async Task?
-
-    // private void OnModalDeviceWarrantyNext()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-    // }
-
-    // private void OnModalDeviceWarrantyPreviuos()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
-    // }
-
-    // private void OnModalDeviceShopNext()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-    // }
-
-    // private void OnModalDeviceShopPreviuos()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
-    // }
-
-    // private async void Navigate(int deviceID)
-    // {
-    //     currentDevice = DataService.GetDeviceById(deviceID);
-    //     var query = new Dictionary<string, string>
-    // {
-    //         { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
-    //     };
-    //     string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
-    //     await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
-    // }
+    
 
 }
 
