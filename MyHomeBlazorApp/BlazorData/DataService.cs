@@ -55,46 +55,19 @@ namespace MyHomeBlazorApp.BlazorData
         private UserProfile _currentUserWithData;
         public UserProfile CurrentUserWithAllData => _currentUserWithData;
         public MyHomeBlazorAppUser CurrentAppUser;
-        private static readonly string _path = Program.Constants.XML_DATA_PATH;
-        private static List<UserProfile>? _users;
-        public List<UserProfile>? Users => _users;
-        public string XmlPath => _path;
         public List<DeviceProfile>? Devices => _currentUserWithData.GetAllDevices();
         public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile? Device { get; set; } = new DeviceProfile();
         public RealEstate? CurrentRealEstate { get; set; } = new RealEstate();
-        //   public List<RealEstate> RealEstates { get; set; } = new List<RealEstate>();
         public Address? Adrress { get; set; } = new Address();
         public DeviceWarranty? DeviceWarranty { get; set; } = new DeviceWarranty();
         public DeviceProfile? FirstExpiringDevice { get; set; } = new DeviceProfile();
-        //public List<DeviceProfile> UnassignedDevices { get; set; } = new List<DeviceProfile>();
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public Shop? Shop { get; set; } = new Shop();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
 
-        #region User        
-
-        // all the method to create a new user
-        //public void AddUser(UserProfile u)
-        //{
-        //    _users.Add(u);
-        //    Data.SaveUsersListToXml(_users, _path);
-        //}
-
-        //public int UserMaxID(List<UserProfile> _users)
-        //{
-        //    int maxID = _users.Max(u => u.UserID);
-        //    return maxID;
-        //}
-
-        //public UserProfile GetUser(int id)
-        //{
-        //    List<UserProfile> u = _users;
-        //    UserProfile uP = new UserProfile();
-        //    uP = _users.First(u => u.UserID == id);
-        //    return uP;
-        //}
+        #region User
 
         public async Task<MyHomeBlazorAppUser> GetCurrentUser()
         {
@@ -185,13 +158,8 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to save created new RealEstate
         /// </summary>
         /// <param name="realEstate">Created RealEstate</param>
-        //public void AddNewRealEstateToXML(RealEstate realEstate)
-        //{
-        //    realEstate.RealEstateID = Logic.GetRealEstateMaxId(_currentUserWithData.RealEstates) + 1;
-        //    _currentUserWithData.RealEstates.Add(realEstate);
-        //    Data.SaveUsersListToXml(_users, _path);
-        //}
-
+        
+        
         public async Task AddNewRealEstateToDB(RealEstate currentRealEstate)
         {
             //check if incoming realestate object has id 0, otherwise error 
@@ -206,15 +174,6 @@ namespace MyHomeBlazorApp.BlazorData
                 throw new ArgumentException("Wrong RealEstate ID", nameof(currentRealEstate.RealEstateID));
             }
         }
-        /// <summary>
-        /// Method to assign Adrress object to RealEstate 
-        /// </summary>
-        /// <param name="adrress">Newly created adress</param>
-        //public void AddRealEstateAdrress(Address adrress)
-        //{
-        //    CurrentRealEstate.Address = adrress;
-        //    Data.SaveUsersListToXml(_users, _path);
-        //}
 
         /// <summary>
         /// Method to get RealEstate object by Device ID parameter
@@ -279,49 +238,11 @@ namespace MyHomeBlazorApp.BlazorData
         #region Devices
 
         /// <summary>
-        /// Getting Max Id number of the devices in the list.
+        /// Method to add new device in to database
         /// </summary>
-        /// <param name="devices">List of devices</param>
-        /// <returns>highest ID int</returns>
-        //public static int GetDeviceMaxId(List<DeviceProfile> devices)
-        //{
-        //    int maxID = devices.Max(d => d.DeviceID);
-        //    return maxID;
-        //}
-
-        /// <summary>
-        /// Add new device to the devices list and assigning default values of nested classes
-        /// </summary>
-        /// <param name="deviceToAdd">Newly created device</param>
-        /// <param name="chosedRealEstateID">Real Estate by ID to add new device profile</param>
-        //public void AddNewDevice(DeviceProfile deviceToAdd, int chosedRealEstateID)
-        //{
-        //    //validation code (duplicates etc)
-        //    List<DeviceProfile> devicesList = Devices;
-        //    int maxId = Logic.GetDeviceMaxId(devicesList);
-        //    deviceToAdd.DeviceID = maxId + 1;
-        //    deviceToAdd.DeviceWarranty = new();
-        //    deviceToAdd.DeviceWarranty.Shop = new();
-        //    deviceToAdd.DeviceWarranty.Shop.Address = new();
-        //    RealEstate chosedRealEstate = new();
-        //    if (chosedRealEstateID != 0)
-        //    {
-        //        chosedRealEstate = _currentUserWithData.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
-        //    }
-
-        //    if (Devices.Any(d => d.DeviceID == deviceToAdd.DeviceID))
-        //    {
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
-        //    }
-
-        //    Data.SaveUsersListToXml(_users, _path);
-        //    deviceToAdd = new();
-        //}
-
+        /// <param name="deviceToAdd">Device object to be add</param>
+        /// <param name="chosedRealEstateID">Real Estate Id to add new device into</param>
+        /// <returns></returns>
         public async Task AddNewDeviceToDataBase(DeviceProfile deviceToAdd, int chosedRealEstateID)
         {
             deviceToAdd.DeviceWarranty = new();
@@ -344,6 +265,11 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        /// <summary>
+        /// Method to remove device from DB
+        /// </summary>
+        /// <param name="deviceToDelete">Object to delete</param>
+        /// <returns></returns>
         public async Task RemoveDeviceFromDb(DeviceProfile deviceToDelete)
         {
             _dbcontext.Remove(deviceToDelete);
@@ -394,6 +320,13 @@ namespace MyHomeBlazorApp.BlazorData
             realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_currentUserWithData"></param>
+        /// <param name="realEstateToAddDevice"></param>
+        /// <param name="currentDevice"></param>
+        /// <returns></returns>
         public async Task MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUserWithData, int realEstateToAddDevice, DeviceProfile currentDevice)
         {
             _currentUserWithData.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
@@ -522,45 +455,11 @@ namespace MyHomeBlazorApp.BlazorData
             Console.WriteLine("{0,21}{1,26}", yearsToDays, timeInterval);
             return interval;
         }
-
-        public string GetExpiringDevice()
-        {
-            string firstDevice = "";
-            if (Device.DeviceWarranty == null)
-            {
-                Device.DeviceWarranty = new();
-            }
-            else
-            {
-                DeviceProfile expiringWarranty = FirstExpiringDevice;
-                string deviceName = expiringWarranty.DeviceName;
-                string deviceExpiringWarranty = expiringWarranty.DeviceWarranty.WarrantyEnd.ToShortDateString();
-                firstDevice = deviceName + " " + deviceExpiringWarranty;
-
-            }
-            return firstDevice;
-        }
         #endregion
-
-        public void OnModalDeviceNext(DeviceProfile currentDevice)
-        {
-            int currentDeviceIndex = 0;
-            List<DeviceProfile> allDevices = Devices;
-            if (currentDevice != null)
-            {
-                currentDeviceIndex = allDevices.IndexOf(currentDevice);
-                currentDevice = allDevices[currentDeviceIndex + 1];
-                //one line code with linq
-                // currentDevice = allDevices[(allDevices.IndexOf(currentDevice) + 1) % allDevices.Count];            
-            }
-        }
 
         #region Unassigned Devices
         /// <summary>
-        /// Main Idea is to create default Real Estate and use it to add unnasigned devices.
-        /// If real estate has ID = 0, show text = "unassigned" instead of ID number.
-        /// Do not use any values except ID
-        /// Need to work through methods MoveDevices and LeaveDevicesUnassigned to be more flexible.
+        /// Moves devices to a separate list where devices are not assigned to the real estate. This can be done later.
         /// </summary>
         /// <param name="currentRealEstate">The Real Estate to be Removed</param>
         public async void LeaveDevicesUnassigned(RealEstate currentRealEstate)
@@ -574,20 +473,10 @@ namespace MyHomeBlazorApp.BlazorData
             }
             await UpdateObjectInDB();
         }
-
-        //public Unassigned UnassignedDevices()
-        //{
-        //    if (_currentUserWithData.UnassignedDevices == null)
-        //    {
-        //        _currentUserWithData.UnassignedDevices = new();
-        //        _currentUserWithData.UnassignedDevices.UnassignedDevicesList = new();
-        //    }
-        //    return _currentUserWithData.UnassignedDevices;
-        //}
         #endregion
 
         #region Should be moved?
-        // these should be moved somwhere else
+
         //  InputFile upploading handling // 
         /// <summary>
         /// Capturing file and creating filePath to return
@@ -675,25 +564,11 @@ namespace MyHomeBlazorApp.BlazorData
             return fileUrl;
         }
 
-        /// <summary>
-        /// Saving new changes to xml database
-        /// </summary>
-        //public void SaveUpdatedObject()
-        //{
-
-        //    Data.SaveUsersListToXml(_users, _path);
-        //}
-
         public async Task UpdateObjectInDB()
         {
             _dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
         }
-
-        //public void LoadData()
-        //{
-        //    Data.GetUsersListFromXml(_path);
-        //}
 
         #endregion
 

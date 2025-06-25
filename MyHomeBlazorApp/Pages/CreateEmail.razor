@@ -325,14 +325,6 @@
         EmailRequest.Body = _preparedMessage;
     }
 
-    protected override void OnParametersSet()
-    {
-        if (currentUserID != 0)
-        {
-            _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
-        }
-    }
-
     protected override void OnAfterRender(bool firstRender)
     {
         if (_chosedDeviceID != 0)
