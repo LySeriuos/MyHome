@@ -342,7 +342,7 @@
         {
             refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
             refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
-            refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
+            refModalEditAddDevice.changedDeviceListData += DeviceDataHasChanged;
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
@@ -374,8 +374,6 @@
 
     private void OnModalRealEstateDeleteRequest()
     {
-        // currentUser = DataService.CurrentUserWithAllData;
-        // currentRealEstate = DataService.GetRealEstate(realEstateID);
         refModalRealEstateDelete.DeleteRealEstate_Click(true);
     }
 
@@ -399,7 +397,6 @@
     {
         currentUser = DataService.CurrentUserWithAllData;
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
-        //TODO fixthis variable to give value only if after realEstate was deleted
         _deletedObjectName = currentRealEstate.RealEstateName;
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
@@ -418,14 +415,6 @@
     }
 
     private void DeviceDataHasChanged()
-    {
-
-        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-        StateHasChanged();
-    }
-
-    private void DeviceListDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
