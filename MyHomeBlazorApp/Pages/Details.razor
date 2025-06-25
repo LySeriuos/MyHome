@@ -324,7 +324,7 @@
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
@@ -332,9 +332,11 @@
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ReceiptLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+
     }
+
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -445,8 +447,6 @@
     private void WarrantyDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        // _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.GetCurrentUser().Result.UserProfile.UnassignedDevicesList.AsQueryable();
         StateHasChanged();
     }
 

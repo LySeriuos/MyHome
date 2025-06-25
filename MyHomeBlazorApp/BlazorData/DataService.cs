@@ -485,7 +485,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="maxFileSize">Limited file size</param>
         /// <param name="errors">List to add errors and later print them as needed</param>
         /// <returns>Created file path to the file in Blazor server</returns>
-        public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors)
+        public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors, DeviceProfile currentDevice)
         {
             if (file is null)
             {
@@ -497,8 +497,8 @@ namespace MyHomeBlazorApp.BlazorData
             {
                 string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
                 string userId = _currentUserWithData.UserID.ToString();
-                Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}");
-                string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{newFileName}";
+                Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}\\{currentDevice.DeviceID}");
+                string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{currentDevice.DeviceID}\\{newFileName}";
                 if (file.Size <= maxFileSize)
                 {
                     using var content = new MultipartFormDataContent();
@@ -557,10 +557,10 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
-        public string GetFileUrl(string linkToTheFile)
+        public string GetFileUrl(string linkToTheFile, int deviceId)
         {
             var file = Path.GetFileName(linkToTheFile);
-            string fileUrl = $"files/{_currentUserWithData.UserID}/{file}";
+            string fileUrl = $"files/{_currentUserWithData.UserID}/{deviceId}/{file}";
             return fileUrl;
         }
 

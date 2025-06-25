@@ -171,14 +171,14 @@
     private async Task NavigateToExtraWarrantyFile()
     {
         string currentExtraWarrrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        string fileUrl = DataService.GetFileUrl(currentExtraWarrrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentExtraWarrrantyReceiptLink, _chosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
     private async Task NavigateToWarrantyFile()
     {
         string currentWarrantyReceiptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, _chosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 

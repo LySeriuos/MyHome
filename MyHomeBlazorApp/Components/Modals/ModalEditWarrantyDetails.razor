@@ -120,14 +120,14 @@
             if (_extraWarrantyReceiptFile != null)
             {
                 DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink); // deleting previuos file when loading new one
-                string _extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors);
+                string _extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = _extraWarrantyReceiptFilePath;
             }
 
             if (_warrantyReceiptFile != null)
             {
                 DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink); // deleting previuos file when loading new one
-                string warrantyReceiptFilePath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors);
+                string warrantyReceiptFilePath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
 
