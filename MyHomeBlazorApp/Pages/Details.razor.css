@@ -2,7 +2,7 @@
 }
 
 .grid {
-    height: auto;
+    height: max-content;
     overflow-y: auto;
 }
 
