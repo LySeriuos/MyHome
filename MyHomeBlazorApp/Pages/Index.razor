@@ -1,13 +1,9 @@
 ﻿@page "/"
 
-<!DOCTYPE html>
-<html lang="en">
+
+<!-- Bootstrap CSS CDN -->
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Home - Organize Your World</title>
-    <!-- Bootstrap CSS CDN -->
-    
     <style>
         /* Custom font import for Bootstrap */
         body {
@@ -16,7 +12,8 @@
         }
         /* Custom gradient for header */
         .header-gradient {
-            background: linear-gradient(to right, #4c51bf, #6b46c1); /* from-indigo-700 to-purple-800 */
+            /* background: linear-gradient(to right, #4c51bf, #6b46c1); /* from-indigo-700 to-purple-800 */ */
+            background-color: transparent;
         }
         /* Custom hover effect for feature cards */
         .feature-card:hover {
@@ -46,13 +43,26 @@
         .main {
             flex: 1;
             overflow-x: auto;
-            height: 50vh;
+            height: auto;
         }
 
-        
+        .nav-item
+        {
+            color: rgba(205,169,154,255);
+        }
+
+        a .text-primary{
+            color: rgba(149,180,205,255);           
+        }
+
+        .btn-light{
+            color: rgba(149,180,205,255);
+            /* background-color:rgba(149,180,205,255); */
+        }
+
         .hero-background {
-            background-image: url("/"); /* Placeholder image - Replace with your actual image */
-            background-size: contain;
+            background-image: url(/Images/freepik__upload__58405.png); /* Placeholder image - Replace with your actual image */
+            background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             position: relative; /* Needed for overlay positioning */
@@ -80,12 +90,12 @@
 
     <!-- Header Section -->
     <header class="header-gradient text-white shadow py-3 px-4 d-flex justify-content-between align-items-center rounded-bottom">
-        <h1 class="h3 fw-bolder mb-0 tracking-tight">My Home</h1>
+        <h1 class="h3 fw-bolder mb-0 tracking-tight nav-item"><a href="Account/Register" class="nav-link text-white fw-medium px-0">MyHome</a></h1>
         <nav>
             <ul class="nav gap-3 gap-md-4">
-                <li class="nav-item"><a href="#features" class="nav-link text-white fw-medium px-0">Features</a></li>
                 <li class="nav-item"><a href="#about" class="nav-link text-white fw-medium px-0">About</a></li>
-                <li class="nav-item"><a href="#" class="btn btn-light rounded-pill fw-semibold shadow-sm text-primary px-4 py-2">Login</a></li>
+                <li class="nav-item"><a href="Account/Register" class="nav-link text-white fw-medium px-0">Register</a></li>
+                <li class="nav-item"><a href="Account/Login" class="btn btn-light rounded-pill fw-semibold shadow-sm px-4 py-2">Login</a></li>
             </ul>
         </nav>
     </header>

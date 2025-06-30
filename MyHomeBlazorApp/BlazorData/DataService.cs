@@ -52,7 +52,7 @@ namespace MyHomeBlazorApp.BlazorData
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private UserManager<MyHomeBlazorAppUser> _userManager;
         private MyHomeBlazorAppContext _dbcontext;
-        private UserProfile _currentUserWithData;
+        private UserProfile _currentUserWithData = new();
         public UserProfile CurrentUserWithAllData => _currentUserWithData;
         public MyHomeBlazorAppUser CurrentAppUser;
         public List<DeviceProfile>? Devices => _currentUserWithData.GetAllDevices();

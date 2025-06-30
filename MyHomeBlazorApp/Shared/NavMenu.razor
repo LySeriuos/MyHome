@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="maindashboard">MyHomeBlazorApp</a>
+        <a class="navbar-brand" href="/">My Home</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -13,10 +13,11 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink id="nav-item" class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
+
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
@@ -40,16 +41,16 @@
                     </NavLink>
                 </div>
                 <AuthorizeView Roles="Admin" Context="innerContext">
-                    
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="userManagement">
+
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="userManagement">
                             <span class="oi oi-people" aria-hidden="true"></span> Users Management
-                    </NavLink>
-                </div>
+                        </NavLink>
+                    </div>
                 </AuthorizeView>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                        <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity?.Name
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
@@ -57,7 +58,7 @@
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
                         <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                            <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                         </button>
                     </form>
                 </div>
@@ -65,12 +66,12 @@
             <NotAuthorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+                        <span class="oi oi-arrow-circle-right" aria-hidden="true"></span> Register
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Login
                     </NavLink>
                 </div>
             </NotAuthorized>
@@ -104,5 +105,5 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
-    }    
+    }
 }
