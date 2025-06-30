@@ -15,15 +15,6 @@ main {
     color: #353334 !important;
 }
 
-.nav-link .nav-item {
-    color: aquamarine !important;
-    background-color: black !important;
-}
-
-.nav-link .nav-link {
-    color: #f8f8fa;
-    background-color: black;
-}
 
 .top-row {
     background-color: #f7f7f7;

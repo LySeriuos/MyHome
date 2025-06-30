@@ -1,5 +1,5 @@
 .body {
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .navbar-toggler {
@@ -12,7 +12,14 @@
 }
 
 .navbar-brand {
-    font-size: 1.1rem;
+    font-size: 1.7rem;
+    background-color: #fbfbfb;
+    color: #4c4a4b;
+    font-family: 'Copperplate Gothic';
+}
+
+.navbar {
+    background-color: #fbfbfb;
 }
 
 .sidebar {
@@ -135,8 +142,12 @@
 
     .nav-item ::deep a:hover {
         background-color: rgba(255,255,255,0.1);
-        color: white;
+        color: #93b1c9;
     }
+
+.navbar-dark .navbar-brand:hover {
+    color: #93b1c9;
+}
 
 @media (min-width: 641px) {
     .navbar-toggler {

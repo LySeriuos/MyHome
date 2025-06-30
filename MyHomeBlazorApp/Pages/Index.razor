@@ -61,12 +61,13 @@
         }
 
         .hero-background {
-            background-image: url(/Images/freepik__upload__58405.png); /* Placeholder image - Replace with your actual image */
+            background-image: url(/Images/d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png); /* Placeholder image - Replace with your actual image */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             position: relative; /* Needed for overlay positioning */
             color: #fff; /* Ensure text is white over dark background */
+            height: 55vh;
         }
 
             .hero-background::before {
@@ -76,8 +77,9 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+                background-color: rgba(0, 0, 0, 0.2); /* Dark overlay */
                 z-index: 1; /* Place overlay above background image */
+                height:50%;
             }
 
         .hero-content {
@@ -89,7 +91,7 @@
 <body class="min-vh-100 d-flex flex-column text-dark">
 
     <!-- Header Section -->
-    <header class="header-gradient text-white shadow py-3 px-4 d-flex justify-content-between align-items-center rounded-bottom">
+   @*  <header class="header-gradient text-white shadow py-3 px-4 d-flex justify-content-between align-items-center rounded-bottom">
         <h1 class="h3 fw-bolder mb-0 tracking-tight nav-item"><a href="Account/Register" class="nav-link text-white fw-medium px-0">MyHome</a></h1>
         <nav>
             <ul class="nav gap-3 gap-md-4">
@@ -98,9 +100,22 @@
                 <li class="nav-item"><a href="Account/Login" class="btn btn-light rounded-pill fw-semibold shadow-sm px-4 py-2">Login</a></li>
             </ul>
         </nav>
-    </header>
+    </header> *@
 
     <!-- Hero Section -->
+    <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-center text-center py-5 py-md-5 px-3 hero-background">
+        <section class="container col-lg-8 hero-content">
+           @*  <h2 class="display-4 display-md-1 fw-bolder text-primary lh-sm mb-4">
+                Simplify Your Life, <span class="d-none d-sm-inline"><br></span> Organize Your Home.
+            </h2>
+            <p class="lead fs-5 fs-md-4 text-secondary mb-4 col-md-10 mx-auto">
+                My Home is your ultimate digital assistant for managing everything in your household – effortlessly track device warranties, key information, and receipts.
+            </p> *@
+            @* <button class="btn btn-primary btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3">
+                Get Started Now
+            </button> *@
+        </section>
+    </main>
     <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-center text-center py-5 py-md-5 px-3 hero-background">
         <section class="container col-lg-8 hero-content">
             <h2 class="display-4 display-md-1 fw-bolder text-primary lh-sm mb-4">
