@@ -5,9 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="wwwroot\images\d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" />
     <Content Remove="wwwroot\images\freepik__upload__58405.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="wwwroot\images\d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" />
     <None Include="wwwroot\images\freepik__upload__58405.png" />
     <None Include="wwwroot\images\user-svgrepo-com.png" />
   </ItemGroup>

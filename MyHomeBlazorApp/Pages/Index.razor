@@ -12,8 +12,7 @@
         }
         /* Custom gradient for header */
         .header-gradient {
-            /* background: linear-gradient(to right, #4c51bf, #6b46c1); /* from-indigo-700 to-purple-800 */ */
-            background-color: transparent;
+            /* background: linear-gradient(to right, #4c51bf, #6b46c1); /* from-indigo-700 to-purple-800 */ */ background-color: transparent;
         }
         /* Custom hover effect for feature cards */
         .feature-card:hover {
@@ -46,16 +45,27 @@
             height: auto;
         }
 
-        .nav-item
-        {
+        .nav-item {
             color: rgba(205,169,154,255);
         }
 
-        a .text-primary{
-            color: rgba(149,180,205,255);           
+        a .text-primary {
+            color: #95b4c6;
+            
         }
 
-        .btn-light{
+        .hero-text{
+            -webkit-text-stroke: 2px #353535;
+            font-variation-settings: "wght" 900, "ital" 1;
+            font-size: 5rem;
+            text-align: center;
+            color: #95b4c6;
+            font-family: "Copperplate Gothic", sans-serif;
+            /* text-shadow: 5px 5px 5px #07bccc, 10px 10px 0px #e601c0, 10px 20px 0px #e9019a, 25px 25px 0px #f40468, 45px 45px 10px #482896; */
+            cursor: pointer;
+
+        }
+        .btn-light {
             color: rgba(149,180,205,255);
             /* background-color:rgba(149,180,205,255); */
         }
@@ -77,21 +87,27 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(0, 0, 0, 0.2); /* Dark overlay */
+                background-color: rgba(0, 0, 0, 0); /* Dark overlay */
                 z-index: 1; /* Place overlay above background image */
-                height:50%;
+                /* height: 5%; */
             }
 
         .hero-content {
             position: relative;
             z-index: 2; /* Place content above overlay */
+            
+        }
+
+        .text-primary
+        {
+            
         }
     </style>
 </head>
 <body class="min-vh-100 d-flex flex-column text-dark">
 
     <!-- Header Section -->
-   @*  <header class="header-gradient text-white shadow py-3 px-4 d-flex justify-content-between align-items-center rounded-bottom">
+    @*  <header class="header-gradient text-white shadow py-3 px-4 d-flex justify-content-between align-items-center rounded-bottom">
         <h1 class="h3 fw-bolder mb-0 tracking-tight nav-item"><a href="Account/Register" class="nav-link text-white fw-medium px-0">MyHome</a></h1>
         <nav>
             <ul class="nav gap-3 gap-md-4">
@@ -103,20 +119,21 @@
     </header> *@
 
     <!-- Hero Section -->
-    <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-center text-center py-5 py-md-5 px-3 hero-background">
+    <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-end text-center py-5 py-md-5 px-3 hero-background">
         <section class="container col-lg-8 hero-content">
-           @*  <h2 class="display-4 display-md-1 fw-bolder text-primary lh-sm mb-4">
+            <h2 class="display-4 display-md-1 fw-bolder hero-text lh-sm mb-4">
                 Simplify Your Life, <span class="d-none d-sm-inline"><br></span> Organize Your Home.
             </h2>
-            <p class="lead fs-5 fs-md-4 text-secondary mb-4 col-md-10 mx-auto">
+
+            <p class="lead fs-5 fs-md-4 text-secondary mb-4 col-md-10 mx-auto justify-content-end">
                 My Home is your ultimate digital assistant for managing everything in your household – effortlessly track device warranties, key information, and receipts.
-            </p> *@
-            @* <button class="btn btn-primary btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3">
+            </p>
+            <button class="btn btn-primary btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3 justify-content-end">
                 Get Started Now
-            </button> *@
+            </button>
         </section>
     </main>
-    <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-center text-center py-5 py-md-5 px-3 hero-background">
+   @*  <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-end text-center py-5 py-md-5 px-3 hero-background">
         <section class="container col-lg-8 hero-content">
             <h2 class="display-4 display-md-1 fw-bolder text-primary lh-sm mb-4">
                 Simplify Your Life, <span class="d-none d-sm-inline"><br></span> Organize Your Home.
@@ -128,7 +145,7 @@
                 Get Started Now
             </button>
         </section>
-    </main>
+    </main> *@
 
     <!-- Features Section -->
     <section id="features" class="py-5 bg-white shadow-sm rounded-top">
