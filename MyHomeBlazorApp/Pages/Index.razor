@@ -12,13 +12,14 @@
         }
         /* Custom gradient for header */
         .header-gradient {
-            /* background: linear-gradient(to right, #4c51bf, #6b46c1); /* from-indigo-700 to-purple-800 */ */ background-color: transparent;
+            /* background: linear-gradient(to right, #4c51bf, #6b46c1); /* from-indigo-700 to-purple-800 */ 
+            background-color: transparent;
         }
         /* Custom hover effect for feature cards */
-        .feature-card:hover {
+        /* .feature-card:hover {
             transform: scale(1.05);
             transition: transform 0.3s ease-in-out;
-        }
+        } */
         /* Button hover/focus effects */
         .btn-hover-scale:hover {
             transform: scale(1.05);
@@ -31,6 +32,10 @@
 
         .btn-white-ring:focus {
             box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.5); /* Custom white focus ring */
+        }
+
+        .btn-hero:hover{
+            color: #d4bdb2;
         }
 
         main {
@@ -54,13 +59,20 @@
             
         }
 
+        .btn-hero
+        {
+            color: #2d2a2b;
+            background-color: #cfd9e1;
+            border-color: #1861ac;
+        }
+
         .hero-text{
-            -webkit-text-stroke: 2px #353535;
+            /* -webkit-text-stroke: 2px #353535; */
             font-variation-settings: "wght" 900, "ital" 1;
             font-size: 5rem;
             text-align: center;
-            color: #95b4c6;
-            font-family: "Copperplate Gothic", sans-serif;
+            color: #403e40;
+            font-family: "Showbiz Retro Superhero Font", sans-serif;
             /* text-shadow: 5px 5px 5px #07bccc, 10px 10px 0px #e601c0, 10px 20px 0px #e9019a, 25px 25px 0px #f40468, 45px 45px 10px #482896; */
             cursor: pointer;
 
@@ -87,7 +99,7 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(0, 0, 0, 0); /* Dark overlay */
+                background-color: rgba(255, 255, 255, 0.8); /* Dark overlay */
                 z-index: 1; /* Place overlay above background image */
                 /* height: 5%; */
             }
@@ -98,9 +110,10 @@
             
         }
 
-        .text-primary
+        .text-brand
         {
-            
+            font-family: 'Copperplate Gothic';
+            font-weight: 100;
         }
     </style>
 </head>
@@ -128,7 +141,7 @@
             <p class="lead fs-5 fs-md-4 text-secondary mb-4 col-md-10 mx-auto justify-content-end">
                 My Home is your ultimate digital assistant for managing everything in your household – effortlessly track device warranties, key information, and receipts.
             </p>
-            <button class="btn btn-primary btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3 justify-content-end">
+            <button class="btn btn-hero btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3 justify-content-end">
                 Get Started Now
             </button>
         </section>
@@ -150,7 +163,7 @@
     <!-- Features Section -->
     <section id="features" class="py-5 bg-white shadow-sm rounded-top">
         <div class="container text-center px-4">
-            <h3 class="h2 fw-bold text-dark mb-5">Key Features at a Glance</h3>
+            <h3 class="h2 fw-bold text-dark mb-5"><span class="text-brand">My Home</span> Key Features</h3>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <!-- Feature 1: Gadget Management -->
                 <div class="col">
