@@ -16,9 +16,10 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @* @inject IEmailSender EmailSender *@
-<PageTitle>Register</PageTitle>
+@* <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
+<h1 class"text">Register</h1>
+
 
 <div class="row">
     <div class="col-md-4">
@@ -58,7 +59,53 @@
             <ExternalLoginPicker />
         </section>
     </div>
+</div> *@
+@* <main class="col-12">
+    <img src="~/images/My Home App - Primary Logo.png"/> *@
+<div class="row d-flex justify-content-center">
+    <div class="col-4">
+        <Card Class="mb-4" Style="width:30rem;">
+            <img class="rounded-top" src="/images/d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" alt="placeholder" />
+            <CardBody>
+                <CardTitle Class="text-right"><h2>Sign Up</h2></CardTitle>
+                <CardSubTitle Class="mb-2 text-muted text-right">Create an account or <span><a href="Account/Login">Sign In</a></span></CardSubTitle>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <StatusMessage Message="@Message" />
+                        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary class="text-danger" role="alert" />
+                            <div class="form-floating mb-3">
+                                <InputText @bind-Value="Input.UserDisplayName" class="form-control" autocomplete="userdisplayname" aria-required="true" placeholder="John" />
+                                <label for="email">User Name</label>
+                                <ValidationMessage For="() => Input.UserDisplayName" class="text-danger" />
+                            </div>
+                            <div class="form-floating mb-3">
+                                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                                <label for="email">Email</label>
+                                <ValidationMessage For="() => Input.Email" class="text-danger" />
+                            </div>
+                            <div class="form-floating mb-3">
+                                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                <label for="password">Password</label>
+                                <ValidationMessage For="() => Input.Password" class="text-danger" />
+                            </div>
+                            <div class="form-floating mb-3">
+                                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                <label for="confirm-password">Confirm Password</label>
+                                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+                            </div>
+                            <button type="submit" class="w-50 d-flex justify-content-center btn btn-lg rounded-pill btn-primary">Register</button>
+                        </EditForm>
+                    </div>
+                </div>
+                @* <Button Color="ButtonColor.Primary" To="#" Type="ButtonType.Link">Go somewhere</Button> *@
+            </CardBody>
+        </Card>
+    </div>
 </div>
+@* </main> *@
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
