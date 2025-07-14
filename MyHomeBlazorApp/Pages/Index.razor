@@ -1,5 +1,6 @@
 ﻿@page "/"
-
+@using Microsoft.AspNetCore.Http.Extensions
+@inject NavigationManager _navManager
 
 <!-- Bootstrap CSS CDN -->
 <body class="min-vh-100 d-flex flex-column text-dark">
@@ -26,8 +27,8 @@
             <p class="lead fs-5 fs-md-4 text-secondary mb-4 col-md-10 mx-auto justify-content-end">
                 My Home is your ultimate digital assistant for managing everything in your household – effortlessly track device warranties, key information, and receipts.
             </p>
-            <button class="btn btn-hero btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3 justify-content-end">
-                Get Started Now
+            <button class="btn btn-hero btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3 justify-content-end" @onclick='() => _navManager.NavigateTo("Account/Register")'>
+                Sign Up Now
             </button>
         </section>
     </main>
