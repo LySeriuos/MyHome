@@ -62,13 +62,20 @@
 </div> *@
 @* <main class="col-12">
     <img src="~/images/My Home App - Primary Logo.png"/> *@
+    <style>
+    .btn-main-style {
+        color: #636466;
+        background-color: #e3e4ed;
+        border-color: #636466;
+    }
+    </style>
 <div class="row d-flex justify-content-center">
     <div class="col-md-4">
         <Card TextAlignment="Alignment.Center" Class="mb-4" Style="width:100%; max-width:30rem;">
             <img class="rounded-top" src="/images/d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" alt="placeholder" />
             <CardBody>
-                <CardTitle Class="text-right"><h2>Sign Up</h2></CardTitle>
-                <CardSubTitle Class="mb-2 text-muted text-right">Create an account or <span><a href="Account/Login">Sign In</a></span></CardSubTitle>                
+                <CardTitle Class="text-left"><h2>Sign Up</h2></CardTitle>
+                <CardSubTitle Class="mb-2 text-muted text-left">Create an account or <span><a href="Account/Login">Sign In</a></span></CardSubTitle>                
                         <StatusMessage Message="@Message" />
                         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
                             <DataAnnotationsValidator />
@@ -93,7 +100,7 @@
                                 <label for="confirm-password">Confirm Password</label>
                                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
                             </div>
-                            <button type="submit" class="w-50 btn btn-lg rounded-pill btn-primary">Register</button>
+                    <button type="submit" class="w-50 btn btn-lg rounded-pill btn-main-style">Register</button>
                         </EditForm>
                 @* <Button Color="ButtonColor.Primary" To="#" Type="ButtonType.Link">Go somewhere</Button> *@
             </CardBody>
