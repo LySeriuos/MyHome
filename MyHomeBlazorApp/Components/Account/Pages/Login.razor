@@ -16,14 +16,31 @@
 @* <PageTitle>Log in</PageTitle> *@
 
 @* <h1>Log in</h1> *@
-<div class="row">
-    <div class="col-md-4 d-flex justify-content-center">
+
+<style>
+    .log-reg-text-posit
+    {
+        text-align:left;
+    }
+
+    .btn-main-style {
+        color: #636466;
+        background-color: #e3e4ed;
+        border-color: #636466;
+    }
+    .link-color
+    {
+        color: #9cb7c6;
+    }
+</style>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4">
         <section>
             <Card TextAlignment="Alignment.Center" Class="mb-4" Style="width:100%; max-width:30rem;">
                 <img class="rounded-top" src="/images/d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" alt="placeholder" />
                 <CardBody>
-                    <CardTitle Class="text-left"><h2>Log In</h2></CardTitle>
-                    <CardSubTitle Class="mb-2 text-muted text-left">Log In or <span><a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a></span></CardSubTitle>
+                    <CardTitle Class="log-reg-text-posi"><h2>Log In</h2></CardTitle>
+                    <CardSubTitle Class="mb-4 text-muted log-reg-text-posi">Log In or <span><a class="link-color" href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a></span></CardSubTitle>
                     <StatusMessage Message="@errorMessage" />
                     <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                         <DataAnnotationsValidator />
@@ -40,21 +57,21 @@
                             <label for="password" class="form-label">Password</label>
                             <ValidationMessage For="() => Input.Password" class="text-danger" />
                         </div>
-                        <div class="checkbox mb-3">
+                        <div class="checkbox mb-3 align-text-left">
                             <label class="form-label">
                                 <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
                                 Remember me
                             </label>
                         </div>
                         <div>
-                            <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                            <button type="submit" class="w-50 btn btn-lg rounded-pill btn-main-style mb-3">Log in</button>
                         </div>
                         <div>
                             <p>
-                                <a href="Account/ForgotPassword">Forgot your password?</a>
+                                <a class="link-color" href="Account/ForgotPassword">Forgot your password?</a>
                             </p>                            
                             <p>
-                                <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+                                <a class="link-color" href="Account/ResendEmailConfirmation">Resend email confirmation</a>
                             </p>
                         </div>
                     </EditForm>
