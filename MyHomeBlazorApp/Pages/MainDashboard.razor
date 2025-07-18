@@ -45,6 +45,13 @@
         border: 1px solid;
         text-overflow: ellipsis;
         }
+
+        .card-outline-style
+        {
+            outline-width: 5px;
+            outline-style: double;
+            outline-color: darkgoldenrod;
+        }
     </style>
 </head>
 <PageTitle>Main Dashboard</PageTitle>
@@ -52,7 +59,7 @@
 <body>
     <div class="content">
         <div class="container-fluid">
-            <div class="row">                
+            <div class="row d-flex justify-content-center text-bg-dark">                
                 <CardComponent IconStyle="bi bi-person-bounding-box" IconPath="@userIconPath" ListItems="@userItemsList" LinkTo="Account/Manage" LinkName="Go To User Account Details">
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUserWithAllData.UserName!</h3></CardTitle>
                 </CardComponent>
@@ -84,6 +91,7 @@
     private List<string> _realEstateItemsList = new List<string>();
     private List<string> GetExpiringDevice()
     {
+        _warrantyItemsList = new();
         string dateInput="No expiring warranties!";
         string deviceName = string.Empty;
         DeviceProfile firstExpiringDevice = DataService.FirstExpiringWarranty();
@@ -99,6 +107,7 @@
 
     private List<string> GetLastAddedDevice()
     {
+        _deviceItemsList = new();
         DeviceProfile? lastDevice = DataService.LastAddedDevice();
         string deviceID = "0"; 
         if(lastDevice != null )
@@ -118,6 +127,7 @@
 
     private List<string> GetLastAddedRealEstate()
     {
+        _realEstateItemsList = new();
         RealEstate lastRealEstate = DataService.LastAddedRealEstate();
         string lastRealEstateId = lastRealEstate.RealEstateID.ToString();
         _realEstateItemsList.Add("Last added Real Estate:");

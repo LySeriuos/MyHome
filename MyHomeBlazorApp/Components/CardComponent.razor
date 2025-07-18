@@ -1,7 +1,15 @@
 ﻿@using BlazorBootstrap
 @inject BlazorData.DataService DataService
 
-<Card Style="width:18rem; margin-right:50px; margin-top:50px;">
+<style>
+    .card-outline-style {
+        outline-width: 5px;
+        outline-style: double;
+        outline-color: darkgoldenrod;
+    }
+</style>
+
+<Card Style="width:18rem; margin-right:50px; margin-top:50px;" Class="card-outline-style">
     <svg xmlns="http://www.w3.org/2000/svg" style="margin:auto" width="150px" height="150px" fill="black" class="@IconStyle" viewBox="0 0 16 16">
         <path d="@IconPath" />
     </svg>
