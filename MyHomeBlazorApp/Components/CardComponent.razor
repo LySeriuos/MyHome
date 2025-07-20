@@ -5,12 +5,16 @@
     .card-outline-style {
         outline-width: 5px;
         outline-style: double;
-        outline-color: darkgoldenrod;
+        outline-color: #9bb3c4;
     }
+    .card-style {
+        background: #ebecf1;
+    }
+    
 </style>
 
-<Card Style="width:18rem; margin-right:50px; margin-top:50px;" Class="card-outline-style">
-    <svg xmlns="http://www.w3.org/2000/svg" style="margin:auto" width="150px" height="150px" fill="black" class="@IconStyle" viewBox="0 0 16 16">
+<Card Style="width:18rem; margin-right:50px; margin-top:50px;" Class="card-outline-style card-style">
+    <svg xmlns="http://www.w3.org/2000/svg" style="" width="100px" height="100px" fill="#e2c8c0" class="@IconStyle  mx-auto my-3 d-flex align-items-center" viewBox="0 0 16 16">
         <path d="@IconPath" />
     </svg>
 
@@ -20,14 +24,14 @@
         <CardTitle>@Title</CardTitle>
         <CardTitle>@ChildContent</CardTitle>
         <CardText>@Text</CardText>
-    </CardBody>
+        
     <ul class="list-group list-group-flush">
         @foreach (var item in ListItems)
         {
             <li class="list-group-item">@item</li>
         }
     </ul>
-    <CardBody>
+   
         <CardLink To="@LinkTo">@LinkName</CardLink>
 
     </CardBody>

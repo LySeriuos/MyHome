@@ -48,9 +48,9 @@
 
         .card-outline-style
         {
-            outline-width: 5px;
-            outline-style: double;
-            outline-color: darkgoldenrod;
+        outline-width: 5px;
+        outline-style: double;
+        outline-color: darkgoldenrod;
         }
     </style>
 </head>
@@ -59,11 +59,70 @@
 <body>
     <div class="content">
         <div class="container-fluid">
+            <CardGroup>
+                <Card Class="mb-4"  Style="width:18rem;">                    
+                    <svg xmlns="http://www.w3.org/2000/svg" style="" width="100px" height="100px" fill="#e2c8c0" class=" mx-auto my-3 d-flex align-items-center" viewBox="0 0 16 16">
+                        <path d="@userIconPath" />
+                    </svg>
+                    <CardBody>
+                        <CardTitle>Welcome Back, @DataService.CurrentUserWithAllData.UserName!</CardTitle>
+                        <CardText>Date Today: @DateTime.UtcNow.ToLongDateString()</CardText>
+                        <CardLink To="Account/Manage">Go To User Account Details</CardLink>
+                    </CardBody>
+                </Card>
+                <Card Class="mb-4" Style="width:18rem;">
+                    <img src="/images/placeholder.png" alt="placeholder" />
+                    <CardBody>
+                        <CardTitle>Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</CardTitle>
+                        <CardText>Last Added Real Estate:</CardText>
+                        <CardText>
+                            ID: @DataService.LastAddedRealEstate().RealEstateID | 
+                            @DataService.LastAddedRealEstate().RealEstateName
+                        </CardText>
+                        <CardLink To="/details/1">Go To Real Estates Details </CardLink>
+                    </CardBody>
+                </Card>
+                <Card Class="mb-4" Style="width:18rem;">
+                    <img src="/images/placeholder.png" alt="placeholder" />
+                    <CardBody>
+                        <CardTitle>Devices: @DataService.Devices?.Count</CardTitle>
+                        <CardText>Last Added Device:</CardText>
+                        <CardText Class="">ID:
+                            @DataService.LastAddedDevice().DeviceID | 
+                            @DataService.LastAddedDevice().DeviceName</CardText>
+                        <CardLink To="/details/2">Go To Devices Details</CardLink>
+                    </CardBody>
+                </Card>
+                @if (GetExpiringDevice != null)
+                {
+                    <Card Class="mb-4" Style="width:18rem;">
+                        <img src="/images/placeholder.png" alt="placeholder" />
+                    <CardBody>
+                            <CardTitle>Warranties</CardTitle>
+                        <CardText>Last Added Device:</CardText>
+                        <CardText Class="">
+                            @DataService.FirstExpiringWarranty().DeviceName | 
+                            @DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString()
+                            
+                        </CardText>
+                            <CardLink To="/details/3">Go To Warranties Details</CardLink>
+                    </CardBody>
+                </Card>
+                }
+                else
+                {
+                    DataService.CurrentUserWithAllData.GetAllDevices().Last();
+                }
+            </CardGroup>
+        </div>
+    </div>
+    <div class="content">
+        <div class="container-fluid">
             <div class="row d-flex justify-content-center text-bg-dark">                
                 <CardComponent IconStyle="bi bi-person-bounding-box" IconPath="@userIconPath" ListItems="@userItemsList" LinkTo="Account/Manage" LinkName="Go To User Account Details">
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUserWithAllData.UserName!</h3></CardTitle>
                 </CardComponent>
-                <CardComponent ListItems="@GetLastAddedRealEstate()" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" LinkTo="/details/1" LinkName="Go To Real Estates Details">
+                <CardComponent Text="Last Added Real Estate:" ListItems="@GetLastAddedRealEstate()" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" LinkTo="/details/1" LinkName="Go To Real Estates Details">
                     <CardTitle><h3>Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</h3></CardTitle>
                 </CardComponent>
                 <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkTo="/details/2" LinkName="Go To Devices Details">
@@ -73,6 +132,7 @@
                 {
                     <CardComponent LinkTo="/details/3" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
                         <CardTitle><h3>Warranties</h3></CardTitle>
+                        
                     </CardComponent>
                 }
                 else
@@ -137,7 +197,7 @@
 
     List<string> userItemsList = new List<string>()
     {
-        $"Today is: {DateTime.UtcNow.ToLongDateString()}"
+        $"Date Today: {DateTime.UtcNow.ToLongDateString()}"
     };
 
     // protected override void OnAfterRender(bool firstRender)
