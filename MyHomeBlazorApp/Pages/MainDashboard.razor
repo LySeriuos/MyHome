@@ -52,6 +52,37 @@
         outline-style: double;
         outline-color: darkgoldenrod;
         }
+
+        .card-style{
+            display:flex;
+            justify-content: center;
+            background-color: #eeeff4;
+            width: 18rem;
+            margin-right: 50px;
+            margin-top: 50px;
+        }
+        .svg-icon-style
+        {
+            width : 100px;
+            height : 100px;
+            display: flex;
+            margin-right: auto;    
+            margin-left: auto;
+            align-items: center;
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .card-footer
+        {
+            width:100%;
+            background-color:none;
+            border-top: none;
+            justify-content:left;
+            padding-top:1.5rem;
+            padding-bottom: 1.5rem;
+            text-align:left;
+        }
     </style>
 </head>
 <PageTitle>Main Dashboard</PageTitle>
@@ -59,9 +90,9 @@
 <body>
     <div class="content">
         <div class="container-fluid">
-            <CardGroup>
-                <Card Class="mb-4"  Style="width:18rem;">                    
-                    <svg xmlns="http://www.w3.org/2000/svg" style="" width="100px" height="100px" fill="#e2c8c0" class=" mx-auto my-3 d-flex align-items-center" viewBox="0 0 16 16">
+            <div class="row d-flex justify-content-center text-bg-dark">
+                <Card Class="mb-4 card-style">                    
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
                         <path d="@userIconPath" />
                     </svg>
                     <CardBody>
@@ -70,8 +101,10 @@
                         <CardLink To="Account/Manage">Go To User Account Details</CardLink>
                     </CardBody>
                 </Card>
-                <Card Class="mb-4" Style="width:18rem;">
-                    <img src="/images/placeholder.png" alt="placeholder" />
+                <Card Class="mb-4 card-style">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                        <path d="@realEstateIconPath" />
+                    </svg>
                     <CardBody>
                         <CardTitle>Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</CardTitle>
                         <CardText>Last Added Real Estate:</CardText>
@@ -79,11 +112,15 @@
                             ID: @DataService.LastAddedRealEstate().RealEstateID | 
                             @DataService.LastAddedRealEstate().RealEstateName
                         </CardText>
+                        <CardFooter Class="">
                         <CardLink To="/details/1">Go To Real Estates Details </CardLink>
+                        </CardFooter>
                     </CardBody>
                 </Card>
-                <Card Class="mb-4" Style="width:18rem;">
-                    <img src="/images/placeholder.png" alt="placeholder" />
+                <Card Class="mb-4 card-style">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                        <path d="@deviceIconPath" />
+                    </svg>
                     <CardBody>
                         <CardTitle>Devices: @DataService.Devices?.Count</CardTitle>
                         <CardText>Last Added Device:</CardText>
@@ -95,8 +132,10 @@
                 </Card>
                 @if (GetExpiringDevice != null)
                 {
-                    <Card Class="mb-4" Style="width:18rem;">
-                        <img src="/images/placeholder.png" alt="placeholder" />
+                    <Card Class="mb-4 card-style" Style="width:18rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                            <path d="@warrantyIconPath" />
+                        </svg>
                     <CardBody>
                             <CardTitle>Warranties</CardTitle>
                         <CardText>Last Added Device:</CardText>
@@ -113,7 +152,7 @@
                 {
                     DataService.CurrentUserWithAllData.GetAllDevices().Last();
                 }
-            </CardGroup>
+            </div>
         </div>
     </div>
     <div class="content">
