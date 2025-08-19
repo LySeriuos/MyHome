@@ -12,76 +12,74 @@
 <head>
     <style>
         .grid-container {
-        display: flex;
-        grid-template-columns: auto auto auto;
-        background-color: #f7f9fc;
-        padding: 10px;
-        flex-direction: row;
-        flex-wrap: wrap;
+            display: flex;
+            grid-template-columns: auto auto auto;
+            background-color: #f7f9fc;
+            padding: 10px;
+            flex-direction: row;
+            flex-wrap: wrap;
         }
 
         .grid-item {
-        background-color: rgba(255, 255, 255, 0.8);
-        border: 1px solid rgba(0, 0, 0, 0.8);
-        padding: 20px;
-        margin: 20px;
-        font-size: 30px;
-        text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            margin: 20px;
+            font-size: 30px;
+            text-align: center;
         }
 
         .body {
-        background-color: #ced4da;
-        color: #6c757d;
+            background-color: #ced4da;
+            color: #6c757d;
         }
 
         .th {
-        column-width: 100px;
+            column-width: 100px;
         }
 
         .a {
-        width: 100px;
-        white-space: nowrap;
-        overflow: hidden;
-        border: 1px solid;
-        text-overflow: ellipsis;
+            width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 1px solid;
+            text-overflow: ellipsis;
         }
 
-        .card-outline-style
-        {
-        outline-width: 5px;
-        outline-style: double;
-        outline-color: darkgoldenrod;
+        .card-outline-style {
+            outline-width: 5px;
+            outline-style: double;
+            outline-color: darkgoldenrod;
         }
 
-        .card-style{
-            display:flex;
+        .card-style {
+            display: flex;
             justify-content: center;
             background-color: #eeeff4;
             width: 18rem;
             margin-right: 50px;
             margin-top: 50px;
         }
-        .svg-icon-style
-        {
-            width : 100px;
-            height : 100px;
+
+        .svg-icon-style {
+            width: 100px;
+            height: 100px;
             display: flex;
-            margin-right: auto;    
+            margin-right: auto;
             margin-left: auto;
             align-items: center;
             margin-top: 3rem;
-            margin-bottom: 3rem;
+            margin-bottom: 1.5rem;
         }
 
-        .card-footer
-        {
-            width:100%;
-            background-color:none;
+        .card-footer {
+            width: 100%;
+            background-color: none;
             border-top: none;
-            justify-content:left;
-            padding-top:1.5rem;
+            justify-content: left;
+            padding-top: 1.5rem;
             padding-bottom: 1.5rem;
-            text-align:left;
+            text-align: left;
         }
     </style>
 </head>
@@ -91,13 +89,18 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row d-flex justify-content-center text-bg-dark">
-                <Card Class="mb-4 card-style">                    
+                <Card Class="mb-4 card-style">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
                         <path d="@userIconPath" />
                     </svg>
                     <CardBody>
-                        <CardTitle>Welcome Back, @DataService.CurrentUserWithAllData.UserName!</CardTitle>
-                        <CardText>Date Today: @DateTime.UtcNow.ToLongDateString()</CardText>
+                        <CardTitle class="fw-bolder">Welcome Back, @DataService.CurrentUserWithAllData.UserName!</CardTitle>
+                        <CardText>Date Today: </CardText>
+                        <CardText>@DateTime.UtcNow.ToLongDateString()</CardText>
+                    </CardBody>
+                  @*   <ul>
+                    </ul> *@
+                    <CardBody>
                         <CardLink To="Account/Manage">Go To User Account Details</CardLink>
                     </CardBody>
                 </Card>
@@ -106,15 +109,15 @@
                         <path d="@realEstateIconPath" />
                     </svg>
                     <CardBody>
-                        <CardTitle>Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</CardTitle>
+                        <CardTitle class="fw-bolder">Total Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</CardTitle>
                         <CardText>Last Added Real Estate:</CardText>
                         <CardText>
-                            ID: @DataService.LastAddedRealEstate().RealEstateID | 
+                            ID: @DataService.LastAddedRealEstate().RealEstateID |
                             @DataService.LastAddedRealEstate().RealEstateName
                         </CardText>
-                        <CardFooter Class="">
+                    </CardBody>
+                    <CardBody>
                         <CardLink To="/details/1">Go To Real Estates Details </CardLink>
-                        </CardFooter>
                     </CardBody>
                 </Card>
                 <Card Class="mb-4 card-style">
@@ -122,11 +125,15 @@
                         <path d="@deviceIconPath" />
                     </svg>
                     <CardBody>
-                        <CardTitle>Devices: @DataService.Devices?.Count</CardTitle>
+                        <CardTitle class="fw-bolder">Total Devices: @DataService.Devices?.Count</CardTitle>
                         <CardText>Last Added Device:</CardText>
-                        <CardText Class="">ID:
-                            @DataService.LastAddedDevice().DeviceID | 
-                            @DataService.LastAddedDevice().DeviceName</CardText>
+                        <CardText Class="">
+                            ID:
+                            @DataService.LastAddedDevice().DeviceID |
+                            @DataService.LastAddedDevice().DeviceName
+                        </CardText>
+                    </CardBody>
+                    <CardBody>
                         <CardLink To="/details/2">Go To Devices Details</CardLink>
                     </CardBody>
                 </Card>
@@ -136,17 +143,18 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
                             <path d="@warrantyIconPath" />
                         </svg>
-                    <CardBody>
-                            <CardTitle>Warranties</CardTitle>
-                        <CardText>Last Added Device:</CardText>
-                        <CardText Class="">
-                            @DataService.FirstExpiringWarranty().DeviceName | 
-                            @DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString()
-                            
-                        </CardText>
+                        <CardBody>
+                            <CardTitle class="fw-bolder">Warranties</CardTitle>
+                            <CardText>Last Added Device:</CardText>
+                            <CardText Class="">
+                                @DataService.FirstExpiringWarranty().DeviceName |
+                                @DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString()
+                            </CardText>
+                        </CardBody>
+                        <CardBody>
                             <CardLink To="/details/3">Go To Warranties Details</CardLink>
-                    </CardBody>
-                </Card>
+                        </CardBody>
+                    </Card>
                 }
                 else
                 {
@@ -155,9 +163,9 @@
             </div>
         </div>
     </div>
-    <div class="content">
+    @* <div class="content">
         <div class="container-fluid">
-            <div class="row d-flex justify-content-center text-bg-dark">                
+            <div class="row d-flex justify-content-center text-bg-dark">
                 <CardComponent IconStyle="bi bi-person-bounding-box" IconPath="@userIconPath" ListItems="@userItemsList" LinkTo="Account/Manage" LinkName="Go To User Account Details">
                     <CardTitle><h3>Welcome Back, @DataService.CurrentUserWithAllData.UserName!</h3></CardTitle>
                 </CardComponent>
@@ -171,7 +179,7 @@
                 {
                     <CardComponent LinkTo="/details/3" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
                         <CardTitle><h3>Warranties</h3></CardTitle>
-                        
+
                     </CardComponent>
                 }
                 else
@@ -181,7 +189,7 @@
             </div>
         </div>
     </div>
-</body>
+</body> *@
 </html>
 @code {
     private DeviceProfile? _expiringDevice { get; set; }
@@ -191,7 +199,7 @@
     private List<string> GetExpiringDevice()
     {
         _warrantyItemsList = new();
-        string dateInput="No expiring warranties!";
+        string dateInput = "No expiring warranties!";
         string deviceName = string.Empty;
         DeviceProfile firstExpiringDevice = DataService.FirstExpiringWarranty();
         if (firstExpiringDevice.DeviceID != 0)
@@ -208,8 +216,8 @@
     {
         _deviceItemsList = new();
         DeviceProfile? lastDevice = DataService.LastAddedDevice();
-        string deviceID = "0"; 
-        if(lastDevice != null )
+        string deviceID = "0";
+        if (lastDevice != null)
         {
             deviceID = lastDevice.DeviceID.ToString();
         }
@@ -247,7 +255,7 @@
 
     // protected override void OnInitialized()
     // {
-    //     _expiringDevice = DataService.FirstExpiringWarranty(); 
+    //     _expiringDevice = DataService.FirstExpiringWarranty();
     // }
 
     string userIconPath = "M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0";
