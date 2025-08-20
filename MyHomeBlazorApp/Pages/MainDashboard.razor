@@ -81,6 +81,22 @@
             padding-bottom: 1.5rem;
             text-align: left;
         }
+
+        .card-btn {
+            color: #2d2a2b;
+            background-color: #cfd9e1;
+            border-color: #1861ac;
+            border-radius: 1.3rem;
+        }
+
+        .card-btn:hover
+        {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                background: #e2c8c0;
+                color: #2d2a2b;
+        }
     </style>
 </head>
 <PageTitle>Main Dashboard</PageTitle>
@@ -100,8 +116,8 @@
                     </CardBody>
                   @*   <ul>
                     </ul> *@
-                    <CardBody>
-                        <CardLink To="Account/Manage">Go To User Account Details</CardLink>
+                    <CardBody Class="text-center">
+                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="Account/Manage">User Account</CardLink>
                     </CardBody>
                 </Card>
                 <Card Class="mb-4 card-style">
@@ -116,8 +132,8 @@
                             @DataService.LastAddedRealEstate().RealEstateName
                         </CardText>
                     </CardBody>
-                    <CardBody>
-                        <CardLink To="/details/1">Go To Real Estates Details </CardLink>
+                    <CardBody Class="text-center">
+                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/1">All RealEstates</CardLink>
                     </CardBody>
                 </Card>
                 <Card Class="mb-4 card-style">
@@ -133,8 +149,8 @@
                             @DataService.LastAddedDevice().DeviceName
                         </CardText>
                     </CardBody>
-                    <CardBody>
-                        <CardLink To="/details/2">Go To Devices Details</CardLink>
+                    <CardBody Class="text-center">
+                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/2">All Devices</CardLink>
                     </CardBody>
                 </Card>
                 @if (GetExpiringDevice != null)
@@ -145,14 +161,14 @@
                         </svg>
                         <CardBody>
                             <CardTitle class="fw-bolder">Warranties</CardTitle>
-                            <CardText>Last Added Device:</CardText>
+                            <CardText>Expires soonest:</CardText>
                             <CardText Class="">
                                 @DataService.FirstExpiringWarranty().DeviceName |
                                 @DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString()
                             </CardText>
                         </CardBody>
-                        <CardBody>
-                            <CardLink To="/details/3">Go To Warranties Details</CardLink>
+                        <CardBody Class="text-center">
+                            <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/3">All Warranties</CardLink>
                         </CardBody>
                     </Card>
                 }
@@ -188,8 +204,8 @@
                 }
             </div>
         </div>
-    </div>
-</body> *@
+    </div>*@
+</body> 
 </html>
 @code {
     private DeviceProfile? _expiringDevice { get; set; }
