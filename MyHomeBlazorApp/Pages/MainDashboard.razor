@@ -179,32 +179,7 @@
             </div>
         </div>
     </div>
-    @* <div class="content">
-        <div class="container-fluid">
-            <div class="row d-flex justify-content-center text-bg-dark">
-                <CardComponent IconStyle="bi bi-person-bounding-box" IconPath="@userIconPath" ListItems="@userItemsList" LinkTo="Account/Manage" LinkName="Go To User Account Details">
-                    <CardTitle><h3>Welcome Back, @DataService.CurrentUserWithAllData.UserName!</h3></CardTitle>
-                </CardComponent>
-                <CardComponent Text="Last Added Real Estate:" ListItems="@GetLastAddedRealEstate()" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" LinkTo="/details/1" LinkName="Go To Real Estates Details">
-                    <CardTitle><h3>Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</h3></CardTitle>
-                </CardComponent>
-                <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkTo="/details/2" LinkName="Go To Devices Details">
-                    <CardTitle><h3>Devices: @DataService.Devices?.Count</h3></CardTitle>
-                </CardComponent>
-                @if (GetExpiringDevice != null)
-                {
-                    <CardComponent LinkTo="/details/3" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
-                        <CardTitle><h3>Warranties</h3></CardTitle>
-
-                    </CardComponent>
-                }
-                else
-                {
-                    DataService.CurrentUserWithAllData.GetAllDevices().Last();
-                }
-            </div>
-        </div>
-    </div>*@
+    
 </body> 
 </html>
 @code {
