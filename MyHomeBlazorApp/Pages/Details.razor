@@ -45,7 +45,7 @@
 <TabControl TabID="TabID">
     <TabPage Text="Real Estates">
         <div class="grid">
-            <Button Class="btn btn-outline-success my-3" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
+            <Button Class="btn my-3 btn btn-primary card-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
             <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
                 <TemplateColumn>
                     <div>
@@ -68,7 +68,7 @@
     </TabPage>
     <TabPage Text="Devices">
         <div class="grid">
-            <Button Class="btn btn-outline-success my-3" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
+            <Button Class="btn btn-outline-success my-3 joinBtn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
