@@ -45,14 +45,14 @@
             z-index: -1;
         }
 
-       .joinBtn:focus, .btn:focus {
+       .joinBtn:focus, .joinBtn:focus {
             /* background-color: #16437E; */
             color: #ffffff;
             border: none;
             box-shadow: none;
         }
 
-         .joinBtn:focus, .joinBtn:active:focus, .btn:focus {
+         .joinBtn:focus, .joinBtn:active:focus, .joinBtn:focus {
             /* background: #09223b; */
             color: rgb(255, 255, 255, .7);
             border: none;
@@ -70,6 +70,7 @@
             background: rgba(0, 0, 0, .08);
             color: rgba(0, 0, 0, .3);
         }
+
 </style>
 <CascadingValue Value="this">
     <div class="btn-group h4" role="group">
@@ -132,7 +133,7 @@
 
     string GetButtonClass(TabPage page)
     {
-        return page == ActivePage ? "joinBtn" : "joinBtn";
+        return page == ActivePage ? "btn-primary" : "btn-secondary";
     }
 
     void ActivatePage(TabPage page)

@@ -11,7 +11,6 @@
 .grid {
     height: max-content;
     overflow-y: auto;
-
 }
 
 /* Sticky header while scrolling */
@@ -26,9 +25,9 @@
     background: #e9f3f7;
 }
 
-::deep .col-title{
+::deep .col-title {
     color: black;
-    font-style:normal;
+    font-style: normal;
 }
 
 ::deep .joinBtnCopy {
@@ -40,10 +39,10 @@
     outline: 1px solid red;
 }
 
-::deep .joinBtn {
-    align-items: center;
-    /*background-color: #0A66C2;*/
-    border: 0;
+/*::deep .joinBtn {
+    align-items: center;*/
+/*background-color: #0A66C2;*/
+/*border: 0;
     border-radius: 100px;
     box-sizing: border-box;
     color: #ffffff;
@@ -66,18 +65,19 @@
     transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
     user-select: none;
     -webkit-user-select: none;
-    vertical-align: middle;
-}
+    vertical-align: middle;*/
+/*}*/
 
-::deep .card-btn {
-    color: #acbcc5;
+::deep .addNew-btn {
+    align-items: center;
+    color: #6b6b6d;
     background-color: transparent;
-    border-color: #f1e1d8;
+    border: solid 2px #f1e1d8;
     border-radius: 1.3rem;
-    border-width: 2px;
+    
 }
 
-    ::deep .card-btn:hover {
+    ::deep .addNew-btn:hover {
         padding-left: 1rem;
         padding-right: 1rem;
         font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -85,10 +85,17 @@
         color: #2d2a2b;
     }
 
-::deep.joinBtn:after {
-    background-clip: padding-box;
+    ::deep .addNew-btn:focus, .addNew-btn:active:focus, .addNew-btn:focus {
+        background: #09223b;
+        color: rgb(255, 255, 255, .7);
+        border: none;
+        box-shadow: none;
+    }
+
+/*/*::deep.joinBtn:after {
+    background-clip: padding-box;*/
     /*background-color: #1CB0F6;*/
-    border: solid transparent;
+    /*border: solid transparent;
     border-radius: 16px;
     border-width: 0 0 4px;
     bottom: -4px;
@@ -98,35 +105,30 @@
     right: 0;
     top: 0;
     z-index: -1;
-}
-
-::deep .joinBtn:focus, .btn:focus {
+}*/
+    /*::deep .joinBtn:focus, .btn:focus {*/
     /*background-color: #16437E;*/
-    color: #ffffff;
+    /*color: #ffffff;
     border: none;
     box-shadow: none;
-}
-
-::deep .joinBtn:focus, .joinBtn:active:focus, .btn:focus {
+}*/
+    /*::deep .joinBtn:focus, .joinBtn:active:focus, .btn:focus {*/
     /*background: #09223b;*/
-    color: rgb(255, 255, 255, .7);
+    /*color: rgb(255, 255, 255, .7);
     border: none;
     box-shadow: none;
-}
-
-::deep .joinBtn:hover {
+}*/
+    /*::deep .joinBtn:hover {*/
     /*background-color: #16437E;*/
-    color: #ffffff;
+    /*color: #ffffff;
     border: none;
-}
-
-::deep.joinBtn:disabled {
+}*/
+    /*::deep.joinBtn:disabled {*/
     /*cursor: not-allowed;
         background: rgba(0, 0, 0, .08);
         color: rgba(0, 0, 0, .3);*/
-}
-
-button .test-btn {
+    /*}*/
+    /*button .test-btn {
     display: inline-block;
     outline: 0;
     cursor: pointer;
@@ -170,8 +172,8 @@ td.test-btn {
 }
 
     ::deep .quickgrid[theme=corporate] .col-title {
-        gap: 0.4rem; /* Separate the sort indicator from title text */
-        font-weight: bold;
+        gap: 0.4rem;*/ /* Separate the sort indicator from title text */
+    /*font-weight: bold;
         text-transform: uppercase;
     }
 
@@ -265,5 +267,5 @@ td.test-btn {
 @media (min-width: 768px) {
     ::deep .button-51 {
         padding: 8px 16px;
-    }
-}
+    }*/
+    /*}*/
