@@ -1,6 +1,15 @@
 ﻿@using BlazorBootstrap
 
 <style>
+
+    .btn-group {
+        align-items: center;
+        background-color: #e9f3f7;
+        border: solid transparent;
+        border-radius: 16px;
+        box-sizing: border-box;
+        color: #525051;
+    }
     .joinBtn {
         align-items: center;
         background-color: #e9f3f7;
@@ -30,7 +39,7 @@
         vertical-align: middle;
     }
 
-        .joinBtn:after {
+        /* .joinBtn:after {
             background-clip: padding-box;
             background-color: #f1e1d8;
             border: solid transparent;
@@ -43,7 +52,7 @@
             right: 0;
             top: 0;
             z-index: -1;
-        }
+        } */
 
        .joinBtn:focus, .joinBtn:focus {
             /* background-color: #16437E; */
@@ -61,8 +70,16 @@
 
        .joinBtn:hover {
             /* background-color: #16437E; */
+            background-color: #f1e1d8;
             color: #9ab4c4;
-            border: 0px;
+            border: solid transparent;
+
+            border-radius: inherit 16px;
+            border-width: 0 0 4px;
+            content: "";
+            /* z-index: -1; */
+            box-sizing: border-box;
+
         }
 
         .joinBtn:disabled {
@@ -70,6 +87,8 @@
             background: rgba(0, 0, 0, .08);
             color: rgba(0, 0, 0, .3);
         }
+
+        
 
 </style>
 <CascadingValue Value="this">
@@ -133,7 +152,7 @@
 
     string GetButtonClass(TabPage page)
     {
-        return page == ActivePage ? "btn-primary" : "btn-secondary";
+        return page == ActivePage ? "joinBtn" : "joinBtn";
     }
 
     void ActivatePage(TabPage page)
