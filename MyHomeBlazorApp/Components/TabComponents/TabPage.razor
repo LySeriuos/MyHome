@@ -1,5 +1,6 @@
 ﻿@using BlazorBootstrap
-
+@using MyHomeBlazorApp.Pages
+@inject BlazorData.DataService DataService;
 
 @if (Parent.ActivePage == this)
 {
@@ -11,21 +12,47 @@
 @code {
 
     [CascadingParameter]
-    private TabControl Parent { get; set; }    
+    private TabControl Parent { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
-    
+
     [Parameter]
     public string Text { get; set; }
-    
+
+    public bool ListHasBeenChanged { get; set; } = false;
+    // private List<DeviceProfile>? _test { get; set; } = new();
+    public Details details { get; set; } = default!;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if(details!=null)
+            details.UnassignedDevicesListChanged += UnassignedListChanged;
+            // if (ListHasBeenChanged)
+            // {
+            //     StateHasChanged();
+            //     OnInitialized();
+        }
+        base.OnAfterRender(firstRender);
+    }
+
+    private void UnassignedListChanged()
+    {
+        ListHasBeenChanged = true;
+        StateHasChanged();
+        OnInitialized();
+    }
 
     protected override void OnInitialized()
     {
+
+        // _test = DataService.GetUserWithUnassignedDevicesList().Result.ToList();
         if (Parent == null)
             throw new ArgumentNullException(nameof(Parent), "TabPage must exist within a TabControl");
         Parent.AddPage(this);
         base.OnInitialized();
-        
+
     }
 }

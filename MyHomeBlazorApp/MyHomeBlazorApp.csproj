@@ -5,25 +5,33 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="wwwroot\images\d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" />
+    <Content Remove="wwwroot\images\freepik__upload__58405.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\images\d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" />
+    <None Include="wwwroot\images\freepik__upload__58405.png" />
     <None Include="wwwroot\images\user-svgrepo-com.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
     <PackageReference Include="bootstrap" Version="5.3.3" />
+    <PackageReference Include="IKVM" Version="8.10.3" />
     <PackageReference Include="MailKit" Version="4.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.12">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="8.0.7" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
-    <PackageReference Include="QRCoder" Version="1.6.0" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
+    <PackageReference Include="QRCoder" Version="1.4.2" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.12" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
@@ -31,7 +39,8 @@
     <ProjectReference Include="..\MyHome\MyHome.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Files\" />
+    <Folder Include="Files\11\" />
+    <Folder Include="Files\11\qrCodes\" />
     <Folder Include="Files\2\" />
   </ItemGroup>
 	

@@ -8,7 +8,7 @@
 
 <Modal @ref="_refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
-        <EditForm Model="@CurrentDevice" Context="WarrantyDetails" OnSubmit="WarrantyDetailsFormSubmitted">
+        <EditForm Model="@CurrentDevice" OnSubmit="WarrantyDetailsFormSubmitted">
             <div class="form-group row">
                 <label for="devicePurchaseDate" class="col-sm-6 col-form-label">Purchase Date</label>
                 <div class="col-sm-6">
@@ -80,7 +80,7 @@
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
-    public Action WarrantyDataHasChanged;
+    public Action? WarrantyDataHasChanged;
     private Modal _refModalEditWarrantyDetails { get; set; } = new();
     private IBrowserFile? _warrantyReceiptFile;
     private IBrowserFile? _extraWarrantyReceiptFile;
@@ -120,18 +120,18 @@
             if (_extraWarrantyReceiptFile != null)
             {
                 DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink); // deleting previuos file when loading new one
-                string _extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors);
+                string _extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = _extraWarrantyReceiptFilePath;
             }
 
             if (_warrantyReceiptFile != null)
             {
                 DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink); // deleting previuos file when loading new one
-                string warrantyReceiptFilePath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors);
+                string warrantyReceiptFilePath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }
 
-            DataService.SaveUpdatedObject();
+            await DataService.UpdateObjectInDB();
             WarrantyDataHasChanged();
             await _refModalEditWarrantyDetails.HideAsync();
         }

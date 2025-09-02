@@ -17,7 +17,7 @@
         }
         else
         {
-        <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate</Button>
+            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate</Button>
         }
         <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button>
     </FooterTemplate>
@@ -45,7 +45,7 @@
         {
             if (CurrentRealEstate.RealEstateID != 0)
             {
-                DataService.RemoveRealEstate(CurrentRealEstate.RealEstateID);                
+                await DataService.RemoveRealEstate(CurrentRealEstate.RealEstateID);                
             }
             else
             {
@@ -55,7 +55,8 @@
         await OnHideModalDeleteRealEstateCloseClick();
         CurrentRealEstate = new();
         onDataChanged();
-        
+        StateHasChanged();
+
     }
 
     public async Task OnHideModalDeleteRealEstateCloseClick()

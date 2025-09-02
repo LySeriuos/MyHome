@@ -2,18 +2,34 @@
 @page "/mobileDeviceInfo/{userID:int}/{deviceID:int}"
 @attribute [Authorize]
 
+@using Microsoft.EntityFrameworkCore
 @using MyHome.Models;
 @using MyHome;
+@using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Components.Modals
 @using MyHomeBlazorApp.Pages
 @using MyHomeBlazorApp.Components.TabComponents
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@implements IDisposable
+@inject PersistentComponentState ApplicationState
+@inherits OwningComponentBase
 @inject BlazorData.DataService DataService
+@inject NavigationManager uriHelper
+@inject NavigationManager NavManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IdentityUserAccessor UserAccessor
+@inject MyHomeBlazorAppContext _dbcontext;
 
 <h3>MobileDeviceInfo</h3>
 <div class="w-25 p-3">
-<AddEditDeviceForm CurrentDevice="_currentDevice"
-                    CurrentUser="_userProfile">
-                </AddEditDeviceForm>
+    <AddEditDeviceForm CurrentDevice="_currentDevice"
+    CurrentUser="_userProfile">
+    </AddEditDeviceForm>
 </div>
 
 @code {
@@ -23,20 +39,25 @@
     [Parameter]
     public int UserID { get; set; }   
     private UserProfile _userProfile { get; set; }
+    private MyHomeBlazorAppUser userProfileTest { get; set; }
     private DeviceProfile? _currentDevice { get; set; }
+    private UserProfile _currentUser { get; set; }
+    private string? message;
+    private DataService? DataServiceTest { get; set; }
 
 
     protected override void OnParametersSet()
     {
-        _userProfile = DataService.Users.First(d => d.UserID == UserID);
+        // _userProfile = DataService.CurrentUser;
+        _userProfile = DataService.CurrentDbUserWithRealEstatesData().Result;
         _currentDevice = _userProfile.GetAllDevices().First(d => d.DeviceID == DeviceID);
     }
 
-    // protected override void OnInitialized()
-    // {
-    //     _userProfile = DataService.Users.First(d => d.UserID == UserID);
-    //     CurrentDevice = _userProfile.GetAllDevices().First(d => d.DeviceID == DeviceID);
-    //     base.OnInitialized();
-    // }
+    protected override void OnInitialized()
+    {
+        // currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        // NavigationManager.LocationChanged += OnLocationChanged;
+        base.OnInitialized();
+    }
 
 }

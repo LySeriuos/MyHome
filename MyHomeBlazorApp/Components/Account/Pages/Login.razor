@@ -1,0 +1,165 @@
+﻿@page "/Account/Login"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using MyHomeBlazorApp.BlazorData
+@using MyHomeBlazorApp.Components.Account
+@using System.Security.Claims
+
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject ILogger<Login> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+
+@* <PageTitle>Log in</PageTitle> *@
+
+@* <h1>Log in</h1> *@
+
+<style>
+    .log-reg-text-posit
+    {
+        text-align:left;
+    }
+
+    .btn-main-style {
+        color: #636466;
+        background-color: #e3e4ed;
+        border-color: #636466;
+    }
+    .link-color
+    {
+        color: #9cb7c6;
+    }
+</style>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4">
+        <section>
+            <Card TextAlignment="Alignment.Center" Class="mb-4" Style="width:100%; max-width:30rem;">
+                <img class="rounded-top" src="/images/d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" alt="placeholder" />
+                <CardBody>
+                    <CardTitle Class="log-reg-text-posi"><h2>Log In</h2></CardTitle>
+                    <CardSubTitle Class="mb-4 text-muted log-reg-text-posi">Log In or <span><a class="link-color" href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a></span></CardSubTitle>
+                    <StatusMessage Message="@errorMessage" />
+                    <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+                        <DataAnnotationsValidator />
+                        @* <h2>Use a local account to log in.</h2> *@
+                        @* <hr /> *@
+                        <ValidationSummary class="text-danger" role="alert" />
+                        <div class="form-floating mb-3">
+                            <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <label for="email" class="form-label">Email</label>
+                            <ValidationMessage For="() => Input.Email" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                            <label for="password" class="form-label">Password</label>
+                            <ValidationMessage For="() => Input.Password" class="text-danger" />
+                        </div>
+                        <div class="checkbox mb-3 align-text-left">
+                            <label class="form-label">
+                                <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
+                                Remember me
+                            </label>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-50 btn btn-lg rounded-pill btn-main-style mb-3">Log in</button>
+                        </div>
+                        <div>
+                            <p>
+                                <a class="link-color" href="Account/ForgotPassword">Forgot your password?</a>
+                            </p>                            
+                            <p>
+                                <a class="link-color" href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+                            </p>
+                        </div>
+                    </EditForm>
+                    @* <Button Color="ButtonColor.Primary" To="#" Type="ButtonType.Link">Go somewhere</Button> *@
+                </CardBody>
+            </Card>            
+        </section>
+    </div>
+    @* <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Use another service to log in.</h3>
+            <hr />
+            <ExternalLoginPicker />
+        </section>
+    </div> *@
+</div>
+
+@code {
+    private string? errorMessage;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+        }
+    }
+
+    public async Task LoginUser()
+    {
+        // This doesn't count login failures towards account lockout
+        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
+             
+
+        //If user do not have a role so it will add automatically when user sign in
+        
+
+        
+        if (result.Succeeded)
+        {
+            var roles = await SignInManager.UserManager.GetRolesAsync(user);
+            if (roles.Count < 1)
+            {
+                await SignInManager.UserManager.AddToRoleAsync(user, "user");
+            }
+            Logger.LogInformation("User logged in.");
+            RedirectManager.RedirectTo("/maindashboard");
+        }
+        else if (result.RequiresTwoFactor)
+        {
+            RedirectManager.RedirectTo(
+                "Account/LoginWith2fa",
+                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+        }
+        else if (result.IsLockedOut)
+        {
+            Logger.LogWarning("User account locked out.");
+            RedirectManager.RedirectTo("Account/Lockout");
+        }
+        else
+        {
+            errorMessage = "Error: Invalid login attempt.";
+        }
+    }
+
+    private sealed class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
+}

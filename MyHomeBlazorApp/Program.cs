@@ -5,59 +5,14 @@ using MyHomeBlazorApp.BlazorData;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MyHomeBlazorApp.Data;
-using MyHomeBlazorApp.Areas.Identity.Data;
 using Microsoft.AspNetCore.Components.Authorization;
-using MyHomeBlazorApp.Areas.Identity;
+using MyHomeBlazorApp.Components.Account;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using WebPWrecover.Services;
 
-
-
-var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
-
-builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlServer(connectionString));
-
-builder.Services.AddDefaultIdentity<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<MyHomeBlazorAppContext>();
-
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-builder.Services.AddSingleton<DataService>();
-builder.Services.AddBlazorBootstrap();
-
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-// routing url to physical path "Files"
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
-    RequestPath = "/Files"
-});
-
-app.UseRouting();
-app.UseAuthorization();
-
-app.MapControllers();
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-
-app.Run();
-
-
+//using MyHomeBlazorApp.Components.Account;
 namespace MyHomeBlazorApp
 {
     public class Program
@@ -70,5 +25,79 @@ namespace MyHomeBlazorApp
             public const string SAVE_UPLOADED_FILES = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\UploadedFiles\\";
             public const string BASE_API_URL = "https://www.google.se/search?q=";
         }
+
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
+
+            builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlite(connectionString));
+
+
+            builder.Services.AddRazorComponents()
+        .AddInteractiveServerComponents();
+
+            builder.Services.AddCascadingAuthenticationState();
+
+            builder.Services.AddScoped<IdentityUserAccessor>();
+            builder.Services.AddScoped<IdentityRedirectManager>();
+            builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+    .AddIdentityCookies();
+
+            builder.Services.AddIdentityCore<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<MyHomeBlazorAppContext>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders()
+                .AddApiEndpoints();
+            
+            // Add services to the container.
+            builder.Services.AddRazorPages();
+            builder.Services.AddServerSideBlazor();
+            builder.Services.AddScoped<DataService>();
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddBlazorBootstrap();
+            builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            // routing url to physical path "Files"
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
+                RequestPath = "/Files"
+            });
+
+            //      app.UseRouting();
+            app.UseAuthorization();
+            //app.UseAuthentication();
+            //      app.MapControllers();
+            //      app.MapBlazorHub();
+            app.UseAntiforgery();
+            app.MapIdentityApi<MyHomeBlazorAppUser>();
+            app.MapRazorComponents<App>()
+               .AddInteractiveServerRenderMode();
+            app.MapAdditionalIdentityEndpoints();
+            app.Run();
+        }
+
+
     }
 }

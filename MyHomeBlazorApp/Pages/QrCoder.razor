@@ -4,36 +4,46 @@
 
 @using MyHome.Models;
 @using MyHome;
+@using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Pages
 @using System.ComponentModel.DataAnnotations
 @using static QRCoder.PayloadGenerator
 @inject BlazorData.DataService DataService
 @inject IJSRuntime JSRuntime
-
+@inject NavigationManager uriHelper
+@inject NavigationManager NavManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject UserManager<MyHomeBlazorAppUser> UserManager
 
 <h3>QrCoder</h3>
 
-<p>@_chosedDeviceID</p>
-<p>@_selectedDeviceProfile.DeviceID</p>
-
-
 <h5>Generate link to Device QrCode </h5>
 
-<EditForm Model="@_selectedDeviceProfile" Context="editDeviceContext" OnSubmit="HandleQrCode">
+<EditForm Model="_selectedDeviceProfile" OnSubmit="HandleQrCode" FormName="QrC">
     <label class="form-label">Choose Device</label>
     <InputSelect @bind-Value="_chosedDeviceID">
         <option selected disabled value="-1">Select Device...</option>
-        @foreach (var device in DataService.CurrentUser.GetAllDevices())
+        @foreach (var device in DataService.CurrentUserWithAllData.GetAllDevices())
         {
             <option value="@device.DeviceID">@device.DeviceName</option>
         }
     </InputSelect>
-    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+    <br />
+    @if (_chosedDeviceID <= 0)
+    {
+        <Button Disabled Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+    }
+    else
+    {
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+    }
 </EditForm>
 <br />
 <br />
 <h5>Create Wifi Sharing Qr Code</h5>
-<EditForm Model="wifiModel" Context="editWifiContext" OnSubmit="HandleWifiSharingQrCode">
+<EditForm Model="wifiModel" OnSubmit="HandleWifiSharingQrCode">
     <DataAnnotationsValidator />
     <div>
         <label class="form-check-label" for="wifiName">
@@ -67,19 +77,16 @@
 @code {
     private DeviceProfile _selectedDeviceProfile { get; set; } = new();
     private WifiModel wifiModel = new();
-    private EditContext editDeviceContext;
-    private EditContext editWifiContext;
+    private EditContext? editWifiContext;
+    private EditContext? editDeviceContext;
     [Parameter]
     public int _chosedDeviceID { get; set; }
     [Parameter]
     public UserProfile currentUser { get; set; } = new();
-    private string deviceID { get; set; } = String.Empty;
-    private string savedQrCodeLink = $"{Environment.CurrentDirectory}\\files\\2\\qrCode\\savedQrCode.png";
     bool valid;
 
     public class WifiModel
     {
-
         private string _wifiName = "";
         [Required(ErrorMessage = "Wifi Name is mandatory")]
         [MinLength(4)]
@@ -124,38 +131,43 @@
     private async Task HandleQrCode(EditContext editContext)
     {
         _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
-        currentUser = DataService.CurrentUser;
-        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCode");
-        Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), savedQrCodeLink);
-        var file = Path.GetFileName(savedQrCodeLink);
-        string fileUrl = $"files/{currentUser.UserID}/qrCode/{file}";
+        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes");
+        string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes\\DeviceID{_selectedDeviceProfile.DeviceID.ToString()}.png";
+        Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), filePath);
+        var file = Path.GetFileName(filePath);
+        string fileUrl = $"files/{currentUser.UserID}/qrCodes/{file}";
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+        _chosedDeviceID = new();
+        StateHasChanged();
     }
 
     private async void HandleWifiSharingQrCode(EditContext editWifiContext)
     {
+        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode");
+        string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode\\Wifi.png";
         valid = editWifiContext.Validate();
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         if (valid == true)
         {
             valid = editWifiContext.Validate();
-            Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, savedQrCodeLink);
-            var file = Path.GetFileName(savedQrCodeLink);
-            string fileUrl = $"files/{currentUser.UserID}/qrCode/{file}";
+            Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, filePath);
+            var file = Path.GetFileName(filePath);
+            string fileUrl = $"files/{currentUser.UserID}/WifiQrCode/{file}";
             await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         }
         else
         {
             return;
         }
+        wifiModel = new();
+        StateHasChanged();
     }
-
-
 
     protected override void OnInitialized()
     {
-        WifiModel wifiModel = new();
+        currentUser = DataService.CurrentUserWithAllData;
         editWifiContext = new(wifiModel);
+        editDeviceContext = new(_selectedDeviceProfile);
         base.OnInitializedAsync();
     }
 

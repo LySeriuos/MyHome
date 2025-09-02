@@ -2,9 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyHomeBlazorApp.Data;
+using MyHomeBlazorApp.BlazorData;
+
 
 #nullable disable
 
@@ -16,56 +16,71 @@ namespace MyHomeBlazorApp.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.12");
+
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("TEXT");
+
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "aac89f82-88ea-4914-b5c8-2b987bfa18c1",
+                            ConcurrencyStamp = "8954d51a-7b60-44d1-8b11-e74b360555f6",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "495e6e84-f04c-434e-b740-b12ddde0bee4",
+                            ConcurrencyStamp = "f6386b2b-d130-44e8-96d9-f3078538d709",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
+
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
+
 
                     b.HasKey("Id");
 
@@ -78,19 +93,19 @@ namespace MyHomeBlazorApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
+
 
                     b.HasKey("Id");
 
@@ -102,19 +117,19 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
+
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -126,10 +141,12 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
+
 
                     b.HasKey("UserId", "RoleId");
 
@@ -141,75 +158,262 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
+
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MyHomeBlazorApp.Areas.Identity.Data.MyHomeBlazorAppUser", b =>
+            modelBuilder.Entity("MyHome.Models.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ApartamentNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("HouseNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("HouseNumberExtension")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StreetName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Address");
+                });
+
+            modelBuilder.Entity("MyHome.Models.DeviceProfile", b =>
+                {
+                    b.Property<int>("DeviceID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DeviceModelNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeviceName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeviceProduser")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeviceSerialNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeviceType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DeviceWarrantyId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MacAdrress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ManualBookLink")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RealEstateID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("UserProfileUserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DeviceID");
+
+                    b.HasIndex("DeviceWarrantyId");
+
+                    b.HasIndex("RealEstateID");
+
+                    b.HasIndex("UserProfileUserID");
+
+                    b.ToTable("DeviceProfile");
+                });
+
+            modelBuilder.Entity("MyHome.Models.DeviceWarranty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ExtendedWarrantyinYears")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("ExtraInsuranceWarrantyLenght")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ExtraInsuranceWarrantyLink")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReceiptLink")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ShopId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("WarrantyPeriod")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Years")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShopId");
+
+                    b.ToTable("DeviceWarranty");
+                });
+
+            modelBuilder.Entity("MyHome.Models.RealEstate", b =>
+                {
+                    b.Property<int>("RealEstateID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RealEstateName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("UserProfileUserID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("RealEstateID");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("UserProfileUserID");
+
+                    b.ToTable("RealEstate");
+                });
+
+            modelBuilder.Entity("MyHome.Models.Shop", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("PhoneNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShopName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShopWebAddress")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.ToTable("Shop");
+                });
+
+            modelBuilder.Entity("MyHome.Models.UserProfile", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("UserProfile");
+                });
+
+            modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("UserProfileUserID")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -218,8 +422,11 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("UserProfileUserID");
+
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -235,7 +442,8 @@ namespace MyHomeBlazorApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MyHomeBlazorApp.Areas.Identity.Data.MyHomeBlazorAppUser", null)
+
+                    b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -244,7 +452,9 @@ namespace MyHomeBlazorApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MyHomeBlazorApp.Areas.Identity.Data.MyHomeBlazorAppUser", null)
+
+                    b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
+
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -259,7 +469,9 @@ namespace MyHomeBlazorApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyHomeBlazorApp.Areas.Identity.Data.MyHomeBlazorAppUser", null)
+
+                    b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
+
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -268,12 +480,84 @@ namespace MyHomeBlazorApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MyHomeBlazorApp.Areas.Identity.Data.MyHomeBlazorAppUser", null)
+
+                    b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
+
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+
+            modelBuilder.Entity("MyHome.Models.DeviceProfile", b =>
+                {
+                    b.HasOne("MyHome.Models.DeviceWarranty", "DeviceWarranty")
+                        .WithMany()
+                        .HasForeignKey("DeviceWarrantyId");
+
+                    b.HasOne("MyHome.Models.RealEstate", null)
+                        .WithMany("DevicesProfiles")
+                        .HasForeignKey("RealEstateID");
+
+                    b.HasOne("MyHome.Models.UserProfile", null)
+                        .WithMany("UnassignedDevicesList")
+                        .HasForeignKey("UserProfileUserID");
+
+                    b.Navigation("DeviceWarranty");
+                });
+
+            modelBuilder.Entity("MyHome.Models.DeviceWarranty", b =>
+                {
+                    b.HasOne("MyHome.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId");
+
+                    b.Navigation("Shop");
+                });
+
+            modelBuilder.Entity("MyHome.Models.RealEstate", b =>
+                {
+                    b.HasOne("MyHome.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
+                    b.HasOne("MyHome.Models.UserProfile", null)
+                        .WithMany("RealEstates")
+                        .HasForeignKey("UserProfileUserID");
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("MyHome.Models.Shop", b =>
+                {
+                    b.HasOne("MyHome.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>
+                {
+                    b.HasOne("MyHome.Models.UserProfile", "UserProfile")
+                        .WithMany()
+                        .HasForeignKey("UserProfileUserID");
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("MyHome.Models.RealEstate", b =>
+                {
+                    b.Navigation("DevicesProfiles");
+                });
+
+            modelBuilder.Entity("MyHome.Models.UserProfile", b =>
+                {
+                    b.Navigation("RealEstates");
+
+                    b.Navigation("UnassignedDevicesList");
+                });
+
 #pragma warning restore 612, 618
         }
     }
