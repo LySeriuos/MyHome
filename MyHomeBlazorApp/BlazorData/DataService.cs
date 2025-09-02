@@ -98,6 +98,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task<UserProfile> CurrentDbUserWithRealEstatesData()
         {
+
             var userWithData = _dbcontext.Users.Include(u => u.UserProfile)
                 .ThenInclude(p => p.RealEstates)
                 .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
@@ -158,6 +159,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to save created new RealEstate
         /// </summary>
         /// <param name="realEstate">Created RealEstate</param>
+
         
         
         public async Task AddNewRealEstateToDB(RealEstate currentRealEstate)
@@ -173,6 +175,23 @@ namespace MyHomeBlazorApp.BlazorData
             {
                 throw new ArgumentException("Wrong RealEstate ID", nameof(currentRealEstate.RealEstateID));
             }
+
+        public void AddNewRealEstate(RealEstate realEstate)
+        {
+            realEstate.RealEstateID = Logic.GetRealEstateMaxId(RealEstates) + 1;
+            RealEstates.Add(realEstate);
+            MyHome.Data.SaveUsersListToXml(_users, _path);
+        }
+
+        /// <summary>
+        /// Method to assign Adrress object to RealEstate 
+        /// </summary>
+        /// <param name="adrress">Newly created adress</param>
+        public void AddRealEstateAdrress(Address adrress)
+        {
+            CurrentRealEstate.Address = adrress;
+            MyHome.Data.SaveUsersListToXml(_users, _path);
+
         }
 
         /// <summary>
@@ -224,9 +243,11 @@ namespace MyHomeBlazorApp.BlazorData
             bool realEstateExsits = _currentUserWithData.RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
             if (realEstateExsits == true)
             {
+
                 RealEstate realEstateToDelete = _currentUserWithData.RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
                 _dbcontext.Remove(realEstateToDelete);
                 await UpdateObjectInDB();
+
             }
             else
             {
@@ -301,6 +322,7 @@ namespace MyHomeBlazorApp.BlazorData
                 deviceProfilesMoveToRealEstate.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
+
             await _dbcontext.SaveChangesAsync();
         }
 
@@ -438,6 +460,7 @@ namespace MyHomeBlazorApp.BlazorData
             deviceWarranty.WarrantyPeriod = GetTimeSpanFromYears(deviceWarranty.Years);
             deviceWarranty.ExtraInsuranceWarrantyLenght = GetTimeSpanFromYears(deviceWarranty.ExtendedWarrantyinYears);
             CurrentDevice.DeviceWarranty = deviceWarranty;
+
             await _dbcontext.SaveChangesAsync();
         }
 
@@ -471,7 +494,19 @@ namespace MyHomeBlazorApp.BlazorData
                 _currentUserWithData.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
+
             await UpdateObjectInDB();
+        }
+
+        public Unassigned UnassignedDevices()
+        {
+            if (CurrentUser.UnassignedDevices == null)
+            {
+                CurrentUser.UnassignedDevices = new();
+                CurrentUser.UnassignedDevices.UnassignedDevicesList = new();
+            }
+            return CurrentUser.UnassignedDevices;
+
         }
         #endregion
 
@@ -564,6 +599,7 @@ namespace MyHomeBlazorApp.BlazorData
             return fileUrl;
         }
 
+
         public async Task UpdateObjectInDB()
         {
             _dbcontext.UpdateRange(CurrentAppUser);
@@ -571,6 +607,40 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         #endregion
+
+
+        /// <summary>
+        /// Saving new changes to xml database
+        /// </summary>
+        public void SaveUpdatedObject()
+        {
+            MyHome.Data.SaveUsersListToXml(_users, _path);
+        }
+
+        public void LoadData()
+        {
+            MyHome.Data.GetUsersListFromXml(_path);
+        }   
+
+        #endregion
+
+        public DataService()
+        {
+            _users = MyHome.Data.GetUsersListFromXml(_path);
+            // manually assigned test data
+            int userId = 2;
+            int realEstateID = 1;
+            int deviceId = 2;
+            CurrentUser = GetUser(userId);
+            RealEstates = CurrentUser.RealEstates;
+            CurrentRealEstate = GetRealEstate(realEstateID);
+            Device = LastAddedDevice();
+            UnassignedProfile = UnassignedDevices();
+            CurrentDevice = GetDeviceById(deviceId);
+            ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(CurrentUser, 180);
+            DevicesWarranties = Logic.GetUserDevicesWarranties(CurrentUser);
+        }
+
 
 
     }

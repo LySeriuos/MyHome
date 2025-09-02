@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyHomeBlazorApp.BlazorData;
 
+
 #nullable disable
 
 namespace MyHomeBlazorApp.Migrations
@@ -15,7 +16,9 @@ namespace MyHomeBlazorApp.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
+
             modelBuilder.HasAnnotation("ProductVersion", "8.0.12");
+
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -33,6 +36,7 @@ namespace MyHomeBlazorApp.Migrations
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
+
 
                     b.HasKey("Id");
 
@@ -57,12 +61,14 @@ namespace MyHomeBlazorApp.Migrations
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
+
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ClaimType")
@@ -74,6 +80,7 @@ namespace MyHomeBlazorApp.Migrations
                     b.Property<string>("RoleId")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
 
                     b.HasKey("Id");
 
@@ -86,6 +93,7 @@ namespace MyHomeBlazorApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ClaimType")
@@ -98,6 +106,7 @@ namespace MyHomeBlazorApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -108,6 +117,7 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
+
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
@@ -120,6 +130,7 @@ namespace MyHomeBlazorApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+
                     b.HasKey("LoginProvider", "ProviderKey");
 
                     b.HasIndex("UserId");
@@ -130,10 +141,12 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
+
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("TEXT");
+
 
                     b.HasKey("UserId", "RoleId");
 
@@ -145,6 +158,7 @@ namespace MyHomeBlazorApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
+
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
@@ -155,6 +169,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.Property<string>("Value")
                         .HasColumnType("TEXT");
+
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -407,9 +422,11 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
+
                         .HasDatabaseName("UserNameIndex");
 
                     b.HasIndex("UserProfileUserID");
+
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -425,6 +442,7 @@ namespace MyHomeBlazorApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
+
                     b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -434,7 +452,9 @@ namespace MyHomeBlazorApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
+
                     b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
+
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -449,7 +469,9 @@ namespace MyHomeBlazorApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+
                     b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
+
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -458,7 +480,9 @@ namespace MyHomeBlazorApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
+
                     b.HasOne("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", null)
+
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -533,6 +557,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.Navigation("UnassignedDevicesList");
                 });
+
 #pragma warning restore 612, 618
         }
     }

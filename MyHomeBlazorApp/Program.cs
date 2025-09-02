@@ -25,6 +25,7 @@ namespace MyHomeBlazorApp
             public const string SAVE_UPLOADED_FILES = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\UploadedFiles\\";
             public const string BASE_API_URL = "https://www.google.se/search?q=";
         }
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -96,5 +97,7 @@ namespace MyHomeBlazorApp
             app.MapAdditionalIdentityEndpoints();
             app.Run();
         }
+
+
     }
 }
