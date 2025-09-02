@@ -1,4 +1,6 @@
 ﻿@page "/maindashboard"
+
+@attribute [Authorize]
 @using MyHome.Models;
 @using MyHomeBlazorApp.BlazorData;
 @using MyHome;
@@ -45,6 +47,58 @@
             border: 1px solid;
             text-overflow: ellipsis;
         }
+
+        .card-outline-style {
+            outline-width: 5px;
+            outline-style: double;
+            outline-color: darkgoldenrod;
+        }
+
+        .card-style {
+            display: flex;
+            justify-content: center;
+            background-color: #eeeff4;
+            width: 18rem;
+            margin-right: 50px;
+            margin-top: 50px;
+        }
+
+        .svg-icon-style {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            margin-right: auto;
+            margin-left: auto;
+            align-items: center;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-footer {
+            width: 100%;
+            background-color: none;
+            border-top: none;
+            justify-content: left;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .card-btn {
+            color: #2d2a2b;
+            background-color: #cfd9e1;
+            border-color: #1861ac;
+            border-radius: 1.3rem;
+        }
+
+        .card-btn:hover
+        {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                background: #e2c8c0;
+                color: #2d2a2b;
+        }
     </style>
 </head>
 <PageTitle>Main Dashboard</PageTitle>
@@ -52,40 +106,93 @@
 <body>
     <div class="content">
         <div class="container-fluid">
-            <div class="row">                
-                <CardComponent IconStyle="bi bi-person-bounding-box" IconPath="@userIconPath" ListItems="@userItemsList" LinkName="Go To User Account Details">
-                    <CardTitle><h3>Welcome Back, @DataService.CurrentUser.UserName!</h3></CardTitle>
-                </CardComponent>
-                <CardComponent ListItems="@GetLastAddedRealEstate()" IconStyle=" bi bi-house-door" IconPath="@realEstateIconPath" LinkTo="/details/1" LinkName="Go To Real Estates Details">
-                    <CardTitle><h3>Real Estates: @DataService.CurrentUser.RealEstates.Count</h3></CardTitle>
-                </CardComponent>
-                <CardComponent ListItems="@GetLastAddedDevice()" IconStyle="bi bi-cpu" IconPath="@deviceIconPath" LinkTo="/details/2" LinkName="Go To Devices Details">
-                    <CardTitle><h3>Devices: @DataService.Devices.Count</h3></CardTitle>
-                </CardComponent>
+            <div class="row d-flex justify-content-center text-bg-dark">
+                <Card Class="mb-4 card-style">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                        <path d="@userIconPath" />
+                    </svg>
+                    <CardBody>
+                        <CardTitle class="fw-bolder">Welcome Back, @DataService.CurrentUserWithAllData.UserName!</CardTitle>
+                        <CardText>Date Today: </CardText>
+                        <CardText>@DateTime.UtcNow.ToLongDateString()</CardText>
+                    </CardBody>
+                  @*   <ul>
+                    </ul> *@
+                    <CardBody Class="text-center">
+                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="Account/Manage">User Account</CardLink>
+                    </CardBody>
+                </Card>
+                <Card Class="mb-4 card-style">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                        <path d="@realEstateIconPath" />
+                    </svg>
+                    <CardBody>
+                        <CardTitle class="fw-bolder">Total Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</CardTitle>
+                        <CardText>Last Added Real Estate:</CardText>
+                        <CardText>
+                            ID: @DataService.LastAddedRealEstate().RealEstateID |
+                            @DataService.LastAddedRealEstate().RealEstateName
+                        </CardText>
+                    </CardBody>
+                    <CardBody Class="text-center">
+                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/1">All RealEstates</CardLink>
+                    </CardBody>
+                </Card>
+                <Card Class="mb-4 card-style">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                        <path d="@deviceIconPath" />
+                    </svg>
+                    <CardBody>
+                        <CardTitle class="fw-bolder">Total Devices: @DataService.Devices?.Count</CardTitle>
+                        <CardText>Last Added Device:</CardText>
+                        <CardText Class="">
+                            ID:
+                            @DataService.LastAddedDevice().DeviceID |
+                            @DataService.LastAddedDevice().DeviceName
+                        </CardText>
+                    </CardBody>
+                    <CardBody Class="text-center">
+                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/2">All Devices</CardLink>
+                    </CardBody>
+                </Card>
                 @if (GetExpiringDevice != null)
                 {
-                    <CardComponent LinkTo="/details/3" ListItems="@GetExpiringDevice()" IconStyle="bi bi-file-earmark-medical-fill" IconPath="@warrantyIconPath" LinkName="Go To Warranties Details">
-                        <CardTitle><h3>Warranties</h3></CardTitle>
-                    </CardComponent>
+                    <Card Class="mb-4 card-style" Style="width:18rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                            <path d="@warrantyIconPath" />
+                        </svg>
+                        <CardBody>
+                            <CardTitle class="fw-bolder">Warranties</CardTitle>
+                            <CardText>Expires soonest:</CardText>
+                            <CardText Class="">
+                                @DataService.FirstExpiringWarranty().DeviceName |
+                                @DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString()
+                            </CardText>
+                        </CardBody>
+                        <CardBody Class="text-center">
+                            <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/3">All Warranties</CardLink>
+                        </CardBody>
+                    </Card>
                 }
                 else
                 {
-                    DataService.CurrentUser.GetAllDevices().Last();
+                    DataService.CurrentUserWithAllData.GetAllDevices().Last();
                 }
             </div>
         </div>
     </div>
-
-</body>
+    
+</body> 
 </html>
 @code {
-
+    private DeviceProfile? _expiringDevice { get; set; }
     private List<string> _deviceItemsList = new List<string>();
     private List<string> _warrantyItemsList = new List<string>();
     private List<string> _realEstateItemsList = new List<string>();
     private List<string> GetExpiringDevice()
     {
-        string dateInput="No expiring warranties!";
+        _warrantyItemsList = new();
+        string dateInput = "No expiring warranties!";
         string deviceName = string.Empty;
         DeviceProfile firstExpiringDevice = DataService.FirstExpiringWarranty();
         if (firstExpiringDevice.DeviceID != 0)
@@ -100,8 +207,17 @@
 
     private List<string> GetLastAddedDevice()
     {
-        DeviceProfile lastDevice = DataService.Device;
-        string deviceID = lastDevice.DeviceID.ToString();
+        _deviceItemsList = new();
+        DeviceProfile? lastDevice = DataService.LastAddedDevice();
+        string deviceID = "0";
+        if (lastDevice != null)
+        {
+            deviceID = lastDevice.DeviceID.ToString();
+        }
+        else
+        {
+            lastDevice = new();
+        }
         string deviceName = lastDevice.DeviceName;
         string finalString = "ID" + ":" + lastDevice.DeviceID.ToString() + " " + lastDevice.DeviceName;
         _deviceItemsList.Add("Last Added Device:");
@@ -111,6 +227,7 @@
 
     private List<string> GetLastAddedRealEstate()
     {
+        _realEstateItemsList = new();
         RealEstate lastRealEstate = DataService.LastAddedRealEstate();
         string lastRealEstateId = lastRealEstate.RealEstateID.ToString();
         _realEstateItemsList.Add("Last added Real Estate:");
@@ -120,9 +237,19 @@
 
     List<string> userItemsList = new List<string>()
     {
-        $"Today is: {DateTime.UtcNow.ToLongDateString()}"
+        $"Date Today: {DateTime.UtcNow.ToLongDateString()}"
     };
-      
+
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     _expiringDevice = DataService.FirstExpiringWarranty();
+    //     base.OnAfterRender(firstRender);
+    // }
+
+    // protected override void OnInitialized()
+    // {
+    //     _expiringDevice = DataService.FirstExpiringWarranty();
+    // }
 
     string userIconPath = "M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0";
     string realEstateIconPath = "M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z";

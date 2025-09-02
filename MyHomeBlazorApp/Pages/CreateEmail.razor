@@ -1,5 +1,9 @@
-﻿@* @page "/createEmail" *@
+
+@page "/createEmail" 
 @page "/createEmail/{currentUserID:int}"
+@attribute [Authorize]
+
+
 @using MailKit.Net.Smtp
 @using MimeKit
 @using MyHomeBlazorApp.Components.Modals
@@ -18,7 +22,6 @@
         <option value="@device.DeviceID">@device.DeviceName</option>
     }
 </InputSelect>
-<p>@_chosedDeviceID</p>
 
 @if (_chosedDeviceID != 0)
 {
@@ -173,25 +176,27 @@
     private async Task NavigateToExtraWarrantyFile()
     {
         string currentExtraWarrrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        string fileUrl = DataService.GetFileUrl(currentExtraWarrrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentExtraWarrrantyReceiptLink, _chosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
     private async Task NavigateToWarrantyFile()
     {
         string currentWarrantyReceiptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, _chosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private void SendEmail()
+    private async Task<string> SendEmail()
     {
         try
         {
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse("lola.labadie15@ethereal.email"));
+            email.From.Add(MailboxAddress.Parse("yourhomesupervisor@gmail.com"));
+            email.Cc.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
             email.To.Add(MailboxAddress.Parse(EmailRequest.To));
             email.Subject = EmailRequest.Subject;
+            email.ReplyTo.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
             var builder = new BodyBuilder();
             // builder.HtmlBody = EmailRequest.Body;
             builder.TextBody = EmailRequest.Body;
@@ -208,22 +213,29 @@
                 // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
                 builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
             }
+
             email.Body = builder.ToMessageBody();
-            // EmailRequest.Body = email.Body.ToString();
+            
             using var smtp = new SmtpClient();
-            smtp.Connect("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("lola.labadie15@ethereal.email", "pXcJDCMXPmZpw1XMfY");
-            smtp.Send(email);
-            smtp.Disconnect(true);
-            _refSuccessModal.OnShowModalClick();
+            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            string? pass = Environment.GetEnvironmentVariable("MyHomeGmailPassword");
+            await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", pass);
+            await smtp.SendAsync(email);
+            email.Dispose();
+            await smtp.DisconnectAsync(true);
+            await _refSuccessModal.OnShowModalClick();
             EmailRequest = new();
             init();
+            return "Email sent successfully!";
         }
-        catch
+        catch (Exception ex)
         {
-
+            {
+                return $"Email sending failed. Error: {ex.Message}";
+            }
         }
     }
+
 
     private void init()
     {
@@ -252,6 +264,7 @@
 
     protected override void OnInitialized()
     {
+        _currentUser = DataService.CurrentUserWithAllData;
         _chosedDevice.DeviceWarranty = new();
         _chosedDevice.DeviceWarranty.Shop = new();
         _chosedDevice.DeviceWarranty.Shop.Address = new();
@@ -315,14 +328,6 @@
                     With kind regards,
                     [YOUR NAME AND SIGNATURE]";
         EmailRequest.Body = _preparedMessage;
-    }
-
-    protected override void OnParametersSet()
-    {
-        if (currentUserID != 0)
-        {
-            _currentUser = DataService.Users.First(u => u.UserID == currentUserID);
-        }
     }
 
     protected override void OnAfterRender(bool firstRender)

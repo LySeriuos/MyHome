@@ -1,8 +1,15 @@
 ﻿body {
 }
 
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+}
+
 .grid {
-    height: auto;
+    height: max-content;
     overflow-y: auto;
 }
 
@@ -10,18 +17,32 @@
 ::deep thead {
     position: sticky;
     top: 0;
-    background-color: rgb(0, 148, 255, 0.3);
+    background-color: #9ab4c4;
 }
 
 /* Subtle stripe effect */
 ::deep tr:nth-child(even) {
-    background: rgb(0, 148, 255, 0.1);
+    background: #e9f3f7;
 }
 
-::deep .joinBtn {
-    align-items: center;
+::deep .col-title {
+    color: black;
+    font-style: normal;
+}
+
+::deep .joinBtnCopy {
     background-color: #0A66C2;
+    align-items: center;
     border: 0;
+    border-radius: 100px;
+    box-sizing: border-box;
+    outline: 1px solid red;
+}
+
+/*::deep .joinBtn {
+    align-items: center;*/
+/*background-color: #0A66C2;*/
+/*border: 0;
     border-radius: 100px;
     box-sizing: border-box;
     color: #ffffff;
@@ -44,51 +65,70 @@
     transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
     user-select: none;
     -webkit-user-select: none;
-    vertical-align: middle;
+    vertical-align: middle;*/
+/*}*/
+
+::deep .addNew-btn {
+    align-items: center;
+    color: #6b6b6d;
+    background-color: transparent;
+    border: solid 2px #f1e1d8;
+    border-radius: 1.3rem;
+    
 }
 
-    ::deep.joinBtn:after {
-        background-clip: padding-box;
-        background-color: #1CB0F6;
-        border: solid transparent;
-        border-radius: 16px;
-        border-width: 0 0 4px;
-        bottom: -4px;
-        content: "";
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: -1;
+    ::deep .addNew-btn:hover {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        background: #e2c8c0;
+        color: #2d2a2b;
     }
 
-    ::deep .joinBtn:focus, .btn:focus {
-        background-color: #16437E;
-        color: #ffffff;
-        border: none;
-        box-shadow: none;
-    }
-
-    ::deep .joinBtn:focus, .joinBtn:active:focus, .btn:focus {
+    ::deep .addNew-btn:focus, .addNew-btn:active:focus, .addNew-btn:focus {
         background: #09223b;
         color: rgb(255, 255, 255, .7);
         border: none;
         box-shadow: none;
     }
 
-    ::deep .joinBtn:hover {
-        background-color: #16437E;
-        color: #ffffff;
-        border: none;
-    }
-
-    ::deep.joinBtn:disabled {
-        cursor: not-allowed;
+/*/*::deep.joinBtn:after {
+    background-clip: padding-box;*/
+    /*background-color: #1CB0F6;*/
+    /*border: solid transparent;
+    border-radius: 16px;
+    border-width: 0 0 4px;
+    bottom: -4px;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
+}*/
+    /*::deep .joinBtn:focus, .btn:focus {*/
+    /*background-color: #16437E;*/
+    /*color: #ffffff;
+    border: none;
+    box-shadow: none;
+}*/
+    /*::deep .joinBtn:focus, .joinBtn:active:focus, .btn:focus {*/
+    /*background: #09223b;*/
+    /*color: rgb(255, 255, 255, .7);
+    border: none;
+    box-shadow: none;
+}*/
+    /*::deep .joinBtn:hover {*/
+    /*background-color: #16437E;*/
+    /*color: #ffffff;
+    border: none;
+}*/
+    /*::deep.joinBtn:disabled {*/
+    /*cursor: not-allowed;
         background: rgba(0, 0, 0, .08);
-        color: rgba(0, 0, 0, .3);
-    }
-
-button .test-btn {
+        color: rgba(0, 0, 0, .3);*/
+    /*}*/
+    /*button .test-btn {
     display: inline-block;
     outline: 0;
     cursor: pointer;
@@ -103,7 +143,6 @@ button .test-btn {
     font-weight: 500;
     font-size: 14px;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
-    
 }
 
 td.test-btn {
@@ -123,8 +162,8 @@ td.test-btn {
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
 }
 
-.crazy-class{
-    text-decoration-color:red;
+.crazy-class {
+    text-decoration-color: red;
 }
 
 ::deep .quickgrid[theme=corporate] {
@@ -133,8 +172,8 @@ td.test-btn {
 }
 
     ::deep .quickgrid[theme=corporate] .col-title {
-        gap: 0.4rem; /* Separate the sort indicator from title text */
-        font-weight: bold;
+        gap: 0.4rem;*/ /* Separate the sort indicator from title text */
+    /*font-weight: bold;
         text-transform: uppercase;
     }
 
@@ -199,34 +238,34 @@ td.test-btn {
     touch-action: manipulation;
 }
 
-::deep .button-51:hover,
-::deep .button-51:active {
-    outline: 0;
-}
+    ::deep .button-51:hover,
+    ::deep .button-51:active {
+        outline: 0;
+    }
 
-::deep .button-51:hover {
-    background-color: transparent;
-    cursor: pointer;
-}
+    ::deep .button-51:hover {
+        background-color: transparent;
+        cursor: pointer;
+    }
 
-::deep .button-51:before {
-    background-color: #D5EDF6;
-    content: "";
-    height: calc(100% + 3px);
-    position: absolute;
-    right: -7px;
-    top: -9px;
-    transition: background-color 300ms ease-in;
-    width: 100%;
-    z-index: -1;
-}
+    ::deep .button-51:before {
+        background-color: #D5EDF6;
+        content: "";
+        height: calc(100% + 3px);
+        position: absolute;
+        right: -7px;
+        top: -9px;
+        transition: background-color 300ms ease-in;
+        width: 100%;
+        z-index: -1;
+    }
 
-::deep .button-51:hover:before {
-    background-color: #6DCFF6;
-}
+    ::deep .button-51:hover:before {
+        background-color: #6DCFF6;
+    }
 
 @media (min-width: 768px) {
     ::deep .button-51 {
         padding: 8px 16px;
-    }
-}
+    }*/
+    /*}*/

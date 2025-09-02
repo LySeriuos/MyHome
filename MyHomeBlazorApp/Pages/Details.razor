@@ -1,14 +1,16 @@
 ﻿@page "/details/{Tab:int}"
 @page "/details"
-
+@attribute [Authorize]
 
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.AspNetCore.Mvc
+@using Microsoft.EntityFrameworkCore
 @using MyHome.Models;
 @using MyHomeBlazorApp.BlazorData;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
 @using BlazorBootstrap
+@using MyHomeBlazorApp.Components.Account
 @using MyHomeBlazorApp.Components
 @using MyHomeBlazorApp.Components.TabComponents
 @using MyHomeBlazorApp.Shared
@@ -22,16 +24,28 @@
 @inject NavigationManager NavManager
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
-
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject IUserStore<MyHomeBlazorAppUser> UserStore
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject IEmailSender<MyHomeBlazorAppUser> EmailSender
+@inject ILogger<Register> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject IdentityUserAccessor UserAccessor
+@inject MyHomeBlazorAppContext _dbcontext;
+@using Microsoft.AspNetCore.Identity
+@attribute [Authorize]
 
 
 <h3>Details</h3>
 
 
+
 <TabControl TabID="TabID">
     <TabPage Text="Real Estates">
         <div class="grid">
-            <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewRealEstate">Add New</Button>
+            <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
             <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
                 <TemplateColumn>
                     <div>
@@ -54,7 +68,7 @@
     </TabPage>
     <TabPage Text="Devices">
         <div class="grid">
-            <Button Class="btn btn-outline-success" @onclick="OnShowModalAddNewDevice">Add New</Button>
+            <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
@@ -149,11 +163,11 @@
             </QuickGrid>
         </div>
     </TabPage>
-    @if (DataService.UnassignedProfile.UnassignedDevicesList.Count > 0)
+    @if (_unassignedDevicesListAsQueryable.AsQueryable().ToList().Count > 0)
     {
         <TabPage Text="Unassigned Devices">
             <div class="grid">
-                <QuickGrid tabindex="2" Items="DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable()">
+                <QuickGrid tabindex="5" Items="_unassignedDevicesListAsQueryable">
                     <TemplateColumn>
                         <div>
                             <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
@@ -178,7 +192,6 @@
 </TabControl>
 
 <!--#region Edit Form Modals  -->
-@* Here is the EditForm with button outside the form *@
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
@@ -192,9 +205,6 @@
     CurrentUser="@currentUser"
     RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
     </ModalEditAddDevice>
-</div>
-<div>
-    @* <Modal @ref="refModalEditAddDeviceTest" /> *@
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
@@ -215,7 +225,6 @@
     </ModalDeleteRealEstate>
 </div>
 <div>
-
     <ModalReassignDevices @ref="@refModalReasignDevices"
     SelectedRealEstateID="@SelectedRealEstateID"
     CurrentUser="@currentUser"
@@ -224,8 +233,7 @@
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-    CurrentDeviceToDelete="@currentDevice"
-    CurrentRealEstateToDeleteFrom="@currentRealEstate">
+    CurrentDeviceToDelete="@currentDevice">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
@@ -233,17 +241,18 @@
     ObjectName="@_deletedObjectName">
     </ModalDeleteSuccessful>
 </div>
-
-<div>
-    <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
-        <AddEditDeviceForm CurrentDevice="currentDevice"
-        CurrentUser="currentUser"
-        DataChangedEvent="DeviceListDataHasChangedTest"/>
-    </CustomReusableModal>
-</div>
 <div>
     <SuccessModal @ref="_refSuccessModal" Title="Add/Edit Confirmation" Text="Data updated/added successfully!"></SuccessModal>
 </div>
+
+@* CustomReusableModal is for adding different forms in one modal to save code lines *@
+@* <div>
+    <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
+        <AddEditDeviceForm CurrentDevice="currentDevice"
+        CurrentUser="currentUser"
+        DataChangedEvent="DeviceListDataHasChangedTest" />
+    </CustomReusableModal>
+</div> *@
 
 
 
@@ -265,6 +274,7 @@
     private string _chooseOptionValue = "Choose Real Estate";
     private string? _deletedObjectName;
     private string message = "";
+    public bool listHasBeenChanged = false;
     private RealEstate currentChosedRealEsate = new();
     private RealEstate currentRealEstate = new();
     private Address currentRealEstateAddress = new();
@@ -272,9 +282,12 @@
     private DeviceProfile currentDevice { get; set; } = new();
     private UserProfile currentUser = new();
     private const string BaseApiUrl = "https://www.google.se/search?q=";
-    private IQueryable<DeviceProfile> _devicesListAsQueryable;
-    private IQueryable<RealEstate> _realEstatesListAsQueryable;
-    private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable;
+    private IQueryable<DeviceProfile>? _devicesListAsQueryable;
+    private IQueryable<RealEstate>? _realEstatesListAsQueryable;
+    private IQueryable<RealEstate>? _realEstatesListAsQueryable11;
+    private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable;
+    public MyHomeBlazorAppUser user = default!;
+    public Action? UnassignedDevicesListChanged;
     public string deviceName
     {
         get => currentDevice.DeviceName;
@@ -283,25 +296,36 @@
     private CustomReusableModal _reusableModal = default!;
     private SuccessModal _refSuccessModal = default!;
 
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [Inject]
+    public AuthenticationStateProvider AuthenticationState { get; set; }
+
+
+
+
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
-        currentUser = DataService.CurrentUser;
-        currentDevice = DataService.GetDeviceById(deviceID); ;
-        await _reusableModal.ShowAsync();
+        currentUser = DataService.CurrentUserWithAllData;
+        currentDevice = DataService.GetDeviceById(deviceID);
+        currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(currentDevice.DeviceID);
+        await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
-
+    // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
     private async Task OnShowModalAddNewDevice()
     {
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         currentDevice = new();
-        await _reusableModal.ShowAsync();
+        currentChosedRealEsate.RealEstateID = 0;
+        await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
-    
+
     private async Task NavigateToExtraWarrantyFile(int deviceID)
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
@@ -309,9 +333,11 @@
     {
         currentDevice = DataService.GetDeviceById(deviceID);
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ReceiptLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink);
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+
     }
+
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -319,23 +345,17 @@
         {
             refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
             refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
-            refModalEditAddDevice.changedDeviceListData += DeviceListDataHasChanged;
+            refModalEditAddDevice.changedDeviceListData += DeviceDataHasChanged;
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
             refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
             _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
-            refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateListDataHasChanged;
+            refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
         }
         base.OnAfterRender(firstRender);
-    }
-
-    private void RealEstateListDataHasChanged()
-    {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
-        StateHasChanged();
     }
 
     private void OnModalDeleteSuccess()
@@ -350,21 +370,21 @@
     private ModalReassignDevices refModalReasignDevices = default!;
 
     private void RealEstateDataHasChanged()
-    {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+    {        
+        _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
     }
 
     private void OnModalRealEstateDeleteRequest()
     {
-        // currentUser = DataService.CurrentUser;
-        // currentRealEstate = DataService.GetRealEstate(realEstateID);
         refModalRealEstateDelete.DeleteRealEstate_Click(true);
     }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
         currentRealEstate = DataService.GetRealEstate(realEstateID);
+
+        currentRealEstate = DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateID);
         currentRealEstateAddress = currentRealEstate.Address;
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
@@ -372,16 +392,14 @@
     private async Task OnShowModalAddNewRealEstate()
     {
         currentRealEstate = new();
-        currentChosedRealEsate.RealEstateID = DataService.RealEstates.Max(e => e.RealEstateID) + 1;
         currentRealEstateAddress = new();
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
 
     private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
     {
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
-        //TODO fixthis variable to give value only if after realEstate was deleted
         _deletedObjectName = currentRealEstate.RealEstateName;
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
@@ -401,27 +419,13 @@
 
     private void DeviceDataHasChanged()
     {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        StateHasChanged();
-    }
-
-    private void DeviceListDataHasChanged()
-    {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        StateHasChanged();
-    }
-
-    private void DeviceListDataHasChangedTest()
-    {        
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _refSuccessModal.OnShowModalClick();
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
         StateHasChanged();
     }
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
-        int ChosedRealEsatateID = DataService.GetRealEstateByDeviceID(deviceId);
-        currentRealEstate = DataService.GetRealEstate(ChosedRealEsatateID);
         currentDevice = DataService.GetDeviceById(deviceId);
         _deletedObjectName = currentDevice.DeviceName;
         await refModalConfirmDeviceDeletion.OnShowModalClick();
@@ -430,7 +434,7 @@
     private async Task OnShowModalEditDeviceClick(int deviceID)
     {
         currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(deviceID);
-        currentUser = DataService.CurrentUser;
+        currentUser = DataService.CurrentUserWithAllData;
         currentDevice = DataService.GetDeviceById(deviceID);
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
@@ -443,7 +447,7 @@
 
     private void WarrantyDataHasChanged()
     {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         StateHasChanged();
     }
 
@@ -461,7 +465,7 @@
 
     private void ShopDataHasChanged()
     {
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
     }
 
@@ -474,10 +478,16 @@
 
     #endregion
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
-        _realEstatesListAsQueryable = DataService.CurrentUser.RealEstates.AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+        
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
+        SelectMany(realEstate => realEstate.DevicesProfiles)
+        .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
+        .ThenBy(d => d.DeviceID).AsQueryable();
+
+        _realEstatesListAsQueryable = DataService.GetDbUserWithRealEstateAddressData().Result.UserProfile.RealEstates.AsQueryable();
         DataService.CheckIfFileExsist();
         base.OnInitialized();
     }
@@ -503,56 +513,7 @@
     }
 
 
-    // // // // // // // //
-
-
-    // moved to validation method to keep one button
-    // public async Task AddOrSave()
-    // {
-    //     if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
-    //     {
-    //         currentRealEstate.Address = currentRealEstateAddress;
-    //         DataService.AddNewRealEstate(currentRealEstate);
-    //     }
-    //     else
-    //     {
-    //         DataService.SaveUpdatedRealEstate();
-    //     }
-    //     await refModalEditAddRealEstate.HideAsync();
-    // }
-
-    // Void or async Task?
-
-    // private void OnModalDeviceWarrantyNext()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-    // }
-
-    // private void OnModalDeviceWarrantyPreviuos()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
-    // }
-
-    // private void OnModalDeviceShopNext()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID + 1);
-    // }
-
-    // private void OnModalDeviceShopPreviuos()
-    // {
-    //     currentDevice = DataService.Devices.First(d => d.DeviceID == currentDevice.DeviceID - 1);
-    // }
-
-    // private async void Navigate(int deviceID)
-    // {
-    //     currentDevice = DataService.GetDeviceById(deviceID);
-    //     var query = new Dictionary<string, string>
-    // {
-    //         { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
-    //     };
-    //     string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(BaseApiUrl, query);
-    //     await JSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
-    // }
+    
 
 }
 

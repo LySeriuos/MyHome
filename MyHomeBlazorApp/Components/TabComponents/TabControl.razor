@@ -163,9 +163,8 @@
         
 
 </style>
->>>>>>> Stashed changes
 <CascadingValue Value="this">
-    <div class="btn-group" role="group">
+    <div class="btn-group h4" role="group">
         @foreach (TabPage tabPage in Pages)
         {
             <button type="button"
@@ -211,6 +210,10 @@
             {
                 ActivePage = Pages[2];
             }
+            else if (TabID == 4)
+            {
+                ActivePage = Pages[3];
+            }
             else
             {
                 throw new ArgumentException("Invalid Tab ID");
@@ -221,7 +224,7 @@
 
     string GetButtonClass(TabPage page)
     {
-        return page == ActivePage ? "btn-primary" : "btn-secondary";
+        return page == ActivePage ? "btn-tab" : "joinBtn";
     }
 
     void ActivatePage(TabPage page)

@@ -1,0 +1,61 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+
+<style>
+    .card-outline-style {
+        outline-width: 5px;
+        outline-style: double;
+        outline-color: #9bb3c4;
+    }
+    .card-style {
+        background: #ebecf1;
+    }
+    
+</style>
+
+<Card Style="width:18rem; margin-right:50px; margin-top:50px;" Class="card-outline-style card-style">
+    <svg xmlns="http://www.w3.org/2000/svg" style="" width="100px" height="100px" fill="#e2c8c0" class="@IconStyle  mx-auto my-3 d-flex align-items-center" viewBox="0 0 16 16">
+        <path d="@IconPath" />
+    </svg>
+
+    @* <img class="rounded-top" style="width:150px; height:150px; margin:auto;" src=" @Image" alt="placeholder" /> *@
+    <CardBody>
+
+        <CardTitle>@Title</CardTitle>
+        <CardTitle>@ChildContent</CardTitle>
+        <CardText>@Text</CardText>
+        
+    <ul class="list-group list-group-flush">
+        @foreach (var item in ListItems)
+        {
+            <li class="list-group-item">@item</li>
+        }
+    </ul>
+   
+        <CardLink To="@LinkTo">@LinkName</CardLink>
+
+    </CardBody>
+</Card>
+
+@code {
+
+    [Parameter]
+    public string? IconStyle { get; set; }
+    [Parameter]
+    public string? Image { get; set; }
+    [Parameter]
+    public string? IconPath { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? Text { get; set; }
+    [Parameter]
+    public List<string?> ListItems { get; set; } = new List<string?>();
+    [Parameter]
+    public string? LinkName { get; set; }
+    [Parameter]
+    public string? LinkTo { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
+

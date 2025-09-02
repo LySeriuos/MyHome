@@ -9,6 +9,9 @@ namespace MyHome.Models
 {
     public class Address
     {
+        
+        public int Id { get; set; }
+
         private string _streetName = default;
 
         public string StreetName
@@ -33,9 +36,9 @@ namespace MyHome.Models
             set { _apartamentNumber = value; }
         }
 
-        // """bla@1domain.tld
+        
         private string _houseNumberExtension = default;
-        [EmailAddress]
+        
         public string HouseNumberExtension
         {
             get { return _houseNumberExtension; }

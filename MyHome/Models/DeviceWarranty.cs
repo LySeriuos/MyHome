@@ -9,7 +9,8 @@ namespace MyHome.Models
 {
     public class DeviceWarranty
     {
-       public DateTime now = DateTime.Now;
+        public int Id { get; set; }
+        public DateTime now = DateTime.Now;
 
         private TimeSpan _warrantyPeriod;
         public TimeSpan WarrantyPeriod

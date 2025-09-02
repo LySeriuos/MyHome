@@ -1,9 +1,74 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Http.Extensions
+@inject NavigationManager _navManager
 
-<PageTitle>Index</PageTitle>
+<!-- Bootstrap CSS CDN -->
+<body class="min-vh-100 d-flex flex-column text-dark">    
 
-<h1>Hello, world!</h1>
+    <!-- Hero Section -->
+    <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-end text-center py-5 py-md-5 px-3 hero-background">
+        <section class="container col-lg-8 hero-content">
+            <h2 class="display-4 display-md-1 fw-bolder hero-text lh-sm mb-4">
+                Simplify Your Life, <span class="d-none d-sm-inline"><br></span> Organize Your Home.
+            </h2>
 
-Welcome to your new app.
+            <p class="lead fs-5 fs-md-4 text-secondary mb-4 col-md-10 mx-auto justify-content-end">
+                My Home is your ultimate digital assistant for managing everything in your household – effortlessly track device warranties, key information, and receipts.
+            </p>
+            <button class="btn btn-hero btn-lg rounded-pill fw-bold shadow-lg btn-hover-scale px-5 py-3 justify-content-end" @onclick='() => _navManager.NavigateTo("Account/Register")'>
+                Sign Up Now
+            </button>
+        </section>
+    </main>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <!-- Features Section -->
+    <section id="features" class="py-5 bg-white shadow-sm rounded-top">
+        <div class="container text-center px-4">
+            <h3 class="h2 fw-bold text-dark mb-5"><span class="text-brand">My Home</span> Key Features</h3>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <!-- Feature 1: Gadget Management -->
+                <div class="col">
+                    <div class="card h-100 border-info bg-info bg-opacity-10 shadow-sm rounded-4 p-4 feature-card">
+                        <div class="display-4 mb-3 text-info">&#128187;</div>
+                        <h4 class="h5 fw-semibold mb-2 text-info">Gadget Organizer</h4>
+                        <p class="card-text text-secondary">Keep track of all your devices, receipts, warranty details, IP, and MAC addresses in one secure place.</p>
+                    </div>
+                </div>
+                <!-- Feature 2: Real Estate Management -->
+                <div class="col">
+                    <div class="card h-100 border-success bg-success bg-opacity-10 shadow-sm rounded-4 p-4 feature-card">
+                        <div class="display-4 mb-3 text-success">&#127968;</div>
+                        <h4 class="h5 fw-semibold mb-2 text-success">Real Estate Hub</h4>
+                        <p class="card-text text-secondary">Manage multiple properties and assign devices to their respective locations effortlessly.</p>
+                    </div>
+                </div>
+                <!-- Feature 3: QR Code Integration -->
+                <div class="col">
+                    <div class="card h-100 border-purple bg-purple bg-opacity-10 shadow-sm rounded-4 p-4 feature-card" style="--bs-purple-rgb: 107, 70, 193;">
+                        <div class="display-4 mb-3 text-purple" style="color: #6b46c1;">&#128290;</div>
+                        <h4 class="h5 fw-semibold mb-2 text-purple" style="color: #6b46c1;">Smart QR Codes</h4>
+                        <p class="card-text text-secondary">Generate QR codes for devices, scan to view/edit details, or instantly open manuals.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container col-lg-8 mx-auto px-4 text-center">
+            <h3 class="h2 fw-bold text-dark mb-4">About My Home</h3>
+            <p class="lead text-secondary">
+                It is very easy to loose a reciept or an insurance proof for long term waranties. We are here to help you! My Home helps you monitor devices warranties and essential information for everything in your household, from gadgets to long-warranty items like furniture. My Home can create qr codes from provided data and easily print them to mark devices. User can scan them to access manuals or receipts, and even prepare email messages for repairs or quality issues directly in mobile phone. And much more...!"
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-light text-black-50 text-center py-4 shadow-sm border-top border-black">
+        <p class="small mb-1">&copy; @DateTime.Now.Year My Home App. All rights reserved.</p>
+        <p class="small">Designed with &#10084;&#65039; for easy home management.</p>
+    </footer>
+</body>
+
+

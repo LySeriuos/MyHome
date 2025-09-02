@@ -22,19 +22,20 @@
     public IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private Modal? refModalConfirmDeviceDeletion { get; set; }
     private String? _deletedDeviceName;
+    private DeviceProfile? _deviceToDelete { get; set; }
 
     public Action onDataChanged;
 
     private async Task DeleteDevice_Click(bool _confirmDeletion)
     {
-        if (_confirmDeletion == true)
+        if (_confirmDeletion == true && CurrentDeviceToDelete != null)
         {
-            // manualy assigned value!
-            DeviceProfile deviceToDelete = CurrentRealEstateToDeleteFrom.DevicesProfiles.First(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
-            if (deviceToDelete != null)
-            {
-                _deletedDeviceName = deviceToDelete.DeviceName;
-                Logic.RemoveDevice(CurrentRealEstateToDeleteFrom, deviceToDelete, DataService.Users, DataService.XmlPath);
+            _deviceToDelete = DataService.CurrentUserWithAllData.GetAllDevices().First(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
+
+            if (_deviceToDelete != null)
+            {                
+                // // _deletedDeviceName = _deviceToDelete.DeviceName;
+                await DataService.RemoveDeviceFromDb(_deviceToDelete);
                 onDataChanged();
             }
             else

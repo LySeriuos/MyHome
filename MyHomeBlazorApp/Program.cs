@@ -3,7 +3,16 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using MyHomeBlazorApp.BlazorData;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components.Authorization;
+using MyHomeBlazorApp.Components.Account;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using WebPWrecover.Services;
 
+//using MyHomeBlazorApp.Components.Account;
 namespace MyHomeBlazorApp
 {
     public class Program
@@ -16,17 +25,46 @@ namespace MyHomeBlazorApp
             public const string SAVE_UPLOADED_FILES = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\UploadedFiles\\";
             public const string BASE_API_URL = "https://www.google.se/search?q=";
         }
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
 
+            builder.Services.AddDbContext<MyHomeBlazorAppContext>(options => options.UseSqlite(connectionString));
+
+
+            builder.Services.AddRazorComponents()
+        .AddInteractiveServerComponents();
+
+            builder.Services.AddCascadingAuthenticationState();
+
+            builder.Services.AddScoped<IdentityUserAccessor>();
+            builder.Services.AddScoped<IdentityRedirectManager>();
+            builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+    .AddIdentityCookies();
+
+            builder.Services.AddIdentityCore<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<MyHomeBlazorAppContext>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders()
+                .AddApiEndpoints();
+            
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddSingleton<DataService>();
+            builder.Services.AddScoped<DataService>();
+            builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazorBootstrap();
-            
-
+            builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -37,6 +75,7 @@ namespace MyHomeBlazorApp
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             // routing url to physical path "Files"
@@ -46,12 +85,19 @@ namespace MyHomeBlazorApp
                 RequestPath = "/Files"
             });
 
-            app.UseRouting();
-
-            app.MapBlazorHub();
-            app.MapFallbackToPage("/_Host");
-
+            //      app.UseRouting();
+            app.UseAuthorization();
+            //app.UseAuthentication();
+            //      app.MapControllers();
+            //      app.MapBlazorHub();
+            app.UseAntiforgery();
+            app.MapIdentityApi<MyHomeBlazorAppUser>();
+            app.MapRazorComponents<App>()
+               .AddInteractiveServerRenderMode();
+            app.MapAdditionalIdentityEndpoints();
             app.Run();
         }
+
+
     }
 }

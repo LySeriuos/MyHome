@@ -8,6 +8,7 @@ namespace MyHome.Models
 {
     public class Shop
     {
+        public int Id { get; set; }
         private string _shopName = default;
 
         public string ShopName
@@ -24,7 +25,7 @@ namespace MyHome.Models
             set { _shopWebAdrress = value; }
         }
 
-        private Address _address;
+        private Address _address = new Address();
         public Address Address
         {
             get { return _address; }

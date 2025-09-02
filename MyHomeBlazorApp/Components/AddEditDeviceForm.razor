@@ -169,8 +169,12 @@
     {
         _chosedRealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
         editContext = new(CurrentDevice);
-        _unassignedDevicesListAsQueryable = DataService.UnassignedProfile.UnassignedDevicesList.AsQueryable();
-        _devicesListAsQueryable = DataService.CurrentUser.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.UnassignedDevicesList.AsQueryable();
+        _devicesListAsQueryable = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
+        .Result.UserProfile.RealEstates
+        .SelectMany(realEstate => realEstate.DevicesProfiles)
+        .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
+        .ThenBy(d => d.DeviceID).AsQueryable();
     }
 
     public void Save()
@@ -249,7 +253,8 @@
 
         if (CurrentDevice.DeviceID == 0 && validDeviceForm == true)
         {
-            DataService.AddNewDevice(CurrentDevice, _chosedRealEstateID);
+            // DataService.AddNewDevice(CurrentDevice, _chosedRealEstateID);
+            DataService.AddNewDeviceToDataBase(CurrentDevice, _chosedRealEstateID);
             _chosedRealEstateID = 0;
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
@@ -261,7 +266,7 @@
             DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, _chosedRealEstateID);
         }
 
-        DataService.SaveUpdatedObject();
+        DataService.UpdateObjectInDB();
         await DataChangedEvent.InvokeAsync();
         fieldHasBeenChanged = false;
         showErrorMessageVisible = false;

@@ -1,6 +1,7 @@
 ﻿using My_Home.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -11,7 +12,7 @@ namespace MyHome.Models
     public class UserProfile
     {
         private int _userID;
-
+        [Key]
         public int UserID
         {
             get { return _userID; }
@@ -34,11 +35,7 @@ namespace MyHome.Models
             set { _email = value; }
         }
 
-        // password class will be added later
-        // not sure about this class here
-               
-
-        private List<RealEstate> _realEstates;
+        private List<RealEstate> _realEstates = new();
 
         public List<RealEstate> RealEstates
         {
@@ -48,22 +45,21 @@ namespace MyHome.Models
 
         
 
-        private Unassigned _unassignedDevices;
+        private List<DeviceProfile> _unassignedDevicesList = new();
 
-        public Unassigned UnassignedDevices
+        public List<DeviceProfile> UnassignedDevicesList
         {
-            get { return _unassignedDevices; }
-            set { _unassignedDevices = value; }
+            get { return _unassignedDevicesList; }
+            set { _unassignedDevicesList = value; }
         }
 
         public List<DeviceProfile> GetAllDevices()
         {
             List<DeviceProfile> allDevices = new List<DeviceProfile>();
             var devices = RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles);
-            if(UnassignedDevices != null )
+            if(UnassignedDevicesList != null )
             {
-                var unassignedDevices = UnassignedDevices.UnassignedDevicesList;
-                foreach (DeviceProfile device in unassignedDevices)
+                foreach (DeviceProfile device in UnassignedDevicesList)
                 {
                     allDevices.Add(device);
                 }
