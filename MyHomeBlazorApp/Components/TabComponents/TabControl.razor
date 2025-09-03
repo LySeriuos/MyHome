@@ -38,8 +38,26 @@
         -webkit-user-select: none;
         vertical-align: middle;
     }
+    .btn .joinBtn{
 
-        /* .joinBtn:after {
+    }
+
+    .btn-group > .btn-group:not(:last-child) > .btn, .btn-group > .btn:not(:last-child):not(.dropdown-toggle) {
+        border-top-right-radius: 16px;
+        border-bottom-right-radius: 16px;
+    }
+
+    .btn-group > .btn-group:not(:first-child) > .btn, .btn-group > .btn:nth-child(n+3), .btn-group > :not(.btn-check) + .btn {
+        border-top-left-radius: 16px;
+        border-bottom-left-radius: 16px;
+    }
+
+    .btn-group > .btn:nth-child(n+3), .btn-group > :not(.btn-check) + .btn {
+        border-top-left-radius: 16px;
+        border-bottom-left-radius: 16px;
+    }
+
+        .joinBtn:after {
             background-clip: padding-box;
             background-color: #f1e1d8;
             border: solid transparent;
@@ -52,7 +70,7 @@
             right: 0;
             top: 0;
             z-index: -1;
-        } */
+        }
 
        
 
@@ -168,7 +186,7 @@
         @foreach (TabPage tabPage in Pages)
         {
             <button type="button"
-                    class="btn rounded @GetButtonClass(tabPage)"
+                    class="btn @GetButtonClass(tabPage)"
                     @onclick=@( () => ActivatePage(tabPage) )>
                 @tabPage.Text
             </button>
