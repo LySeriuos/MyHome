@@ -97,9 +97,8 @@
         </div>
     </TabPage>
     <TabPage Text="Devices Warranties">
-        <div class="grid">
+        <div class="grid my-5">
             <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
-
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
@@ -141,7 +140,7 @@
         </div>
     </TabPage>
     <TabPage Text="Shops Details">
-        <div class="grid">
+        <div class="grid my-5">
             <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
