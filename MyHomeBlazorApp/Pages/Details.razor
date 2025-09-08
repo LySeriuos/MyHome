@@ -291,6 +291,7 @@
 
     private async Task HandleQrCode(int deviceId)
     {
+        currentUser = DataService.CurrentUserWithAllData;
         // _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
         Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes");
         string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes\\DeviceID{deviceId.ToString()}.png";
