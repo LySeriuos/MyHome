@@ -74,7 +74,7 @@
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
+                        <Button Class="btn btn-outline-danger" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
@@ -288,6 +288,22 @@
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable;
     public MyHomeBlazorAppUser user = default!;
     public Action? UnassignedDevicesListChanged;
+
+    private async Task HandleQrCode(int deviceId)
+    {
+        // _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
+        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes");
+        string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes\\DeviceID{deviceId.ToString()}.png";
+        Logic.CreateQrCodeLinkToDevice(deviceId.ToString(), currentUser.UserID.ToString(), filePath);
+        var file = Path.GetFileName(filePath);
+        string fileUrl = $"files/{currentUser.UserID}/qrCodes/{file}";
+        await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+        // _chosedDeviceID = new();
+        StateHasChanged();
+    } 
+
+
+
     public string deviceName
     {
         get => currentDevice.DeviceName;
