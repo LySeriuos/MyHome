@@ -17,40 +17,43 @@
 @inject IdentityRedirectManager RedirectManager
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 
-<h3>QrCoder</h3>
 
-<h5>Generate link to Device QrCode </h5>
+<div>
+    <Card Style="width:18rem;">
+        <CardBody>
+            <CardTitle>Create Wifi Connection Qr Code </CardTitle>
+            <EditForm Model="wifiModel" Class="my-5" OnSubmit="HandleWifiSharingQrCode">
+                <DataAnnotationsValidator />
+                <div class="my-2">
+                    <label class="form-check-label" for="wifiName">
+                        Wifi Name
+                    </label>
+                    <InputText id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
+                    <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
+                </div>
 
+                <div class="my-2">
+                    <label class="form-check-label" for="wifiPassword">
+                        Wifi Pasword
+                    </label>
+                    <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+                    <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
 
-        <EditForm Model="wifiModel" Class="my-5" OnSubmit="HandleWifiSharingQrCode">
-            <DataAnnotationsValidator />
-            <div>
-                <label class="form-check-label" for="wifiName">
-                    Wifi Name
-                </label>
-                <InputText id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
-                <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
-            </div>
-            <div>
-                <label class="form-check-label" for="wifiPassword">
-                    Wifi Pasword
-                </label>
-                <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
-                <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
-
-                <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
-            </div>
-
-            <br />
-            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
-        </EditForm>
+                    <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
+                </div>
+                <br />
+                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" class="align-text-center">Create Wifi Qr Code</Button>
+            </EditForm>
+        </CardBody>
+    </Card>
+</div>
 
 
 <style>
     bi.bi-eye:before {
-    content: '\e345';
-    font-family: e-icons;
-    font-size: 13px;
+        content: '\e345';
+        font-family: e-icons;
+        font-size: 13px;
     }
 
 </style>
