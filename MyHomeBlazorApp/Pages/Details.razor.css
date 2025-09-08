@@ -92,6 +92,33 @@
         box-shadow: none;
     }
 
+.oi {
+    background-color: aquamarine;
+    color: antiquewhite;
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+    background-size: cover;
+    position: relative;
+    display: inline-block;
+    speak: none;
+    font-family: Icons;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.bi {
+    display: inline-block;
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    top: -1px;
+    background-size: cover;
+}
+
 /*/*::deep.joinBtn:after {
     background-clip: padding-box;*/
     /*background-color: #1CB0F6;*/

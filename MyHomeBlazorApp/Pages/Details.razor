@@ -49,8 +49,8 @@
             <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
                 <TemplateColumn>
                     <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)">Edit</Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalChooseOptionDeleteRealEstate(context.RealEstateID)">Delete</Button>
+                        <Button Class="btn btn-outline-dark icon-button" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)"><Icon Name="IconName.PencilFill" /></Button>
+                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalChooseOptionDeleteRealEstate(context.RealEstateID)"><Icon Name="IconName.Trash3Fill"  /></Button>
                     </div>
                 </TemplateColumn>
                 <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
@@ -72,8 +72,8 @@
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)">Edit</Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
+                        <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
@@ -101,7 +101,7 @@
             <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
@@ -144,7 +144,7 @@
             <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)">Edit</Button>
+                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
@@ -169,8 +169,8 @@
                 <QuickGrid tabindex="5" Items="_unassignedDevicesListAsQueryable">
                     <TemplateColumn>
                         <div>
-                            <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)">Edit</Button>
-                            <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)">Delete</Button>
+                            <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                            <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
                         </div>
                     </TemplateColumn>
                     <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
