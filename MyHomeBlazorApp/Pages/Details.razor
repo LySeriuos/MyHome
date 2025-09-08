@@ -76,13 +76,13 @@
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
                     </div>
                 </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
+                <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
                     @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
                     {
-                        <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                        <span>@DataService.GetRealEstate(DataService.GetRealEstateByDeviceID(context.DeviceID)).RealEstateName</span>
                     }
                 </TemplateColumn>
-                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                <PropertyColumn Title="Device ID" Property="@(d=>d.DeviceID)" Sortable="true" />
                 <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
                 <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
                 <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
