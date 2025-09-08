@@ -74,7 +74,7 @@
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
+                        <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">

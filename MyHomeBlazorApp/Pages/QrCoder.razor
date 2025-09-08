@@ -21,29 +21,7 @@
 
 <h5>Generate link to Device QrCode </h5>
 
-<TabControl>
-    <TabPage Text="Create Device's Qr Code">
-        <EditForm Model="_selectedDeviceProfile" OnSubmit="HandleQrCode" FormName="QrC">
-            <label class="form-label">Choose Device</label>
-            <InputSelect @bind-Value="_chosedDeviceID">
-                <option selected disabled value="-1">Select Device...</option>
-                @foreach (var device in DataService.CurrentUserWithAllData.GetAllDevices())
-                {
-                    <option value="@device.DeviceID">@device.DeviceName</option>
-                }
-            </InputSelect>
-            <br />
-            @if (_chosedDeviceID <= 0)
-            {
-                <Button Disabled Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
-            }
-            else
-            {
-                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
-            }
-        </EditForm>
-    </TabPage>
-    <TabPage Text="Create Wifi Connection QR Code">
+
         <EditForm Model="wifiModel" Class="my-5" OnSubmit="HandleWifiSharingQrCode">
             <DataAnnotationsValidator />
             <div>
@@ -66,8 +44,6 @@
             <br />
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
         </EditForm>
-    </TabPage>
-</TabControl>
 
 
 <style>
