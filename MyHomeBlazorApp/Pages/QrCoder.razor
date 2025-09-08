@@ -3,8 +3,10 @@
 @using MyHome.Models;
 @using MyHome;
 @using MyHomeBlazorApp.BlazorData
+@using MyHomeBlazorApp.Components.TabComponents
 @using MyHomeBlazorApp.Pages
 @using System.ComponentModel.DataAnnotations
+@using MyHomeBlazorApp.Components
 @using static QRCoder.PayloadGenerator
 @inject BlazorData.DataService DataService
 @inject IJSRuntime JSRuntime
@@ -19,50 +21,54 @@
 
 <h5>Generate link to Device QrCode </h5>
 
-<EditForm Model="_selectedDeviceProfile" OnSubmit="HandleQrCode" FormName="QrC">
-    <label class="form-label">Choose Device</label>
-    <InputSelect @bind-Value="_chosedDeviceID">
-        <option selected disabled value="-1">Select Device...</option>
-        @foreach (var device in DataService.CurrentUserWithAllData.GetAllDevices())
-        {
-            <option value="@device.DeviceID">@device.DeviceName</option>
-        }
-    </InputSelect>
-    <br />
-    @if (_chosedDeviceID <= 0)
-    {
-        <Button Disabled Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
-    }
-    else
-    {
-        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
-    }
-</EditForm>
-<br />
-<br />
-<h5>Create Wifi Sharing Qr Code</h5>
-<EditForm Model="wifiModel" OnSubmit="HandleWifiSharingQrCode">
-    <DataAnnotationsValidator />
-    <div>
-        <label class="form-check-label" for="wifiName">
-            Wifi Name
-        </label>
-        <InputText id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
-        <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
-    </div>
-    <div>
-        <label class="form-check-label" for="wifiPassword">
-            Wifi Pasword
-        </label>
-        <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
-        <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
+<TabControl>
+    <TabPage Text="Create Device's Qr Code">
+        <EditForm Model="_selectedDeviceProfile" OnSubmit="HandleQrCode" FormName="QrC">
+            <label class="form-label">Choose Device</label>
+            <InputSelect @bind-Value="_chosedDeviceID">
+                <option selected disabled value="-1">Select Device...</option>
+                @foreach (var device in DataService.CurrentUserWithAllData.GetAllDevices())
+                {
+                    <option value="@device.DeviceID">@device.DeviceName</option>
+                }
+            </InputSelect>
+            <br />
+            @if (_chosedDeviceID <= 0)
+            {
+                <Button Disabled Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+            }
+            else
+            {
+                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Generate link QrCode</Button>
+            }
+        </EditForm>
+    </TabPage>
+    <TabPage Text="Create Wifi Connection QR Code">
+        <EditForm Model="wifiModel" Class="my-5" OnSubmit="HandleWifiSharingQrCode">
+            <DataAnnotationsValidator />
+            <div>
+                <label class="form-check-label" for="wifiName">
+                    Wifi Name
+                </label>
+                <InputText id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
+                <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
+            </div>
+            <div>
+                <label class="form-check-label" for="wifiPassword">
+                    Wifi Pasword
+                </label>
+                <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+                <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
 
-        <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
-    </div>
+                <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
+            </div>
 
-    <br />
-    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
-</EditForm>
+            <br />
+            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Create Wifi Qr Code</Button>
+        </EditForm>
+    </TabPage>
+</TabControl>
+
 
 <style>
     bi.bi-eye:before {
