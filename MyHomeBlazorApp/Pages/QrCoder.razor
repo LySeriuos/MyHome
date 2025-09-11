@@ -17,14 +17,52 @@
 @inject IdentityRedirectManager RedirectManager
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 
+<style>
+    
+    .card-outline-style {
+        outline-width: 5px;
+        outline-style: double;
+        outline-color: darkgoldenrod;
+    }
 
+    .card-style {
+        display: flex;
+        justify-content: center;
+        background-color: #eeeff4;
+        width: 18rem;
+        margin-right: 50px;
+        margin-top: 50px;
+    }
+
+    .card-btn {
+        color: #2d2a2b;
+        background-color: #cfd9e1;
+        border-color: #1861ac;
+        border-radius: 1.3rem;
+    }
+
+        .card-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
+
+    bi.bi-eye:before {
+        content: '\e345';
+        font-family: e-icons;
+        font-size: 13px;
+    }
+</style>
+<body>
 <div>
-    <Card Style="width:18rem;">
+    <Card Class="card-style d-flex" Style="width:18rem;">
         <CardBody>
             <CardTitle>Create Wifi Connection Qr Code </CardTitle>
-            <EditForm Model="wifiModel" Class="my-5" OnSubmit="HandleWifiSharingQrCode">
+            <EditForm Model="wifiModel" class="my-5" OnSubmit="HandleWifiSharingQrCode">
                 <DataAnnotationsValidator />
-                <div class="my-2">
+                <div class="my-2 ms-3">
                     <label class="form-check-label" for="wifiName">
                         Wifi Name
                     </label>
@@ -32,7 +70,7 @@
                     <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
                 </div>
 
-                <div class="my-2">
+                <div class="my-2 ms-3">
                     <label class="form-check-label" for="wifiPassword">
                         Wifi Pasword
                     </label>
@@ -42,21 +80,15 @@
                     <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
                 </div>
                 <br />
-                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" class="align-text-center">Create Wifi Qr Code</Button>
+                <div class="text-center">
+                    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Class="btn card-btn btn-rounded text-center">Create Wifi Qr Code</Button>
+                </div>
+                
             </EditForm>
         </CardBody>
     </Card>
 </div>
-
-
-<style>
-    bi.bi-eye:before {
-        content: '\e345';
-        font-family: e-icons;
-        font-size: 13px;
-    }
-
-</style>
+</body>
 @code {
     private DeviceProfile _selectedDeviceProfile { get; set; } = new();
     private WifiModel wifiModel = new();
