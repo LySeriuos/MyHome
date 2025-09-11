@@ -68,13 +68,22 @@
     </TabPage>
     <TabPage Text="Devices">
         <div class="grid">
-            <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
+            <div class="">
+                <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button></div>
+                <div class="col my-3"><p>Envelope Icon is to prepatre email for the shop you bought the device</p></div>
+                <div class="col my-3"><p>Qr Code Icon is to create qr code for device</p></div>
+            </div>
+
+            @* <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
+            <p>Envelope Icon is to prepatre email for the shop you bought the device</p>
+            <p>Qr Code Icon is to create qr code for device</p> *@
             <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                 <TemplateColumn>
                     <div>
                         <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
                         <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
+                        <Button Class="btn btn-outline-success"><Icon Name="IconName.EnvelopeOpen" /></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
