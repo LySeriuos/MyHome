@@ -4,6 +4,7 @@
 @using MimeKit
 @using MyHomeBlazorApp.Components.Modals
 @using My_Home.Models
+@inject NavigationManager manager
 
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
@@ -134,8 +135,8 @@
             <div class="col text-start">
                 <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
             </div>
-            <hr />
         </div>
+        <hr />
         <div class="row w-50 mr-0">
 
             @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ReceiptLink))
@@ -185,14 +186,14 @@
         </div>
     </EditForm>
     <Button Class="btn btn-dark my-5 card-btn" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
-    <Button class="btn btn-danger rounded-pill my-5">Clear Message</Button>
+    <Button class="btn btn-danger rounded-pill my-5" @onclick="ClearTheEmailMessage">Clear Message</Button>
     @if (createdMessage)
     {
         <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail" id="emailForm">
             <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To" />
             <InputText @bind-Value="EmailRequest.Subject" class="form-control mt-2" placeholder="Subject" />
             <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
-            <Button Type="ButtonType.Submit" class="btn btn-primary mt-2 card-btn">Send Email</Button>
+            <Button Type="ButtonType.Submit" class="btn btn-primary card-btn my-3">Send Email</Button>
         </EditForm>
         <div>
             <SuccessModal @ref="_refSuccessModal" Title="Email service notification" Text="Your email has been sent!"></SuccessModal>
@@ -337,6 +338,11 @@ else
         _chosedDevice.DeviceWarranty.Shop = new();
         _chosedDevice.DeviceWarranty.Shop.Address = new();
         base.OnInitialized();
+    }
+    //Reloading the page sets all the strings to default values
+    private void ClearTheEmailMessage()
+    {
+        manager.NavigateTo(manager.Uri, true);
     }
 
     private void AddDetailsToTheEmailMessage()
