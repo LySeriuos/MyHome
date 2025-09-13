@@ -1,4 +1,5 @@
-﻿@page "/createEmail" 
+﻿@page "/createEmail"
+@page "/createEmail/{_chosedDeviceID:int}"
 @using MailKit.Net.Smtp
 @using MimeKit
 @using MyHomeBlazorApp.Components.Modals
@@ -135,6 +136,8 @@
 
 @code {
     [Parameter]
+    public int _chosedDeviceID { get; set; } = new();
+    [Parameter]
     public int currentUserID { get; set; }
     [SupplyParameterFromForm(FormName = "EmailForm")]
     public EmailRequest EmailRequest { get; set; } = new();
@@ -142,7 +145,6 @@
     private DeviceProfile _chosedDevice { get; set; } = new();
     private UserProfile _currentUser = new();
     private SuccessModal _refSuccessModal = default!;
-    private int _chosedDeviceID { get; set; } = new();
     private bool _produserChecked { get; set; }
     private bool _serialNumberChecked { get; set; }
     private bool _modelNumberChecked { get; set; }

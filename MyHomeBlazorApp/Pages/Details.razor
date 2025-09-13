@@ -83,7 +83,7 @@
                         <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
                         <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
-                        <Button Class="btn btn-outline-success"><Icon Name="IconName.EnvelopeOpen" /></Button>
+                        <Button Class="btn btn-outline-info"><Icon Name="IconName.EnvelopeOpen" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"/></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
@@ -312,7 +312,10 @@
         StateHasChanged();
     } 
 
-
+    private void SendDeviceIDToCreateEmailComponent(int deviceId)
+    {
+        NavigationManager.NavigateTo($"createEmail/{deviceId}");
+    }
 
     public string deviceName
     {
@@ -328,7 +331,7 @@
     [Inject]
     public AuthenticationStateProvider AuthenticationState { get; set; }
 
-
+    
 
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
