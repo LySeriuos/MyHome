@@ -83,7 +83,7 @@
                         <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                         <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
                         <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
-                        <Button Class="btn btn-outline-info"><Icon Name="IconName.EnvelopeOpen" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"/></Button>
+                        <Button Class="btn btn-outline-info" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
                     </div>
                 </TemplateColumn>
                 <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
