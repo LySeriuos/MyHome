@@ -8,16 +8,79 @@
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
 
-<h3>CreateEmail</h3>
+<style>
+    textarea.form-control {
+        min-height: calc(10.5em + .75rem + 2px);
+    }
+
+    #emailForm {
+        max-width: 75%;
+    }
+
+    .addNew-btn {
+        align-items: center;
+        color: #6b6b6d;
+        background-color: transparent;
+        border: solid 2px #f1e1d8;
+        border-radius: 1.3rem;
+    }
+
+        .addNew-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
+
+        .addNew-btn:focus, .addNew-btn:active:focus, .addNew-btn:focus {
+            background: #09223b;
+            color: rgb(255, 255, 255, .7);
+            border: none;
+            box-shadow: none;
+        }
+
+    .card-btn {
+        color: #2d2a2b;
+        background-color: #cfd9e1;
+        border-color: #1861ac;
+        border-radius: 1.3rem;
+    }
+
+        .card-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
+</style>
+
+
+<h3>Create an Email</h3>
+<hr />
+<hr />
+<h3>Instructions:</h3>
+<ol>
+    <li>Mark Device Details you want to add</li>
+    <li>Press Create Email Message button and it will prepare email message with all the details you marked</li>
+    <li>Update Message with necessary information about device</li>
+    <li>[YOUR NAME AND SIGNATURE] change it with your name and signature</li>
+    <li>Add recipient Email address and subject</li>
+</ol>
+
+<hr />
+<hr />
 @* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
-<label class="form-label">Choose The Device</label>
+@* <label class="form-label">Choose The Device</label>
 <InputSelect @bind-Value="_chosedDeviceID" @bind-Value:after="init" class="form-select">
     <option selected value="0" disabled>Select Real Estate...</option>
     @foreach (var device in _currentUser.GetAllDevices())
     {
         <option value="@device.DeviceID">@device.DeviceName</option>
     }
-</InputSelect>
+</InputSelect> *@
+
 
 @if (_chosedDeviceID != 0)
 {
@@ -63,7 +126,7 @@
         </div>
         <div class="row w-50 mr-0">
             @* Date issue! Which date format to use for editFrom to add new device? DateNow, new DateTime or default(DateTime)?  *@
-            <div class="col-2 text-start">
+            <div class="col-3 text-start">
                 <InputCheckbox id="shopDate" @bind-Value="_shopDateChecked">
                 </InputCheckbox>
                 <label>Shop Date:</label>
@@ -71,13 +134,13 @@
             <div class="col text-start">
                 <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
             </div>
-
+            <hr />
         </div>
         <div class="row w-50 mr-0">
 
             @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ReceiptLink))
             {
-                <div class="col-2 text-start">
+                <div class="col-3 text-start">
                     <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
                     </InputCheckbox>
                     <label>Reciept:</label>
@@ -86,14 +149,15 @@
                     <p class="mb-0">@receiptFileName</p>
                 </div>
                 <div class="col">
-                    <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToWarrantyFile()">Open</Button>
+                    <Button Class="btn-dark btn-sm addNew-btn" @onclick="()=>NavigateToWarrantyFile()">Open</Button>
                 </div>
             }
         </div>
+        <hr />
         <div class="row w-50 mr-0">
             @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
             {
-                <div class="col-2 text-start">
+                <div class="col-3 text-start">
                     <InputCheckbox id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
                     <label>Extra Warranty:</label>
                 </div>
@@ -101,7 +165,7 @@
                     <p class="mb-0">@extraWarrantyFileName</p>
                 </div>
                 <div class="col">
-                    <Button Class="btn-dark btn-sm" @onclick="()=>NavigateToExtraWarrantyFile()">Open</Button>
+                    <Button Class="btn-dark btn-sm addNew-btn" @onclick="()=>NavigateToExtraWarrantyFile()">Open</Button>
                 </div>
             }
         </div>
@@ -120,18 +184,24 @@
             }
         </div>
     </EditForm>
-    <Button Class="btn-dark btn-sm" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
-
-    <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail">
-        <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To" />
-        <InputText @bind-Value="EmailRequest.Subject" class="form-control mt-2" placeholder="Subject" />
-        <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
-        <Button Type="ButtonType.Submit" class="btn btn-primary mt-2">Send Email</Button>
-    </EditForm>
-
-    <div>
-        <SuccessModal @ref="_refSuccessModal" Title="Email service notification" Text="Your email has been sent!"></SuccessModal>
-    </div>
+    <Button Class="btn btn-dark my-5 card-btn" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
+    <Button class="btn btn-danger rounded-pill my-5">Clear Message</Button>
+    @if (createdMessage)
+    {
+        <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail" id="emailForm">
+            <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To" />
+            <InputText @bind-Value="EmailRequest.Subject" class="form-control mt-2" placeholder="Subject" />
+            <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
+            <Button Type="ButtonType.Submit" class="btn btn-primary mt-2 card-btn">Send Email</Button>
+        </EditForm>
+        <div>
+            <SuccessModal @ref="_refSuccessModal" Title="Email service notification" Text="Your email has been sent!"></SuccessModal>
+        </div>
+    }
+}
+else
+{
+    <h3>Sorry,wrong Device ID. Try again!</h3>
 }
 
 @code {
@@ -145,6 +215,7 @@
     private DeviceProfile _chosedDevice { get; set; } = new();
     private UserProfile _currentUser = new();
     private SuccessModal _refSuccessModal = default!;
+    private bool createdMessage { get; set; } = false;
     private bool _produserChecked { get; set; }
     private bool _serialNumberChecked { get; set; }
     private bool _modelNumberChecked { get; set; }
@@ -212,7 +283,7 @@
             }
 
             email.Body = builder.ToMessageBody();
-            
+
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
             string? pass = Environment.GetEnvironmentVariable("MyHomeGmailPassword");
@@ -270,6 +341,7 @@
 
     private void AddDetailsToTheEmailMessage()
     {
+        createdMessage = true;
         if (_produserChecked)
         {
             _producerStringToAdd = $"{_chosedDevice.DeviceProduser} [ADD ITEM TYPE HERE].";
