@@ -11,50 +11,50 @@
 
 <style>
     textarea.form-control {
-        min-height: calc(10.5em + .75rem + 2px);
+    min-height: calc(10.5em + .75rem + 2px);
     }
 
     #emailForm {
-        max-width: 75%;
+    max-width: 75%;
     }
 
     .addNew-btn {
-        align-items: center;
-        color: #6b6b6d;
-        background-color: transparent;
-        border: solid 2px #f1e1d8;
-        border-radius: 1.3rem;
+    align-items: center;
+    color: #6b6b6d;
+    background-color: transparent;
+    border: solid 2px #f1e1d8;
+    border-radius: 1.3rem;
     }
 
-        .addNew-btn:hover {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            background: #e2c8c0;
-            color: #2d2a2b;
-        }
+    .addNew-btn:hover {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background: #e2c8c0;
+    color: #2d2a2b;
+    }
 
-        .addNew-btn:focus, .addNew-btn:active:focus, .addNew-btn:focus {
-            background: #09223b;
-            color: rgb(255, 255, 255, .7);
-            border: none;
-            box-shadow: none;
-        }
+    .addNew-btn:focus, .addNew-btn:active:focus, .addNew-btn:focus {
+    background: #09223b;
+    color: rgb(255, 255, 255, .7);
+    border: none;
+    box-shadow: none;
+    }
 
     .card-btn {
-        color: #2d2a2b;
-        background-color: #cfd9e1;
-        border-color: #1861ac;
-        border-radius: 1.3rem;
+    color: #2d2a2b;
+    background-color: #cfd9e1;
+    border-color: #1861ac;
+    border-radius: 1.3rem;
     }
 
-        .card-btn:hover {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            background: #e2c8c0;
-            color: #2d2a2b;
-        }
+    .card-btn:hover {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background: #e2c8c0;
+    color: #2d2a2b;
+    }
 </style>
 
 
@@ -186,7 +186,10 @@
         </div>
     </EditForm>
     <Button Class="btn btn-dark my-5 card-btn" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
-    <Button class="btn btn-danger rounded-pill my-5" @onclick="ClearTheEmailMessage">Clear Message</Button>
+    @if (createdMessage)
+    {
+        <Button class="btn btn-danger rounded-pill my-5" @onclick="ClearTheEmailMessage">Clear Message</Button>
+    }
     @if (createdMessage)
     {
         <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail" id="emailForm">
