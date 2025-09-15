@@ -312,9 +312,9 @@
         StateHasChanged();
     } 
 
-    private void SendDeviceIDToCreateEmailComponent(int deviceId)
+    private async Task SendDeviceIDToCreateEmailComponent(int deviceId)
     {
-        NavigationManager.NavigateTo($"createEmail/{deviceId}");
+        await JSRuntime.InvokeVoidAsync("open",$"createEmail/{deviceId}", "_blank");
     }
 
     public string deviceName
