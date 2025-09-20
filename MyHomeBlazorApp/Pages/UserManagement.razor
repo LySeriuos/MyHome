@@ -11,7 +11,7 @@
 @attribute [Authorize(Roles = "Admin")]
 
 
-<h3 class="my-3">User Management Dashboard</h3>
+<h3 class="my-3">Users Management Dashboard</h3>
 
 @* 1.Show all user list  *@
 @* 2. Find user by email, when typing in search bar *@
@@ -47,7 +47,14 @@
             <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteUser(context)">Delete User</Button>
         </TemplateColumn>
         <TemplateColumn Title="Login As User">
-            <Button Class="btn btn-outline-primary" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
+            @if (_user == context)
+            {
+                <Button Class="btn btn-outline-primary" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
+            }
+            else
+            {
+                <Button Class="btn btn-outline-primary disabled" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
+            }
         </TemplateColumn>
     </QuickGrid>
 </div>
