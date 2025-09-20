@@ -364,7 +364,6 @@
         string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ReceiptLink;
         string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
-
     }
 
 

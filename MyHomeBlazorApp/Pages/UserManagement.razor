@@ -49,11 +49,11 @@
         <TemplateColumn Title="Login As User">
             @if (_user == context)
             {
-                <Button Class="btn btn-outline-primary" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
+                <Button Class="btn btn-outline-success" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
             }
             else
             {
-                <Button Class="btn btn-outline-primary disabled" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
+                <Button Class="btn btn-outline-success disabled" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
             }
         </TemplateColumn>
     </QuickGrid>
