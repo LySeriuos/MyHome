@@ -5,7 +5,6 @@
 @using MyHomeBlazorApp.BlazorData
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inherits LayoutComponentBase
-@layout AccountLayout
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
@@ -19,7 +18,7 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass nav-scrollable" @onclick="() => ToggleNavMenu(true)">
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink id="nav-item" class="nav-link" href="" Match="NavLinkMatch.All">
@@ -52,26 +51,27 @@
                         </NavLink>
                     </div>
                 </AuthorizeView>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" Match=@NavLinkMatch.All @onclick="()=>ToggleNavSubMenu(1)">
-                        <span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span> @context.User.Identity?.Name
+                <div class="nav-item px-3" @onclick:stopPropagation="true">
+                    <NavLink class="nav-link" Match="NavLinkMatch.All" @onclick="ToggleNavMenu">
+                        <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity?.Name <Icon Name="IconName.CaretDownFill" />
                     </NavLink>
-                    @if (showSubMenu[1])
+                    @if (!collapseNavMenu)
                     {
-                        <nav class="flex-column">
+                        <ManageNavMenu />
+                        @* <nav class="flex-column">
                             <div class="nav-item px-3">
-                                <NavLink class="nav-link" href="/account/manage/email" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Email</NavLink>
+                                <NavLink class="nav-link dropdown-item" href="/account/manage/email" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Email</NavLink>
                             </div>
                             <div class="nav-item px-3">
-                                <NavLink class="nav-link" href="Account/Manage/ChangePassword" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Password</NavLink>
+                                <NavLink class="nav-link dropdown-item" href="Account/Manage/ChangePassword" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Password</NavLink>
                             </div>
                             <div class="nav-item px-3">
-                                <NavLink class="nav-link" href="Account/Manage/TwoFactorAuthentication" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Two-factor authentication</NavLink>
+                                <NavLink class="nav-link dropdown-item" href="Account/Manage/TwoFactorAuthentication" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Two-factor authentication</NavLink>
                             </div>
                             <div class="nav-item px-3">
-                                <NavLink class="nav-link" href="Account/Manage/PersonalData" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Personal data</NavLink>
+                                <NavLink class="nav-link dropdown-item" href="Account/Manage/PersonalData" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Personal data</NavLink>
                             </div>
-                        </nav>
+                        </nav> *@
                     }
                 </div>
 
@@ -150,16 +150,21 @@
     {
         for (int i = 0; i < showSubMenu.Length; i++)
         {
-            if(i== index)
+            if (i == index)
             {
                 showSubMenu[i] = !showSubMenu[i];
             }
-            else{
+            else
+            {
                 showSubMenu[i] = false;
             }
         }
-        
+
     }
+    // private void NavigateToEmailPage()
+    // {
+    //     NavigationManager.NavigateTo("/Account/Manage/Email");
+    // }
     // private bool expandSubNavSettings;
 
 
@@ -177,19 +182,31 @@
 
     // }
 
-    private bool collapseNavMenu = true;
+
+    private static bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+        Console.WriteLine("ToggleNavMenu: " + collapseNavMenu);
+    }
+
+    private void ToggleNavMenu(bool collapse)
+    {
+        collapseNavMenu = collapse;
+        Console.WriteLine("ToggleNavMenu(bool): " + collapseNavMenu);
     }
 
     private string? currentUrl;
     protected override void OnInitialized()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        if (!currentUrl.Contains("Account"))
+        {
+            collapseNavMenu = true;
+        }
         NavigationManager.LocationChanged += OnLocationChanged;
     }
 
@@ -204,3 +221,5 @@
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
+
+
