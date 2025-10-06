@@ -51,8 +51,8 @@
                         </NavLink>
                     </div>
                 </AuthorizeView>
-                <div class="nav-item px-3" @onclick:stopPropagation="true">
-                    <NavLink class="nav-link" Match="NavLinkMatch.All" @onclick="ToggleNavMenu">
+                <div class="nav-item px-3"  @onclick:stopPropagation="true">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="ToggleNavMenu">
                         <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity?.Name <Icon Name="IconName.CaretDownFill" />
                     </NavLink>
                     @if (!collapseNavMenu)
