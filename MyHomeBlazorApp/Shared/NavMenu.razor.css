@@ -149,6 +149,11 @@
     color: #93b1c9;
 }
 
+.nav-item[b-ukfp6il4ai] .nav-link.btn {
+    text-align: left;
+    font-size: inherit;
+}
+
 @media (min-width: 641px) {
     .navbar-toggler {
         display: none;

@@ -21,7 +21,7 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="() => ToggleNavMenu(true)">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink id="nav-item" class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink id="nav-item" class="nav-link" href="\" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
@@ -52,15 +52,15 @@
                     </div>
                 </AuthorizeView>
                 <div class="nav-item px-3"  @onclick:stopPropagation="true">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="ToggleNavMenu">
-                        <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity?.Name <Icon Name="IconName.CaretDownFill" />
+                    <NavLink class="nav-link" role="button" @onclick="ToggleNavMenu">                        
+                        <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity?.Name <Icon Name="IconName.CaretDownFill" />                        
                     </NavLink>
                     @if (!collapseNavMenu)
                     {
-                        <ManageNavMenu />
-                        @* <nav class="flex-column">
+                        @* <ManageNavMenu /> *@
+                        <nav class="flex-column">
                             <div class="nav-item px-3">
-                                <NavLink class="nav-link dropdown-item" href="/account/manage/email" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Email</NavLink>
+                                <NavLink class="nav-link dropdown-item" href="Account/Manage/Email" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Email</NavLink>
                             </div>
                             <div class="nav-item px-3">
                                 <NavLink class="nav-link dropdown-item" href="Account/Manage/ChangePassword" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Password</NavLink>
@@ -71,7 +71,7 @@
                             <div class="nav-item px-3">
                                 <NavLink class="nav-link dropdown-item" href="Account/Manage/PersonalData" Match=@NavLinkMatch.All><span class="oi oi-person oi-vertical-align-sub" aria-hidden="true"></span>Personal data</NavLink>
                             </div>
-                        </nav> *@
+                        </nav>
                     }
                 </div>
 
