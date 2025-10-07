@@ -74,44 +74,6 @@
                         </nav>
                     }
                 </div>
-
-
-                @* <div class="nav-item px-3 dropdown show">
-                    <NavLink class="nav-link dropdown-toggle" @onclick="() => expandSubNavSettings = !expandSubNavSettings" id="navbarDropdown">
-                        <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity?.Name
-                    </NavLink>
-                </div> *@
-                @* <div>
-                    <Dropdown Color="DropdownColor.Secondary">
-                        <DropdownToggleButton>Dropdown button</DropdownToggleButton>
-                        <DropdownMenu>
-                            <DropdownItem To="#" Type="DropdownItemType.Link">Action</DropdownItem>
-                            <DropdownItem To="#" Type="DropdownItemType.Link">Another action</DropdownItem>
-                            <DropdownItem To="#" Type="DropdownItemType.Link">Something else here</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                </div> *@
-                @*  @if (expandSubNavSettings)
-                {
-                    <div class="dropdown-menu show" aria-labelledby="navbarDropdown" @onclick="() => expandSubNavSettings = !expandSubNavSettings">
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-dark" href="fetchdata">
-                            <span class="oi oi-fork" aria-hidden="true"></span> Fetch
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-dark" href="counter">
-                            <span class="oi oi-command" aria-hidden="true"></span> Counter
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-dark" href="home">
-                            <span class="oi oi-home" aria-hidden="true"></span> Home
-                        </NavLink>
-                    </li>
-
-    </div>
-                } *@
                 <div class="nav-item px-3">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
@@ -139,50 +101,6 @@
 </div>
 
 @code {
-    // Collapse collapseAccountSubMenu = default!;
-    // private async Task ToggleContentAsync() => await collapseAccountSubMenu.ToggleAsync();
-    // bool collapseNavMenuUserProfile = true;
-    // private bool collapsNavSubMenu = true;
-    // private string? NavMenuClass => collapseNavMenu ? "collapse" : null;
-    bool[] showSubMenu = new bool[2];
-    bool subMenu = false;
-    private void ToggleNavSubMenu(int index)
-    {
-        for (int i = 0; i < showSubMenu.Length; i++)
-        {
-            if (i == index)
-            {
-                showSubMenu[i] = !showSubMenu[i];
-            }
-            else
-            {
-                showSubMenu[i] = false;
-            }
-        }
-
-    }
-    // private void NavigateToEmailPage()
-    // {
-    //     NavigationManager.NavigateTo("/Account/Manage/Email");
-    // }
-    // private bool expandSubNavSettings;
-
-
-    // string baseMenuClass = "navbar-collapse d-sm-inline-flex flex-sm-row-reverse";
-
-    // string NavMenuCssClassUserProfile => baseMenuClass + (collapseNavMenuUserProfile ? " collapse" : "");
-
-    // void ToggleNavMenuUserProfile()
-    // {
-    //     if (!expandSubNavSettings)
-    //     {
-    //         collapseNavMenuUserProfile = !collapseNavMenuUserProfile;
-    //     }
-
-
-    // }
-
-
     private static bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
