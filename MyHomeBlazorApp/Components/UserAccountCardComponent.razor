@@ -1,0 +1,76 @@
+﻿@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+
+<style>
+    .card-style {
+        display: flex;
+        justify-content: center;
+        background-color: #eeeff4;
+        max-width: 20rem;
+        margin-right: 50px;
+        margin-top: 50px;
+    }
+
+    .card-btn {
+        color: #2d2a2b;
+        background-color: #cfd9e1;
+        border-color: #1861ac;
+        border-radius: 1.3rem;
+        width: 50%;
+    }
+
+        .card-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
+</style>
+
+<Card Class="card-style">
+    <svg xmlns="http://www.w3.org/2000/svg" style="" width="100px" height="100px" fill="#e2c8c0" class="@IconStyle  mx-auto my-3 d-flex align-items-center" viewBox="0 0 16 16">
+        <path d="@IconPath" />
+    </svg>
+
+    @* <img class="rounded-top" style="width:150px; height:150px; margin:auto;" src=" @Image" alt="placeholder" /> *@
+    <CardBody>
+
+        <CardTitle Class="text-center fw-bolder">@Title</CardTitle>
+        
+        <CardText>@ChildContent</CardText>
+        <CardText>@ChildContent2</CardText>        
+        <Button Type="ButtonType.Submit"></Button>
+
+    </CardBody>
+</Card>
+
+@code {
+
+    [Parameter]
+    public string? IconStyle { get; set; }
+    [Parameter]
+    public string? Image { get; set; }
+    [Parameter]
+    public string? IconPath { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? Text { get; set; }
+    [Parameter]
+    public List<string?> ListItems { get; set; } = new List<string?>();
+    [Parameter]
+    public string? LinkName { get; set; }
+    [Parameter]
+    public string? LinkTo { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    public RenderFragment? ChildContent2 { get; set; }
+}
+
+
+
+@code {
+
+}
