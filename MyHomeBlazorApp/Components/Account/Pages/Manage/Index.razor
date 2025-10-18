@@ -3,20 +3,70 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using MyHomeBlazorApp.BlazorData
-
+@inject BlazorData.DataService DataService
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
 
+
 <PageTitle>Profile</PageTitle>
 
-<h3>Profile</h3>
 <StatusMessage />
+<style>
+    .card-style {
+        display: flex;
+        justify-content: center;
+        background-color: #eeeff4;
+        max-width: 20rem;
+        margin-right: 50px;
+        margin-top: 50px;
+    }
 
-<div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+    .card-btn {
+        color: #2d2a2b;
+        background-color: #cfd9e1;
+        border-color: #1861ac;
+        border-radius: 1.3rem;
+        width: 50%;
+    }
+
+        .card-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
+
+    .button .btn .btnprimary .card-btn .btn-rounded{
+        width: 200px;
+    }
+
+    
+</style>
+<div>
+    <Card Class="card-style">
+        <CardBody>
+            <CardTitle Class="text-center fw-bolder">
+                Summary <Icon name="IconName.ListTask"></Icon>
+            </CardTitle>
+            <CardText>
+                <ul>
+                    <li>
+                        Real Estates: @DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.Count()
+                    </li>
+                    <li>
+                        Devices: @DataService.CurrentUserWithAllData.GetAllDevices().Count()
+                    </li>
+                </ul>                
+            </CardText>
+            <hr />
+            <hr />
+            <CardTitle Class="text-center fw-bolder">
+                Profile <Icon name="IconName.BookmarkCheck"></Icon>
+            </CardTitle>
+            <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
@@ -28,10 +78,16 @@
                 <label for="phone-number" class="form-label">Phone number</label>
                 <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
-    </div>
+                <div class="text-center">
+                <button type="submit" class="btn btn-primary card-btn btn-rounded">
+                    Save
+                </button>
+                </div>
+            </EditForm>
+        </CardBody>
+    </Card>
 </div>
+
 
 @code {
     private MyHomeBlazorAppUser user = default!;
