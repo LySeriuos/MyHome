@@ -88,7 +88,28 @@
     </Card>
 </div>
 <div>
-    <UserAccountCardComponent>
+
+    <UserAccountCardComponent Title="Profile"
+                              IconName="IconName.BookmarkCheck">
+        <ChildContent2>
+            <CardBody>
+                <CardTitle Class="text-center fw-bolder">
+                    Summary <Icon name="IconName.ListTask"></Icon>
+                </CardTitle>
+                <CardText>
+                    <ul>
+                        <li>
+                            Real Estates: @DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.Count()
+                        </li>
+                        <li>
+                            Devices: @DataService.CurrentUserWithAllData.GetAllDevices().Count()
+                        </li>
+                    </ul>
+                </CardText>
+            </CardBody>
+            <hr />
+            <hr />
+        </ChildContent2>
         <ChildContent>
             <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
                 <DataAnnotationsValidator />
