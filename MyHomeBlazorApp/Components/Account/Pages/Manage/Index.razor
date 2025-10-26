@@ -42,53 +42,6 @@
 
 </style> *@
 <div>
-    <Card Class="card-style">
-        <CardBody>
-            <CardTitle Class="text-center fw-bolder">
-                Summary <Icon name="IconName.ListTask"></Icon>
-            </CardTitle>
-            <CardText>
-                <ul>
-                    <li>
-                        Real Estates: @DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.Count()
-                    </li>
-                    <li>
-                        Devices: @DataService.CurrentUserWithAllData.GetAllDevices().Count()
-                    </li>
-                </ul>
-            </CardText>
-        </CardBody>
-        <hr />
-        <hr />
-        <CardBody>
-            <CardTitle Class="text-center fw-bolder">
-                Profile <Icon name="IconName.BookmarkCheck"></Icon>
-            </CardTitle>
-            <CardText>
-                <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary class="text-danger" role="alert" />
-                    <div class="form-floating mb-3">
-                        <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
-                        <label for="username" class="form-label">Username</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                        <label for="phone-number" class="form-label">Phone number</label>
-                        <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary card-btn btn-rounded">
-                            Save
-                        </button>
-                    </div>
-                </EditForm>
-            </CardText>
-        </CardBody>
-    </Card>
-</div>
-<div>
-
     <UserAccountCardComponent Title="Profile"
                               IconName="IconName.BookmarkCheck"
                               DoubleCard="true">
