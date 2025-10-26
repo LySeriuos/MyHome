@@ -14,7 +14,7 @@
 <PageTitle>Profile</PageTitle>
 
 <StatusMessage />
-<style>
+@* <style>
     .card-style {
         display: flex;
         justify-content: center;
@@ -40,7 +40,7 @@
             color: #2d2a2b;
         }
 
-</style>
+</style> *@
 <div>
     <Card Class="card-style">
         <CardBody>
@@ -90,26 +90,23 @@
 <div>
 
     <UserAccountCardComponent Title="Profile"
-                              IconName="IconName.BookmarkCheck">
+                              IconName="IconName.BookmarkCheck"
+                              DoubleCard="true">
         <ChildContent2>
-            <CardBody>
-                <CardTitle Class="text-center fw-bolder">
-                    Summary <Icon name="IconName.ListTask"></Icon>
-                </CardTitle>
-                <CardText>
-                    <ul>
-                        <li>
-                            Real Estates: @DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.Count()
-                        </li>
-                        <li>
-                            Devices: @DataService.CurrentUserWithAllData.GetAllDevices().Count()
-                        </li>
-                    </ul>
-                </CardText>
-            </CardBody>
-            <hr />
-            <hr />
-        </ChildContent2>
+            <CardTitle Class="text-center fw-bolder">
+                Summary <Icon name="IconName.ListTask"></Icon>
+            </CardTitle>
+            <CardText>
+                <ul>
+                    <li>
+                        Real Estates: @DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.Count()
+                    </li>
+                    <li>
+                        Devices: @DataService.CurrentUserWithAllData.GetAllDevices().Count()
+                    </li>
+                </ul>
+            </CardText>
+        </ChildContent2>        
         <ChildContent>
             <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
                 <DataAnnotationsValidator />

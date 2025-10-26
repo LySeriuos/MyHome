@@ -29,19 +29,21 @@
 </style>
 
 <Card Class="card-style">
-
-    @* <img class="rounded-top" style="width:150px; height:150px; margin:auto;" src=" @Image" alt="placeholder" /> *@
     <CardBody>
         <CardText>@ChildContent2</CardText>
     </CardBody>
-    <CardBody>
-        
-        <CardTitle Class="text-center fw-bolder">@Title
-            <Icon name="@IconName"></Icon>
-        </CardTitle>        
-        <CardText>@ChildContent</CardText>            
-        <Button Type="ButtonType.Submit"></Button>
-    </CardBody>
+    @if(DoubleCard == true)
+    {
+        <hr />
+        <hr />
+    }
+        <CardBody>        
+            <CardTitle Class="text-center fw-bolder">@Title
+                <Icon name="@IconName"></Icon>
+            </CardTitle>        
+            <CardText>@ChildContent</CardText>            
+            <Button Type="ButtonType.Submit"></Button>
+        </CardBody>
     @* <CardBody>
         <CardTitle Class="text-center fw-bolder">
             <Icon name="@SecondIconName"></Icon>
@@ -72,6 +74,8 @@
     public List<string?> ListItems { get; set; } = new List<string?>();
     [Parameter]
     public string? LinkName { get; set; }
+    [Parameter]
+    public bool? DoubleCard { get; set; }
     [Parameter]
     public string? LinkTo { get; set; }
     [Parameter]
