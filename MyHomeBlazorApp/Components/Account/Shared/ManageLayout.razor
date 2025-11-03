@@ -1,15 +1,42 @@
 ﻿@inherits LayoutComponentBase
 @layout AccountLayout
 
+<style>
+    .bodySection {
+        background-image: url(/Images/freepik__retouch__10901.png);
+        background-repeat: repeat;
+        position: relative;
+        /* background-size: cover; */
+        background-position: center;
+        position: relative; /* Needed for overlay positioning */
+        height: 100vh;
+    }
 
+        .bodySection::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7); /* Dark overlay */
+            z-index: 1;
+        }
+
+    .bodySection-content {
+        position: relative;
+        z-index: 2; /* Place content above overlay */
+    }
+</style>
 
 <h1>Manage your account</h1>
 
 <div>
     <h2>Change your account settings</h2>
     <hr />
-    <div class="row">
-
-        @Body
-    </div>
+    
+        <div class="bodySection">
+            @Body
+        </div>
+     
 </div>
