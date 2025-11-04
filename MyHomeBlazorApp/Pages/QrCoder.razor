@@ -18,77 +18,115 @@
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 
 <style>
+    .bodySection {
+        background-image: url(/Images/freepik__retouch__10901.png);
+        background-repeat: repeat;
+        position: relative;
+        /* background-size: cover; */
+        background-position: center;
+        position: relative; /* Needed for overlay positioning */
+        height: 100vh;
+    }
+
+        .bodySection::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7); /* Dark overlay */
+            z-index: 1;
+        }
+
+    .bodySection-content {
+        position: relative;
+        z-index: 2; /* Place content above overlay */
+    }
 
     .card-outline-style {
-    outline-width: 5px;
-    outline-style: double;
-    outline-color: darkgoldenrod;
+        outline-width: 5px;
+        outline-style: double;
+        outline-color: darkgoldenrod;
     }
 
     .card-style {
-    display: flex;
-    justify-content: center;
-    background-color: #eeeff4;
-    width: 18rem;
-    margin-right: 50px;
-    margin-top: 50px;
+        display: flex;
+        justify-content: center;
+        background-color: #eeeff4;
+        max-width: 30rem;
+        margin-right: 50px;
+        margin-top: 50px;
     }
 
     .card-btn {
-    color: #2d2a2b;
-    background-color: #cfd9e1;
-    border-color: #1861ac;
-    border-radius: 1.3rem;
+        color: #2d2a2b;
+        background-color: #cfd9e1;
+        border-color: #1861ac;
+        border-radius: 1.3rem;
     }
 
-    .card-btn:hover {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    background: #e2c8c0;
-    color: #2d2a2b;
-    }
+        .card-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
 
     bi.bi-eye:before {
-    content: '\e345';
-    font-family: e-icons;
-    font-size: 13px;
+        content: '\e345';
+        font-family: e-icons;
+        font-size: 13px;
+    }
+
+    .margin-label {
+        margin: inherit;
     }
 </style>
 <body>
-    <div>
-        <Card Class="card-style d-flex" Style="width:18rem;">
-            <CardBody>
-                <CardTitle>Create Wifi Connection Qr Code </CardTitle>
-                <EditForm Model="wifiModel" class="my-5" OnSubmit="HandleWifiSharingQrCode">
-                    <DataAnnotationsValidator />
-                    <div class="my-2 ms-3">
-                        <label class="form-check-label" for="wifiName">
-                            Wifi Name
-                        </label>
-                        <InputText id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
-                        <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
-                    </div>
+    <main class="bodySection">
+        <section class="bodySection-content">
+            <div>
+                <UserAccountCardComponent Title="Create Wifi Connection Qr Code"
+                                          IconName="IconName.QrCode"
+                                          DoubleCard="false">
+                    <ChildContent>
+                        <EditForm Model="wifiModel" class="my-5" OnSubmit="HandleWifiSharingQrCode">
+                            <DataAnnotationsValidator />
+                            <div class="row">
+                                <div class="my-2 ms-3">
 
-                    <div class="my-2 ms-3">
-                        <label class="form-check-label" for="wifiPassword">
-                            Wifi Pasword
-                        </label>
-                        <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
-                        <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
+                                    <label class="form-check-label" for="wifiName">
+                                        Wifi Name 
+                                    </label>
+                                    <InputText class="margin-label" id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
+                                    <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
 
-                        <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
-                    </div>
-                    <br />
-                    <div class="text-center">
-                        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Class="btn card-btn btn-rounded text-center">Create Wifi Qr Code</Button>
-                    </div>
+                                </div>
+                                <div class="my-2 ms-3">
+                                    <label class="form-check-label" for="wifiPassword">
+                                        Wifi Pasword
+                                    </label>
+                                    <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+                                    <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
 
-                </EditForm>
-            </CardBody>
-        </Card>
-    </div>
+                                    <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-center">
+                                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Class="btn card-btn btn-rounded text-center">Get Qr Code</Button>
+                            </div>
+                        </EditForm>
+                    </ChildContent>
+                </UserAccountCardComponent>
+            </div>
+        </section>
+    </main>
 </body>
+
+
 @code {
     private DeviceProfile _selectedDeviceProfile { get; set; } = new();
     private WifiModel wifiModel = new();
@@ -174,7 +212,7 @@
         {
             return;
         }
-        
+
         wifiModel = new();
         StateHasChanged();
     }
