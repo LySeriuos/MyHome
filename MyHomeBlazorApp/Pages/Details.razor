@@ -40,214 +40,218 @@
 
 <h3>Details</h3>
 
+<main class="bodySection">
+    <section class="bodySection-content">
+        <div>
 
-
-<TabControl TabID="TabID">
-    <TabPage Text="Real Estates">
-        <div class="grid">
-            <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
-            <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
-                <TemplateColumn>
-                    <div>
-                        <Button Class="btn btn-outline-dark icon-button" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)"><Icon Name="IconName.PencilFill" /></Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalChooseOptionDeleteRealEstate(context.RealEstateID)"><Icon Name="IconName.Trash3Fill"  /></Button>
+            <TabControl TabID="TabID">
+                <TabPage Text="Real Estates">
+                    <div class="grid">
+                        <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
+                        <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
+                            <TemplateColumn>
+                                <div>
+                                    <Button Class="btn btn-outline-dark icon-button" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)"><Icon Name="IconName.PencilFill" /></Button>
+                                    <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalChooseOptionDeleteRealEstate(context.RealEstateID)"><Icon Name="IconName.Trash3Fill" /></Button>
+                                </div>
+                            </TemplateColumn>
+                            <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
+                            <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
+                            <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
+                            <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
+                            <TemplateColumn Title="Number's Extension">
+                                <NoData Text="@context.Address.HouseNumberExtension"></NoData>
+                            </TemplateColumn>
+                            <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
+                            <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
+                            <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
+                        </QuickGrid>
                     </div>
-                </TemplateColumn>
-                <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
-                <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
-                <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
-                <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
-                <TemplateColumn Title="Number's Extension">
-                    <NoData Text="@context.Address.HouseNumberExtension"></NoData>
-                </TemplateColumn>
-                <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
-                <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
-                <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
-            </QuickGrid>
-        </div>
-    </TabPage>
-    <TabPage Text="Devices">
-        <div class="grid">
-            <div class="">
-                <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button></div>
-                <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Push Envelope icon to prepare email with chosed device details <Icon Name="IconName.ArrowDownCircle" /></div>
-                <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to create qr code for the device <Icon Name="IconName.ArrowDownCircle" /></div>
-            </div>
+                </TabPage>
+                <TabPage Text="Devices">
+                    <div class="grid">
+                        <div class="">
+                            <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button></div>
+                            <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Push Envelope icon to prepare email with chosed device details <Icon Name="IconName.ArrowDownCircle" /></div>
+                            <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to create qr code for the device <Icon Name="IconName.ArrowDownCircle" /></div>
+                        </div>
 
             @* <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
             <p>Envelope Icon is to prepatre email for the shop you bought the device</p>
             <p>Qr Code Icon is to create qr code for device</p> *@
-            <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
-                <TemplateColumn>
-                    <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
-                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
-                        <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
-                        <Button Class="btn btn-outline-info" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
+                        <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
+                            <TemplateColumn>
+                                <div>
+                                    <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                                    <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
+                                    <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
+                                    <Button Class="btn btn-outline-info" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
+                                </div>
+                            </TemplateColumn>
+                            <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
+                                @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
+                                {
+                                    <span>@DataService.GetRealEstate(DataService.GetRealEstateByDeviceID(context.DeviceID)).RealEstateName</span>
+                                }
+                            </TemplateColumn>
+                            <PropertyColumn Title="Device ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+                            <TemplateColumn Title="Manual">
+                                <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context.DeviceID, JSRuntime)">Manual</Button>
+                            </TemplateColumn>
+                        </QuickGrid>
                     </div>
-                </TemplateColumn>
-                <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
-                    @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
-                    {
-                        <span>@DataService.GetRealEstate(DataService.GetRealEstateByDeviceID(context.DeviceID)).RealEstateName</span>
-                    }
-                </TemplateColumn>
-                <PropertyColumn Title="Device ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-                <TemplateColumn Title="Manual">
-                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context.DeviceID, JSRuntime)">Manual</Button>
-                </TemplateColumn>
-            </QuickGrid>
-        </div>
-    </TabPage>
-    <TabPage Text="Devices Warranties">
-        <div class="grid my-5">
-            <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
-                <TemplateColumn>
-                    <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
-                    </div>
-                </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
-                    <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
-                </TemplateColumn>
-                @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
-                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
-                <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
-                <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-                <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
-                @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
-                <TemplateColumn Title="Receipt">
-                    @if (String.IsNullOrEmpty(context.DeviceWarranty.ReceiptLink))
-                    {
-                        <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
-                    }
-                    else
-                    {
-                        <Button class="button-51" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
-                    }
+                </TabPage>
+                <TabPage Text="Devices Warranties">
+                    <div class="grid my-5">
+                        <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
+                            <TemplateColumn>
+                                <div>
+                                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                                </div>
+                            </TemplateColumn>
+                            <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
+                                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                            </TemplateColumn>
+                            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
+                            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                            <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
+                            <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+                            <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
+                            @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
+                            <TemplateColumn Title="Receipt">
+                                @if (String.IsNullOrEmpty(context.DeviceWarranty.ReceiptLink))
+                                {
+                                    <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
+                                }
+                                else
+                                {
+                                    <Button class="button-51" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
+                                }
 
-                </TemplateColumn>
-                <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
-                @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
-                <TemplateColumn Title="Extra's Receipt">
-                    @if (String.IsNullOrEmpty(context.DeviceWarranty.ExtraInsuranceWarrantyLink))
-                    {
-                        <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
-                    }
-                    else
-                    {
-                        <Button class="test-btn button-51" @onclick="()=>NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
-                    }
-                </TemplateColumn>
-            </QuickGrid>
-        </div>
-    </TabPage>
-    <TabPage Text="Shops Details">
-        <div class="grid my-5">
-            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
-                <TemplateColumn>
-                    <div>
-                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                            </TemplateColumn>
+                            <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
+                            @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
+                            <TemplateColumn Title="Extra's Receipt">
+                                @if (String.IsNullOrEmpty(context.DeviceWarranty.ExtraInsuranceWarrantyLink))
+                                {
+                                    <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
+                                }
+                                else
+                                {
+                                    <Button class="test-btn button-51" @onclick="()=>NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
+                                }
+                            </TemplateColumn>
+                        </QuickGrid>
                     </div>
-                </TemplateColumn>
-                <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
-                    <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
-                </TemplateColumn>
-                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
-                <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
-                <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
-                <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
-                <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
-                <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
-                <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
-                <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
-                <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
-            </QuickGrid>
-        </div>
-    </TabPage>
-    @if (_unassignedDevicesListAsQueryable.AsQueryable().ToList().Count > 0)
-    {
-        <TabPage Text="Unassigned Devices">
-            <div class="grid">
-                <QuickGrid tabindex="5" Items="_unassignedDevicesListAsQueryable">
-                    <TemplateColumn>
-                        <div>
-                            <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
-                            <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
+                </TabPage>
+                <TabPage Text="Shops Details">
+                    <div class="grid my-5">
+                        <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
+                            <TemplateColumn>
+                                <div>
+                                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                                </div>
+                            </TemplateColumn>
+                            <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
+                                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                            </TemplateColumn>
+                            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                            <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
+                            <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
+                            <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
+                            <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
+                            <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
+                            <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
+                            <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
+                            <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
+                        </QuickGrid>
+                    </div>
+                </TabPage>
+                @if (_unassignedDevicesListAsQueryable.AsQueryable().ToList().Count > 0)
+                {
+                    <TabPage Text="Unassigned Devices">
+                        <div class="grid">
+                            <QuickGrid tabindex="5" Items="_unassignedDevicesListAsQueryable">
+                                <TemplateColumn>
+                                    <div>
+                                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
+                                    </div>
+                                </TemplateColumn>
+                                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+                                <TemplateColumn Title="Manual">
+                                    <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
+                                </TemplateColumn>
+                            </QuickGrid>
                         </div>
-                    </TemplateColumn>
-                    <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-                    <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                    <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                    <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                    <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                    <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                    <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-                    <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-                    <TemplateColumn Title="Manual">
-                        <Button class="btn btn-sm" href="@context.ManualBookLink">Manual</Button>
-                    </TemplateColumn>
-                </QuickGrid>
-            </div>
-        </TabPage>
-    }
-</TabControl>
-
+                    </TabPage>
+                }
+            </TabControl>
+        </div>
+    </section>
+</main>
 <!--#region Edit Form Modals  -->
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
-    CurrentRealEstate="@currentRealEstate">
+                            CurrentRealEstate="@currentRealEstate">
     </ModalEditAddRealEstate>
 </div>
 
 <div>
     <ModalEditAddDevice @ref="@refModalEditAddDevice"
-    CurrentDevice="@currentDevice"
-    CurrentUser="@currentUser"
-    RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
+                        CurrentDevice="@currentDevice"
+                        CurrentUser="@currentUser"
+                        RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
     </ModalEditAddDevice>
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
-    CurrentDevice="@currentDevice"
-    DevicesListAsQueryable="@_devicesListAsQueryable">
+                              CurrentDevice="@currentDevice"
+                              DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditWarrantyDetails>
 </div>
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
-    CurrentDevice="@currentDevice"
-    ShopAddress="@shopAddress"
-    DevicesListAsQueryable="@_devicesListAsQueryable">
+                          CurrentDevice="@currentDevice"
+                          ShopAddress="@shopAddress"
+                          DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditShopDetails>
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
-    CurrentRealEstate="@currentRealEstate">
+                           CurrentRealEstate="@currentRealEstate">
     </ModalDeleteRealEstate>
 </div>
 <div>
     <ModalReassignDevices @ref="@refModalReasignDevices"
-    SelectedRealEstateID="@SelectedRealEstateID"
-    CurrentUser="@currentUser"
-    CurrentRealEstate="@currentRealEstate">
+                          SelectedRealEstateID="@SelectedRealEstateID"
+                          CurrentUser="@currentUser"
+                          CurrentRealEstate="@currentRealEstate">
     </ModalReassignDevices>
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-    CurrentDeviceToDelete="@currentDevice">
+                                CurrentDeviceToDelete="@currentDevice">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
-    ObjectName="@_deletedObjectName">
+                           ObjectName="@_deletedObjectName">
     </ModalDeleteSuccessful>
 </div>
 <div>
@@ -310,11 +314,11 @@
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         // _chosedDeviceID = new();
         StateHasChanged();
-    } 
+    }
 
     private async Task SendDeviceIDToCreateEmailComponent(int deviceId)
     {
-        await JSRuntime.InvokeVoidAsync("open",$"createEmail/{deviceId}", "_blank");
+        await JSRuntime.InvokeVoidAsync("open", $"createEmail/{deviceId}", "_blank");
     }
 
     public string deviceName
@@ -331,7 +335,7 @@
     [Inject]
     public AuthenticationStateProvider AuthenticationState { get; set; }
 
-    
+
 
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
@@ -398,7 +402,7 @@
     private ModalReassignDevices refModalReasignDevices = default!;
 
     private void RealEstateDataHasChanged()
-    {        
+    {
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
     }
@@ -509,7 +513,7 @@
     protected override async Task OnInitializedAsync()
     {
         _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
-        
+
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
@@ -541,7 +545,7 @@
     }
 
 
-    
+
 
 }
 

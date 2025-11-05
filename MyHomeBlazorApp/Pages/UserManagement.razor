@@ -40,6 +40,23 @@
     #modalDelete .modal-title {
         color: red;
     }
+
+    .grid {
+        height: max-content;
+        overflow-y: auto;
+    }
+
+    /*  thead {
+        position: sticky;
+        top: 0;
+        background-color: #9ab4c4;
+    } */
+
+    /* Subtle stripe effect */
+    /*  tr:nth-child(even) {
+        background: #e9f3f7;
+    } */
+
 </style>
 
 <h3 class="my-3">Users Management Dashboard</h3>
@@ -97,7 +114,7 @@
     </section>
 </main>
 
-<Modal @ref="refModalChooseRole" Title="Choose Role For The User" >
+<Modal @ref="refModalChooseRole" Title="Choose Role For The User">
     <BodyTemplate>
         <EditForm Model="@_user">
             <label class="form-label">Choose a Role:</label>
