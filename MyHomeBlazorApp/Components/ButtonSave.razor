@@ -1,15 +1,14 @@
-﻿<Button Color="ButtonColor.Primary" Class="buttonClose" @onclick="@ButtonEvent" >Close</Button>
+﻿<Button Color="ButtonColor.Primary" Class="buttonSave" Type="ButtonType.Submit" @onclick="@ButtonEvent">Save</Button>
 
 <style>
-    
-    .buttonClose {
+    .buttonSave {
         align-items: flex-end;
         background-color: white;
         background-position: 0 0;
-        border: 1px solid #D33A2C;
+        border: 1px solid #198754;
         border-radius: 11px;
         box-sizing: border-box;
-        color: #D33A2C;
+        color: #198754;
         cursor: pointer;
         display: inline-block;
         font-size: 1rem;
@@ -29,31 +28,31 @@
         word-break: break-word;
     }
 
-    .buttonClose:active,
-    .buttonClose:hover,
-    .buttonClose:focus {
-        outline: 0;
-    }
+        .buttonSave:active,
+        .buttonSave:hover,
+        .buttonSave:focus {
+            outline: 0;
+        }
 
 
-    .buttonClose:active {
-        background-color: #D33A2C;
-        box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
-        color: #FFFFFF;
-    }
+        .buttonSave:active {
+            background-color: #198754;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
 
-    .buttonClose:hover {
-        background-color: #FFE3E3;
-        border-color: #FAA4A4;
-    }
+        .buttonSave:hover {
+            background-color: #198754;
+            border-color: #198754;
+        }
 
-    .buttonClose:active:hover,
-    .buttonClose:focus:hover,
-    .buttonClose:focus {
-        background-color: #D33A2C;
-        box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
-        color: #FFFFFF;
-    }
+        .buttonSave:active:hover,
+        .buttonSave:focus:hover,
+        .buttonSave:focus {
+            background-color: #198754;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
 </style>
 
 @code {
