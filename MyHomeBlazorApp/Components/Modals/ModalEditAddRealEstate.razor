@@ -4,39 +4,66 @@
 @using System.ComponentModel.DataAnnotations
 @inject BlazorData.DataService DataService
 
+<style>
+    .btn-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .left-buttons button,
+    .right-buttons button {
+        margin: 0 5px;
+    }
+</style>
 
 <Modal @ref="refModalEditAddRealEstate" Title="Edit Real Estate Details">
     <BodyTemplate>
         <EditForm id="realEstateForm123" method="get" Model="CurrentRealEstate" OnSubmit="@RealEsatateFormSubmitted">
             <DataAnnotationsValidator />
             <div class="form-group row">
-                <label for="realEstateName" class="col-sm-2 col-form-label">
+                <label for="realEstateName" class="col-sm-4 col-form-label">
                     Real Estate Name
                 </label>
-                <div class="col-sm-10">
+                <div class="col-sm-8">
                     <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                    @bind-Value="CurrentRealEstate.RealEstateName" />
+                               @bind-Value="CurrentRealEstate.RealEstateName" />
 
                 </div>
 
             </div>
             <AddressComponent CurrentObjectAddress="@CurrentRealEstate.Address" DisplaySubmitButton="false" />
-            @if (CurrentRealEstate.RealEstateID != 0)
-            {
-                @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.First().RealEstateID && CurrentRealEstate.RealEstateID != 0)
-                {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstatePreviuos">Previuos</Button>
-                }
-                @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.Last().RealEstateID && CurrentRealEstate.RealEstateID != 0)
-                {
-                    <Button Color="ButtonColor.Primary" @onclick="OnModalRealEstateNext">Next</Button>
-                }
-            }
             <ValidationSummary />
-            @* <ValidationMessage For=@( () => realEstateModel.RealEstateName ) /> *@
-            <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditAddRealEstateClick">Close</Button>
-            @* The button to submit/update form *@
-            <Button form="realEstateForm123" Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+
+            <div class="btn-row mt-3">
+                <div class="left-buttons">
+                    @if (CurrentRealEstate.RealEstateID != 0)
+                    {
+                        @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.First().RealEstateID && CurrentRealEstate.RealEstateID != 0)
+                        {
+                            <ButtonPreviuosNext ButtonEvent="OnModalRealEstatePreviuos" ButtonName="Previuos"  />
+                        }
+                        else
+                        {
+                            <ButtonPreviuosNext ButtonEvent="OnModalRealEstatePreviuos" ButtonName="Previuos" Disabled="true" />
+                        }
+                        @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.Last().RealEstateID && CurrentRealEstate.RealEstateID != 0)
+                        {
+                            <ButtonPreviuosNext ButtonEvent="OnModalRealEstateNext" ButtonName="Next" />
+                        }
+                        else
+                        {
+                            <ButtonPreviuosNext ButtonEvent="OnModalRealEstateNext" ButtonName="Next" Disabled="true" />
+                        }
+                    }
+                </div>
+                <div class="right-buttons">
+                    @* <ValidationMessage For=@( () => realEstateModel.RealEstateName ) /> *@
+                    @* The button to submit/update form *@
+                    <ButtonSave Form="realEstateForm123" />
+                    <ButtonClose ButtonEvent="OnHideModalEditAddRealEstateClick" />
+                </div>
+            </div>
         </EditForm>
     </BodyTemplate>
 </Modal>
@@ -69,7 +96,7 @@
             }
             else
             {
-                validRealEstate = editContext.Validate();               
+                validRealEstate = editContext.Validate();
                 await DataService.UpdateObjectInDB();
             }
             realEstateDataHasChanged();
@@ -79,7 +106,7 @@
         {
             validRealEstate = editContext.Validate();
             return;
-        }        
+        }
     }
 
     private void OnModalRealEstateNext()

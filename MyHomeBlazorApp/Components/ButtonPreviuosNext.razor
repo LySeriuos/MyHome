@@ -1,14 +1,15 @@
-﻿<Button Color="ButtonColor.Primary" form="@Form" Class="buttonSave" Type="ButtonType.Submit" @onclick="@ButtonEvent">Save</Button>
+﻿<Button style="margin:5px" Class="buttonsNextPreviuos" @onclick="ButtonEvent" Disabled="@Disabled">@ButtonName</Button>
 
 <style>
-    .buttonSave {
+
+    .buttonsNextPreviuos {
     align-items: flex-end;
     background-color: white;
     background-position: 0 0;
-    border: 1px solid #198754;
+    border: 1px solid black;
     border-radius: 11px;
     box-sizing: border-box;
-    color: #198754;
+    color: black;
     cursor: pointer;
     display: inline-block;
     font-size: 1rem;
@@ -28,36 +29,40 @@
     word-break: break-word;
     }
 
-    .buttonSave:active,
-    .buttonSave:hover,
-    .buttonSave:focus {
+    .buttonsNextPreviuos:active,
+    .buttonsNextPreviuos:hover,
+    .buttonsNextPreviuos:focus {
     outline: 0;
     }
 
 
-    .buttonSave:active {
-    background-color: #198754;
+    .buttonsNextPreviuos:active {
+    background-color: black;
     box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
     color: #FFFFFF;
     }
 
-    .buttonSave:hover {
-    background-color: #198754;
-    border-color: #198754;
+    .buttonsNextPreviuos:hover {
+    background-color: black;
+    border-color: black;
+    color: white;
     }
 
-    .buttonSave:active:hover,
-    .buttonSave:focus:hover,
-    .buttonSave:focus {
-    background-color: #198754;
+    .buttonsNextPreviuos:active:hover,
+    .buttonsNextPreviuos:focus:hover,
+    .buttonsNextPreviuos:focus {
+    background-color: black;
     box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
     color: #FFFFFF;
     }
 </style>
 
+
 @code {
     [Parameter]
     public EventCallback ButtonEvent { get; set; }
     [Parameter]
-    public string? Form { get; set; }
+    public string? ButtonName { get; set; }
+    [Parameter]
+    public bool Disabled { get; set; }
 }
