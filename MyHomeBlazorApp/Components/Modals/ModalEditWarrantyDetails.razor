@@ -6,6 +6,19 @@
 @using System.Text
 
 
+<style>
+    .btn-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .left-buttons button,
+    .right-buttons button {
+        margin: 0 5px;
+    }
+</style>
+
 <Modal @ref="_refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
         <EditForm Model="@CurrentDevice" OnSubmit="WarrantyDetailsFormSubmitted">
@@ -54,11 +67,17 @@
                     </InputFile>
                 </div>
             </div>
-            <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                 DevicesListAsQueryable="DevicesListAsQueryable">
-            </NextPreviuosButtons>
-            <Button Color="ButtonColor.Primary" @onclick="OnHideModalEditWarrantyClick">Close</Button>
-            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+            <div class="btn-row mt-3">
+                <div class="left-buttons">
+                    <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                         DevicesListAsQueryable="DevicesListAsQueryable">
+                    </NextPreviuosButtons>
+                </div>
+                <div class="right-buttons">
+                    <ButtonSave />
+                    <ButtonClose ButtonEvent="OnHideModalEditWarrantyClick" />
+                </div>
+            </div>
         </EditForm>
         @if (errors.Count > 0)
         {

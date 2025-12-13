@@ -4,7 +4,7 @@
 
 
 <EditForm Model="@CurrentObjectAddress"> 
-    <div class="form-group row">
+    <div class="form-group row mt-2 align-items-center">
         <label for="streetName" class="col-sm-4 col-form-label">
             Street Name
         </label>
@@ -13,7 +13,7 @@
                        @bind-Value="@CurrentObjectAddress.StreetName" />
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row mt-2 align-items-center">
         <label for="houseNumber" class="col-sm-4 col-form-label">
             House Number
         </label>
@@ -22,7 +22,7 @@
                          @bind-Value="@CurrentObjectAddress.HouseNumber" />
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row mt-2 align-items-center">
         <label for="houseNumberExtension" class="col-sm-4 col-form-label">
             House Number Extension
         </label>
@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mt-2 align-items-center">
         <label for="city" class="col-sm-4 col-form-label">
             City
         </label>
@@ -41,11 +41,11 @@
                        @bind-Value="@CurrentObjectAddress.City" />
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row mt-2 align-items-center">
         <label for="country" class="col-sm-4 col-form-label">
             Country
         </label>
-        <div class="col-sm-8">
+        <div class="col-sm-8 mt-2 align-items-center">
             <InputText id="country" class="form-control" placeholder="Country"
                        @bind-Value="@CurrentObjectAddress.Country" />
         </div>
