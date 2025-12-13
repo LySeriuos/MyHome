@@ -110,7 +110,7 @@
                 </TabPage>
                 <TabPage Text="Devices Warranties">
                     <div class="grid my-5">
-                        <QuickGrid tabindex="3" Items="@_devicesListAsQueryable">
+                        <QuickGrid tabindex="3" Class="text-center" Items="@_devicesListAsQueryable">
                             <TemplateColumn>
                                 <div>
                                     <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
@@ -123,16 +123,16 @@
                             <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
                             <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
                             <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-                            <PropertyColumn Title="Length" Property="@(d => d.DeviceWarranty.Years)" />
+                            <PropertyColumn Title="Warranty Length" Property="@(d => d.DeviceWarranty.Years)" />
                             @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                             <TemplateColumn Title="Receipt">
                                 @if (String.IsNullOrEmpty(context.DeviceWarranty.ReceiptLink))
                                 {
-                                    <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
+                                    <span class="text-sm"><small>No File</small></span>
                                 }
                                 else
                                 {
-                                    <Button class="button-51" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
+                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
                                 }
 
                             </TemplateColumn>
@@ -141,11 +141,11 @@
                             <TemplateColumn Title="Extra's Receipt">
                                 @if (String.IsNullOrEmpty(context.DeviceWarranty.ExtraInsuranceWarrantyLink))
                                 {
-                                    <span class="text-sm navbar-text px-3 py-2"><small>No File</small></span>
+                                    <span class="text-sm"><small>No File</small></span>
                                 }
                                 else
                                 {
-                                    <Button class="test-btn button-51" @onclick="()=>NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
+                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="()=>NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
                                 }
                             </TemplateColumn>
                         </QuickGrid>
