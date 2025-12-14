@@ -47,7 +47,11 @@
             <TabControl TabID="TabID">
                 <TabPage Text="Real Estates">
                     <div class="grid">
-                        <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
+                        <div class="">
+                            <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Real Estate data</div>
+                            <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Push Delete Icon to delete Real Estate with devices or delete Real Estate and move devices to other Real Estate</div>
+                        </div>
                         <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
                             <TemplateColumn>
                                 <div>
@@ -72,8 +76,10 @@
                     <div class="grid">
                         <div class="">
                             <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button></div>
-                            <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Push Envelope icon to prepare email with chosed device details <Icon Name="IconName.ArrowDownCircle" /></div>
-                            <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to create qr code for the device <Icon Name="IconName.ArrowDownCircle" /></div>
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your device data</div>
+                            <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Push Delete Icon to delete device</div>
+                            <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to create qr code for the device</div>
+                            <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Push Envelope icon to prepare email with chosed device details</div>
                         </div>
 
             @* <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
@@ -110,6 +116,9 @@
                 </TabPage>
                 <TabPage Text="Devices Warranties">
                     <div class="grid my-5">
+                        <div class="">
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Warranties data</div>                            
+                        </div>
                         <QuickGrid tabindex="3" Class="text-center" Items="@_devicesListAsQueryable">
                             <TemplateColumn>
                                 <div>
@@ -123,7 +132,7 @@
                             <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
                             <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
                             <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
-                            <PropertyColumn Title="Warranty Length" Property="@(d => d.DeviceWarranty.Years)" />
+                            <PropertyColumn Title="Warranty Length (Years)" Property="@(d => d.DeviceWarranty.Years)" />
                             @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                             <TemplateColumn Title="Receipt">
                                 @if (String.IsNullOrEmpty(context.DeviceWarranty.ReceiptLink))
@@ -136,7 +145,7 @@
                                 }
 
                             </TemplateColumn>
-                            <PropertyColumn Title="Extra Warranty Length" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
+                            <PropertyColumn Title="Extra Warranty Length (Years)" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
                             @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
                             <TemplateColumn Title="Extra's Receipt">
                                 @if (String.IsNullOrEmpty(context.DeviceWarranty.ExtraInsuranceWarrantyLink))
@@ -153,6 +162,9 @@
                 </TabPage>
                 <TabPage Text="Shops Details">
                     <div class="grid my-5">
+                        <div class="">
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your device purchase shop data</div>
+                        </div>
                         <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
                             <TemplateColumn>
                                 <div>

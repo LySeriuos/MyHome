@@ -22,20 +22,20 @@
 <Modal @ref="_refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
         <EditForm Model="@CurrentDevice" OnSubmit="WarrantyDetailsFormSubmitted">
-            <div class="form-group row">
+            <div class="form-group row align-items-center">
                 <label for="devicePurchaseDate" class="col-sm-6 col-form-label">Purchase Date</label>
                 <div class="col-sm-6">
                     <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="CurrentDevice.DeviceWarranty.PurchaseDate">Add Purchase Date</InputDate>
                     <ValidationMessage For="@(() => CurrentDevice.DeviceWarranty.PurchaseDate)" />
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row align-items-center">
                 <label for="deviceWarrantyLength" class="col-sm-6 col-form-label">Warranty Lentgh (years)</label>
                 <div class="col-sm-6">
                     <InputNumber id="deviceWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.Years">Add warranty lentgh in years</InputNumber>
                 </div>
             </div>
-            <div class="form-group row mb-5">
+            <div class="form-group row my-2 align-items-center">
                 <label for="linkToReceipt" class="col-sm-6 col-form-label">Add new Receipt Link</label>
                 <div class="col-sm-6">
                     @if (!String.IsNullOrEmpty(CurrentDevice.DeviceWarranty.ReceiptLink))
@@ -54,7 +54,7 @@
                     <InputNumber id="deviceExtendedWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.ExtendedWarrantyinYears">Add extended warranty lentgh in years</InputNumber>
                 </div>
             </div>
-            <div class="form-group row mb-5">
+            <div class="form-group row my-2 align-items-center">
                 <label for="extendedWarrantyLinkToReceipt" class="col-sm-6 col-form-label">Add new Extended Warranty Receipt</label>
                 <div class="col-sm-6">
                     @if (!String.IsNullOrEmpty(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
