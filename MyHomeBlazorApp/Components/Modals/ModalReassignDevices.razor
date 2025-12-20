@@ -117,6 +117,10 @@
         align-items: center;
     }
 
+    .pSelection{
+        color: #198754;
+    }
+
 </style>
 
 <Modal @ref="refModalReasignDevices" Title="Devices Reassigning">
@@ -128,7 +132,7 @@
                         This option will let you move all devices from removed Real Estate to another.
                     </li>
                 </ul>
-                <p>Choose Real Estate to move your devices:</p>
+                <p class="pSelection">Choose Real Estate to move your devices:</p>
             </div>
             <div class="row">
                 <select class="form-control form-select" @bind="@SelectedRealEstateID">
@@ -148,7 +152,7 @@
                 </select>
             </div>
             <div class="btn-row mt-3">
-                @if (CurrentUser.RealEstates.Count > 1)
+                @if (CurrentUser.RealEstates.Count > 1 && SelectedRealEstateID > 1)
                 {
                     <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, CurrentRealEstate)" Class="buttonMoveDevices">Move Devices</Button>
                 }
@@ -187,7 +191,7 @@
 
     public Action onDeleteRealEstate;
     public Action onDataChanged;
-    private string ChooseOptionValue { get; set; } = "Choose Real Estate";
+    private string ChooseOptionValue { get; set; } = "Choose Real Estate to move devices";
     public Modal? refModalReasignDevices { get; set; }
 
 
