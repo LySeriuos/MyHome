@@ -143,7 +143,7 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate GetRealEstate(int realEstateID)
         {
             RealEstate realEstateById = new RealEstate();
-            if (_currentUserWithData.RealEstates.Count > 1 && _currentUserWithData.RealEstates.Any(item => item.RealEstateID == realEstateID))
+            if (_currentUserWithData.RealEstates.Count > 0 && _currentUserWithData.RealEstates.Any(item => item.RealEstateID == realEstateID))
             {
                 realEstateById = _currentUserWithData.RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
             }

@@ -3,6 +3,122 @@
 @using MyHomeBlazorApp.Pages
 @inject BlazorData.DataService DataService
 
+
+<style>
+    .buttonMoveDevices {
+        align-items: center;
+        background-color: white;
+        /* background-position: 0 0; */
+        border: 1px solid #198754;
+        border-radius: 11px;
+        box-sizing: border-box;
+        color: #198754;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 33.4929px;
+        list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+        padding: 2px 12px;
+        text-align: right;
+        text-decoration: none;
+        text-shadow: none;
+        text-underline-offset: 1px;
+        transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        white-space: nowrap;
+        word-break: break-word;
+    }
+
+        .buttonMoveDevices:active,
+        .buttonMoveDevices:hover,
+        .buttonMoveDevices:focus {
+            outline: 0;
+        }
+
+
+        .buttonMoveDevices:active {
+            background-color: #198754;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
+
+        .buttonMoveDevices:hover {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        .buttonMoveDevices:active:hover,
+        .buttonMoveDevices:focus:hover,
+        .buttonMoveDevices:focus {
+            background-color: #198754;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
+
+    .buttonKeepUnassigned {
+        align-items: center;
+        background-color: white;
+        /* background-position: 0 0; */
+        border: 1px solid #17a2b8;
+        border-radius: 11px;
+        box-sizing: border-box;
+        color: #17a2b8;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 33.4929px;
+        list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+        padding: 2px 12px;
+        text-align: right;
+        text-decoration: none;
+        text-shadow: none;
+        text-underline-offset: 1px;
+        transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        white-space: nowrap;
+        word-break: break-word;
+    }
+
+        .buttonKeepUnassigned:active,
+        .buttonKeepUnassigned:hover,
+        .buttonKeepUnassigned:focus {
+            outline: 0;
+        }
+
+
+        .buttonKeepUnassigned:active {
+            background-color: #17a2b8;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
+
+        .buttonKeepUnassigned:hover {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .buttonKeepUnassigned:active:hover,
+        .buttonKeepUnassigned:focus:hover,
+        .buttonKeepUnassigned:focus {
+            background-color: #17a2b8;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
+
+    .btn-row {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+</style>
+
 <Modal @ref="refModalReasignDevices" Title="Devices Reassigning">
     <BodyTemplate>
         <div>
@@ -31,14 +147,14 @@
                     }
                 </select>
             </div>
-            <div class="row">
+            <div class="btn-row mt-3">
                 @if (CurrentUser.RealEstates.Count > 1)
                 {
-                    <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, CurrentRealEstate)">Move Devices</Button>
+                    <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, CurrentRealEstate)" Class="buttonMoveDevices">Move Devices</Button>
                 }
                 else
                 {
-                    <Button Disabled>Move Devices</Button>
+                    <Button Disabled Class="buttonMoveDevices">Move Devices</Button>
                 }
             </div>
             <br />
@@ -49,12 +165,13 @@
                     </li>
                 </ul>
             </div>
-            <div class="row">
-                <Button @onclick="()=>LeaveDevicesUnassigned(CurrentRealEstate)">Keep Devices Unassigned</Button>
+            <div class="btn-row mt-3">
+                <Button @onclick="()=>LeaveDevicesUnassigned(CurrentRealEstate)" Class="buttonKeepUnassigned">Keep Devices Unassigned</Button>
             </div>
             <br />
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <Button @onclick="OnHideModalReasignDevicesCloseClick">Cancel</Button>
+                <ButtonClose ButtonEvent="OnHideModalReasignDevicesCloseClick" />
+                @* <Button @onclick="OnHideModalReasignDevicesCloseClick">Cancel</Button> *@
             </div>
         </div>
     </BodyTemplate>
@@ -77,10 +194,10 @@
     // deleting first before devicesList had been moved
     private async Task MoveDevicesListToOtherRealEstate(int SelectedRealEstateID, RealEstate currentRealEstate)
     {
-        if (currentRealEstate.RealEstateID !=0 && SelectedRealEstateID > 0)
+        if (currentRealEstate.RealEstateID != 0 && SelectedRealEstateID > 0)
         {
-            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);            
-           
+            DataService.MoveDeviceListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
+
         }
         else
         {
@@ -96,7 +213,7 @@
         if (currentRealEstate.RealEstateID != 0)
         {
             DataService.LeaveDevicesUnassigned(currentRealEstate);
-            
+
         }
         else
         {

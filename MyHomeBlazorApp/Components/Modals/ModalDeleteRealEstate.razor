@@ -12,14 +12,15 @@
     <FooterTemplate>
         @if (CurrentRealEstate.DevicesProfiles.Count > 0)
         {
-            <Button @onclick="()=> CallTheRequest()">Delete Only Real Estate</Button>
-            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate With Devices</Button>
+            <Button @onclick="()=> CallTheRequest()" Class="btn btn-danger">Delete Only Real Estate</Button>
+            <Button @onclick="()=> DeleteRealEstate_Click(true)" Class=" btn btn-danger">Delete Real Estate With Devices</Button>
         }
         else
         {
             <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate</Button>
         }
-        <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button>
+        <ButtonClose ButtonEvent="()=>OnHideModalDeleteRealEstateCloseClick()"/>
+        @* <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button> *@
     </FooterTemplate>
 </Modal>
 
