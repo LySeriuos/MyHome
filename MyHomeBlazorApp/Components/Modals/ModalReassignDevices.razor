@@ -111,7 +111,7 @@
             color: #FFFFFF;
         }
 
-    .btn-row {
+    .btnRow {
         display: flex;
         justify-content: space-around;
         align-items: center;
@@ -151,7 +151,7 @@
                     }
                 </select>
             </div>
-            <div class="btn-row mt-3">
+            <div class="btnRow mt-3">
                 @if (CurrentUser.RealEstates.Count > 1 && SelectedRealEstateID > 1)
                 {
                     <Button @onclick="()=>MoveDevicesListToOtherRealEstate(SelectedRealEstateID, CurrentRealEstate)" Class="buttonMoveDevices">Move Devices</Button>
@@ -169,12 +169,12 @@
                     </li>
                 </ul>
             </div>
-            <div class="btn-row mt-3">
+            <div class="btnRow mt-3">
                 <Button @onclick="()=>LeaveDevicesUnassigned(CurrentRealEstate)" Class="buttonKeepUnassigned">Keep Devices Unassigned</Button>
             </div>
             <br />
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <ButtonClose ButtonEvent="OnHideModalReasignDevicesCloseClick" />
+                <ButtonCloseCancel TextButton="Cancel" ButtonEvent="OnHideModalReasignDevicesCloseClick" />
                 @* <Button @onclick="OnHideModalReasignDevicesCloseClick">Cancel</Button> *@
             </div>
         </div>

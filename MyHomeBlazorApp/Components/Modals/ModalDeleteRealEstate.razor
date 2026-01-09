@@ -17,9 +17,9 @@
         }
         else
         {
-            <Button @onclick="()=> DeleteRealEstate_Click(true)">Delete Real Estate</Button>
+            <Button @onclick="()=> DeleteRealEstate_Click(true)" Class="btn btn-danger">Delete Real Estate</Button>
         }
-        <ButtonClose ButtonEvent="()=>OnHideModalDeleteRealEstateCloseClick()"/>
+        <ButtonCloseCancel TextButton="Cancel" ButtonEvent="()=>OnHideModalDeleteRealEstateCloseClick()"/>
         @* <Button @onclick="()=> OnHideModalDeleteRealEstateCloseClick()">Cancel</Button> *@
     </FooterTemplate>
 </Modal>
