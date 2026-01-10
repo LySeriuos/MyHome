@@ -3,10 +3,18 @@
 @using MyHomeBlazorApp.Pages
 @inject BlazorData.DataService DataService
 
+<style>
+    .modal-content
+    {
+        justify-content:flex-end !important;
+        
+    }
+    
+</style>
 
 <Modal @ref="refModalConfirmDeviceDeletion" HeaderCssClass="justify-content-end">    
     <BodyTemplate>
-        <p>Are you sure you want To Delete @CurrentDeviceToDelete.DeviceName?</p>
+        <p class="m-auto">Are you sure you want To Delete @CurrentDeviceToDelete.DeviceName?</p>
     </BodyTemplate>
     <FooterTemplate>
         <Button Class="btn btn-danger" @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
