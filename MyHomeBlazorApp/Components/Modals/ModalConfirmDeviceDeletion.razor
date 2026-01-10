@@ -4,13 +4,14 @@
 @inject BlazorData.DataService DataService
 
 
-<Modal @ref="refModalConfirmDeviceDeletion">
+<Modal @ref="refModalConfirmDeviceDeletion" HeaderCssClass="justify-content-end">    
     <BodyTemplate>
         <p>Are you sure you want To Delete @CurrentDeviceToDelete.DeviceName?</p>
     </BodyTemplate>
     <FooterTemplate>
-        <Button @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
-        <Button @onclick="()=>DeleteDevice_Click(false)">Cancel</Button>
+        <Button Class="btn btn-danger" @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
+        <ButtonCloseCancel TextButton="Cancel" ButtonEvent="()=>DeleteDevice_Click(false)" />
+        @* <Button @onclick="()=>DeleteDevice_Click(false)">Cancel</Button> *@
     </FooterTemplate>
 </Modal>
 @code {
@@ -33,7 +34,7 @@
             _deviceToDelete = DataService.CurrentUserWithAllData.GetAllDevices().First(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
 
             if (_deviceToDelete != null)
-            {                
+            {
                 // // _deletedDeviceName = _deviceToDelete.DeviceName;
                 await DataService.RemoveDeviceFromDb(_deviceToDelete);
                 onDataChanged();

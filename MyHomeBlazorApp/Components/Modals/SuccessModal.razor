@@ -3,7 +3,8 @@
         @Text
     </BodyTemplate>
     <FooterTemplate>
-        <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
+        <ButtonCloseCancel TextButton="Close" ButtonEvent="OnHideModalClick"/>
+        @* <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button *@>
     </FooterTemplate>
 </Modal>
 
