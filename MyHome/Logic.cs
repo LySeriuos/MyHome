@@ -169,7 +169,7 @@ namespace MyHome
         public static void RemoveDevice(RealEstate currentRealEstate, DeviceProfile deviceToDelete, List<UserProfile> _users, string _path)
         {
             currentRealEstate.DevicesProfiles.Remove(deviceToDelete);
-            Data.SaveUsersListToXml(_users, _path);
+            XMLFileUitilities.SaveUsersListToXml(_users, _path);
         }
 
         /// <summary>

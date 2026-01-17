@@ -8,7 +8,7 @@ using MyHome.Models;
 
 namespace MyHome
 {
-    public static class Data
+    public static class XMLFileUitilities
     {
         /// <summary>
         /// Save the list to the local memory

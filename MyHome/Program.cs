@@ -7,7 +7,7 @@ string path = @"C:\Temp\usersListTestData111.xml";
 string saveQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
 //
 
-List<UserProfile> usersList = Data.GetUsersListFromXml(path);
+List<UserProfile> usersList = XMLFileUitilities.GetUsersListFromXml(path);
 List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
 List<DeviceProfile> userDevices = Logic.GetAllUserDevices(usersList[1]);
 
