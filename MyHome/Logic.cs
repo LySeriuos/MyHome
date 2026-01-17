@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Security.Cryptography;
+﻿using MyHome.Models;
 using QRCoder;
-using MyHome.Models;
-using System.IO;
+using System.Drawing;
 using static QRCoder.PayloadGenerator;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http;
 
 namespace MyHome
 {
+    
+
     public class Logic
     {
+        public const int DAYS_TILL_WARRANTY_ENDS = 180;
+
 
         /// <summary>
         /// Method to get all devices with warranties which ending soon
@@ -24,7 +18,7 @@ namespace MyHome
         /// <param name="userProfile">Devices connected to Users</param>
         /// <param name="daysTillEnd">Max days until devices warranties ends</param>
         /// <returns>List of devices which are in the period of Max days to warraties ends</returns>
-        public static List<DeviceProfile> ExpiringDevicesWarrantiesInDays(UserProfile userProfile, int daysTillEnd = 180)
+        public static List<DeviceProfile> ExpiringDevicesWarrantiesInDays(UserProfile userProfile, int DAYS_TILL_WARRANTY_ENDS)
         {
             List<DeviceProfile> expiringDevices = new List<DeviceProfile>();
             List<RealEstate> realEstates = userProfile.RealEstates;
@@ -40,7 +34,7 @@ namespace MyHome
                         DateTime deviceWarranty = warranty.WarrantyEnd;
                         DateTime dateTime = DateTime.Now;
                         TimeSpan daysCounting = deviceWarranty.Subtract(dateTime);
-                        if (daysCounting.Days < daysTillEnd)
+                        if (daysCounting.Days < DAYS_TILL_WARRANTY_ENDS)
                         {
                             expiringDevices.Add(device);
                         }

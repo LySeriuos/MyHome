@@ -1,5 +1,4 @@
-﻿using System.Runtime.Loader;
-using MyHome.Models;
+﻿using MyHome.Models;
 
 namespace MyHome
 {

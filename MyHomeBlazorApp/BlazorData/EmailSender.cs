@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
-using MyHomeBlazorApp.BlazorData;
 using MimeKit;
-using MailKit.Net.Smtp;
+using MyHomeBlazorApp.BlazorData;
 
 namespace WebPWrecover.Services;
 

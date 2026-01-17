@@ -1,5 +1,5 @@
-﻿using MyHome.Models;
-using MyHome;
+﻿using MyHome;
+using MyHome.Models;
 
 
 // For testing console

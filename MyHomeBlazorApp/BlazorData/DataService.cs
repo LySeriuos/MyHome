@@ -1,32 +1,12 @@
-﻿using BlazorBootstrap;
-using com.sun.org.apache.xml.@internal.resolver.helpers;
-using java.util;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using My_Home;
-using My_Home.Models;
 using MyHome;
-using Microsoft.Data.Sqlite;
 using MyHome.Models;
-using MyHomeBlazorApp.Pages;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 //using System.Data.Entity;
-using System.IO;
-using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Xml;
-using Unity;
-using static com.sun.management.VMOption;
-using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using MailKit.Search;
-using Unity.Injection;
 
 
 namespace MyHomeBlazorApp.BlazorData
