@@ -1,14 +1,15 @@
 ﻿using MyHome;
 using MyHome.Models;
+using System.Drawing.Text;
 
 
 // For testing console
 string path = @"C:\Temp\usersListTestData111.xml";
 string saveQRCodeLink = "C:\\Users\\shiranco.DESKTOP-HRN41TE\\Desktop\\qrcodes\\qrCode.png";
 //
-
+const int DAYS_UNTILL_WARRANTY_ENDS = 180;
 List<UserProfile> usersList = XMLFileUitilities.GetUsersListFromXml(path);
-List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], 180);
+List<DeviceProfile> devicesClosestToTheEndList = Logic.ExpiringDevicesWarrantiesInDays(usersList[1], DAYS_UNTILL_WARRANTY_ENDS);
 List<DeviceProfile> userDevices = Logic.GetAllUserDevices(usersList[1]);
 
 List<DeviceWarranty> devicesWarranties = Logic.GetUserDevicesWarranties(usersList[0]);
