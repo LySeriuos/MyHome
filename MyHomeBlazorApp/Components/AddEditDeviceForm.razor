@@ -169,7 +169,7 @@
     {
         _chosedRealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
         editContext = new(CurrentDevice);
-        _unassignedDevicesListAsQueryable = DataService.UnassignedDevicesList.AsQueryable();
+        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
         _devicesListAsQueryable = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
         .Result.UserProfile.RealEstates
         .SelectMany(realEstate => realEstate.DevicesProfiles)

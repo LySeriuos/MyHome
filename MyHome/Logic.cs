@@ -5,8 +5,6 @@ using static QRCoder.PayloadGenerator;
 
 namespace MyHome
 {
-    
-
     public class Logic
     {
         public const int DAYS_TILL_WARRANTY_ENDS = 180;
@@ -89,9 +87,9 @@ namespace MyHome
         /// Method to move device object from one Real Estate to another Real Estatee by device's serial number
         /// </summary>
         /// <param name="user">User</param>
-        /// <param name="serialNumber">Device's serial number</param>
         /// <param name="userChosedRealEstateToMoveDevice">Chosed Real Estate where to move the device</param>
         /// <returns>bool to give a respons for user if device moving was successful </returns>
+        /// 
         public static bool MoveDeviceToOtherRealEstate(UserProfile user, int deviceID, RealEstate userChosedRealEstateToMoveDevice)
         {
             RealEstate targetRealEstate = userChosedRealEstateToMoveDevice;
@@ -129,15 +127,21 @@ namespace MyHome
         public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string savedQrCodeLink)
         {
             //TODO:
-            // This is used for test on local environment, new Url every time visual studio started. 
+            // This option need to be tested later on the release.
             Url absoluteUrl = new Url("https://dlvqw053-5067.euw.devtunnels.ms");
             //
+            Url absoluteUrlTest = new PayloadGenerator.Url("https://localhost:7211");
+
             Url qrCodeUrl = new Url($"{absoluteUrl}/mobileDeviceInfo/{userID}/{deviceID}");
             string generatedQrCodeLink = qrCodeUrl.ToString();
             QrCodeGenerator(generatedQrCodeLink, savedQrCodeLink);
         }
 
-        //Need to fix this!!!!
+        /// <summary>
+        /// Create and save Qr code image
+        /// </summary>
+        /// <param name="generatedQrCodeLink">Generated qr code link to the url address </param>
+        /// <param name="savedQrCodeLink">link of saved Qr code on local mashine</param>
         public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
@@ -155,11 +159,12 @@ namespace MyHome
         }
 
         /// <summary>
-        /// Method to delete Device fromthe List
+        /// Method to remove device from the xml database
         /// </summary>
-        /// <param name="deviceID">context Device ID</param>
-        /// <param name="user">Current User</param>
-        /// <returns>bool if it was removed true if not false</returns>
+        /// <param name="currentRealEstate">real estate where device is</param>
+        /// <param name="deviceToDelete">chosed device to delete</param>
+        /// <param name="_users">list of all users</param>
+        /// <param name="_path">location destination where list will be saved</param>
         public static void RemoveDevice(RealEstate currentRealEstate, DeviceProfile deviceToDelete, List<UserProfile> _users, string _path)
         {
             currentRealEstate.DevicesProfiles.Remove(deviceToDelete);
@@ -212,42 +217,5 @@ namespace MyHome
             return maxID;
         }
 
-
-
-        /// <summary>
-        /// Created two new lists and one dictionary to assign IDs and devices
-        /// </summary>
-        /// <param name="user">User</param>
-        /// <returns>Dictionary</returns>
-        //public static Dictionary<DeviceID, DeviceProfile> AddObjectsToDict(UserProfile user)
-        //{
-        //    List<RealEstate> realEstates = user.RealEstates;
-        //    List<DeviceID> devicesIDs = new List<DeviceID>();
-        //    Dictionary<List<DeviceID>, List<DeviceProfile>> dictObjectIdAndDevice = new Dictionary<List<DeviceID>, List<DeviceProfile>>();
-
-        //    int indexStartingInDictionary = 1;
-        //    List<DeviceProfile> devices = new List<DeviceProfile>();
-        //    List<DeviceProfile> deviceProfiles = new List<DeviceProfile>();
-        //    foreach (var realEstate in realEstates)
-        //    {
-        //        devices = realEstate.DevicesProfiles;
-        //        foreach (var device in devices)
-        //        {
-        //            deviceProfiles.Add(device);
-        //            DeviceID iD = new DeviceID();
-        //            iD.ID = indexStartingInDictionary;
-        //            devicesIDs.Add(iD);
-        //            indexStartingInDictionary++;                   
-        //        }
-        ////    }
-        //    // assigned index to device with zip method
-        //    var dictIdAndDeviceProfile = devicesIDs.Zip(deviceProfiles).ToDictionary(x => x.First, x => x.Second);
-
-        //    //trying to add lists of objects in to dictionary. Difficult to iterate
-        //    dictObjectIdAndDevice.Add(devicesIDs, deviceProfiles);
-
-        //    // returing dictionary 
-        //    return dictIdAndDeviceProfile;
-        //}
     }
 }
