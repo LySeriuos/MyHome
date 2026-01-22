@@ -235,7 +235,6 @@
             else
             {
                 validDeviceForm = editContext.Validate();
-                // DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
                 DataService.AddNewDeviceToDataBase(CurrentDevice, RealEsatateIdToAddDevice);
             }
         }
@@ -249,42 +248,12 @@
         }
 
         await DataService.UpdateObjectInDB();
-        // DataService.SaveUpdatedObject();
         changedDeviceListData();
         realEstateToAddDevice = new();
         showErrorMessageVisible = false;
         await refModalEditAddDevice.HideAsync();
     }
 
-    // private void TestMethod()
-    // {
-    //     if (CurrentDevice.DeviceID == 0 && realEstateToAddDevice.RealEstateID == 0)
-    //     {
-    //         if (validDeviceForm != true)
-    //         {
-    //             validDeviceForm = editContext.Validate();
-    //         }
-    //         else
-    //         {
-    //             validDeviceForm = editContext.Validate();
-    //             if (validDeviceForm == true && chosedRealEstateIsValid == true)
-    //             {
-    //                 DataService.AddNewDevice(CurrentDevice, RealEsatateIdToAddDevice);
-    //                 changedDeviceListData();
-    //                 realEstateToAddDevice.RealEstateID = 0;
-    //                 refModalEditAddDevice.HideAsync();
-    //             }
-    //         }
-    //     }
-    //     else if (CurrentDevice.DeviceID != 0 && CheckIfCurrentDeviceIsAssignedToRealEstate() == false)
-    //     {
-    //         DataService.SaveUpdatedObject();
-    //     }
-    //     else if (CurrentDevice.DeviceID != 0 && realEstateToAddDevice.RealEstateID != 0)
-    //     {
-    //         DataService.SaveUpdatedObject();
-    //     }
-    // }
     public async Task OnHideModalEditDeviceClick()
     {
         await refModalEditAddDevice.HideAsync();
