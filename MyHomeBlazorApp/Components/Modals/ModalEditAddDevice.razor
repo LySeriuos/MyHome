@@ -6,14 +6,14 @@
 
 <style>
     .btn-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     }
 
     .left-buttons button,
     .right-buttons button {
-        margin: 0 5px;
+    margin: 0 5px;
     }
 
 
@@ -118,13 +118,13 @@
                     @if (CurrentDevice.DeviceID != 0 && RealEsatateIdToAddDevice != 0)
                     {
                         <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                             DevicesListAsQueryable="_devicesListAsQueryable">
+                        DevicesListAsQueryable="_devicesListAsQueryable">
                         </NextPreviuosButtons>
                     }
                     else if (_unassignedDevicesListAsQueryable.Count() > 1)
                     {
                         <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                             DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
+                        DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
                         </NextPreviuosButtons>
                     }
                 </div>
@@ -208,7 +208,7 @@
         {
             chosedRealEstateIsValid = false;
             showErrorMessageVisible = true;
-            errorMessage = "Please select Real Estate to Add Device";
+            errorMessage = "Please select Real Estate to Add Device";            
         }
         else
         {
@@ -226,9 +226,10 @@
 
         if (CurrentDevice.DeviceID == 0)
         {
-            if (validDeviceForm != true && chosedRealEstateIsValid != true)
+            if (validDeviceForm == false && chosedRealEstateIsValid == false || validDeviceForm == true && chosedRealEstateIsValid == false)
             {
                 validDeviceForm = editContext.Validate();
+                ChosedRealEstateIsValid();
                 return;
             }
             else
