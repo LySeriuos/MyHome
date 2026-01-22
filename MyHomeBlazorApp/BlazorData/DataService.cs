@@ -335,7 +335,11 @@ namespace MyHomeBlazorApp.BlazorData
             }
             return currentDevice;
         }
-
+        /// <summary>
+        /// Method to open new tab in web browser with device details to look for device manual
+        /// </summary>
+        /// <param name="deviceID"> Device by ID</param>
+        /// <param name="jSRuntime">js function to open a new tab</param>
         public async void Navigate(int deviceID, IJSRuntime jSRuntime)
         {
             DeviceProfile currentDevice = GetDeviceById(deviceID);
