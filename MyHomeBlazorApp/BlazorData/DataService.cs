@@ -53,9 +53,12 @@ namespace MyHomeBlazorApp.BlazorData
         {
             var AuthSate = _authenticationStateProvider.GetAuthenticationStateAsync();
             var user = AuthSate.Result.User;
-            if (user.Identity.IsAuthenticated)
+            if (user.Identity != null)
             {
-                CurrentAppUser = await _userManager.GetUserAsync(user);
+                if (user.Identity.IsAuthenticated)
+                {
+                    CurrentAppUser = await _userManager.GetUserAsync(user);
+                }
             }
             return CurrentAppUser;
         }

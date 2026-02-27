@@ -6,14 +6,14 @@
 
 <style>
     .btn-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     }
 
     .left-buttons button,
     .right-buttons button {
-        margin: 0 5px;
+    margin: 0 5px;
     }
 </style>
 
@@ -27,7 +27,7 @@
                 </label>
                 <div class="col-sm-8">
                     <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                               @bind-Value="CurrentRealEstate.RealEstateName" />
+                    @bind-Value="CurrentRealEstate.RealEstateName" />
 
                 </div>
 
@@ -69,12 +69,11 @@
 </Modal>
 
 @code {
-
     [Parameter]
-    public RealEstate CurrentRealEstate { get; set; }
-    private IQueryable<RealEstate?> _realEstatesListAsQueryable { get; set; }
-    private Modal refModalEditAddRealEstate { get; set; }
-    private EditContext editContext;
+    public RealEstate CurrentRealEstate { get; set; } = new();
+    private IQueryable<RealEstate> _realEstatesListAsQueryable { get; set; }
+    private Modal refModalEditAddRealEstate { get; set; } = new();
+    private EditContext? editContext;
     private bool validRealEstate;
     public Action realEstateDataHasChanged;
     public RealEstate? realEstateModel = new();

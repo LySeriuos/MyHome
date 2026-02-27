@@ -10,7 +10,7 @@ namespace MyHome.Models
     public class RealEstate
     {
         
-        private int _realEstateID;
+        private int _realEstateID = new();
         [Key]
         public int RealEstateID
         {
@@ -18,7 +18,7 @@ namespace MyHome.Models
             set { _realEstateID = value; }
         }
 
-        private string _realEstateName;
+        private string _realEstateName = string.Empty;
         [Required (ErrorMessage = "Add Real Estate Name")]
         //[StringLength(10, ErrorMessage = "Name is too long.")]
         public string RealEstateName
