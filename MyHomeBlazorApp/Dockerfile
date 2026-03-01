@@ -29,3 +29,11 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "MyHomeBlazorApp.dll"]
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+RUN apt-get update && apt-get install -y libgdiplus
+WORKDIR /app
+# This creates the directory that was causing your initial error
+RUN mkdir -p /app/Files && chown -R $APP_UID /app/Files
+USER $APP_UID
+EXPOSE 8080

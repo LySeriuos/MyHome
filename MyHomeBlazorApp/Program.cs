@@ -78,9 +78,17 @@ namespace MyHomeBlazorApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             // routing url to physical path "Files"
+            var filesPath = Path.Combine(builder.Environment.ContentRootPath, "Files");
+
+            // Critical: Create the directory if it's missing to prevent the crash
+            if (!Directory.Exists(filesPath))
+            {
+                Directory.CreateDirectory(filesPath);
+            }
+
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
+                FileProvider = new PhysicalFileProvider(filesPath),
                 RequestPath = "/Files"
             });
 
