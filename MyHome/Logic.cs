@@ -134,7 +134,7 @@ namespace MyHome
             //
             Url absoluteUrlTest = new PayloadGenerator.Url("https://localhost:7211");
 
-            Url qrCodeUrl = new Url($"{absoluteUrl}/mobileDeviceInfo/{userID}/{deviceID}");
+            Url qrCodeUrl = new Url($"{absoluteUrlTest}/mobileDeviceInfo/{userID}/{deviceID}");
             string generatedQrCodeLink = qrCodeUrl.ToString();
             QrCodeGenerator(generatedQrCodeLink, savedQrCodeLink);
         }
@@ -188,12 +188,14 @@ namespace MyHome
             using var stream = File.Open(savedQrCodeLink, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
         }
-
+        
+        
 
         public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword, string savedQrCodeLink)
         {
-            WiFi wifiQrCodeGenerator = new WiFi($"{wifiName}", $"{ wifiPassword }", WiFi.Authentication.WPA);
-            string generatedWifiQrCodeLink = wifiQrCodeGenerator.ToString();
+            WiFi wifiPayLoad = new QRCoder.PayloadGenerator.WiFi(wifiName, wifiPassword, QRCoder.PayloadGenerator.WiFi.Authentication.WPA);
+            //WiFi wifiQrCodeGenerator = new WiFi($"{wifiName}", $"{ wifiPassword }", WiFi.Authentication.WPA);
+            string generatedWifiQrCodeLink = wifiPayLoad.ToString();
             QrCodeGenerator(generatedWifiQrCodeLink, savedQrCodeLink);            
         }
 
