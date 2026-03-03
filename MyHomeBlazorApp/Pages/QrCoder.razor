@@ -197,16 +197,25 @@
 
     private async void HandleWifiSharingQrCode(EditContext editWifiContext)
     {
-        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode");
-        string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode\\Wifi.png";
+        // Use Path.Combine for everything to ensure cross-platform compatibility
+        string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", currentUser.UserID.ToString(), "WifiQrCode");
+        string filePath = Path.Combine(baseFolder, "Wifi.png");
+
+        // Ensure the directory exists
+        if (!Directory.Exists(baseFolder))
+        {
+            Directory.CreateDirectory(baseFolder);
+        }
+
         valid = editWifiContext.Validate();
         currentUser = DataService.CurrentUserWithAllData;
+
         if (valid == true)
         {
-            valid = editWifiContext.Validate();
             Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, filePath);
-            var file = Path.GetFileName(filePath);
-            string fileUrl = $"files/{currentUser.UserID}/WifiQrCode/{file}";
+
+            // Use forward slashes for the URL/Web path, as browsers always prefer them
+            string fileUrl = $"Files/{currentUser.UserID}/WifiQrCode/Wifi.png";
             await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         }
         else
@@ -217,6 +226,29 @@
         wifiModel = new();
         StateHasChanged();
     }
+
+    // private async void HandleWifiSharingQrCode(EditContext editWifiContext)
+    // {
+    //     Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode");
+    //     string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode\\Wifi.png";
+    //     valid = editWifiContext.Validate();
+    //     currentUser = DataService.CurrentUserWithAllData;
+    //     if (valid == true)
+    //     {
+    //         valid = editWifiContext.Validate();
+    //         Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, filePath);
+    //         var file = Path.GetFileName(filePath);
+    //         string fileUrl = $"files/{currentUser.UserID}/WifiQrCode/{file}";
+    //         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+    //     }
+    //     else
+    //     {
+    //         return;
+    //     }
+
+    //     wifiModel = new();
+    //     StateHasChanged();
+    // }
 
     protected override void OnInitialized()
     {

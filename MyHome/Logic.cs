@@ -1,7 +1,9 @@
 ﻿using MyHome.Models;
 using QRCoder;
-using System.Drawing;
+using System.IO;
 using static QRCoder.PayloadGenerator;
+using SkiaSharp;
+using SkiaSharp.QrCode;
 
 namespace MyHome
 {
@@ -142,14 +144,51 @@ namespace MyHome
         /// </summary>
         /// <param name="generatedQrCodeLink">Generated qr code link to the url address </param>
         /// <param name="savedQrCodeLink">link of saved Qr code on local mashine</param>
+        //public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
+        //{
+        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+        //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, QRCodeGenerator.ECCLevel.Q);
+        //    QRCode qrCode = new QRCode(qrCodeData);
+        //    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+        //    qrCodeImage.Save(savedQrCodeLink);
+        //}
+
+
+
+        // Inside your Logic class
+
         public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
         {
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            qrCodeImage.Save(savedQrCodeLink);
+            // 1. Use the SkiaSharp version of the generator
+            using var qrGenerator = new SkiaSharp.QrCode.QRCodeGenerator();
+
+            // 2. This creates the data in the format the renderer expects
+            var qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, SkiaSharp.QrCode.ECCLevel.Q);
+
+            // 3. Setup Renderer
+            using var renderer = new SkiaSharp.QrCode.QRCodeRenderer();
+
+            // 4. Prepare the Canvas
+            var info = new SKImageInfo(512, 512);
+            using var surface = SKSurface.Create(info);
+            using var canvas = surface.Canvas;
+
+            // 5. Render
+            var rect = new SKRect(0, 0, info.Width, info.Height);
+            renderer.Render(canvas, rect, qrCodeData, SKColors.White, SKColors.Black);
+
+            // 6. Save (Same as before)
+            using var image = surface.Snapshot();
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+
+            var folder = Path.GetDirectoryName(savedQrCodeLink);
+            if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            using var stream = File.Open(savedQrCodeLink, FileMode.Create, FileAccess.Write);
+            data.SaveTo(stream);
         }
+
 
         public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword, string savedQrCodeLink)
         {

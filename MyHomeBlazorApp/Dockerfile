@@ -31,9 +31,20 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "MyHomeBlazorApp.dll"]
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+# Install the graphics library needed for your QR codes
 RUN apt-get update && apt-get install -y libgdiplus
+
 WORKDIR /app
-# This creates the directory that was causing your initial error
-RUN mkdir -p /app/Files && chown -R $APP_UID /app/Files
-USER $APP_UID
+
+# 1. Create the folder while still ROOT
+RUN mkdir -p /app/Files
+
+# 2. Give the 'app' user ownership of the folder
+# In .NET 8, the default user is 'app'
+RUN chown -R app:app /app/Files && chmod -R 775 /app/Files
+
+# 3. Switch to the non-root user last
+USER app
+
 EXPOSE 8080
+EXPOSE 8081
