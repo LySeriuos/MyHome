@@ -19,69 +19,69 @@
 
 <style>
     .bodySection {
-        background-image: url(/Images/freepik__retouch__10901.png);
-        background-repeat: repeat;
-        position: relative;
-        /* background-size: cover; */
-        background-position: center;
-        position: relative; /* Needed for overlay positioning */
-        height: 100vh;
+    background-image: url(/Images/freepik__retouch__10901.png);
+    background-repeat: repeat;
+    position: relative;
+    /* background-size: cover; */
+    background-position: center;
+    position: relative; /* Needed for overlay positioning */
+    height: 100vh;
     }
 
-        .bodySection::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.7); /* Dark overlay */
-            z-index: 1;
-        }
+    .bodySection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7); /* Dark overlay */
+    z-index: 1;
+    }
 
     .bodySection-content {
-        position: relative;
-        z-index: 2; /* Place content above overlay */
+    position: relative;
+    z-index: 2; /* Place content above overlay */
     }
 
     .card-outline-style {
-        outline-width: 5px;
-        outline-style: double;
-        outline-color: darkgoldenrod;
+    outline-width: 5px;
+    outline-style: double;
+    outline-color: darkgoldenrod;
     }
 
     .card-style {
-        display: flex;
-        justify-content: center;
-        background-color: #eeeff4;
-        max-width: 30rem;
-        margin-right: 50px;
-        margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    background-color: #eeeff4;
+    max-width: 30rem;
+    margin-right: 50px;
+    margin-top: 50px;
     }
 
     .card-btn {
-        color: #2d2a2b;
-        background-color: #cfd9e1;
-        border-color: #1861ac;
-        border-radius: 1.3rem;
+    color: #2d2a2b;
+    background-color: #cfd9e1;
+    border-color: #1861ac;
+    border-radius: 1.3rem;
     }
 
-        .card-btn:hover {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            background: #e2c8c0;
-            color: #2d2a2b;
-        }
+    .card-btn:hover {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background: #e2c8c0;
+    color: #2d2a2b;
+    }
 
     bi.bi-eye:before {
-        content: '\e345';
-        font-family: e-icons;
-        font-size: 13px;
+    content: '\e345';
+    font-family: e-icons;
+    font-size: 13px;
     }
 
     .margin-label {
-        margin: inherit;
+    margin: inherit;
     }
 </style>
 <body>
@@ -89,8 +89,8 @@
         <section class="bodySection-content">
             <div>
                 <UserAccountCardComponent Title="Create Wifi Connection Qr Code"
-                                          IconName="IconName.QrCode"
-                                          DoubleCard="false">
+                IconName="IconName.QrCode"
+                DoubleCard="false">
                     <ChildContent>
                         <p>This tool will help you to create QR code for sharing wifi. Just add your current wifi name and password. By scanning created QR code you can connect to wifi directly. Good for sharing with guests.</p>
                         <EditForm Model="wifiModel" class="my-5" OnSubmit="HandleWifiSharingQrCode">
@@ -185,17 +185,29 @@
     private async Task HandleQrCode(EditContext editContext)
     {
         _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
-        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes");
-        string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes\\DeviceID{_selectedDeviceProfile.DeviceID.ToString()}.png";
+        // Using Path.Combine to avoid backslash issues
+        string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", currentUser.UserID.ToString(), "qrCodes");
+        string fileName = $"DeviceID{_selectedDeviceProfile.DeviceID}.png";
+        string filePath = Path.Combine(baseFolder, fileName);
+
+        // Ensure the directory exists
+        if (!Directory.Exists(baseFolder))
+        {
+            Directory.CreateDirectory(baseFolder);
+        }
+
+        // Generate the QR Code
         Logic.CreateQrCodeLinkToDevice(_selectedDeviceProfile.DeviceID.ToString(), currentUser.UserID.ToString(), filePath);
-        var file = Path.GetFileName(filePath);
-        string fileUrl = $"files/{currentUser.UserID}/qrCodes/{file}";
+
+        // Use forward slashes for the URL (Browsers and Linux friendly)
+        string fileUrl = $"Files/{currentUser.UserID}/qrCodes/{fileName}";
+        
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         _chosedDeviceID = new();
         StateHasChanged();
     }
 
-    private async void HandleWifiSharingQrCode(EditContext editWifiContext)
+    private async Task HandleWifiSharingQrCode(EditContext editWifiContext)
     {
         // Use Path.Combine for everything to ensure cross-platform compatibility
         string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", currentUser.UserID.ToString(), "WifiQrCode");
