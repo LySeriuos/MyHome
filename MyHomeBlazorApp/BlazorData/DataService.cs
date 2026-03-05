@@ -474,36 +474,43 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Created file path to the file in Blazor server</returns>
         public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors, DeviceProfile currentDevice)
         {
-            if (file is null)
-            {
-                // returns empty string if there is no file
-                return "";
-            }
+            if (file is null) return "";
 
             try
             {
                 string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
                 string userId = _currentUserWithData.UserID.ToString();
-                Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{userId}\\{currentDevice.DeviceID}");
-                string filePath = $"{Environment.CurrentDirectory}\\files\\{userId}\\{currentDevice.DeviceID}\\{newFileName}";
+                string deviceId = currentDevice.DeviceID.ToString();
+
+                // Build the path using Path.Combine and UPPERCASE "Files"
+                string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", userId, deviceId);
+                string filePath = Path.Combine(baseFolder, newFileName);
+
+                // Ensure the directory exists (Linux friendly)
+                if (!Directory.Exists(baseFolder))
+                {
+                    Directory.CreateDirectory(baseFolder);
+                }
+
                 if (file.Size <= maxFileSize)
                 {
-                    using var content = new MultipartFormDataContent();
+                    // Open stream and copy to the Linux-friendly path
+                    // No need for fs.Close() when using 'await using'
                     await using FileStream fs = new(filePath, FileMode.Create);
                     await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
-                    fs.Close();
                 }
                 else
                 {
-                    errors.Add($"File: {file.Name} Error: The File has exceed file size{maxFileSize}");
+                    errors.Add($"File: {file.Name} Error: File exceeds the maximum size of {maxFileSize} bytes.");
+                    return "";
                 }
+
                 return filePath;
             }
             catch (Exception ex)
             {
-                // TODO: for security reasons file.Name should be encoded or should remove all the special Characters and change the value for display
                 errors.Add($"File: {file.Name} Error: {ex.Message}");
-                throw;
+                return ""; // Return empty instead of crashing the whole service
             }
         }
 
