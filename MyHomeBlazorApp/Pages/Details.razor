@@ -314,17 +314,20 @@
     public MyHomeBlazorAppUser user = default!;
     public Action? UnassignedDevicesListChanged;
 
-    private async Task HandleQrCode(int deviceId)
+    private async Task HandleQrCode(int _chosedDeviceID)
     {
+
         currentUser = DataService.CurrentUserWithAllData;
-        // _selectedDeviceProfile = DataService.GetDeviceById(_chosedDeviceID);
-        Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes");
-        string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\qrCodes\\DeviceID{deviceId.ToString()}.png";
-        Logic.CreateQrCodeLinkToDevice(deviceId.ToString(), currentUser.UserID.ToString(), filePath);
-        var file = Path.GetFileName(filePath);
-        string fileUrl = $"files/{currentUser.UserID}/qrCodes/{file}";
+        if (_chosedDeviceID == 0) return;
+
+        // Call the service
+        string fileUrl = DataService.GenerateDeviceQrCode(_chosedDeviceID, currentUser.UserID);
+
+        // Open the file in a new tab
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
-        // _chosedDeviceID = new();
+
+        // Reset UI state
+        _chosedDeviceID = 0;
         StateHasChanged();
     }
 

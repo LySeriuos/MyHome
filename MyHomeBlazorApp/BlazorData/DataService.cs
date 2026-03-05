@@ -507,6 +507,27 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        public string GenerateDeviceQrCode(int deviceId, int userId)
+        {
+            // Setup paths using Path.Combine (Crucial for Docker/Linux)
+            string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", userId.ToString(), "qrCodes");
+            string fileName = $"DeviceID{deviceId}.png";
+            string filePath = Path.Combine(baseFolder, fileName);
+
+            // Create Directory if it doesn't exist
+            if (!Directory.Exists(baseFolder))
+            {
+                Directory.CreateDirectory(baseFolder);
+            }
+
+            // Calling Logic class to generate the actual file
+            // Ensure Logic.CreateQrCodeLinkToDevice is accessible here
+            Logic.CreateQrCodeLinkToDevice(deviceId.ToString(), userId.ToString(), filePath);
+
+            // Return the URL string for the browser to open
+            return $"/Files/{userId}/qrCodes/{fileName}";
+        }
+
         /// <summary>
         /// Checking if there is a file assigned to the filepath. 
         /// If there is so it will be deleted to avoid saving multiple files in the server for the same object. 

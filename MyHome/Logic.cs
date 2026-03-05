@@ -121,7 +121,7 @@ namespace MyHome
         }
 
         /// <summary>
-        /// Method to create QrCode for devices 
+        /// Method to create QrCode Link to reach devices info  
         /// </summary>
         /// <param name="deviceID">Qr Code link to the device by device ID </param>
         /// <param name="userID">current user by user ID </param>
