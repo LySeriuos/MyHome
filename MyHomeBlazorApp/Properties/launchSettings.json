@@ -44,7 +44,10 @@
         "ASPNETCORE_HTTP_PORTS": "8080"
       },
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "httpPort": 7211,
+      "sslPort": 443,
+      "DockerfileRunArguments": "-v \"C:\\Users\\shiranco.DESKTOP-HRN41TE\\source\\repos\\MyHomeNew\\MyHomeBlazorApp\\Files:/app/Files\""
     }
   },
   "iisSettings": {

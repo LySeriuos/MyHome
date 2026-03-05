@@ -190,6 +190,15 @@
         string fileName = $"DeviceID{_selectedDeviceProfile.DeviceID}.png";
         string filePath = Path.Combine(baseFolder, fileName);
 
+        var storagePath = Path.Combine(Directory.GetCurrentDirectory(), "Files", currentUser.UserID.ToString(), _selectedDeviceProfile.DeviceID.ToString());
+
+        if (!Directory.Exists(storagePath))
+        {
+            Directory.CreateDirectory(storagePath);
+        }
+
+        var fullFilePath = Path.Combine(storagePath, fileName);
+        // Now save your file to fullFilePath
         // Ensure the directory exists
         if (!Directory.Exists(baseFolder))
         {
