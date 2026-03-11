@@ -35,9 +35,16 @@ RUN dotnet build "./MyHomeBlazorApp.csproj" -c $BUILD_CONFIGURATION -o /app/buil
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./MyHomeBlazorApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-# 4. Final Stage: Combine everything
+# 4. Final Stage
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Switch to root to ensure the DB folder exists and is writable
+USER root
+RUN mkdir -p /app/BlazorData /app/Files && \
+    chown -R app:app /app/BlazorData /app/Files && \
+    chmod -R 775 /app/BlazorData /app/Files
+
+USER app
 ENTRYPOINT ["dotnet", "MyHomeBlazorApp.dll"]
