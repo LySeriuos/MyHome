@@ -51,8 +51,8 @@
     <section class="bodySection-content">
         <div>
             <UserAccountCardComponent Title="Profile"
-                                      IconName="IconName.BookmarkCheck"
-                                      DoubleCard="true">
+            IconName="IconName.BookmarkCheck"
+            DoubleCard="true">
                 <ChildContent2>
                     <CardTitle Class="text-center fw-bolder">
                         Summary <Icon name="IconName.ListTask"></Icon>
@@ -60,10 +60,10 @@
                     <CardText>
                         <ul>
                             <li>
-                                Real Estates: @DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.Count()
+                                Real Estates: @realEstatesCount
                             </li>
                             <li>
-                                Devices: @DataService.CurrentUserWithAllData.GetAllDevices().Count()
+                                Devices: @devicesCount
                             </li>
                         </ul>
                     </CardText>
@@ -98,6 +98,9 @@
     private MyHomeBlazorAppUser user = default!;
     private string? username;
     private string? phoneNumber;
+    private UserProfile? currentUserWithAllData;
+    private int realEstatesCount;
+    private int devicesCount;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -110,8 +113,11 @@
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         username = await UserManager.GetUserNameAsync(user);
         phoneNumber = await UserManager.GetPhoneNumberAsync(user);
-
         Input.PhoneNumber ??= phoneNumber;
+
+        //Preloading data to the page. Without these got error 500 on the page
+        devicesCount = DataService.CurrentUserWithAllData.GetAllDevices().Count();
+        realEstatesCount = DataService.CurrentUserWithAllData.RealEstates.Count();
     }
 
     private async Task OnValidSubmitAsync()
