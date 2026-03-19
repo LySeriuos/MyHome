@@ -21,19 +21,19 @@ namespace MyHomeBlazorApp.BlazorData
             //_users = Data.GetUsersListFromXml(_path);
             _authenticationStateProvider = authenticationStateProvider;
             _dbcontext = dbcontext;
-            CurrentAppUser = GetCurrentUser().Result;
-            _currentUserWithData = GetDbUserDeviceProfileWithWarrantyShopAddressData().Result.UserProfile;
+            ////CurrentAppUser = GetCurrentUser().Result;
+            ////_currentUserWithData = GetDbUserDeviceProfileWithWarrantyShopAddressData().Result.UserProfile;
             //UnassignedDevicesList = GetUserWithUnassignedDevicesList().Result.ToList();
-            ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
-            FirstExpiringDevice = FirstExpiringWarranty();
-            DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
+            //ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
+            //FirstExpiringDevice = FirstExpiringWarranty();
+            //DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
         }
 
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private UserManager<MyHomeBlazorAppUser> _userManager;
         private MyHomeBlazorAppContext _dbcontext;
-        private UserProfile _currentUserWithData = new();
-        public UserProfile CurrentUserWithAllData => _currentUserWithData;
+        private UserProfile? _currentUserWithData;
+        public UserProfile CurrentUserWithAllData => _currentUserWithData ?? new UserProfile();
         public MyHomeBlazorAppUser CurrentAppUser;
         public List<DeviceProfile>? Devices => _currentUserWithData.GetAllDevices();
         public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
@@ -46,6 +46,21 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public Shop? Shop { get; set; } = new Shop();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
+
+        public async Task InitilaizedAsync()
+        {
+            if (_currentUserWithData != null) return;
+
+            await GetCurrentUser();
+            var userWithData = await GetDbUserDeviceProfileWithWarrantyShopAddressData();
+            _currentUserWithData = userWithData?.UserProfile;
+            if(_currentUserWithData != null)
+            { 
+                ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
+                FirstExpiringDevice = FirstExpiringWarranty();
+                DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
+            }
+        }
 
         #region User
 
@@ -63,19 +78,26 @@ namespace MyHomeBlazorApp.BlazorData
             return CurrentAppUser;
         }
 
-        public async Task<List<DeviceProfile>> GetUserWithUnassignedDevicesList()
+        public async Task<List<DeviceProfile>> GetUserWithUnassignedDevicesListAsync()
         {
-            var userWithUnnasignedListData = _dbcontext.Users.Include(u => u.UserProfile)
+            //Ensuring that user is logged in 
+            if (CurrentAppUser == null)
+            {
+                await GetCurrentUser();
+            }
+             // if user is not logged in just return empty list
+            if (CurrentAppUser == null)
+            {
+                return new List<DeviceProfile>();
+            }
+
+            var userWithData = await _dbcontext.Users
+                .Include(u => u.UserProfile)
                 .ThenInclude(u => u.UnassignedDevicesList)
-                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
-            if (userWithUnnasignedListData != null)
-            {
-                UnassignedDevicesList = userWithUnnasignedListData.UserProfile.UnassignedDevicesList;
-            }
-            else
-            {
-                UnassignedDevicesList = new List<DeviceProfile>();
-            }
+                .FirstOrDefaultAsync(u => u.Id == CurrentAppUser.Id);
+
+            UnassignedDevicesList = userWithData?.UserProfile?.UnassignedDevicesList?.ToList()?? new List<DeviceProfile>();
+           
             return UnassignedDevicesList;
         }
 
