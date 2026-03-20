@@ -254,7 +254,9 @@
     <ModalReassignDevices @ref="@refModalReasignDevices"
     SelectedRealEstateID="@SelectedRealEstateID"
     CurrentUser="@currentUser"
-    CurrentRealEstate="@currentRealEstate">
+    CurrentRealEstate="@currentRealEstate"
+    OnDataChanged = "RealEstateDataHasChanged"
+    OnDeleteRealEstate="OnModalRealEstateDeleteRequest">
     </ModalReassignDevices>
 </div>
 <div>
@@ -397,14 +399,14 @@
             // refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
             // refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
             // refModalEditAddDevice.changedDeviceListData += DeviceDataHasChanged;
-            refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
+            // refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
             refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
             _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
             refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
-            refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+            // refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest
             _eventSubscribed = true;
         }
         base.OnAfterRender(firstRender);

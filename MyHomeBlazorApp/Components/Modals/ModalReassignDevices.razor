@@ -189,8 +189,9 @@
     [Parameter]
     public RealEstate? CurrentRealEstate { get; set; }
 
-    public Action onDeleteRealEstate;
-    public Action onDataChanged;
+    // public Action onDeleteRealEstate;
+    [Parameter] public EventCallback OnDeleteRealEstate { get; set; }
+    [Parameter] public EventCallback OnDataChanged { get; set; }
     private string ChooseOptionValue { get; set; } = "Choose Real Estate to move devices";
     public Modal? refModalReasignDevices { get; set; }
 
@@ -208,8 +209,8 @@
             return;
         }
         await OnHideModalReasignDevicesCloseClick();
-        onDeleteRealEstate();
-        onDataChanged();
+        await OnDeleteRealEstate.InvokeAsync();
+        await OnDataChanged.InvokeAsync();
     }
 
     private async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
@@ -224,8 +225,8 @@
             return;
         }
         await OnHideModalReasignDevicesCloseClick();
-        onDeleteRealEstate();
-        onDataChanged();
+        await OnDeleteRealEstate.InvokeAsync();
+        await OnDataChanged.InvokeAsync();
     }
 
     public async Task OnShowModalReasignDevices(int currentRealEstateID)
