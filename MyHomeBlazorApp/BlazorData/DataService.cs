@@ -6,6 +6,7 @@ using Microsoft.JSInterop;
 using My_Home;
 using MyHome;
 using MyHome.Models;
+using System.Xml;
 //using System.Data.Entity;
 
 
@@ -21,21 +22,15 @@ namespace MyHomeBlazorApp.BlazorData
             //_users = Data.GetUsersListFromXml(_path);
             _authenticationStateProvider = authenticationStateProvider;
             _dbcontext = dbcontext;
-            //CurrentAppUser = GetCurrentUser();
-            ////_currentUserWithData = GetDbUserDeviceProfileWithWarrantyShopAddressData().Result.UserProfile;
-            //UnassignedDevicesList = GetUserWithUnassignedDevicesList().Result.ToList();
-            //ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
-            //FirstExpiringDevice = FirstExpiringWarranty();
-            //DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
         }
 
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private UserManager<MyHomeBlazorAppUser> _userManager;
         private MyHomeBlazorAppContext _dbcontext;
-        private UserProfile? _currentUserWithData;
-        public UserProfile CurrentUserWithAllData => _currentUserWithData ?? new UserProfile();
+        private UserProfile _currentUserWithAllData = new();
+        public UserProfile CurrentUserWithAllData => _currentUserWithAllData ?? new UserProfile();
         public MyHomeBlazorAppUser? CurrentAppUser { get; set; } = new();
-        public List<DeviceProfile>? Devices => _currentUserWithData.GetAllDevices();
+        public List<DeviceProfile>? Devices => _currentUserWithAllData.GetAllDevices();
         public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile? Device { get; set; } = new DeviceProfile();
         public RealEstate? CurrentRealEstate { get; set; } = new RealEstate();
@@ -50,7 +45,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         #region User
 
-        public async Task <MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
+        public async Task<MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
         {
             //Chek cache first
             if (CurrentAppUser != null) return CurrentAppUser;
@@ -59,7 +54,7 @@ namespace MyHomeBlazorApp.BlazorData
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var principal = authState.User;
 
-            if(principal.Identity?.IsAuthenticated == true)
+            if (principal.Identity?.IsAuthenticated == true)
             {
                 // Fetch the real user from DB
                 CurrentAppUser = await _userManager.GetUserAsync(principal);
@@ -69,16 +64,15 @@ namespace MyHomeBlazorApp.BlazorData
         }
         public async Task InitializedUserAsync()
         {
-            if (_currentUserWithData != null) return;
+            if (_currentUserWithAllData != null) return;
             await GetAuthenticatedUserAsync();
 
-            var userWithData = await GetDbUserDeviceProfileWithWarrantyShopAddressData();
-            _currentUserWithData = userWithData?.UserProfile;
-            if(_currentUserWithData != null)
-            { 
-                ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
+            await LoadUserWithAllDataAsync();
+            if (_currentUserWithAllData != null)
+            {
+                ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithAllData, 180);
                 FirstExpiringDevice = FirstExpiringWarranty();
-                DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
+                DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithAllData);
             }
             else
             {
@@ -112,10 +106,9 @@ namespace MyHomeBlazorApp.BlazorData
             {
                 CurrentAppUser = fullUser;
                 // Update your helper field
-                _currentUserWithData = fullUser.UserProfile;
+                _currentUserWithAllData = fullUser.UserProfile;
             }
         }
-
 
         public async Task<List<DeviceProfile>> GetUserWithUnassignedDevicesListAsync()
         {
@@ -124,7 +117,7 @@ namespace MyHomeBlazorApp.BlazorData
             {
                 await GetAuthenticatedUserAsync();
             }
-             // if user is not logged in just return empty list
+            // if user is not logged in just return empty list
             if (CurrentAppUser == null)
             {
                 return new List<DeviceProfile>();
@@ -135,41 +128,9 @@ namespace MyHomeBlazorApp.BlazorData
                 .ThenInclude(u => u.UnassignedDevicesList)
                 .FirstOrDefaultAsync(u => u.Id == CurrentAppUser.Id);
 
-            UnassignedDevicesList = userWithData?.UserProfile?.UnassignedDevicesList?.ToList()?? new List<DeviceProfile>();
-           
+            UnassignedDevicesList = userWithData?.UserProfile?.UnassignedDevicesList?.ToList() ?? new List<DeviceProfile>();
+
             return UnassignedDevicesList;
-        }
-
-        public async Task<UserProfile> CurrentDbUserWithRealEstatesData()
-        {
-            var userWithData = _dbcontext.Users.Include(u => u.UserProfile)
-                .ThenInclude(p => p.RealEstates)
-                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
-            UserProfile userToReturn = userWithData.UserProfile;
-            return userToReturn;
-        }
-
-        public Task<MyHomeBlazorAppUser> GetDbUserWithRealEstateAddressData()
-        {
-            var userWithAddressData = _dbcontext.Users.Include(u => u.UserProfile)
-                .ThenInclude(r => r.RealEstates)
-                .ThenInclude(a => a.Address)
-                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
-            return Task.FromResult<MyHomeBlazorAppUser>(userWithAddressData);
-        }
-
-        public async Task<MyHomeBlazorAppUser> GetDbUserDeviceProfileWithWarrantyShopAddressData()
-        {
-            if (CurrentAppUser == null) return null;
-
-            var userWithDevicesData = await _dbcontext.Users.Include(u => u.UserProfile)
-                .ThenInclude(r => r.RealEstates).ThenInclude(r => r.DevicesProfiles)
-                .ThenInclude(d => d.DeviceWarranty).ThenInclude(dw => dw.Shop)
-                .ThenInclude(shop => shop.Address)
-                .FirstOrDefaultAsync(u => u.Id == CurrentAppUser.Id);
-            
-                return userWithDevicesData;
-            
         }
 
         #endregion
@@ -184,9 +145,9 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate GetRealEstate(int realEstateID)
         {
             RealEstate realEstateById = new RealEstate();
-            if (_currentUserWithData.RealEstates.Count > 0 && _currentUserWithData.RealEstates.Any(item => item.RealEstateID == realEstateID))
+            if (_currentUserWithAllData.RealEstates.Count > 0 && _currentUserWithAllData.RealEstates.Any(item => item.RealEstateID == realEstateID))
             {
-                realEstateById = _currentUserWithData.RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
+                realEstateById = _currentUserWithAllData.RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
             }
             else
             {
@@ -199,15 +160,15 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to save created new RealEstate
         /// </summary>
         /// <param name="realEstate">Created RealEstate</param>
-        
-        
+
+
         public async Task AddNewRealEstateToDB(RealEstate currentRealEstate)
         {
             //check if incoming realestate object has id 0, otherwise error 
             if (currentRealEstate.RealEstateID == 0)
             {
                 //currentRealEstate.Address;
-                _currentUserWithData.RealEstates.Add(currentRealEstate);
+                _currentUserWithAllData.RealEstates.Add(currentRealEstate);
                 await _dbcontext.SaveChangesAsync();
             }
             else
@@ -223,19 +184,19 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>RealEstate's ID</returns>
         public int GetRealEstateByDeviceID(int deviceId)
         {
-            RealEstate currentRealEstateTest = new();
-            foreach (RealEstate realEstate in _currentUserWithData.RealEstates)
+            if (CurrentUserWithAllData.RealEstates == null) return 0;
+            
+            foreach (var realEstate in CurrentUserWithAllData.RealEstates)
             {
-                foreach (DeviceProfile device in realEstate.DevicesProfiles)
-                {
+                foreach (var device in realEstate.DevicesProfiles)
+                {                    
                     if (device.DeviceID == deviceId)
                     {
-                        currentRealEstateTest = realEstate;
-                        break;
+                        return realEstate.RealEstateID;
                     }
                 }
             }
-            return currentRealEstateTest.RealEstateID;
+            return 0;
         }
 
         /// <summary>
@@ -245,13 +206,13 @@ namespace MyHomeBlazorApp.BlazorData
         public RealEstate LastAddedRealEstate()
         {
             RealEstate lastRealEstate;
-            if (_currentUserWithData.RealEstates.Count == 0)
+            if (_currentUserWithAllData.RealEstates.Count == 0)
             {
                 lastRealEstate = new RealEstate();
             }
             else
             {
-                lastRealEstate = _currentUserWithData.RealEstates.Last();
+                lastRealEstate = _currentUserWithAllData.RealEstates.Last();
             }
             return lastRealEstate;
         }
@@ -262,10 +223,10 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="contextChosedRealEstateID">Chosed RealEstate</param>
         public async Task RemoveRealEstate(int contextChosedRealEstateID)
         {
-            bool realEstateExsits = _currentUserWithData.RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
+            bool realEstateExsits = _currentUserWithAllData.RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
             if (realEstateExsits == true)
             {
-                RealEstate realEstateToDelete = _currentUserWithData.RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
+                RealEstate realEstateToDelete = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
                 _dbcontext.Remove(realEstateToDelete);
                 await UpdateObjectInDB();
             }
@@ -292,10 +253,10 @@ namespace MyHomeBlazorApp.BlazorData
             RealEstate chosedRealEstate = new();
             if (chosedRealEstateID != 0)
             {
-                chosedRealEstate = _currentUserWithData.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
+                chosedRealEstate = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
             }
 
-            if (_currentUserWithData.GetAllDevices().Any(d => d.DeviceID == deviceToAdd.DeviceID))
+            if (_currentUserWithAllData.GetAllDevices().Any(d => d.DeviceID == deviceToAdd.DeviceID))
             {   //Should twrow an error that device with this ID already exists
                 return;
             }
@@ -336,7 +297,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="currentRealEstate">RealEstate to move from(delete) devices list</param>
         public async Task MoveDeviceListToOtherRealEstate(int realEstateID, RealEstate currentRealEstate)
         {
-            List<DeviceProfile> deviceProfilesMoveToRealEstate = _currentUserWithData.RealEstates.First(r => r.RealEstateID == realEstateID).DevicesProfiles;
+            List<DeviceProfile> deviceProfilesMoveToRealEstate = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateID).DevicesProfiles;
             foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
             {
                 deviceProfilesMoveToRealEstate.Add(deviceProfile);
@@ -349,14 +310,14 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to move DeviceProfile from one Real Estate to another
         /// </summary>
         /// <param name="deviceToMoveID">DeviceProfile ID which will be moved </param>
-        /// <param name="_currentUserWithData">Indentified user</param>
+        /// <param name="_currentUserWithAllData">Indentified user</param>
         /// <param name="realEstateIdToAddDevice">Real Estate ID to move in Device by deviceToMoveID</param>
-        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, UserProfile _currentUserWithData, int realEstateIdToAddDevice)
+        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, UserProfile _currentUserWithAllData, int realEstateIdToAddDevice)
         {
             int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
             DeviceProfile deviceToMove = Devices.FirstOrDefault(d => d.DeviceID == deviceToMoveID);
-            RealEstate realEstateToMoveFrom = _currentUserWithData.RealEstates.First(r => r.RealEstateID == realEstateIdToMoveFrom);
-            RealEstate realEstateToAddDevice = _currentUserWithData.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
+            RealEstate realEstateToMoveFrom = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateIdToMoveFrom);
+            RealEstate realEstateToAddDevice = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
             realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
             realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
         }
@@ -364,14 +325,14 @@ namespace MyHomeBlazorApp.BlazorData
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="_currentUserWithData"></param>
+        /// <param name="_currentUserWithAllData"></param>
         /// <param name="realEstateToAddDevice"></param>
         /// <param name="currentDevice"></param>
         /// <returns></returns>
-        public async Task MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUserWithData, int realEstateToAddDevice, DeviceProfile currentDevice)
+        public async Task MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUserWithAllData, int realEstateToAddDevice, DeviceProfile currentDevice)
         {
-            _currentUserWithData.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
-            _currentUserWithData.UnassignedDevicesList.Remove(currentDevice);
+            _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
+            _currentUserWithAllData.UnassignedDevicesList.Remove(currentDevice);
         }
 
         /// <summary>
@@ -385,9 +346,9 @@ namespace MyHomeBlazorApp.BlazorData
             int i = 0;
             DeviceProfile? currentDeviceTest = new DeviceProfile();
             DeviceProfile device;
-            for (i = 0; i < _currentUserWithData.GetAllDevices().Count; i++)
+            for (i = 0; i < _currentUserWithAllData.GetAllDevices().Count; i++)
             {
-                device = _currentUserWithData.GetAllDevices()[i];
+                device = _currentUserWithAllData.GetAllDevices()[i];
                 if (device.DeviceID == id)
                 {
                     currentDevice = device;
@@ -449,7 +410,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Expiring device profile</returns>
         public DeviceProfile FirstExpiringWarranty()
         {
-            List<DeviceProfile>? devicesList = _currentUserWithData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            List<DeviceProfile>? devicesList = _currentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
             //List<DeviceWarranty> warranties = DevicesWarranties;
             List<DeviceProfile> validWarrantiesList = new();
             DeviceProfile firstExpiringDevice = new();
@@ -486,7 +447,7 @@ namespace MyHomeBlazorApp.BlazorData
             await _dbcontext.SaveChangesAsync();
         }
 
-        
+
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
         {
             int totalDaysInTheYear = 365;
@@ -509,11 +470,11 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="currentRealEstate">The Real Estate to be Removed</param>
         public async void LeaveDevicesUnassigned(RealEstate currentRealEstate)
         {
-            List<DeviceProfile> devicesToDelete = _currentUserWithData.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID).DevicesProfiles;
+            List<DeviceProfile> devicesToDelete = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID).DevicesProfiles;
 
             foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
             {
-                _currentUserWithData.UnassignedDevicesList.Add(deviceProfile);
+                _currentUserWithAllData.UnassignedDevicesList.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
             await UpdateObjectInDB();
@@ -537,7 +498,7 @@ namespace MyHomeBlazorApp.BlazorData
             try
             {
                 string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
-                string userId = _currentUserWithData.UserID.ToString();
+                string userId = _currentUserWithAllData.UserID.ToString();
                 string deviceId = currentDevice.DeviceID.ToString();
 
                 // Build the path using Path.Combine and UPPERCASE "Files"
@@ -615,8 +576,8 @@ namespace MyHomeBlazorApp.BlazorData
         /// </summary>
         public void CheckIfFileExsist()
         {
-            // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService._currentUserWithData.UserID}", "*.*");
-            List<DeviceProfile> deviceProfiles = _currentUserWithData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
+            // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService._currentUserWithAllData.UserID}", "*.*");
+            List<DeviceProfile> deviceProfiles = _currentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
             foreach (DeviceProfile device in deviceProfiles)
             {
                 if (!System.IO.File.Exists(device.DeviceWarranty.ReceiptLink))
@@ -633,7 +594,7 @@ namespace MyHomeBlazorApp.BlazorData
         public string GetFileUrl(string linkToTheFile, int deviceId)
         {
             var file = Path.GetFileName(linkToTheFile);
-            string fileUrl = $"files/{_currentUserWithData.UserID}/{deviceId}/{file}";
+            string fileUrl = $"files/{_currentUserWithAllData.UserID}/{deviceId}/{file}";
             return fileUrl;
         }
 

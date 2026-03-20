@@ -173,8 +173,8 @@
         editContext = new(CurrentDevice);
         var list = await DataService.GetUserWithUnassignedDevicesListAsync();
         _unassignedDevicesListAsQueryable = list.AsQueryable();
-        _devicesListAsQueryable = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
-        .Result.UserProfile.RealEstates
+        _devicesListAsQueryable = DataService.CurrentUserWithAllData
+        .RealEstates
         .SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
         .ThenBy(d => d.DeviceID).AsQueryable();
