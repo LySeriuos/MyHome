@@ -396,28 +396,7 @@
         string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
-
-    private bool _eventSubscribed = false;
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender && !_eventSubscribed)
-        {
-            // refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
-            // refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
-            // refModalEditAddDevice.changedDeviceListData += DeviceDataHasChanged;
-            // refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
-            // // refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
-            // // refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
-            // // refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
-            // _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
-            // refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
-            // refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
-            // refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest
-            _eventSubscribed = true;
-        }
-        base.OnAfterRender(firstRender);
-    }
-
+    
     private void OnModalDeleteSuccess()
     {
         refModalDeleteSuccess.OnShowModalClick();
