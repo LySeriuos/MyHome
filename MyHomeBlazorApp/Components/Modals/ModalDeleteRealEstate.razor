@@ -33,12 +33,15 @@
     public EventCallback OnDataChanged { get; set; }
     [Parameter]
     public EventCallback OnDeleteSuccess { get; set; }
+    [Parameter]
+    public EventCallback <int> OnRequestReassignDevicesListToOtherRealEsatate { get; set; }
 
-    public Action<int> onRequestReassignDevicesListToOtherRealEstate;
-
-    private void CallTheRequest()
+    private async Task CallTheRequest()
     {
-        onRequestReassignDevicesListToOtherRealEstate(CurrentRealEstate.RealEstateID);
+        if (CurrentRealEstate != null)
+        {
+            await OnRequestReassignDevicesListToOtherRealEsatate.InvokeAsync(CurrentRealEstate.RealEstateID);
+        }
     }
     //TODO this method is called twice, need to check why!
     public async Task DeleteRealEstate_Click(bool _confirmDeletion)

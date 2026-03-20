@@ -71,11 +71,12 @@
 @code {
     [Parameter]
     public RealEstate CurrentRealEstate { get; set; } = new();
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
     private IQueryable<RealEstate> _realEstatesListAsQueryable { get; set; }
     private Modal refModalEditAddRealEstate { get; set; } = new();
     private EditContext? editContext;
     private bool validRealEstate;
-    public Action realEstateDataHasChanged;
     public RealEstate? realEstateModel = new();
 
 
@@ -98,7 +99,7 @@
                 validRealEstate = editContext.Validate();
                 await DataService.UpdateObjectInDB();
             }
-            realEstateDataHasChanged();
+            await OnDataChanged.InvokeAsync();
             await refModalEditAddRealEstate.HideAsync();
         }
         else

@@ -220,7 +220,8 @@
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
-    CurrentRealEstate="@currentRealEstate">
+    CurrentRealEstate="@currentRealEstate"
+                            OnDataChanged="RealEstateDataHasChanged">
     </ModalEditAddRealEstate>
 </div>
 
@@ -251,7 +252,8 @@
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
     CurrentRealEstate="@currentRealEstate"
                            OnDataChanged="RealEstateDataHasChanged"
-                           OnDeleteSuccess="OnModalDeleteSuccess">
+                           OnDeleteSuccess="OnModalDeleteSuccess"
+                           OnRequestReassignDevicesListToOtherRealEsatate="OnModalReassignDevicesRequest">
     </ModalDeleteRealEstate>
 </div>
 <div>
@@ -408,8 +410,8 @@
             // // refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
             // // refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
             // _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
-            refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
-            refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
+            // refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
+            // refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             // refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest
             _eventSubscribed = true;
         }
