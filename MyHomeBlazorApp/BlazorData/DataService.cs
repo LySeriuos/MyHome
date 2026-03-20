@@ -142,18 +142,15 @@ namespace MyHomeBlazorApp.BlazorData
         /// </summary>
         /// <param name="realEstateID">RealEstate ID to look for</param>
         /// <returns>RealEstate object</returns>
-        public RealEstate GetRealEstate(int realEstateID)
+        public RealEstate? GetRealEstate(int realEstateID)
         {
-            RealEstate realEstateById = new RealEstate();
-            if (_currentUserWithAllData.RealEstates.Count > 0 && _currentUserWithAllData.RealEstates.Any(item => item.RealEstateID == realEstateID))
+            if(_currentUserWithAllData == null || _currentUserWithAllData.RealEstates == null)
             {
-                realEstateById = _currentUserWithAllData.RealEstates.First(RealEstates => RealEstates.RealEstateID == realEstateID);
+                return new RealEstate();
             }
-            else
-            {
-                realEstateById = new();
-            }
-            return realEstateById;
+
+            var foundRealEstate = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateID);
+            return foundRealEstate ?? new RealEstate();            
         }
 
         /// <summary>

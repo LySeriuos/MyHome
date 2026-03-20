@@ -220,54 +220,54 @@
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
-                            CurrentRealEstate="@currentRealEstate">
+    CurrentRealEstate="@currentRealEstate">
     </ModalEditAddRealEstate>
 </div>
 
 <div>
     <ModalEditAddDevice @ref="@refModalEditAddDevice"
-                        CurrentDevice="@currentDevice"
-                        CurrentUser="@currentUser"
-                        RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID"
-                        changedDeviceListData="DeviceDataHasChanged">
+    CurrentDevice="@currentDevice"
+    CurrentUser="@currentUser"
+    RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID"
+    changedDeviceListData="DeviceDataHasChanged">
     </ModalEditAddDevice>
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
-                              CurrentDevice="@currentDevice"
-                              DevicesListAsQueryable="@_devicesListAsQueryable">
+    CurrentDevice="@currentDevice"
+    DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditWarrantyDetails>
 </div>
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
-                          CurrentDevice="@currentDevice"
-                          ShopAddress="@shopAddress"
-                          DevicesListAsQueryable="@_devicesListAsQueryable">
+    CurrentDevice="@currentDevice"
+    ShopAddress="@shopAddress"
+    DevicesListAsQueryable="@_devicesListAsQueryable">
     </ModalEditShopDetails>
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
-                           CurrentRealEstate="@currentRealEstate">
+    CurrentRealEstate="@currentRealEstate">
     </ModalDeleteRealEstate>
 </div>
 <div>
     <ModalReassignDevices @ref="@refModalReasignDevices"
-                          SelectedRealEstateID="@SelectedRealEstateID"
-                          CurrentUser="@currentUser"
-                          CurrentRealEstate="@currentRealEstate">
+    SelectedRealEstateID="@SelectedRealEstateID"
+    CurrentUser="@currentUser"
+    CurrentRealEstate="@currentRealEstate">
     </ModalReassignDevices>
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-                                CurrentDeviceToDelete="@currentDevice"
-                                onDataChanged="DeviceDataHasChanged"
-                                eventCallback="OnModalDeleteSuccess">
+    CurrentDeviceToDelete="@currentDevice"
+    onDataChanged="DeviceDataHasChanged"
+    eventCallback="OnModalDeleteSuccess">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
-                           ObjectName="@_deletedObjectName"
-                           onDataChanged="DeviceDataHasChanged">
+    ObjectName="@_deletedObjectName"
+    onDataChanged="DeviceDataHasChanged">
     </ModalDeleteSuccessful>
 </div>
 <div>
@@ -434,17 +434,32 @@
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
-        currentRealEstate = DataService.GetRealEstate(realEstateID);
+        RealEstate? targetRealEstate = DataService.GetRealEstate(realEstateID);
+        if(targetRealEstate.RealEstateID != 0)
+        {
+            currentRealEstate = targetRealEstate;
+            currentRealEstateAddress = currentRealEstate.Address;
+            await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
+        }
+        else
+        {
+            // ELSE: Something went wrong.
+            // Adding error to the log
+            Console.WriteLine($"Error: RealEstate ID {targetRealEstate.RealEstateID} not found in DataService.");
 
-        currentRealEstate = DataService.CurrentDbUserWithRealEstatesData().Result.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateID);
-        currentRealEstateAddress = currentRealEstate.Address;
-        await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
+            // Show a message to the user (if you use BlazorBootstrap)
+            // ToastService.Notify(new(ToastType.Danger, "Could not find the property data. Please refresh."));
+
+            // Optional: Trigger a refresh of the user data just in case
+            await DataService.InitializedUserAsync();
+        }
     }
 
     private async Task OnShowModalAddNewRealEstate()
     {
         currentRealEstate = new();
         currentRealEstateAddress = new();
+        currentRealEstateAddress = currentRealEstate.Address;
         await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
     }
 
@@ -541,7 +556,7 @@
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
         .ThenBy(d => d.DeviceID).AsQueryable();
 
-        _realEstatesListAsQueryable = DataService.GetDbUserWithRealEstateAddressData().Result.UserProfile.RealEstates.AsQueryable();
+        _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         DataService.CheckIfFileExsist();
         base.OnInitialized();
     }
