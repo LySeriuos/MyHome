@@ -11,7 +11,7 @@
     [Parameter]
     public String? ObjectName { get; set; }
     private Modal? refModalDeleteSuccess { get; set; }
-
+    [Parameter] public EventCallback onDataChanged { get; set; }
     private async Task OnHideModalClick()
     {
         await refModalDeleteSuccess.HideAsync();

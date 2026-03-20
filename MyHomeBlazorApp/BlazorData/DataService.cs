@@ -21,7 +21,7 @@ namespace MyHomeBlazorApp.BlazorData
             //_users = Data.GetUsersListFromXml(_path);
             _authenticationStateProvider = authenticationStateProvider;
             _dbcontext = dbcontext;
-            ////CurrentAppUser = GetCurrentUser().Result;
+            //CurrentAppUser = GetCurrentUser();
             ////_currentUserWithData = GetDbUserDeviceProfileWithWarrantyShopAddressData().Result.UserProfile;
             //UnassignedDevicesList = GetUserWithUnassignedDevicesList().Result.ToList();
             //ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithData, 180);
@@ -34,7 +34,7 @@ namespace MyHomeBlazorApp.BlazorData
         private MyHomeBlazorAppContext _dbcontext;
         private UserProfile? _currentUserWithData;
         public UserProfile CurrentUserWithAllData => _currentUserWithData ?? new UserProfile();
-        public MyHomeBlazorAppUser CurrentAppUser;
+        public MyHomeBlazorAppUser? CurrentAppUser { get; set; } = new();
         public List<DeviceProfile>? Devices => _currentUserWithData.GetAllDevices();
         public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile? Device { get; set; } = new DeviceProfile();
@@ -47,11 +47,31 @@ namespace MyHomeBlazorApp.BlazorData
         public Shop? Shop { get; set; } = new Shop();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
 
-        public async Task InitilaizedAsync()
+
+        #region User
+
+        public async Task <MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
+        {
+            //Chek cache first
+            if (CurrentAppUser != null) return CurrentAppUser;
+
+            // Get the identity from the browser session
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var principal = authState.User;
+
+            if(principal.Identity?.IsAuthenticated == true)
+            {
+                // Fetch the real user from DB
+                CurrentAppUser = await _userManager.GetUserAsync(principal);
+            }
+
+            return CurrentAppUser;
+        }
+        public async Task InitializedUserAsync()
         {
             if (_currentUserWithData != null) return;
+            await GetAuthenticatedUserAsync();
 
-            await GetCurrentUser();
             var userWithData = await GetDbUserDeviceProfileWithWarrantyShopAddressData();
             _currentUserWithData = userWithData?.UserProfile;
             if(_currentUserWithData != null)
@@ -60,30 +80,49 @@ namespace MyHomeBlazorApp.BlazorData
                 FirstExpiringDevice = FirstExpiringWarranty();
                 DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithData);
             }
-        }
-
-        #region User
-
-        public async Task<MyHomeBlazorAppUser> GetCurrentUser()
-        {
-            var AuthSate = _authenticationStateProvider.GetAuthenticationStateAsync();
-            var user = AuthSate.Result.User;
-            if (user.Identity != null)
+            else
             {
-                if (user.Identity.IsAuthenticated)
-                {
-                    CurrentAppUser = await _userManager.GetUserAsync(user);
-                }
+                // "Else" Case: Reset these to empty states so the UI doesn't show old data
+                ExpiringDevices = new List<DeviceProfile>();
+                DevicesWarranties = new List<DeviceWarranty>();
+                FirstExpiringDevice = null;
             }
-            return CurrentAppUser;
         }
+        public async Task LoadUserWithAllDataAsync()
+        {
+            var user = await GetAuthenticatedUserAsync();
+            if (user == null) return;
+
+            // The "Master Query": One trip to the DB for everything
+            var fullUser = await _dbcontext.Users
+                .Include(u => u.UserProfile)
+                    .ThenInclude(p => p.UnassignedDevicesList)
+                .Include(u => u.UserProfile)
+                    .ThenInclude(p => p.RealEstates)
+                        .ThenInclude(r => r.Address)
+                .Include(u => u.UserProfile)
+                    .ThenInclude(p => p.RealEstates)
+                        .ThenInclude(r => r.DevicesProfiles)
+                            .ThenInclude(d => d.DeviceWarranty)
+                                .ThenInclude(w => w.Shop)
+                                    .ThenInclude(s => s.Address)
+                .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+            if (fullUser != null)
+            {
+                CurrentAppUser = fullUser;
+                // Update your helper field
+                _currentUserWithData = fullUser.UserProfile;
+            }
+        }
+
 
         public async Task<List<DeviceProfile>> GetUserWithUnassignedDevicesListAsync()
         {
             //Ensuring that user is logged in 
             if (CurrentAppUser == null)
             {
-                await GetCurrentUser();
+                await GetAuthenticatedUserAsync();
             }
              // if user is not logged in just return empty list
             if (CurrentAppUser == null)
@@ -121,19 +160,16 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task<MyHomeBlazorAppUser> GetDbUserDeviceProfileWithWarrantyShopAddressData()
         {
-            var userWithDevicesData = _dbcontext.Users.Include(u => u.UserProfile)
+            if (CurrentAppUser == null) return null;
+
+            var userWithDevicesData = await _dbcontext.Users.Include(u => u.UserProfile)
                 .ThenInclude(r => r.RealEstates).ThenInclude(r => r.DevicesProfiles)
                 .ThenInclude(d => d.DeviceWarranty).ThenInclude(dw => dw.Shop)
                 .ThenInclude(shop => shop.Address)
-                .FirstOrDefault(u => u.Id == CurrentAppUser.Id);
-            if (userWithDevicesData != null)
-            {
+                .FirstOrDefaultAsync(u => u.Id == CurrentAppUser.Id);
+            
                 return userWithDevicesData;
-            }
-            else
-            {
-                return new MyHomeBlazorAppUser();
-            }
+            
         }
 
         #endregion

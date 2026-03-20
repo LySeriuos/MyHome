@@ -6,10 +6,10 @@
 <style>
     .modal-content
     {
-        justify-content:flex-end !important;
-        
+    justify-content:flex-end !important;
+
     }
-    
+
 </style>
 
 <Modal @ref="refModalConfirmDeviceDeletion" HeaderCssClass="justify-content-end">    
@@ -33,7 +33,8 @@
     private String? _deletedDeviceName;
     private DeviceProfile? _deviceToDelete { get; set; }
 
-    public Action onDataChanged;
+    [Parameter] public EventCallback onDataChanged { get; set; }
+    [Parameter] public EventCallback eventCallback { get; set; }
 
     private async Task DeleteDevice_Click(bool _confirmDeletion)
     {
@@ -45,7 +46,8 @@
             {
                 // // _deletedDeviceName = _deviceToDelete.DeviceName;
                 await DataService.RemoveDeviceFromDb(_deviceToDelete);
-                onDataChanged();
+                await onDataChanged.InvokeAsync();
+                await eventCallback.InvokeAsync();
             }
             else
             {

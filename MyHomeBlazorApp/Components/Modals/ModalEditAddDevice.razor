@@ -162,7 +162,8 @@
     private EditContext? editContext;
     private Modal? refModalEditAddDevice { get; set; }
     private RealEstate realEstateToAddDevice { get; set; } = new();
-    public Action? changedDeviceListData;
+    // public Action? changedDeviceListData;
+    [Parameter] public EventCallback changedDeviceListData { get; set; }
     private string? errorMessage;
     private bool chosedRealEstateIsValid;
     bool deviceIsAssignedToRealEstate;
@@ -248,7 +249,7 @@
         }
 
         await DataService.UpdateObjectInDB();
-        changedDeviceListData();
+        await changedDeviceListData.InvokeAsync();
         realEstateToAddDevice = new();
         showErrorMessageVisible = false;
         await refModalEditAddDevice.HideAsync();

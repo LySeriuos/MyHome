@@ -153,9 +153,11 @@
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private bool fieldHasBeenChanged { get; set; } = false;
-    protected override void OnInitialized()
+
+
+    protected override async Task OnInitializedAsync()
     {
-        Init();
+        await Init();
         base.OnInitialized();
     }
 
@@ -165,11 +167,12 @@
     }
 
     //todo: disable button if there is no changes in the editForm
-    private void Init()
+    private async Task Init()
     {
         _chosedRealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
         editContext = new(CurrentDevice);
-        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+        var list = await DataService.GetUserWithUnassignedDevicesListAsync();
+        _unassignedDevicesListAsQueryable = list.AsQueryable();
         _devicesListAsQueryable = DataService.GetDbUserDeviceProfileWithWarrantyShopAddressData()
         .Result.UserProfile.RealEstates
         .SelectMany(realEstate => realEstate.DevicesProfiles)

@@ -228,7 +228,8 @@
     <ModalEditAddDevice @ref="@refModalEditAddDevice"
                         CurrentDevice="@currentDevice"
                         CurrentUser="@currentUser"
-                        RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID">
+                        RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID"
+                        changedDeviceListData="DeviceDataHasChanged">
     </ModalEditAddDevice>
 </div>
 <div>
@@ -258,12 +259,15 @@
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-                                CurrentDeviceToDelete="@currentDevice">
+                                CurrentDeviceToDelete="@currentDevice"
+                                onDataChanged="DeviceDataHasChanged"
+                                eventCallback="OnModalDeleteSuccess">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
-                           ObjectName="@_deletedObjectName">
+                           ObjectName="@_deletedObjectName"
+                           onDataChanged="DeviceDataHasChanged">
     </ModalDeleteSuccessful>
 </div>
 <div>
@@ -385,14 +389,14 @@
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-
+    private bool _eventSubscribed = false;
     protected override void OnAfterRender(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && !_eventSubscribed)
         {
-            refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
-            refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
-            refModalEditAddDevice.changedDeviceListData += DeviceDataHasChanged;
+            // refModalConfirmDeviceDeletion.onDataChanged += DeviceDataHasChanged;
+            // refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
+            // refModalEditAddDevice.changedDeviceListData += DeviceDataHasChanged;
             refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
@@ -401,6 +405,7 @@
             refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest;
+            _eventSubscribed = true;
         }
         base.OnAfterRender(firstRender);
     }
@@ -464,10 +469,11 @@
         refModalReasignDevices.OnShowModalReasignDevices(realEstateID);
     }
 
-    private void DeviceDataHasChanged()
+    private async Task DeviceDataHasChanged()
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
-        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+        var unassignedList = await DataService.GetUserWithUnassignedDevicesListAsync();
+        _unassignedDevicesListAsQueryable = unassignedList.AsQueryable();
         StateHasChanged();
     }
 
@@ -527,7 +533,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _unassignedDevicesListAsQueryable = DataService.GetUserWithUnassignedDevicesList().Result.AsQueryable();
+        var list = await DataService.GetUserWithUnassignedDevicesListAsync();
+        _unassignedDevicesListAsQueryable = list.AsQueryable();
 
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
