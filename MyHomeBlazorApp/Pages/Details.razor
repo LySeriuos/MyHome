@@ -235,19 +235,23 @@
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
     CurrentDevice="@currentDevice"
-    DevicesListAsQueryable="@_devicesListAsQueryable">
+    DevicesListAsQueryable="@_devicesListAsQueryable"
+                              OnDataChanged="RealEstateDataHasChanged">
     </ModalEditWarrantyDetails>
 </div>
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
     CurrentDevice="@currentDevice"
     ShopAddress="@shopAddress"
-    DevicesListAsQueryable="@_devicesListAsQueryable">
+    DevicesListAsQueryable="@_devicesListAsQueryable"
+                          OnDataChanged="RealEstateDataHasChanged">
     </ModalEditShopDetails>
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
-    CurrentRealEstate="@currentRealEstate">
+    CurrentRealEstate="@currentRealEstate"
+                           OnDataChanged="RealEstateDataHasChanged"
+                           OnDeleteSuccess="OnModalDeleteSuccess">
     </ModalDeleteRealEstate>
 </div>
 <div>
@@ -400,10 +404,10 @@
             // refModalConfirmDeviceDeletion.onDataChanged += OnModalDeleteSuccess;
             // refModalEditAddDevice.changedDeviceListData += DeviceDataHasChanged;
             // refModalReasignDevices.onDataChanged += RealEstateDataHasChanged;
-            refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
-            refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
-            refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
-            _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
+            // // refModalRealEstateDelete.onDataChanged += RealEstateDataHasChanged;
+            // // refModalRealEstateDelete.onDataChanged += OnModalDeleteSuccess;
+            // // refModalEditShopDetails.ShopDataHasChanged += ShopDataHasChanged;
+            // _refModalEditWarrantyDetails.WarrantyDataHasChanged += WarrantyDataHasChanged;
             refModalEditAddRealEstate.realEstateDataHasChanged += RealEstateDataHasChanged;
             refModalRealEstateDelete.onRequestReassignDevicesListToOtherRealEstate += OnModalReassignDevicesRequest;
             // refModalReasignDevices.onDeleteRealEstate += OnModalRealEstateDeleteRequest

@@ -8,14 +8,14 @@
 
 <style>
     .btn-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     }
 
     .left-buttons button,
     .right-buttons button {
-        margin: 0 5px;
+    margin: 0 5px;
     }
 </style>
 
@@ -43,8 +43,8 @@
                         <p class="text-success">The receipt was uploaded.</p>
                     }
                     <InputFile @key=@(_inputWarrantyFileId) id="WarrantyReceiptLink"
-                               @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"
-                               OnChange="@LoadWarrantyFile">
+                    @bind-Value="CurrentDevice.DeviceWarranty.ReceiptLink"
+                    OnChange="@LoadWarrantyFile">
                     </InputFile>
                 </div>
             </div>
@@ -62,15 +62,15 @@
                         <p class="text-success">The receipt was uploaded.</p>
                     }
                     <InputFile @key=@(_inputExtraWarrantyFileId) id="extendedWarrantyLinkToReceipt"
-                               @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
-                               OnChange="@LoadExtraWarrantyFile">
+                    @bind-Value="CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink"
+                    OnChange="@LoadExtraWarrantyFile">
                     </InputFile>
                 </div>
             </div>
             <div class="btn-row mt-3">
                 <div class="left-buttons">
                     <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                         DevicesListAsQueryable="DevicesListAsQueryable">
+                    DevicesListAsQueryable="DevicesListAsQueryable">
                     </NextPreviuosButtons>
                 </div>
                 <div class="right-buttons">
@@ -99,7 +99,8 @@
     public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
-    public Action? WarrantyDataHasChanged;
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
     private Modal _refModalEditWarrantyDetails { get; set; } = new();
     private IBrowserFile? _warrantyReceiptFile;
     private IBrowserFile? _extraWarrantyReceiptFile;
@@ -151,7 +152,7 @@
             }
 
             await DataService.UpdateObjectInDB();
-            WarrantyDataHasChanged();
+           await OnDataChanged.InvokeAsync();
             await _refModalEditWarrantyDetails.HideAsync();
         }
         catch (Exception ex)

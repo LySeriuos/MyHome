@@ -5,14 +5,14 @@
 
 <style>
     .btn-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     }
 
     .left-buttons button,
     .right-buttons button {
-        margin: 0 5px;
+    margin: 0 5px;
     }
 </style>
 
@@ -59,8 +59,9 @@
     public Address? ShopAddress { get; set; }
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
-    public Action? ShopDataHasChanged;
-    private Modal? refModalEditShopDetails { get; set; }
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
+    private Modal refModalEditShopDetails { get; set; } = new();
 
     public async Task OnHideModalEditAddShopClick()
     {
@@ -72,12 +73,12 @@
         await refModalEditShopDetails.ShowAsync();
     }
 
-    private void ShopDetailsFormSubmitted(EditContext Context)
+    private async Task ShopDetailsFormSubmitted(EditContext Context)
     {
         // await OnSubmit.InvokeAsync(CurrentDevice);
-        DataService.UpdateObjectInDB();
-        ShopDataHasChanged();
-        refModalEditShopDetails.HideAsync();
+        await DataService.UpdateObjectInDB();
+        await OnDataChanged.InvokeAsync();
+        await refModalEditShopDetails.HideAsync();
     }
 
 

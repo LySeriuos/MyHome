@@ -29,8 +29,10 @@
     private Modal? refModalRealEstateDelete { get; set; }
     [Parameter]
     public RealEstate? CurrentRealEstate { get; set; }
-
-    public Action onDataChanged;
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
+    [Parameter]
+    public EventCallback OnDeleteSuccess { get; set; }
 
     public Action<int> onRequestReassignDevicesListToOtherRealEstate;
 
@@ -53,9 +55,9 @@
             }
         }        
         await OnHideModalDeleteRealEstateCloseClick();
-        CurrentRealEstate = new();
-        onDataChanged();
+        await OnDataChanged.InvokeAsync();
         StateHasChanged();
+        CurrentRealEstate = new();
 
     }
 
