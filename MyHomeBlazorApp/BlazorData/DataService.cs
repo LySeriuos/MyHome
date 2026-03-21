@@ -6,6 +6,7 @@ using Microsoft.JSInterop;
 using My_Home;
 using MyHome;
 using MyHome.Models;
+using sun.invoke.empty;
 using System.Xml;
 //using System.Data.Entity;
 
@@ -27,19 +28,14 @@ namespace MyHomeBlazorApp.BlazorData
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private UserManager<MyHomeBlazorAppUser> _userManager;
         private MyHomeBlazorAppContext _dbcontext;
-        private UserProfile _currentUserWithAllData = new();
+        private UserProfile _currentUserWithAllData;
         public UserProfile CurrentUserWithAllData => _currentUserWithAllData ?? new UserProfile();
-        public MyHomeBlazorAppUser? CurrentAppUser { get; set; } = new();
+        public MyHomeBlazorAppUser? CurrentAppUser { get; set; }
         public List<DeviceProfile>? Devices => _currentUserWithAllData.GetAllDevices();
-        public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
-        public DeviceProfile? Device { get; set; } = new DeviceProfile();
-        public RealEstate? CurrentRealEstate { get; set; } = new RealEstate();
-        public Address? Adrress { get; set; } = new Address();
-        public DeviceWarranty? DeviceWarranty { get; set; } = new DeviceWarranty();
+        public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();        
         public DeviceProfile? FirstExpiringDevice { get; set; } = new DeviceProfile();
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
-        public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
-        public Shop? Shop { get; set; } = new Shop();
+        public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();        
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
 
 
@@ -48,8 +44,10 @@ namespace MyHomeBlazorApp.BlazorData
         public async Task<MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
         {
             //Chek cache first
-            if (CurrentAppUser != null) return CurrentAppUser;
-
+            if (!string.IsNullOrEmpty(CurrentAppUser?.Id))
+            {
+                return CurrentAppUser;
+            }
             // Get the identity from the browser session
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             var principal = authState.User;
@@ -64,10 +62,22 @@ namespace MyHomeBlazorApp.BlazorData
         }
         public async Task InitializedUserAsync()
         {
-            if (_currentUserWithAllData != null) return;
+            if (_currentUserWithAllData?.UserID != 0 && _currentUserWithAllData != null)
+            {
+                return;
+            }
+
+
             await GetAuthenticatedUserAsync();
 
+            if (CurrentAppUser == null)
+            {
+                Console.WriteLine("DataService: No Authenticated User found.");
+                return;
+            }
+
             await LoadUserWithAllDataAsync();
+
             if (_currentUserWithAllData != null)
             {
                 ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithAllData, 180);
@@ -247,14 +257,16 @@ namespace MyHomeBlazorApp.BlazorData
             deviceToAdd.DeviceWarranty = new();
             deviceToAdd.DeviceWarranty.Shop = new();
             deviceToAdd.DeviceWarranty.Shop.Address = new();
-            RealEstate chosedRealEstate = new();
-            if (chosedRealEstateID != 0)
+            RealEstate chosedRealEstate = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
+
+            if (chosedRealEstate == null)
             {
-                chosedRealEstate = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
+                throw new Exception("Selected Real Estate not found.");
             }
 
             if (_currentUserWithAllData.GetAllDevices().Any(d => d.DeviceID == deviceToAdd.DeviceID))
-            {   //Should twrow an error that device with this ID already exists
+            {   //Should twrow an error that device with this ID already
+                //throw new Exception("Selected Real Estate not found.");
                 return;
             }
             else
@@ -273,7 +285,6 @@ namespace MyHomeBlazorApp.BlazorData
         {
             _dbcontext.Remove(deviceToDelete);
             await UpdateObjectInDB();
-
         }
 
         /// <summary>
@@ -574,6 +585,10 @@ namespace MyHomeBlazorApp.BlazorData
         public void CheckIfFileExsist()
         {
             // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService._currentUserWithAllData.UserID}", "*.*");
+            if (_currentUserWithAllData == null)
+            {
+                return;
+            }
             List<DeviceProfile> deviceProfiles = _currentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
             foreach (DeviceProfile device in deviceProfiles)
             {

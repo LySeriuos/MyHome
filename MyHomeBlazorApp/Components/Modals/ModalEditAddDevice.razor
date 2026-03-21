@@ -6,16 +6,15 @@
 
 <style>
     .btn-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .left-buttons button,
     .right-buttons button {
-    margin: 0 5px;
+        margin: 0 5px;
     }
-
 
 </style>
 <Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
@@ -118,18 +117,18 @@
                     @if (CurrentDevice.DeviceID != 0 && RealEsatateIdToAddDevice != 0)
                     {
                         <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                        DevicesListAsQueryable="_devicesListAsQueryable">
+                                             DevicesListAsQueryable="_devicesListAsQueryable">
                         </NextPreviuosButtons>
                     }
                     else if (_unassignedDevicesListAsQueryable.Count() > 1)
                     {
                         <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                        DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
+                                             DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
                         </NextPreviuosButtons>
                     }
                 </div>
                 <div class="right-buttons">
-                    <ButtonSave/>
+                    <ButtonSave />
                     <ButtonCloseCancel TextButton="Cancel" ButtonEvent="OnHideModalEditDeviceClick" />
                 </div>
             </div>
@@ -141,16 +140,18 @@
 @code {
 
     [Parameter]
-    public DeviceProfile? CurrentDevice { get; set; }
+    public DeviceProfile CurrentDevice { get; set; }
     [Parameter]
     public UserProfile? CurrentUser { get; set; }
+
+    private int selectedTargetRealEstateId;
     [Parameter]
     public int RealEsatateIdToAddDevice
     {
-        get => realEstateToAddDevice.RealEstateID;
+        get => selectedTargetRealEstateId;
         set
         {
-            realEstateToAddDevice.RealEstateID = value;
+            selectedTargetRealEstateId = value;
         }
     }
     [Parameter]
@@ -209,7 +210,7 @@
         {
             chosedRealEstateIsValid = false;
             showErrorMessageVisible = true;
-            errorMessage = "Please select Real Estate to Add Device";            
+            errorMessage = "Please select Real Estate to Add Device";
         }
         else
         {
@@ -221,40 +222,49 @@
 
     private async Task DeviceFormSubmitted(EditContext editContext)
     {
-        validDeviceForm = editContext.Validate();
-        ChosedRealEstateIsValid();
-        CheckIfCurrentDeviceIsAssignedToRealEstate();
+        // 1. Validate Everything First
+        bool isFormValid = editContext.Validate();
+        bool isRealEstateSelected = ChosedRealEstateIsValid(); // Sets errorMessage if false
+        CheckIfCurrentDeviceIsAssignedToRealEstate(); // Sets deviceIsAssignedToRealEstate
 
+        if (!isFormValid || !isRealEstateSelected)
+        {
+            return; // Stop here if user missed a field or the dropdown
+        }
+
+        // 2. Scenario A: BRAND NEW DEVICE (ID is 0)
         if (CurrentDevice.DeviceID == 0)
         {
-            if (validDeviceForm == false && chosedRealEstateIsValid == false || validDeviceForm == true && chosedRealEstateIsValid == false)
-            {
-                validDeviceForm = editContext.Validate();
-                ChosedRealEstateIsValid();
-                return;
-            }
-            else
-            {
-                validDeviceForm = editContext.Validate();
-                DataService.AddNewDeviceToDataBase(CurrentDevice, RealEsatateIdToAddDevice);
-            }
+            DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
         }
-        else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
+        // 3. Scenario B: EXISTING DEVICE, BUT UNASSIGNED
+        else if (!deviceIsAssignedToRealEstate)
         {
-            DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, RealEsatateIdToAddDevice, CurrentDevice);
+            DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, selectedTargetRealEstateId, CurrentDevice);
         }
-        else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == true)
+        // 4. Scenario C: EXISTING DEVICE, MOVING TO NEW REAL ESTATE
+        else
         {
-            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, RealEsatateIdToAddDevice);
+            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, selectedTargetRealEstateId);
         }
 
-        await DataService.UpdateObjectInDB();
-        await changedDeviceListData.InvokeAsync();
-        realEstateToAddDevice = new();
-        showErrorMessageVisible = false;
-        await refModalEditAddDevice.HideAsync();
+        // 5. Save and Cleanup
+        try
+        {
+            await DataService.UpdateObjectInDB();
+            await changedDeviceListData.InvokeAsync();
+
+            // Reset the ID integer!
+            selectedTargetRealEstateId = 0;
+            showErrorMessageVisible = false;
+            await refModalEditAddDevice.HideAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Database error: " + ex.Message;
+            showErrorMessageVisible = true;
+        }
     }
-
     public async Task OnHideModalEditDeviceClick()
     {
         await refModalEditAddDevice.HideAsync();
@@ -264,5 +274,6 @@
     {
         await refModalEditAddDevice.ShowAsync();
     }
-
 }
+
+

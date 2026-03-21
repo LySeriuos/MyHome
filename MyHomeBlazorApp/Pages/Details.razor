@@ -466,9 +466,10 @@
     private ModalDeleteSuccessful refModalDeleteSuccess = default!;
     private ModalConfirmDeviceDeletion refModalConfirmDeviceDeletion = default!;
 
-    private void OnModalReassignDevicesRequest(int realEstateID)
+    private async Task OnModalReassignDevicesRequest(int realEstateId)
     {
-        refModalReasignDevices.OnShowModalReasignDevices(realEstateID);
+        // this Id will be passed to other modal to be able to move devices list
+        await refModalReasignDevices.OnShowModalReasignDevices(realEstateId);
     }
 
     private async Task DeviceDataHasChanged()
@@ -535,6 +536,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await DataService.InitializedUserAsync();
         var list = await DataService.GetUserWithUnassignedDevicesListAsync();
         _unassignedDevicesListAsQueryable = list.AsQueryable();
 

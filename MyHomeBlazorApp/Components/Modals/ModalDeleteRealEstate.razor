@@ -24,8 +24,7 @@
 </Modal>
 
 @code {
-    // [Parameter]
-    // public ModalReassignDevices? RefModalReassignDevices { get; set; }
+    
     private Modal? refModalRealEstateDelete { get; set; }
     [Parameter]
     public RealEstate? CurrentRealEstate { get; set; }
@@ -59,6 +58,7 @@
         }        
         await OnHideModalDeleteRealEstateCloseClick();
         await OnDataChanged.InvokeAsync();
+        await OnDeleteSuccess.InvokeAsync();
         StateHasChanged();
         CurrentRealEstate = new();
 

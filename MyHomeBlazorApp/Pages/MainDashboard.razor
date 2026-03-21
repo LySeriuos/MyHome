@@ -12,116 +12,116 @@
 <head>
     <style>
         .grid-container {
-            display: flex;
-            grid-template-columns: auto auto auto;
-            background-color: #f7f9fc;
-            padding: 10px;
-            flex-direction: row;
-            flex-wrap: wrap;
+        display: flex;
+        grid-template-columns: auto auto auto;
+        background-color: #f7f9fc;
+        padding: 10px;
+        flex-direction: row;
+        flex-wrap: wrap;
         }
 
         .grid-item {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            margin: 20px;
-            font-size: 30px;
-            text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        margin: 20px;
+        font-size: 30px;
+        text-align: center;
         }
 
         .body {
-            background-color: #ced4da;
-            color: #6c757d;
+        background-color: #ced4da;
+        color: #6c757d;
         }
 
         .th {
-            column-width: 100px;
+        column-width: 100px;
         }
 
         .a {
-            width: 100px;
-            white-space: nowrap;
-            overflow: hidden;
-            border: 1px solid;
-            text-overflow: ellipsis;
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        border: 1px solid;
+        text-overflow: ellipsis;
         }
 
         .card-outline-style {
-            outline-width: 5px;
-            outline-style: double;
-            outline-color: darkgoldenrod;
+        outline-width: 5px;
+        outline-style: double;
+        outline-color: darkgoldenrod;
         }
 
         .card-style {
-            display: flex;
-            justify-content: center;
-            background-color: #eeeff4;
-            width: 18rem;
-            margin-right: 50px;
-            margin-top: 50px;
+        display: flex;
+        justify-content: center;
+        background-color: #eeeff4;
+        width: 18rem;
+        margin-right: 50px;
+        margin-top: 50px;
         }
 
         .svg-icon-style {
-            width: 100px;
-            height: 100px;
-            display: flex;
-            margin-right: auto;
-            margin-left: auto;
-            align-items: center;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        margin-right: auto;
+        margin-left: auto;
+        align-items: center;
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
         }
 
         .card-footer {
-            width: 100%;
-            background-color: none;
-            border-top: none;
-            justify-content: left;
-            padding-top: 1.5rem;
-            padding-bottom: 1.5rem;
-            text-align: left;
+        width: 100%;
+        background-color: none;
+        border-top: none;
+        justify-content: left;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        text-align: left;
         }
 
         .card-btn {
-            color: #2d2a2b;
-            background-color: #cfd9e1;
-            border-color: #1861ac;
-            border-radius: 1.3rem;
+        color: #2d2a2b;
+        background-color: #cfd9e1;
+        border-color: #1861ac;
+        border-radius: 1.3rem;
         }
 
         .card-btn:hover
         {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            /* font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
-                background: #cfd9e1;
-                color: #1861ac;
-            }
-
-        .bodySection {
-            background-image: url(/Images/freepik__retouch__10901.png);
-            background-repeat: repeat;
-            position: relative;
-            /* background-size: cover; */
-            background-position: center;
-            position: relative; /* Needed for overlay positioning */
-            height: 100vh;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        /* font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+        background: #cfd9e1;
+        color: #1861ac;
         }
 
-            .bodySection::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: rgba(255, 255, 255, 0.7); /* Dark overlay */
-                z-index: 1;
-            }
+        .bodySection {
+        background-image: url(/Images/freepik__retouch__10901.png);
+        background-repeat: repeat;
+        position: relative;
+        /* background-size: cover; */
+        background-position: center;
+        position: relative; /* Needed for overlay positioning */
+        height: 100vh;
+        }
+
+        .bodySection::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.7); /* Dark overlay */
+        z-index: 1;
+        }
 
         .bodySection-content {
-            position: relative;
-            z-index: 2; /* Place content above overlay */
+        position: relative;
+        z-index: 2; /* Place content above overlay */
         }
     </style>
 </head>
@@ -129,90 +129,91 @@
 
 <body>
     <main class="bodySection">
-    <section class="bodySection-content">
-    <div class="content">
-        <div class="container-fluid">
-            <div class="row d-flex justify-content-center text-bg-dark">
-                <Card Class="mb-4 card-style">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
-                        <path d="@userIconPath" />
-                    </svg>
-                    <CardBody>
-                        <CardTitle class="fw-bolder">Welcome Back, @DataService.CurrentUserWithAllData.UserName!</CardTitle>
-                        <CardText>Date Today: </CardText>
-                        <CardText>@DateTime.UtcNow.ToLongDateString()</CardText>
-                    </CardBody>
-                  @*   <ul>
+        <section class="bodySection-content">
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row d-flex justify-content-center text-bg-dark">
+                        <Card Class="mb-4 card-style">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                                <path d="@userIconPath" />
+                            </svg>
+                            <CardBody>
+                                <CardTitle class="fw-bolder">Welcome Back, @_loadedUser.UserName!</CardTitle>
+                                    <CardText>Date Today: </CardText>
+                                    <CardText>@DateTime.UtcNow.ToLongDateString()</CardText>
+                                </CardBody>
+                                @*   <ul>
                     </ul> *@
-                    <CardBody Class="text-center">
-                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="Account/Manage">User Account</CardLink>
-                    </CardBody>
-                </Card>
-                <Card Class="mb-4 card-style">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
-                        <path d="@realEstateIconPath" />
-                    </svg>
-                    <CardBody>
-                        <CardTitle class="fw-bolder">Total Real Estates: @DataService.CurrentUserWithAllData.RealEstates.Count</CardTitle>
-                        <CardText>Last Added Real Estate:</CardText>
-                        <CardText>
-                            ID: @DataService.LastAddedRealEstate().RealEstateID |
-                            @DataService.LastAddedRealEstate().RealEstateName
-                        </CardText>
-                    </CardBody>
-                    <CardBody Class="text-center">
-                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/1">All RealEstates</CardLink>
-                    </CardBody>
-                </Card>
-                <Card Class="mb-4 card-style">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
-                        <path d="@deviceIconPath" />
-                    </svg>
-                    <CardBody>
-                        <CardTitle class="fw-bolder">Total Devices: @DataService.Devices?.Count</CardTitle>
-                        <CardText>Last Added Device:</CardText>
-                        <CardText Class="">
-                            ID:
-                            @DataService.LastAddedDevice().DeviceID |
-                            @DataService.LastAddedDevice().DeviceName
-                        </CardText>
-                    </CardBody>
-                    <CardBody Class="text-center">
-                        <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/2">All Devices</CardLink>
-                    </CardBody>
-                </Card>
-                @if (GetExpiringDevice != null)
-                {
-                    <Card Class="mb-4 card-style" Style="width:18rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
-                            <path d="@warrantyIconPath" />
-                        </svg>
-                        <CardBody>
-                            <CardTitle class="fw-bolder">Warranties</CardTitle>
-                            <CardText>Expires soonest:</CardText>
-                            <CardText Class="">
-                                @DataService.FirstExpiringWarranty().DeviceName |
-                                @DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString()
-                            </CardText>
-                        </CardBody>
-                        <CardBody Class="text-center">
-                            <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/3">All Warranties</CardLink>
-                        </CardBody>
-                    </Card>
-                }
-                else
-                {
-                    DataService.CurrentUserWithAllData.GetAllDevices().Last();
-                }
+                                <CardBody Class="text-center">
+                                    <CardLink Class="btn btn-primary card-btn btn-rounded" To="Account/Manage">User Account</CardLink>
+                                </CardBody>
+                            </Card>
+                            <Card Class="mb-4 card-style">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                                    <path d="@realEstateIconPath" />
+                                </svg>
+                                <CardBody>
+                                    <CardTitle class="fw-bolder">Total Real Estates: @_loadedUser.RealEstates.Count</CardTitle>
+                                    <CardText>Last Added Real Estate:</CardText>
+                                    <CardText>
+                                        ID: @DataService.LastAddedRealEstate().RealEstateID |
+                                        @DataService.LastAddedRealEstate().RealEstateName
+                                    </CardText>
+                                </CardBody>
+                                <CardBody Class="text-center">
+                                    <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/1">All RealEstates</CardLink>
+                                </CardBody>
+                            </Card>
+                            <Card Class="mb-4 card-style">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                                    <path d="@deviceIconPath" />
+                                </svg>
+                                <CardBody>
+                                    <CardTitle class="fw-bolder">Total Devices: @DataService.Devices?.Count</CardTitle>
+                                    <CardText>Last Added Device:</CardText>
+                                    <CardText Class="">
+                                        ID:
+                                        @DataService.LastAddedDevice().DeviceID |
+                                        @DataService.LastAddedDevice().DeviceName
+                                    </CardText>
+                                </CardBody>
+                                <CardBody Class="text-center">
+                                    <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/2">All Devices</CardLink>
+                                </CardBody>
+                            </Card>
+                            @if (GetExpiringDevice != null)
+                        {
+                            <Card Class="mb-4 card-style" Style="width:18rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#e2c8c0" class="svg-icon-style" viewBox="0 0 16 16">
+                                    <path d="@warrantyIconPath" />
+                                </svg>
+                                <CardBody>
+                                    <CardTitle class="fw-bolder">Warranties</CardTitle>
+                                    <CardText>Expires soonest:</CardText>
+                                    <CardText Class="">
+                                        @DataService.FirstExpiringWarranty().DeviceName |
+                                        @DataService.FirstExpiringWarranty().DeviceWarranty.WarrantyEnd.ToShortDateString()
+                                    </CardText>
+                                </CardBody>
+                                <CardBody Class="text-center">
+                                    <CardLink Class="btn btn-primary card-btn btn-rounded" To="/details/3">All Warranties</CardLink>
+                                </CardBody>
+                            </Card>
+                        }
+                        else
+                        {
+                            DataService.CurrentUserWithAllData.GetAllDevices().Last();
+                        }
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    </section>
+        </section>
     </main>
 </body> 
 </html>
 @code {
     private DeviceProfile? _expiringDevice { get; set; }
+    private UserProfile _loadedUser { get; set; }
     private List<string> _deviceItemsList = new List<string>();
     private List<string> _warrantyItemsList = new List<string>();
     private List<string> _realEstateItemsList = new List<string>();
@@ -269,22 +270,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // 1. TELL the service to load the user now (Async!)
+        //     // 1. TELL the service to load the user now (Async!)
         await DataService.InitializedUserAsync();
+        _loadedUser = DataService.CurrentUserWithAllData;
+        _expiringDevice = DataService.FirstExpiringWarranty();
 
-        // 2. NOW it is safe to use CurrentAppUser
-        if (DataService.CurrentAppUser != null)
-        {
-            // Your existing logic to load lists...
-            // _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates
-            //     .SelectMany(r => r.DevicesProfiles)
-            //     .AsQueryable();
-        }
-        else
-        {
-            // Optional: Redirect to login if user isn't found
-            // NavigationManager.NavigateTo("Identity/Account/Login");
-        }
     }
 
     string userIconPath = "M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0";
