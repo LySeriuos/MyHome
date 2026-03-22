@@ -221,7 +221,7 @@
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
     CurrentRealEstate="@currentRealEstate"
-                            OnDataChanged="RealEstateDataHasChanged">
+    OnDataChanged="RealEstateDataHasChanged">
     </ModalEditAddRealEstate>
 </div>
 
@@ -237,7 +237,7 @@
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
     CurrentDevice="@currentDevice"
     DevicesListAsQueryable="@_devicesListAsQueryable"
-                              OnDataChanged="RealEstateDataHasChanged">
+    OnDataChanged="RealEstateDataHasChanged">
     </ModalEditWarrantyDetails>
 </div>
 <div>
@@ -245,15 +245,15 @@
     CurrentDevice="@currentDevice"
     ShopAddress="@shopAddress"
     DevicesListAsQueryable="@_devicesListAsQueryable"
-                          OnDataChanged="RealEstateDataHasChanged">
+    OnDataChanged="RealEstateDataHasChanged">
     </ModalEditShopDetails>
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
     CurrentRealEstate="@currentRealEstate"
-                           OnDataChanged="RealEstateDataHasChanged"
-                           OnDeleteSuccess="OnModalDeleteSuccess"
-                           OnRequestReassignDevicesListToOtherRealEsatate="OnModalReassignDevicesRequest">
+    OnDataChanged="RealEstateDataHasChanged"
+    OnDeleteSuccess="OnModalDeleteSuccess"
+    OnRequestReassignDevicesListToOtherRealEsatate="OnModalReassignDevicesRequest">
     </ModalDeleteRealEstate>
 </div>
 <div>
@@ -316,15 +316,11 @@
     private RealEstate currentRealEstate = new();
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
-    private DeviceProfile currentDevice { get; set; } = new();
-    private UserProfile currentUser = new();
-    private const string BaseApiUrl = "https://www.google.se/search?q=";
+    private DeviceProfile? currentDevice { get; set; }
+    private UserProfile? currentUser { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable;
     private IQueryable<RealEstate>? _realEstatesListAsQueryable;
-    private IQueryable<RealEstate>? _realEstatesListAsQueryable11;
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable;
-    public MyHomeBlazorAppUser user = default!;
-    public Action? UnassignedDevicesListChanged;
 
     private async Task HandleQrCode(int _chosedDeviceID)
     {
@@ -359,8 +355,8 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    [Inject]
-    public AuthenticationStateProvider AuthenticationState { get; set; }
+    // // [Inject]
+    // // public AuthenticationStateProvider AuthenticationState { get; set; }
 
 
 
@@ -397,9 +393,9 @@
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
     
-    private void OnModalDeleteSuccess()
+    private async Task OnModalDeleteSuccess()
     {
-        refModalDeleteSuccess.OnShowModalClick();
+        await refModalDeleteSuccess.OnShowModalClick();
     }
 
     #region Real Estate
@@ -414,9 +410,9 @@
         StateHasChanged();
     }
 
-    private void OnModalRealEstateDeleteRequest()
+    private async Task OnModalRealEstateDeleteRequest()
     {
-        refModalRealEstateDelete.DeleteRealEstate_Click(true);
+        await refModalRealEstateDelete.DeleteRealEstate_Click(true);
     }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
