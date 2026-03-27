@@ -35,12 +35,14 @@
 
     [Parameter] public EventCallback onDataChanged { get; set; }
     [Parameter] public EventCallback eventCallback { get; set; }
+    [Parameter]
+    public EventCallback OnUnnassignedDeviceListDataChanged { get; set; }
 
     private async Task DeleteDevice_Click(bool _confirmDeletion)
     {
         if (_confirmDeletion == true && CurrentDeviceToDelete != null)
         {
-            _deviceToDelete = DataService.CurrentUserWithAllData.GetAllDevices().First(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
+            _deviceToDelete = DataService.CurrentUserWithAllData.GetAllDevices().FirstOrDefault(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
 
             if (_deviceToDelete != null)
             {
@@ -48,13 +50,17 @@
                 await DataService.RemoveDeviceFromDb(_deviceToDelete);
                 await onDataChanged.InvokeAsync();
                 await eventCallback.InvokeAsync();
+                await OnUnnassignedDeviceListDataChanged.InvokeAsync();
             }
             else
             {
                 return;
             }
         }
-        await refModalConfirmDeviceDeletion.HideAsync();
+        if (refModalConfirmDeviceDeletion != null)
+        {
+            await refModalConfirmDeviceDeletion.HideAsync();
+        }
     }
     public async Task OnShowModalClick()
     {

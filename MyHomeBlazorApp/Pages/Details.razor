@@ -117,7 +117,7 @@
                 <TabPage Text="Devices Warranties">
                     <div class="grid my-5">
                         <div class="">
-                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Warranties data</div>                            
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Warranties data</div>
                         </div>
                         <QuickGrid tabindex="3" Class="text-center" Items="@_devicesListAsQueryable">
                             <TemplateColumn>
@@ -186,7 +186,7 @@
                         </QuickGrid>
                     </div>
                 </TabPage>
-                @if (_unassignedDevicesListAsQueryable.AsQueryable().ToList().Count > 0)
+                @if (_unassignedDevicesListAsQueryable != null && _unassignedDevicesListAsQueryable.AsQueryable().Any())
                 {
                     <TabPage Text="Unassigned Devices">
                         <div class="grid">
@@ -220,62 +220,64 @@
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
-    CurrentRealEstate="@currentRealEstate"
-    OnDataChanged="RealEstateDataHasChanged">
+                            CurrentRealEstate="@currentRealEstate"
+                            OnDataChanged="RealEstateDataHasChanged">
     </ModalEditAddRealEstate>
 </div>
 
 <div>
     <ModalEditAddDevice @ref="@refModalEditAddDevice"
-    CurrentDevice="@currentDevice"
-    CurrentUser="@currentUser"
-    RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID"
-    changedDeviceListData="DeviceDataHasChanged">
+                        CurrentDevice="@currentDevice"
+                        CurrentUser="@currentUser"
+                        RealEsatateIdToAddDevice="@currentRealEstate.RealEstateID"
+                        changedDeviceListData="DeviceDataHasChanged">
     </ModalEditAddDevice>
 </div>
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
-    CurrentDevice="@currentDevice"
-    DevicesListAsQueryable="@_devicesListAsQueryable"
-    OnDataChanged="RealEstateDataHasChanged">
+                              CurrentDevice="@currentDevice"
+                              DevicesListAsQueryable="@_devicesListAsQueryable"
+                              OnDataChanged="RealEstateDataHasChanged">
     </ModalEditWarrantyDetails>
 </div>
 <div>
     <ModalEditShopDetails @ref="refModalEditShopDetails"
-    CurrentDevice="@currentDevice"
-    ShopAddress="@shopAddress"
-    DevicesListAsQueryable="@_devicesListAsQueryable"
-    OnDataChanged="RealEstateDataHasChanged">
+                          CurrentDevice="@currentDevice"
+                          ShopAddress="@shopAddress"
+                          DevicesListAsQueryable="@_devicesListAsQueryable"
+                          OnDataChanged="RealEstateDataHasChanged">
     </ModalEditShopDetails>
 </div>
 <div>
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
-    CurrentRealEstate="@currentRealEstate"
-    OnDataChanged="RealEstateDataHasChanged"
-    OnDeleteSuccess="OnModalDeleteSuccess"
-    OnRequestReassignDevicesListToOtherRealEsatate="OnModalReassignDevicesRequest">
+                           CurrentRealEstate="@currentRealEstate"
+                           OnDataChanged="RealEstateDataHasChanged"
+                           OnDeleteSuccess="OnModalDeleteSuccess"
+                           OnRequestReassignDevicesListToOtherRealEsatate="OnModalReassignDevicesRequest">
     </ModalDeleteRealEstate>
 </div>
 <div>
     <ModalReassignDevices @ref="@refModalReasignDevices"
-    SelectedRealEstateID="@SelectedRealEstateID"
-    CurrentUser="@currentUser"
-    CurrentRealEstate="@currentRealEstate"
-    OnDataChanged = "RealEstateDataHasChanged"
-    OnDeleteRealEstate="OnModalRealEstateDeleteRequest">
+                          SelectedRealEstateID="@SelectedRealEstateID"
+                          CurrentUser="@currentUser"
+                          CurrentRealEstate="@currentRealEstate"
+                          OnDataChanged="RealEstateDataHasChanged"
+                          OnDeleteRealEstate="OnModalRealEstateDeleteRequest"
+                          OnUnnassignedDeviceListDataChanged="HandleUnnassignedDevicesListDataChanged">
     </ModalReassignDevices>
 </div>
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
-    CurrentDeviceToDelete="@currentDevice"
-    onDataChanged="DeviceDataHasChanged"
-    eventCallback="OnModalDeleteSuccess">
+                                CurrentDeviceToDelete="@currentDevice"
+                                onDataChanged="DeviceDataHasChanged"
+                                eventCallback="OnModalDeleteSuccess"
+                                OnUnnassignedDeviceListDataChanged = "HandleUnnassignedDevicesListDataChanged">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
     <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
-    ObjectName="@_deletedObjectName"
-    onDataChanged="DeviceDataHasChanged">
+                           ObjectName="@_deletedObjectName"
+                           onDataChanged="DeviceDataHasChanged">
     </ModalDeleteSuccessful>
 </div>
 <div>
@@ -320,7 +322,9 @@
     private UserProfile? currentUser { get; set; }
     private IQueryable<DeviceProfile>? _devicesListAsQueryable;
     private IQueryable<RealEstate>? _realEstatesListAsQueryable;
-    private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable;
+    // Initialize with an empty list so the UI doesn't crash while loading
+    private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable = Enumerable.Empty<DeviceProfile>().AsQueryable();
+    public Action? UnassignedDevicesListChanged;
 
     private async Task HandleQrCode(int _chosedDeviceID)
     {
@@ -372,8 +376,14 @@
     private async Task OnShowModalAddNewDevice()
     {
         currentUser = DataService.CurrentUserWithAllData;
-        currentDevice = new();
+        currentDevice = new DeviceProfile
+            {
+                DeviceID = 0,
+                DeviceName = "",
+                DeviceType = DeviceType.Other
+            };
         currentChosedRealEsate.RealEstateID = 0;
+        StateHasChanged();
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
     }
 
@@ -392,7 +402,7 @@
         string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
-    
+
     private async Task OnModalDeleteSuccess()
     {
         await refModalDeleteSuccess.OnShowModalClick();
@@ -418,7 +428,7 @@
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
         RealEstate? targetRealEstate = DataService.GetRealEstate(realEstateID);
-        if(targetRealEstate.RealEstateID != 0)
+        if (targetRealEstate.RealEstateID != 0)
         {
             currentRealEstate = targetRealEstate;
             currentRealEstateAddress = currentRealEstate.Address;
@@ -476,11 +486,31 @@
         StateHasChanged();
     }
 
+    private async Task HandleUnnassignedDevicesListDataChanged()
+    {
+        // Re-fetch the unassigned list so .Any() becomes false
+        var unassigned = await DataService.GetUserWithUnassignedDevicesListAsync();
+        _unassignedDevicesListAsQueryable = unassigned.AsQueryable();
+
+        // Re-fetch the main real estate data if needed
+        // currentUser = await DataService.GetFullUserAsync();
+
+        StateHasChanged();
+    }
+
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
-        currentDevice = DataService.GetDeviceById(deviceId);
-        _deletedObjectName = currentDevice.DeviceName;
-        await refModalConfirmDeviceDeletion.OnShowModalClick();
+        var deviceTarget = _unassignedDevicesListAsQueryable.FirstOrDefault(d => d.DeviceID == deviceId);
+        if (deviceTarget != null)
+        {
+            currentDevice = deviceTarget;
+            _deletedObjectName = currentDevice.DeviceName;
+            StateHasChanged();
+        }
+        if (refModalConfirmDeviceDeletion != null)
+        {
+            await refModalConfirmDeviceDeletion.OnShowModalClick();
+        }
     }
 
     private async Task OnShowModalEditDeviceClick(int deviceID)

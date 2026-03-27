@@ -20,13 +20,13 @@
     public RenderFragment? ChildContent { get; set; }
 
     public TabPage? ActivePage { get; set; }
-    List<TabPage> Pages = new List<TabPage>();
+    public List<TabPage> Pages = new List<TabPage>();
 
     [Parameter]
     public int? TabID { get; set; }
 
 
-    internal void AddPage(TabPage tabPage)
+    public void AddPage(TabPage tabPage)
     {
         Pages.Add(tabPage);
         if (Pages.Count == 1)
@@ -57,6 +57,22 @@
             }
         }
         StateHasChanged();
+    }
+
+    public void RemovePage(TabPage tabPage)
+    {
+        if (Pages.Contains(tabPage))
+        {
+            Pages.Remove(tabPage);
+
+            // If we deleted the active page, fall back to the first available tab
+            if (ActivePage == tabPage)
+            {
+                ActivePage = Pages.FirstOrDefault();
+            }
+
+            StateHasChanged();
+        }
     }
 
     string GetButtonClass(TabPage page)

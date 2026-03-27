@@ -1,6 +1,7 @@
 ﻿@using BlazorBootstrap
 @using MyHomeBlazorApp.Pages
 @inject BlazorData.DataService DataService;
+@implements IDisposable
 
 @if (Parent.ActivePage == this)
 {
@@ -10,9 +11,8 @@
 
 
 @code {
-
     [CascadingParameter]
-    private TabControl Parent { get; set; }
+    private TabControl Parent { get; set; } = default!;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
@@ -23,27 +23,34 @@
     public bool ListHasBeenChanged { get; set; } = false;
     // private List<DeviceProfile>? _test { get; set; } = new();
     public Details details { get; set; } = default!;
+    
 
-    protected override void OnAfterRender(bool firstRender)
+    public List<TabPage> Pages { get; set; } = new List<TabPage>();
+
+    public TabPage? ActivePage { get; set; }
+
+    public void AddPage(TabPage page)
     {
-        if (firstRender)
+        if (!Pages.Contains(page))
         {
-            if(details!=null)
-            details.UnassignedDevicesListChanged += UnassignedListChanged;
-            // if (ListHasBeenChanged)
-            // {
-            //     StateHasChanged();
-            //     OnInitialized();
+            Pages.Add(page);
+
+            // If this is the first page added, make it active
+            if (ActivePage == null)
+            {
+                ActivePage = page;
+            }
+            StateHasChanged();
         }
-        base.OnAfterRender(firstRender);
     }
 
-    private void UnassignedListChanged()
+    public void Dispose()
     {
-        ListHasBeenChanged = true;
-        StateHasChanged();
-        OnInitialized();
-    }
+        // This runs automatically when the @if condition in the parent
+        // removes this component from the UI.
+        Parent.RemovePage(this);
+        
+    }    
 
     protected override void OnInitialized()
     {

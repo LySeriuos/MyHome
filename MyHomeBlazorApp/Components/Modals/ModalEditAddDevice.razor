@@ -17,7 +17,7 @@
     }
 
 </style>
-<Modal @ref="refModalEditAddDevice" Title="Edit Device Details">
+<Modal @ref="refModalEditAddDevice"  Title="Edit Device Details">
     <BodyTemplate>
         @* <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext"/> *@
         <EditForm Model="@CurrentDevice" OnSubmit="DeviceFormSubmitted">
@@ -179,7 +179,7 @@
 
     void Init()
     {
-        editContext = new(CurrentDevice);
+        // // editContext = new(CurrentDevice);
         _unassignedDevicesListAsQueryable = DataService.CurrentUserWithAllData.UnassignedDevicesList.AsQueryable();
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenBy(d => d.DeviceID).AsQueryable();
     }
@@ -235,17 +235,17 @@
         // 2. Scenario A: BRAND NEW DEVICE (ID is 0)
         if (CurrentDevice.DeviceID == 0)
         {
-            DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
+          await DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
         }
         // 3. Scenario B: EXISTING DEVICE, BUT UNASSIGNED
         else if (!deviceIsAssignedToRealEstate)
         {
-            DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, selectedTargetRealEstateId, CurrentDevice);
+           await DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, selectedTargetRealEstateId, CurrentDevice);
         }
         // 4. Scenario C: EXISTING DEVICE, MOVING TO NEW REAL ESTATE
         else
         {
-            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, selectedTargetRealEstateId);
+           await DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, selectedTargetRealEstateId);
         }
 
         // 5. Save and Cleanup

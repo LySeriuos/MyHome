@@ -7,6 +7,7 @@ using My_Home;
 using MyHome;
 using MyHome.Models;
 using sun.invoke.empty;
+using sun.security.jca;
 using System.Xml;
 //using System.Data.Entity;
 
@@ -32,10 +33,10 @@ namespace MyHomeBlazorApp.BlazorData
         public UserProfile CurrentUserWithAllData => _currentUserWithAllData ?? new UserProfile();
         public MyHomeBlazorAppUser? CurrentAppUser { get; set; }
         public List<DeviceProfile>? Devices => _currentUserWithAllData.GetAllDevices();
-        public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();        
+        public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
         public DeviceProfile? FirstExpiringDevice { get; set; } = new DeviceProfile();
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
-        public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();        
+        public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
 
 
@@ -154,13 +155,13 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>RealEstate object</returns>
         public RealEstate? GetRealEstate(int realEstateID)
         {
-            if(_currentUserWithAllData == null || _currentUserWithAllData.RealEstates == null)
+            if (_currentUserWithAllData == null || _currentUserWithAllData.RealEstates == null)
             {
                 return new RealEstate();
             }
 
             var foundRealEstate = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateID);
-            return foundRealEstate ?? new RealEstate();            
+            return foundRealEstate ?? new RealEstate();
         }
 
         /// <summary>
@@ -192,11 +193,11 @@ namespace MyHomeBlazorApp.BlazorData
         public int GetRealEstateByDeviceID(int deviceId)
         {
             if (CurrentUserWithAllData.RealEstates == null) return 0;
-            
+
             foreach (var realEstate in CurrentUserWithAllData.RealEstates)
             {
                 foreach (var device in realEstate.DevicesProfiles)
-                {                    
+                {
                     if (device.DeviceID == deviceId)
                     {
                         return realEstate.RealEstateID;
@@ -303,15 +304,24 @@ namespace MyHomeBlazorApp.BlazorData
         /// </summary>
         /// <param name="realEstateID">Devices list will be moved into RealEstate by realEstateID</param>
         /// <param name="currentRealEstate">RealEstate to move from(delete) devices list</param>
-        public async Task MoveDeviceListToOtherRealEstate(int realEstateID, RealEstate currentRealEstate)
+        public async Task MoveDevicesListToOtherRealEstate(int targetRealEstateId, RealEstate currentRealEstate)
         {
-            List<DeviceProfile> deviceProfilesMoveToRealEstate = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateID).DevicesProfiles;
+            RealEstate? targetRealEstate = _currentUserWithAllData.RealEstates
+        .FirstOrDefault(r => r.RealEstateID == targetRealEstateId);
+            if (targetRealEstate == null || currentRealEstate == null)
+            {
+                return;
+            }
+
+            List<DeviceProfile>? devicesToMove = currentRealEstate.DevicesProfiles.ToList();
+
+            
             foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
             {
-                deviceProfilesMoveToRealEstate.Add(deviceProfile);
+                targetRealEstate.DevicesProfiles.Add(deviceProfile);
                 currentRealEstate.DevicesProfiles.Remove(deviceProfile);
             }
-            await _dbcontext.SaveChangesAsync();
+            await UpdateObjectInDB();
         }
 
         /// <summary>
@@ -320,14 +330,26 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="deviceToMoveID">DeviceProfile ID which will be moved </param>
         /// <param name="_currentUserWithAllData">Indentified user</param>
         /// <param name="realEstateIdToAddDevice">Real Estate ID to move in Device by deviceToMoveID</param>
-        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, UserProfile _currentUserWithAllData, int realEstateIdToAddDevice)
+        public async Task MoveDeviceToOtherRealEstate(int deviceToMoveID, int realEstateIdToAddDevice)
         {
             int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
-            DeviceProfile deviceToMove = Devices.FirstOrDefault(d => d.DeviceID == deviceToMoveID);
-            RealEstate realEstateToMoveFrom = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateIdToMoveFrom);
-            RealEstate realEstateToAddDevice = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateIdToAddDevice);
-            realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
-            realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
+            DeviceProfile? deviceToMove = _currentUserWithAllData.RealEstates
+        .SelectMany(r => r.DevicesProfiles)
+        .FirstOrDefault(d => d.DeviceID == deviceToMoveID);
+
+            RealEstate? realEstateToMoveFrom = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateIdToMoveFrom);
+            RealEstate? realEstateToAddDevice = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateIdToAddDevice);
+            
+            if (deviceToMove != null && realEstateToMoveFrom != null && realEstateToAddDevice != null)
+            {
+                realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
+                realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
+            }
+            else
+            {
+                return;
+            }
+            await UpdateObjectInDB();
         }
 
         /// <summary>
@@ -476,14 +498,16 @@ namespace MyHomeBlazorApp.BlazorData
         /// Moves devices to a separate list where devices are not assigned to the real estate. This can be done later.
         /// </summary>
         /// <param name="currentRealEstate">The Real Estate to be Removed</param>
-        public async void LeaveDevicesUnassigned(RealEstate currentRealEstate)
+        public async Task LeaveDevicesUnassigned(RealEstate currentRealEstate)
         {
-            List<DeviceProfile> devicesToDelete = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == currentRealEstate.RealEstateID).DevicesProfiles;
+            RealEstate realEstateInDB = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == currentRealEstate.RealEstateID);
+            if (realEstateInDB == null) return;
 
-            foreach (DeviceProfile deviceProfile in devicesToDelete.ToList())
+            List<DeviceProfile> devicesToMove = realEstateInDB.DevicesProfiles.ToList();
+            foreach (DeviceProfile deviceProfile in devicesToMove)
             {
                 _currentUserWithAllData.UnassignedDevicesList.Add(deviceProfile);
-                currentRealEstate.DevicesProfiles.Remove(deviceProfile);
+                realEstateInDB.DevicesProfiles.Remove(deviceProfile);
             }
             await UpdateObjectInDB();
         }

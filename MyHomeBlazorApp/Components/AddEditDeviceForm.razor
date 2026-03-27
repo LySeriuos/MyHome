@@ -266,7 +266,7 @@
         }
         else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == true)
         {
-            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, CurrentUser, _chosedRealEstateID);
+            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, _chosedRealEstateID);
         }
 
         DataService.UpdateObjectInDB();
