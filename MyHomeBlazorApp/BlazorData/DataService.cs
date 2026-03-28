@@ -32,9 +32,9 @@ namespace MyHomeBlazorApp.BlazorData
         private UserProfile _currentUserWithAllData;
         public UserProfile CurrentUserWithAllData => _currentUserWithAllData ?? new UserProfile();
         public MyHomeBlazorAppUser? CurrentAppUser { get; set; }
-        public List<DeviceProfile>? Devices => _currentUserWithAllData.GetAllDevices();
-        public List<DeviceProfile>? ExpiringDevices { get; set; } = new List<DeviceProfile>();
-        public DeviceProfile? FirstExpiringDevice { get; set; } = new DeviceProfile();
+        public List<DeviceProfile>? Devices => _currentUserWithAllData?.GetAllDevices();
+        public List<DeviceProfile>? expiringDeviceDevices { get; set; } = new List<DeviceProfile>();
+        public DeviceProfile? FirstexpiringDeviceDevice { get; set; } = new DeviceProfile();
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
@@ -81,16 +81,16 @@ namespace MyHomeBlazorApp.BlazorData
 
             if (_currentUserWithAllData != null)
             {
-                ExpiringDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithAllData, 180);
-                FirstExpiringDevice = FirstExpiringWarranty();
+                expiringDeviceDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithAllData, 180);
+                FirstexpiringDeviceDevice = FirstexpiringDeviceWarranty();
                 DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithAllData);
             }
             else
             {
                 // "Else" Case: Reset these to empty states so the UI doesn't show old data
-                ExpiringDevices = new List<DeviceProfile>();
+                expiringDeviceDevices = new List<DeviceProfile>();
                 DevicesWarranties = new List<DeviceWarranty>();
-                FirstExpiringDevice = null;
+                FirstexpiringDeviceDevice = null;
             }
         }
         public async Task LoadUserWithAllDataAsync()
@@ -292,7 +292,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// Getting last item in the sequence
         /// </summary>
         /// <returns>Returns last added device in the list</returns>
-        public DeviceProfile LastAddedDevice()
+        public DeviceProfile? LastAddedDevice()
         {
             List<DeviceProfile>? devices = Devices;
             DeviceProfile? device = devices.LastOrDefault();
@@ -437,13 +437,13 @@ namespace MyHomeBlazorApp.BlazorData
         /// <summary>
         /// Method to get a device with closest expirig date to the actual date 
         /// </summary>
-        /// <returns>Expiring device profile</returns>
-        public DeviceProfile FirstExpiringWarranty()
+        /// <returns>expiringDevice device profile</returns>
+        public DeviceProfile FirstexpiringDeviceWarranty()
         {
             List<DeviceProfile>? devicesList = _currentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
             //List<DeviceWarranty> warranties = DevicesWarranties;
             List<DeviceProfile> validWarrantiesList = new();
-            DeviceProfile firstExpiringDevice = new();
+            DeviceProfile firstexpiringDeviceDevice = new();
             var counting = 0;
             DateTime date = DateTime.Now;
 
@@ -458,10 +458,10 @@ namespace MyHomeBlazorApp.BlazorData
             if (validWarrantiesList.Count != 0)
             {
                 var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
-                firstExpiringDevice = sortedList.First();
+                firstexpiringDeviceDevice = sortedList.First();
             }
 
-            return firstExpiringDevice;
+            return firstexpiringDeviceDevice;
         }
 
         /// <summary>
