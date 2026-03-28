@@ -220,7 +220,7 @@ namespace MyHomeBlazorApp.BlazorData
             }
             else
             {
-                lastRealEstate = _currentUserWithAllData.RealEstates.Last();
+                lastRealEstate = _currentUserWithAllData.RealEstates.LastOrDefault();
             }
             return lastRealEstate;
         }
@@ -255,26 +255,34 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns></returns>
         public async Task AddNewDeviceToDataBase(DeviceProfile deviceToAdd, int chosedRealEstateID)
         {
-            deviceToAdd.DeviceWarranty = new();
-            deviceToAdd.DeviceWarranty.Shop = new();
-            deviceToAdd.DeviceWarranty.Shop.Address = new();
-            RealEstate chosedRealEstate = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == chosedRealEstateID);
+            deviceToAdd.DeviceWarranty ??= new();
+            deviceToAdd.DeviceWarranty.Shop ??= new();
+            deviceToAdd.DeviceWarranty.Shop.Address ??= new();
 
-            if (chosedRealEstate == null)
+            // if user has not created any real estates so the device will be added to unnassigned list
+            if (chosedRealEstateID == 0)
             {
-                throw new Exception("Selected Real Estate not found.");
+                _currentUserWithAllData.UnassignedDevicesList.Add(deviceToAdd);
             }
-
-            if (_currentUserWithAllData.GetAllDevices().Any(d => d.DeviceID == deviceToAdd.DeviceID))
-            {   //Should twrow an error that device with this ID already
-                //throw new Exception("Selected Real Estate not found.");
-                return;
-            }
+            // if user has real estate, device will be added to chosed real estate
             else
             {
+                RealEstate? chosedRealEstate = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == chosedRealEstateID);
+
+                if (chosedRealEstate == null)
+                {
+                    throw new Exception("Selected Real Estate not found.");
+                }
+
+                //if (_currentUserWithAllData.GetAllDevices().Any(d => d.DeviceID == deviceToAdd.DeviceID))
+                //{   //Should twrow an error that device with this ID already
+                //    //throw new Exception("Selected Real Estate not found.");
+                //    return;
+                //}
+
                 chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
-                await _dbcontext.SaveChangesAsync();
             }
+            
         }
 
         /// <summary>
@@ -315,7 +323,7 @@ namespace MyHomeBlazorApp.BlazorData
 
             List<DeviceProfile>? devicesToMove = currentRealEstate.DevicesProfiles.ToList();
 
-            
+
             foreach (DeviceProfile deviceProfile in currentRealEstate.DevicesProfiles.ToList())
             {
                 targetRealEstate.DevicesProfiles.Add(deviceProfile);
@@ -339,16 +347,30 @@ namespace MyHomeBlazorApp.BlazorData
 
             RealEstate? realEstateToMoveFrom = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateIdToMoveFrom);
             RealEstate? realEstateToAddDevice = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateIdToAddDevice);
-            
-            if (deviceToMove != null && realEstateToMoveFrom != null && realEstateToAddDevice != null)
+            if (realEstateToMoveFrom == null) return;
+            if (realEstateToAddDevice != null)
             {
                 realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
                 realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
+            }
+            await Task.CompletedTask;
+        }
+
+        public async Task MoveDeviceToUnnassignedList(DeviceProfile targetDevice)
+        {
+            if (targetDevice != null || targetDevice.DeviceID != 0)
+            {
+                int realEstateIdToMoveFrom = GetRealEstateByDeviceID(targetDevice.DeviceID);
+                RealEstate? realEstateToMoveFrom = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateIdToMoveFrom);
+                CurrentUserWithAllData.UnassignedDevicesList.Add(targetDevice);
+                realEstateToMoveFrom.DevicesProfiles.Remove(targetDevice);
+
             }
             else
             {
                 return;
             }
+
             await UpdateObjectInDB();
         }
 
@@ -361,7 +383,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns></returns>
         public async Task MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUserWithAllData, int realEstateToAddDevice, DeviceProfile currentDevice)
         {
-            _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
+            _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
             _currentUserWithAllData.UnassignedDevicesList.Remove(currentDevice);
         }
 
@@ -458,7 +480,7 @@ namespace MyHomeBlazorApp.BlazorData
             if (validWarrantiesList.Count != 0)
             {
                 var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
-                firstexpiringDeviceDevice = sortedList.First();
+                firstexpiringDeviceDevice = sortedList.FirstOrDefault();
             }
 
             return firstexpiringDeviceDevice;
@@ -636,7 +658,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task UpdateObjectInDB()
         {
-            _dbcontext.UpdateRange(CurrentAppUser);
+           _dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
         }
 

@@ -206,7 +206,7 @@
     {
         if (currentRealEstate.RealEstateID != 0 && SelectedRealEstateID > 0)
         {
-            DataService.MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
+            await DataService.MoveDevicesListToOtherRealEstate(SelectedRealEstateID, currentRealEstate);
             await OnUnnassignedDeviceListDataChanged.InvokeAsync();
         }
         else
@@ -222,7 +222,7 @@
     {
         if (currentRealEstate != null || currentRealEstate.RealEstateID != 0)
         {
-            DataService.LeaveDevicesUnassigned(currentRealEstate);
+            await DataService.LeaveDevicesUnassigned(currentRealEstate);
             await OnUnnassignedDeviceListDataChanged.InvokeAsync();
         }
         else

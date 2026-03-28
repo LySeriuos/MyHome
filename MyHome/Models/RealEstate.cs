@@ -10,7 +10,7 @@ namespace MyHome.Models
     public class RealEstate
     {
         
-        private int _realEstateID = new();
+        private int _realEstateID;
         [Key]
         public int RealEstateID
         {

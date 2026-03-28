@@ -3,7 +3,7 @@
 @using MyHome.Models
 
 
-@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.First().DeviceID)
+@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.FirstOrDefault().DeviceID)
 {
     <Button style="margin:5px" Class="buttonsNextPreviuos" @onclick="OnModalDevicePreviuos">Previuos</Button>
 }
@@ -12,7 +12,7 @@ else
     <Button style="margin:5px" Class="buttonsNextPreviuos" Disabled @onclick="OnModalDevicePreviuos">Previuos</Button>
 }
 
-@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.Last().DeviceID)
+@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.LastOrDefault().DeviceID)
 {
     <Button style="margin:5px" Class="buttonsNextPreviuos" @onclick="OnModalDeviceNext">Next</Button>
 }

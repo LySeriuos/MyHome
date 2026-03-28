@@ -39,7 +39,7 @@
                 <div class="left-buttons">
                     @if (CurrentRealEstate.RealEstateID != 0)
                     {
-                        @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.First().RealEstateID && CurrentRealEstate.RealEstateID != 0)
+                        @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.FirstOrDefault().RealEstateID && CurrentRealEstate.RealEstateID != 0)
                         {
                             <ButtonPreviuosNext ButtonEvent="OnModalRealEstatePreviuos" ButtonName="Previuos"  />
                         }
@@ -47,7 +47,7 @@
                         {
                             <ButtonPreviuosNext ButtonEvent="OnModalRealEstatePreviuos" ButtonName="Previuos" Disabled="true" />
                         }
-                        @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.Last().RealEstateID && CurrentRealEstate.RealEstateID != 0)
+                        @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.LastOrDefault().RealEstateID && CurrentRealEstate.RealEstateID != 0)
                         {
                             <ButtonPreviuosNext ButtonEvent="OnModalRealEstateNext" ButtonName="Next" />
                         }
