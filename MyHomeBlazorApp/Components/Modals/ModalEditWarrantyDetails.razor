@@ -21,6 +21,15 @@
 
 <Modal @ref="_refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
+        @if( CurrentDevice == null)
+            {
+                <div class="d-flex justify-content-center align-items-center" style="height:100vh;">
+                    <Spinner Color="SpinnerColor.Primary" Size="SpinnerSize.Large" />
+                    <span class="ms-3">Loading Warranty...</span>
+                </div>
+            }
+            else
+            {
         <EditForm Model="@CurrentDevice" OnSubmit="WarrantyDetailsFormSubmitted">
             <div class="form-group row align-items-center">
                 <label for="devicePurchaseDate" class="col-sm-6 col-form-label">Purchase Date</label>
@@ -79,6 +88,7 @@
                 </div>
             </div>
         </EditForm>
+        }
         @if (errors.Count > 0)
         {
             <h2>Errors</h2>
