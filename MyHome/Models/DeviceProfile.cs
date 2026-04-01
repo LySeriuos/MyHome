@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -92,6 +93,9 @@ namespace MyHome.Models
             get { return _deviceWarranty; }
             set { _deviceWarranty = value; }
         }
+
+        [NotMapped] // Entity Framework will not try to save this to a table"
+        public string TempRealEstateName { get; set; } = "Unassigned";
 
         public override string ToString()
         {

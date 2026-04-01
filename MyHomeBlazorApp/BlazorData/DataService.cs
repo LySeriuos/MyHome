@@ -100,18 +100,21 @@ namespace MyHomeBlazorApp.BlazorData
 
             // The "Master Query": One trip to the DB for everything
             var fullUser = await _dbcontext.Users
-                .Include(u => u.UserProfile)
-                    .ThenInclude(p => p.UnassignedDevicesList)
-                .Include(u => u.UserProfile)
-                    .ThenInclude(p => p.RealEstates)
-                        .ThenInclude(r => r.Address)
-                .Include(u => u.UserProfile)
-                    .ThenInclude(p => p.RealEstates)
-                        .ThenInclude(r => r.DevicesProfiles)
-                            .ThenInclude(d => d.DeviceWarranty)
-                                .ThenInclude(w => w.Shop)
-                                    .ThenInclude(s => s.Address)
-                .FirstOrDefaultAsync(u => u.Id == user.Id);
+    .Include(u => u.UserProfile)
+        .ThenInclude(p => p.UnassignedDevicesList)
+            .ThenInclude(d => d.DeviceWarranty)
+                .ThenInclude(w => w.Shop)
+                    .ThenInclude(s => s.Address)
+    .Include(u => u.UserProfile)
+        .ThenInclude(p => p.RealEstates)
+            .ThenInclude(r => r.Address)
+    .Include(u => u.UserProfile)
+        .ThenInclude(p => p.RealEstates)
+            .ThenInclude(r => r.DevicesProfiles)
+                .ThenInclude(d => d.DeviceWarranty)
+                    .ThenInclude(w => w.Shop)
+                        .ThenInclude(s => s.Address)
+    .FirstOrDefaultAsync(u => u.Id == user.Id);
 
             if (fullUser != null)
             {
@@ -258,7 +261,7 @@ namespace MyHomeBlazorApp.BlazorData
             deviceToAdd.DeviceWarranty ??= new();
             deviceToAdd.DeviceWarranty.Shop ??= new();
             deviceToAdd.DeviceWarranty.Shop.Address ??= new();
-
+            deviceToAdd.TempRealEstateName = chosedRealEstateID.ToString();
             // if user has not created any real estates so the device will be added to unnassigned list
             if (chosedRealEstateID == 0)
             {
@@ -282,8 +285,38 @@ namespace MyHomeBlazorApp.BlazorData
 
                 chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
             }
-            
+
         }
+
+        public List<DeviceProfile> GetAllUserDevices()
+        {
+            // Get the raw lists
+            var assigned = _currentUserWithAllData.RealEstates
+                .SelectMany(re => re.DevicesProfiles).ToList();
+            var unassigned = _currentUserWithAllData.UnassignedDevicesList;
+
+            var allDevices = assigned.Concat(unassigned).ToList();
+
+            // Loop through and add realEstate ID or unnassigned based on if devices is assigned or not to the Real Estate
+            foreach (var device in allDevices)
+            {
+                int realEstateId = GetRealEstateByDeviceID(device.DeviceID);
+
+                if (realEstateId != 0)
+                {   // combining real estate name and the id 
+                    var realEstate = GetRealEstate(realEstateId);
+                    device.TempRealEstateName = realEstate?.RealEstateName + " / " + realEstateId;
+                }
+                else
+                {
+                    // if real estate is not assigned it gives unnassigned and id 0
+                    device.TempRealEstateName = "Unassigned / 0";
+                }
+            }
+
+            return allDevices;
+        }
+
 
         /// <summary>
         /// Method to remove device from DB
@@ -658,7 +691,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task UpdateObjectInDB()
         {
-           _dbcontext.UpdateRange(CurrentAppUser);
+            _dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
         }
 

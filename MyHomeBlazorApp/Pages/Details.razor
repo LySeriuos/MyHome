@@ -94,11 +94,8 @@
                                     <Button Class="btn btn-outline-info" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
                                 </div>
                             </TemplateColumn>
-                            <TemplateColumn Title="Real Estate" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
-                                @if (DataService.GetRealEstateByDeviceID(context.DeviceID) != 0)
-                                {
-                                    <span>@DataService.GetRealEstate(DataService.GetRealEstateByDeviceID(context.DeviceID)).RealEstateName</span>
-                                }
+                            <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
+                                <span>@context.TempRealEstateName</span>
                             </TemplateColumn>
                             <PropertyColumn Title="Device ID" Property="@(d=>d.DeviceID)" Sortable="true" />
                             <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
@@ -125,8 +122,8 @@
                                     <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                                 </div>
                             </TemplateColumn>
-                            <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
-                                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
+                            <TemplateColumn Title="Real Estate/ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
+                                <span>@context.TempRealEstateName</span>
                             </TemplateColumn>
                             @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
                             <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
@@ -165,27 +162,32 @@
                         <div class="">
                             <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your device purchase shop data</div>
                         </div>
-                        <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
-                            <TemplateColumn>
-                                <div>
-                                    <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
-                                </div>
-                            </TemplateColumn>
-                            <TemplateColumn Title="Real Estate ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => DataService.GetRealEstateByDeviceID(d.DeviceID)).ThenAscending(d=>d.DeviceID)">
-                                <span>@DataService.GetRealEstateByDeviceID(context.DeviceID)</span>
-                            </TemplateColumn>
-                            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
-                            <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
-                            <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
-                            <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
-                            <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
-                            <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
-                            <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
-                            <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
-                            <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
-                        </QuickGrid>
+                        @if (_devicesListAsQueryable != null)
+                        {
+                            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
+                                <TemplateColumn>
+                                    <div>
+                                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                                    </div>
+                                </TemplateColumn>
+                                <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
+                                    <span>@context.TempRealEstateName</span>
+                                </TemplateColumn>
+                                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                                <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
+                                <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
+                                <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
+                                <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
+                                <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
+                                <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
+                                <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
+                                <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
+                                
+                            </QuickGrid>
+                        }
                     </div>
                 </TabPage>
+
                 @if (_unassignedDevicesListAsQueryable != null && _unassignedDevicesListAsQueryable.AsQueryable().Any())
                 {
                     <TabPage Text="Unassigned Devices">
@@ -271,7 +273,7 @@
                                 CurrentDeviceToDelete="@currentDevice"
                                 onDataChanged="DeviceDataHasChanged"
                                 eventCallback="OnModalDeleteSuccess"
-                                OnUnnassignedDeviceListDataChanged = "HandleUnnassignedDevicesListDataChanged">
+                                OnUnnassignedDeviceListDataChanged="HandleUnnassignedDevicesListDataChanged">
     </ModalConfirmDeviceDeletion>
 </div>
 <div>
@@ -361,6 +363,7 @@
 
     // // [Inject]
     // // public AuthenticationStateProvider AuthenticationState { get; set; }
+
 
 
 
@@ -482,7 +485,9 @@
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         var unassignedList = await DataService.GetUserWithUnassignedDevicesListAsync();
+        var allDevicesList = DataService.GetAllUserDevices();
         _unassignedDevicesListAsQueryable = unassignedList.AsQueryable();
+        _devicesListAsQueryable = allDevicesList.AsQueryable();
         StateHasChanged();
     }
 
@@ -573,6 +578,13 @@
 
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         DataService.CheckIfFileExsist();
+        // 1. Call the method to get the combined and "stamped" list
+        List<DeviceProfile> allDevices = DataService.GetAllUserDevices();
+
+        // 2. Convert it to IQueryable so QuickGrid sorting works perfectly!
+        _devicesListAsQueryable = allDevices.AsQueryable();
+
+
         base.OnInitialized();
     }
 
