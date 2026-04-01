@@ -54,9 +54,9 @@ namespace MyHome.Models
         }
 
         [Required]
-        private DateTime _purchaseDate = new DateTime();
+        private DateTime _purchaseDate = DateTime.Today;
 
-        public DateTime PurchaseDate
+        public DateTime PurchaseDate 
         {
             get { return _purchaseDate; }
             set { _purchaseDate = value; }
