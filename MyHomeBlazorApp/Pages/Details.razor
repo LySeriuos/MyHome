@@ -187,8 +187,8 @@
                         }
                     </div>
                 </TabPage>
-
-                @if (_unassignedDevicesListAsQueryable != null && _unassignedDevicesListAsQueryable.AsQueryable().Any())
+                @* this will be commented out because of changes structure. *@
+                @* @if (_unassignedDevicesListAsQueryable != null && _unassignedDevicesListAsQueryable.AsQueryable().Any())
                 {
                     <TabPage Text="Unassigned Devices">
                         <div class="grid">
@@ -213,7 +213,7 @@
                             </QuickGrid>
                         </div>
                     </TabPage>
-                }
+                } *@
             </TabControl>
         </div>
     </section>
