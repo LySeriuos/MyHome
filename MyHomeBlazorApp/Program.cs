@@ -102,6 +102,23 @@ namespace MyHomeBlazorApp
             app.MapRazorComponents<App>()
                .AddInteractiveServerRenderMode();
             app.MapAdditionalIdentityEndpoints();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<MyHomeBlazorAppContext>();
+                    // This command creates the database file and all tables (AspNetUsers, etc.)
+                    context.Database.Migrate();
+                    Console.WriteLine("Database migration applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred during migration: {ex.Message}");
+                }
+            }
+
             app.Run();
         }
     }
