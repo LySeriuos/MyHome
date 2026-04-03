@@ -1,4 +1,5 @@
 ﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -6,7 +7,7 @@ using MyHomeBlazorApp.BlazorData;
 
 namespace WebPWrecover.Services;
 
-public class EmailSender : IEmailSender
+public class EmailSender : IEmailSender, IEmailSender<MyHomeBlazorAppUser>
 {
     private readonly ILogger _logger;
 
@@ -19,11 +20,25 @@ public class EmailSender : IEmailSender
 
     public AuthMessageSenderOptions Options { get; } //Set with Secret Manager.
 
+   
+
+    // --- Identity Specific Methods ---
+    public async Task SendConfirmationLinkAsync(MyHomeBlazorAppUser user, string email, string confirmationLink) =>
+        await SendEmailAsync(email, "Confirm your email", $"Please confirm your account by clicking here: {confirmationLink}");
+
+    public async Task SendPasswordResetLinkAsync(MyHomeBlazorAppUser user, string email, string resetLink) =>
+        await SendEmailAsync(email, "Reset your password", $"Please reset your password by clicking here: {resetLink}");
+
+    public async Task SendPasswordResetCodeAsync(MyHomeBlazorAppUser user, string email, string resetCode) =>
+        await SendEmailAsync(email, "Reset your password", $"Your reset code is: {resetCode}");
+    // ---------------------------------
+
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
         if (string.IsNullOrEmpty(Options.MyHomeGmailPassword))
         {
-            throw new Exception("Null MailSenderKey");
+            _logger.LogError("Null MailSenderKey - Gmail password not found in configuration.");
+            return;
         }
         await Execute(Options.MyHomeGmailPassword, subject, message, toEmail);
     }
@@ -48,19 +63,20 @@ public class EmailSender : IEmailSender
             builder.TextBody = message;
             msg.Body = builder.ToMessageBody();
 
-            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
             //if (!string.IsNullOrEmpty(username))
             //                    smtp.Authenticate(username, password);
             await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", apiKey);
             await smtp.SendAsync(msg);
-            msg.Dispose();
             await smtp.DisconnectAsync(true);
 
+            _logger.LogInformation($"Email to {toEmail} sent successfully!");
             return "Email sent successfully!";
         }
         catch (Exception ex)
         {
             {
+                _logger.LogError($"Email sending failed to {toEmail}. Error: {ex.Message}");
                 return $"Email sending failed. Error: {ex.Message}";
             }
         }

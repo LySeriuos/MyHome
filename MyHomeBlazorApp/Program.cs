@@ -63,7 +63,7 @@ namespace MyHomeBlazorApp
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazorBootstrap();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddTransient<IEmailSender<MyHomeBlazorAppUser>, EmailSender>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -7,9 +7,7 @@
 
     public class AuthMessageSenderOptions
     {
-        public string? GmailPassword { get; set; } = Environment.GetEnvironmentVariable("GmailPassword") ?? "Production";
-        public string? MyHomeGmailPassword { get; set; } = Environment.GetEnvironmentVariable("MyHomeGmailPassword") ?? "No Secret password";
-        public string? GmailSecretKey { get; set; } = Environment.GetEnvironmentVariable("GmailSecretKey") ?? "No Secret key";
+        public string? MyHomeGmailPassword { get; set; }
     }
 }
 
