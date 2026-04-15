@@ -50,4 +50,9 @@
     <Folder Include="Files\2\" />
 	<Folder Include="Files\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\images\account-user-avatar-svgrepo-com.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
