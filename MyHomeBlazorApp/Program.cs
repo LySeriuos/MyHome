@@ -49,13 +49,25 @@ namespace MyHomeBlazorApp
             })
     .AddIdentityCookies();
 
-            builder.Services.AddIdentityCore<MyHomeBlazorAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            });
+
+            builder.Services.AddIdentityCore<MyHomeBlazorAppUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false; 
+                options.SignIn.RequireConfirmedEmail = false;
+            })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MyHomeBlazorAppContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders()
                 .AddApiEndpoints();
-            
+
+
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
@@ -94,7 +106,7 @@ namespace MyHomeBlazorApp
 
             //      app.UseRouting();
             app.UseAuthorization();
-            //app.UseAuthentication();
+            app.UseAuthentication();
             //      app.MapControllers();
             //      app.MapBlazorHub();
             app.UseAntiforgery();
