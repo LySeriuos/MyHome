@@ -55,7 +55,7 @@
             DoubleCard="true">
                 <ChildContent2>
                     <CardTitle Class="text-center fw-bolder">
-                        Summary <Icon name="IconName.ListTask"></Icon>
+                        Summary <Icon Name=IconName.ListTask></Icon>
                     </CardTitle>
                     <CardText>
                         <ul>
@@ -116,8 +116,19 @@
         Input.PhoneNumber ??= phoneNumber;
 
         //Preloading data to the page. Without these got error 500 on the page
-        devicesCount = DataService.CurrentUserWithAllData.GetAllDevices().Count();
-        realEstatesCount = DataService.CurrentUserWithAllData.RealEstates.Count();
+        if (DataService.CurrentUserWithAllData != null)
+        {
+            var devices = DataService.CurrentUserWithAllData.GetAllDevices();
+            devicesCount = devices != null ? devices.Count() : 0;
+
+            var estates = DataService.CurrentUserWithAllData.RealEstates;
+            realEstatesCount = estates != null ? estates.Count() : 0;
+        }
+        else
+        {
+            devicesCount = 0;
+            realEstatesCount = 0;
+        }
     }
 
     private async Task OnValidSubmitAsync()
