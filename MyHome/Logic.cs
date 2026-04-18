@@ -158,36 +158,30 @@ namespace MyHome
         // Inside your Logic class
 
         public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
-        {
-            // 1. Use the SkiaSharp version of the generator
-            using var qrGenerator = new SkiaSharp.QrCode.QRCodeGenerator();
+{
+    // 1. & 2. Create the data (Now using STATIC call, no 'new' or 'using')
+    var qrCodeData = SkiaSharp.QrCode.QRCodeGenerator.CreateQrCode(generatedQrCodeLink, SkiaSharp.QrCode.ECCLevel.Q);
 
-            // 2. This creates the data in the format the renderer expects
-            var qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, SkiaSharp.QrCode.ECCLevel.Q);
+    // 3. Prepare the Canvas
+    var info = new SKImageInfo(512, 512);
+    using var surface = SKSurface.Create(info);
+    using var canvas = surface.Canvas;
 
-            // 3. Setup Renderer
-            using var renderer = new SkiaSharp.QrCode.QRCodeRenderer();
+    // 4. Render (Now using STATIC call, no 'new' or 'using')
+    var rect = new SKRect(0, 0, info.Width, info.Height);
+    SkiaSharp.QrCode.QRCodeRenderer.Render(canvas, rect, qrCodeData, SKColors.White, SKColors.Black);
 
-            // 4. Prepare the Canvas
-            var info = new SKImageInfo(512, 512);
-            using var surface = SKSurface.Create(info);
-            using var canvas = surface.Canvas;
+    // 5. Save the image
+    using var image = surface.Snapshot();
+    using var data = image.Encode(SKEncodedImageFormat.Png, 100);
 
-            // 5. Render
-            var rect = new SKRect(0, 0, info.Width, info.Height);
-            renderer.Render(canvas, rect, qrCodeData, SKColors.White, SKColors.Black);
+    var folder = Path.GetDirectoryName(savedQrCodeLink);
+    if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
+        Directory.CreateDirectory(folder);
 
-            // 6. Save (Same as before)
-            using var image = surface.Snapshot();
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-
-            var folder = Path.GetDirectoryName(savedQrCodeLink);
-            if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            using var stream = File.Open(savedQrCodeLink, FileMode.Create, FileAccess.Write);
-            data.SaveTo(stream);
-        }
+    using var stream = File.Open(savedQrCodeLink, FileMode.Create, FileAccess.Write);
+    data.SaveTo(stream);
+}
         
         
 
