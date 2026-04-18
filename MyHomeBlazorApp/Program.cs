@@ -106,9 +106,9 @@ namespace MyHomeBlazorApp
             });
 
             //      app.UseRouting();
-            app.UseAntiforgery();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAntiforgery();
             //      app.MapControllers();
             //      app.MapBlazorHub();
             app.MapIdentityApi<MyHomeBlazorAppUser>();
