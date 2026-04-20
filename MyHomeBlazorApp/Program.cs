@@ -53,8 +53,8 @@ namespace MyHomeBlazorApp
 
             builder.Services.AddIdentityCore<MyHomeBlazorAppUser>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = false; 
-                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedAccount = true; 
+                options.SignIn.RequireConfirmedEmail = true;
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MyHomeBlazorAppContext>()

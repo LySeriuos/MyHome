@@ -4,7 +4,8 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5067;http://*:5000"

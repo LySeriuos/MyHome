@@ -16,6 +16,17 @@ public class EmailSender : IEmailSender, IEmailSender<MyHomeBlazorAppUser>
     {
         Options = optionsAccessor.Value;
         _logger = logger;
+
+        if (string.IsNullOrEmpty(Options.MyHomeGmailPassword))
+        {
+            _logger.LogWarning("BOOTSTRAP: MyHomeGmailPassword is EMPTY or NULL.");
+        }
+        else
+        {
+            // Safety log: shows it exists without showing the value
+            _logger.LogInformation("BOOTSTRAP: MyHomeGmailPassword found (Length: {Length})",
+                Options.MyHomeGmailPassword.Length);
+        }
     }
 
     public AuthMessageSenderOptions Options { get; } //Set with Secret Manager.
@@ -40,6 +51,7 @@ public class EmailSender : IEmailSender, IEmailSender<MyHomeBlazorAppUser>
             _logger.LogError("Null MailSenderKey - Gmail password not found in configuration.");
             return;
         }
+        _logger.LogInformation("ATTEMPTING SEND: Using Gmail SMTP for {Email}...", toEmail);
         await Execute(Options.MyHomeGmailPassword, subject, message, toEmail);
     }
     // Todo: Add response to _logger from smtp client. Example:
