@@ -38,6 +38,7 @@ namespace MyHomeBlazorApp.BlazorData
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
+        public List<int> SelectedDeviceIdsToPrintQRCodes { get; set; } = new();
 
 
         #region User
@@ -265,7 +266,7 @@ namespace MyHomeBlazorApp.BlazorData
             // if user has not created any real estates so the device will be added to unnassigned list
             if (chosedRealEstateID == 0)
             {
-                _currentUserWithAllData.UnassignedDevicesList.Add(deviceToAdd);
+                await Task.Run(() => _currentUserWithAllData.UnassignedDevicesList.Add(deviceToAdd));
             }
             // if user has real estate, device will be added to chosed real estate
             else
@@ -283,7 +284,7 @@ namespace MyHomeBlazorApp.BlazorData
                 //    return;
                 //}
 
-                chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
+                await Task.Run(() => chosedRealEstate.DevicesProfiles.Add(deviceToAdd));
             }
 
         }
@@ -418,6 +419,24 @@ namespace MyHomeBlazorApp.BlazorData
         {
             _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
             _currentUserWithAllData.UnassignedDevicesList.Remove(currentDevice);
+        }
+
+        /// <summary>
+        /// Method to add device ID in the list of selected devices to print QR codes. This list will be used in the page to print QR codes for selected devices. If device ID is already in the list so it will not be added again.
+        /// </summary>
+        /// <param name="deviceId">Selected Device ID</param>
+        public void AddToPrintQueue(int deviceId)
+        {
+            if (!SelectedDeviceIdsToPrintQRCodes.Contains(deviceId))
+                SelectedDeviceIdsToPrintQRCodes.Add(deviceId);
+        }
+
+        /// <summary>
+        /// Method to clear the list of selected devices to print QR codes. This method will be used in the page to clear the list after printing QR codes for selected devices.
+        /// </summary>
+        public void ClearQueue()
+        {
+            SelectedDeviceIdsToPrintQRCodes.Clear();
         }
 
         /// <summary>
