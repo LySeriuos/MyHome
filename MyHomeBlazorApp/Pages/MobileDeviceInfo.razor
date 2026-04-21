@@ -48,10 +48,12 @@
 
     protected override void OnParametersSet()
     {
+        int userID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserID)));
+        int deviceID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedDeviceID)));
+        
         UserProfile loggedInUser = DataService.CurrentAppUser.UserProfile;
-
         // Check if the URL ID matches the Logged In User's ID
-        if (UserID != loggedInUser.UserID)
+        if (userID != loggedInUser.UserID)
         {
             message = "Access Denied: This is not your device.";
             return;
@@ -59,7 +61,7 @@
         else
         {
             _userProfile = loggedInUser;
-            _currentDevice = _userProfile.GetAllDevices().FirstOrDefault(d => d.DeviceID == DeviceID);
+            _currentDevice = _userProfile.GetAllDevices().FirstOrDefault(d => d.DeviceID == deviceID);
         }
     }
 
