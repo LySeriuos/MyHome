@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyHome;
+using MyHome.Models;
 using MyHomeBlazorApp.BlazorData;
 using QuestPDF.Fluent;
 
@@ -20,14 +22,26 @@ namespace MyHomeBlazorApp.Controllers
         [HttpGet("generate-qr")] // This makes the URL: /api/pdf/generate-qr
         public IActionResult GenerateQrPdf()
         {
-            // 1. Get the data from the service
-            // Hint: Use the "Fetch and Clear" logic we discussed so the list empties itself!
-            var deviceIds = _dataService.GetQueueAndClear();
+            // 1. Check if the user is logged in and get their profile          
 
-            if (deviceIds == null || !deviceIds.Any())
+            var userProfile = _dataService.CurrentAppUser?.UserProfile;
+
+            if (userProfile == null)
             {
-                return Content("No devices selected for printing.");
+                // Return a 401 Unauthorized or a simple message
+                return Unauthorized("You must be logged in to generate QR codes.");
             }
+
+            int currentUserId = userProfile.UserID;
+
+            // 2. Get the devices
+            List<DeviceProfile> devicesList = _dataService.GetQueueAndClear();
+
+            if (devicesList.Count != 0)
+            {
+                return Content("No devices selected.");
+            }
+
 
             // 2. Build the PDF in memory
             var document = QuestPDF.Fluent.Document.Create(container =>
@@ -46,17 +60,22 @@ namespace MyHomeBlazorApp.Controllers
                             columns.RelativeColumn();
                             columns.RelativeColumn();
                         });
+                        
 
                         // 2. Loop through your IDs
-                        foreach (var id in deviceIds)
+                        foreach (var device in devicesList)
                         {
                             // Every .Cell() call automatically moves to the next spot in the 3-col grid
                             table.Cell().Padding(5).Column(col =>
                             {
                                 // Future QR Image logic goes here
-                                // col.Item().Image(qrBytes); 
+                                byte[] qrBytes = Logic.GetQrCodeBytes(device.DeviceID, currentUserId);
+                                col.Item().Image(qrBytes);
 
-                                col.Item().AlignCenter().Text($"Device ID: {id}")
+                                col.Item().AlignCenter().Text($"Device ID: {device.DeviceID}")
+                                    .FontSize(10)
+                                    .SemiBold();
+                                col.Item().AlignCenter().Text($"{device.DeviceName}")
                                     .FontSize(10)
                                     .SemiBold();
                             });

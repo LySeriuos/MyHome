@@ -117,6 +117,28 @@ namespace MyHome
             devices.Remove(foundDevice);
             return deviceWasAdded;
         }
+        /// <summary>
+        /// New method to create Qr code as byte array to send it to the client side and generate image there without saving it on the server side, because of security reasons and to avoid problems with file management on the server side. This method will be used in the PdfController to generate Qr code for each device in the PDF file.
+        /// </summary>
+        /// <param name="deviceID">chosed device ID to generate Qr code for</param>
+        /// <param name="userID">current user ID</param>
+        /// <returns>byte array representing the Qr code image</returns>
+        public static byte[] GetQrCodeBytes(int deviceID, int userID)
+        {
+            // Encode to Base64
+            string secretDeviceID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deviceID.ToString()));
+            string secretUserID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(userID.ToString()));
+
+            // Create URL
+            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44/mobileDeviceInfo/{secretUserID}/{secretDeviceID}");
+
+            // Generate Graphic as Bytes
+            using var qrGenerator = new QRCoder.QRCodeGenerator();
+            var qrCodeData = qrGenerator.CreateQrCode(qrCodePayload.ToString(), QRCoder.QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
+
+            return qrCode.GetGraphic(20); // Returns byte[]
+        }
 
         /// <summary>
         /// Method to create QrCode Link to reach devices info  
@@ -180,7 +202,6 @@ namespace MyHome
             using var stream = File.Open(savedQrCodeLink, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
         }
-
 
 
 
