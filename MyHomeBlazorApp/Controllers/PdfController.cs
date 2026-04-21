@@ -22,7 +22,7 @@ namespace MyHomeBlazorApp.Controllers
         {
             // 1. Get the data from the service
             // Hint: Use the "Fetch and Clear" logic we discussed so the list empties itself!
-            var deviceIds = _dataService.GetSelectedIdsAndClear();
+            var deviceIds = _dataService.GetQueueAndClear();
 
             if (deviceIds == null || !deviceIds.Any())
             {
