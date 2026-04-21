@@ -38,7 +38,7 @@ namespace MyHomeBlazorApp.BlazorData
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
-        public List<int> SelectedDeviceIdsToPrintQRCodes { get; set; } = new();
+        public List<DeviceProfile> SelectedDevicesListToPrintQrCodes { get; set; } = new();
 
 
         #region User
@@ -425,18 +425,23 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to add device ID in the list of selected devices to print QR codes. This list will be used in the page to print QR codes for selected devices. If device ID is already in the list so it will not be added again.
         /// </summary>
         /// <param name="deviceId">Selected Device ID</param>
-        public void AddToPrintQueue(int deviceId)
+        public void AddToPrintQueue(DeviceProfile selectedDevice)
         {
-            if (!SelectedDeviceIdsToPrintQRCodes.Contains(deviceId))
-                SelectedDeviceIdsToPrintQRCodes.Add(deviceId);
+            if (!SelectedDevicesListToPrintQrCodes.Any(d => d.DeviceID == selectedDevice.DeviceID))
+            {
+                SelectedDevicesListToPrintQrCodes.Add(selectedDevice);
+            }
         }
 
         /// <summary>
-        /// Method to clear the list of selected devices to print QR codes. This method will be used in the page to clear the list after printing QR codes for selected devices.
+        /// Method to get list of selected devices to print QR codes and clear the list after getting it. This method will be used in the page to print QR codes for selected devices. After getting the list of selected devices to print QR codes, the list will be cleared to avoid printing QR codes for the same devices again.
         /// </summary>
-        public void ClearQueue()
+        /// <returns></returns>
+        public List<DeviceProfile> GetQueueAndClear()
         {
-            SelectedDeviceIdsToPrintQRCodes.Clear();
+            List <DeviceProfile> temporaryDevicesList = SelectedDevicesListToPrintQrCodes.ToList(); // Copy the list
+            SelectedDevicesListToPrintQrCodes.Clear();                 // Empty the basket
+            return temporaryDevicesList;                                // Return the copy
         }
 
         /// <summary>
