@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using WebPWrecover.Services;
-
+using QuestPDF.Infrastructure;
 //using MyHomeBlazorApp.Components.Account;
 namespace MyHomeBlazorApp
 {
@@ -26,8 +26,10 @@ namespace MyHomeBlazorApp
             public static readonly string SAVE_UPLOADED_FILES = Path.Combine(RootPath, "Files", "UploadedFiles") + Path.DirectorySeparatorChar;
             public const string BASE_API_URL = "https://www.google.se/search?q=";
         }
+
         public static void Main(string[] args)
         {
+            QuestPDF.Settings.License = LicenseType.Community;
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("MyHomeBlazorAppContextConnection") ?? throw new InvalidOperationException("Connection string 'MyHomeBlazorAppContextConnection' not found.");
 

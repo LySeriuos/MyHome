@@ -43,6 +43,23 @@ namespace MyHomeBlazorApp.BlazorData
 
         #region User
 
+        public async Task<MyHomeBlazorAppUser?> GetUserWithProfileAsync()
+        {
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+            var principal = authState.User;
+
+            if (principal.Identity?.IsAuthenticated == true)
+            {
+                var userId = _userManager.GetUserId(principal);
+
+                // This 'Include' is the ONLY reason why .UserProfile won't be null!
+                return await _dbcontext.Users
+                    .Include(u => u.UserProfile)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+            }
+            return null;
+        }
+
         public async Task<MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
         {
             //Chek cache first

@@ -1,0 +1,49 @@
+﻿@using MyHome
+@using MyHomeBlazorApp.BlazorData
+@inject BlazorData.DataService _dataService
+@inject NavigationManager NavManager
+
+@page "/qrPrinting"
+@inject IJSRuntime JS
+
+
+
+@foreach(var device in Devices)
+{
+    <p>@device.DeviceName <img width="200" src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID))" /></p>
+}
+<Button Class="btn btn-primary" @onclick="PrintPage">Print All Qr Codes</Button>
+
+
+
+
+@code {
+
+    public List<DeviceProfile> Devices { get; set; } = new List<DeviceProfile>();    
+    public UserProfile? User { get; set; }
+    public byte[] image { get; set; }
+
+    private async Task PrintPage()    {
+
+        await JS.InvokeVoidAsync("window.print");
+    }
+    // C:\Users\shiranco.DESKTOP-HRN41TE\source\repos\MyHomeNew\MyHomeBlazorApp\Components\Account\Pages\Login.razor
+    protected override async Task OnInitializedAsync()
+    {
+        var loadedUser = await _dataService.GetUserWithProfileAsync();
+        if (loadedUser == null)
+        {
+            NavManager.NavigateTo("Account/Login", forceLoad: true);
+            return;
+        }
+        else
+        {
+            User = loadedUser.UserProfile;
+            Devices = _dataService.GetQueueAndClear();
+        }
+       
+        await base.OnInitializedAsync();
+
+    }
+
+}

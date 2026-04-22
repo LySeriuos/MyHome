@@ -162,7 +162,7 @@
             }
 
             await DataService.UpdateObjectInDB();
-           await OnDataChanged.InvokeAsync();
+            await OnDataChanged.InvokeAsync();
             await _refModalEditWarrantyDetails.HideAsync();
         }
         catch (Exception ex)

@@ -1,5 +1,5 @@
 ﻿@page "/mobileDeviceInfo"
-@page "/mobileDeviceInfo/{encodedUserID:string}/{encodedDeviceID:string}"
+@* @page "/mobileDeviceInfo/{encodedUserID:string}/{encodedDeviceID:string}" *@
 
 
 @using Microsoft.EntityFrameworkCore
@@ -38,30 +38,43 @@
     public string encodedDeviceID { get; set; }
     [Parameter]
     public string encodedUserID { get; set; }
-    private UserProfile _userProfile { get; set; }
-    private MyHomeBlazorAppUser userProfileTest { get; set; }
+    private UserProfile? _userProfile { get; set; }
     private DeviceProfile? _currentDevice { get; set; }
-    private UserProfile _currentUser { get; set; }
+    private UserProfile? _currentUser { get; set; }
     private string? message;
     private DataService? DataServiceTest { get; set; }
 
 
     protected override void OnParametersSet()
     {
-        int userID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserID)));
-        int deviceID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedDeviceID)));
-        
-        UserProfile loggedInUser = DataService.CurrentAppUser.UserProfile;
-        // Check if the URL ID matches the Logged In User's ID
-        if (userID != loggedInUser.UserID)
+        try
         {
-            message = "Access Denied: This is not your device.";
-            return;
-        }
-        else
-        {
-            _userProfile = loggedInUser;
+            int userID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserID)));
+            int deviceID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedDeviceID)));
+
+            UserProfile loggedInUser = DataService.CurrentAppUser.UserProfile;
+            // Check if the URL ID matches the Logged In User's ID
+            if (loggedInUser == null || userID != loggedInUser.UserID)
+            {
+                message = "Access Denied: This is not your device.";
+                return;
+            }
+            else
+            {
+                _userProfile = loggedInUser;
+                
+            }
+
             _currentDevice = _userProfile.GetAllDevices().FirstOrDefault(d => d.DeviceID == deviceID);
+            if(_currentDevice == null)
+            {
+                message = "Device not found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            message = "An error occurred while processing the device information.";
+            Console.WriteLine($"Error in OnParametersSet: {ex.Message}");
         }
     }
 
