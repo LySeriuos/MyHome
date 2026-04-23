@@ -454,11 +454,16 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to get list of selected devices to print QR codes and clear the list after getting it. This method will be used in the page to print QR codes for selected devices. After getting the list of selected devices to print QR codes, the list will be cleared to avoid printing QR codes for the same devices again.
         /// </summary>
         /// <returns></returns>
-        public List<DeviceProfile> GetQueueAndClear()
+        public List<DeviceProfile> GetCurrentQueue()
         {
             List <DeviceProfile> temporaryDevicesList = SelectedDevicesListToPrintQrCodes.ToList(); // Copy the list
-            SelectedDevicesListToPrintQrCodes.Clear();                 // Empty the basket
+                             
             return temporaryDevicesList;                                // Return the copy
+        }
+
+        public void CleanCurrentQue()
+        {
+            SelectedDevicesListToPrintQrCodes.Clear();
         }
 
         /// <summary>

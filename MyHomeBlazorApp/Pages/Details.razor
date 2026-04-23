@@ -81,8 +81,30 @@
                             <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to create qr code for the device</div>
                             <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Push Envelope icon to prepare email with chosed device details</div>
                         </div>
+                        <div class="d-flex align-items-center">
+                            <p class="mb-0">Choose device to print by clicking Qr Code icon.</p>
+                            <button class="btn btn-sm btn-success me-3">Print All Devices</button>
+                        </div>
+                        @if(DataService.GetCurrentQueue().Count() != 0)
+                        {
+                        <div>
+                            <p>Chosed devices to print:</p>
+                            <ul>
+                                @foreach (var device in DataService.GetCurrentQueue())
+                                {
+                                    <li>
+                                    <div class="d-flex align-items-center">
+                                        <p class="mb-0">@device.DeviceName</p>
+                                        <button class="btn btn-sm btn-danger me-3">Remove</button>
+                                    </div>
+                                    </li>
+                                }
+                            </ul>
+                            <Button>Open Print Page</Button>
+                        </div>
+                        }
 
-            @* <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
+                        @* <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
             <p>Envelope Icon is to prepatre email for the shop you bought the device</p>
             <p>Qr Code Icon is to create qr code for device</p> *@
                         <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
@@ -97,7 +119,7 @@
                             <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
                                 <span>@context.TempRealEstateName</span>
                             </TemplateColumn>
-                            <PropertyColumn Title="Device ID" Property="@(d=>d.DeviceID)" Sortable="true" />
+                            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
                             <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
                             <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
                             <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
@@ -138,7 +160,7 @@
                                 }
                                 else
                                 {
-                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="()=>NavigateToWarrantyFile(context.DeviceID)">Open</Button>
+                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToWarrantyFile(context.DeviceID)">Open</Button>
                                 }
 
                             </TemplateColumn>
@@ -151,7 +173,7 @@
                                 }
                                 else
                                 {
-                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="()=>NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
+                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
                                 }
                             </TemplateColumn>
                         </QuickGrid>
@@ -182,7 +204,7 @@
                                 <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
                                 <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
                                 <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
-                                
+
                             </QuickGrid>
                         }
                     </div>
@@ -327,6 +349,20 @@
     // Initialize with an empty list so the UI doesn't crash while loading
     private IQueryable<DeviceProfile> _unassignedDevicesListAsQueryable = Enumerable.Empty<DeviceProfile>().AsQueryable();
     public Action? UnassignedDevicesListChanged;
+    List<ToastMessage> messages = new List<ToastMessage>();
+    List<DeviceProfile> chosedDevicesList { get; set; } = new();
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType)
+    => new ToastMessage
+    {
+        Type = toastType,
+        Title = "Info message",
+        Message = $"{currentDevice.DeviceName} added to the Print Qr code list!",
+    };
+
+
 
     private async Task HandleQrCode(int _chosedDeviceID)
     {
@@ -336,6 +372,8 @@
 
         // Call the service
         string fileUrl = DataService.GenerateDeviceQrCode(_chosedDeviceID, currentUser.UserID);
+        var chosedDevice = Logic.GetDeviceInfoByID(_chosedDeviceID, currentUser);
+        DataService.AddToPrintQueue(chosedDevice);
 
         // Open the file in a new tab
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
@@ -380,11 +418,11 @@
     {
         currentUser = DataService.CurrentUserWithAllData;
         currentDevice = new DeviceProfile
-            {
-                DeviceID = 0,
-                DeviceName = "",
-                DeviceType = DeviceType.Other
-            };
+        {
+            DeviceID = 0,
+            DeviceName = "",
+            DeviceType = DeviceType.Other
+        };
         currentChosedRealEsate.RealEstateID = 0;
         StateHasChanged();
         await refModalEditAddDevice.OnShowModalEditDeviceClick();
@@ -570,7 +608,6 @@
         await DataService.InitializedUserAsync();
         var list = await DataService.GetUserWithUnassignedDevicesListAsync();
         _unassignedDevicesListAsQueryable = list.AsQueryable();
-
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.
         SelectMany(realEstate => realEstate.DevicesProfiles)
         .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
@@ -583,6 +620,7 @@
 
         // 2. Convert it to IQueryable so QuickGrid sorting works perfectly!
         _devicesListAsQueryable = allDevices.AsQueryable();
+        // chosedDevicesList = DataService.GetQueueAndClear();
 
 
         base.OnInitialized();

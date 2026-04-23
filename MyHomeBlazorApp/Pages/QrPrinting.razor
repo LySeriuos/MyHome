@@ -39,7 +39,7 @@
         else
         {
             User = loadedUser.UserProfile;
-            Devices = _dataService.GetQueueAndClear();
+            Devices = _dataService.GetCurrentQueue();
         }
        
         await base.OnInitializedAsync();

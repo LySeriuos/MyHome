@@ -35,7 +35,9 @@ namespace MyHomeBlazorApp.Controllers
             int currentUserId = userProfile.UserID;
 
             // 2. Get the devices
-            List<DeviceProfile> devicesList = _dataService.GetQueueAndClear();
+            // It was changed to GetCurrentQueue() just to get list of the chosed Devices. Switched from pdf to html printing.
+            // Original method here was _dataService.GetQueueAndClear().
+            List<DeviceProfile> devicesList = _dataService.GetCurrentQueue();
 
             if (devicesList.Count != 0)
             {
