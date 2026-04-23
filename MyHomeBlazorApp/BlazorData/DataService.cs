@@ -474,6 +474,18 @@ namespace MyHomeBlazorApp.BlazorData
                 SelectedDevicesListToPrintQrCodes.Remove(deviceToRemoveFromList);
             }
         }
+
+        public void AddAllToPrintQueue()
+        {           
+            List<DeviceProfile> allDevices = GetAllUserDevices();            
+            foreach (var device in allDevices)
+            {               
+                if (!SelectedDevicesListToPrintQrCodes.Any(d => d.DeviceID == device.DeviceID))
+                {
+                    SelectedDevicesListToPrintQrCodes.Add(device);
+                }
+            }            
+        }
         /// <summary>
         /// Getting item in the list by ID
         /// </summary>

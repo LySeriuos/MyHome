@@ -83,7 +83,7 @@
                                 <div class="d-flex align-items-center justify-content-start gap-3 border rounded-pill px-3 py-1 mb-3 bg-light shadow-sm" style="width: fit-content;">
 
                                     @* <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Click QR to add</small> *@
-                                    <button class="btn btn-sm btn-link text-success text-decoration-none fw-bold" @* @onclick="PrintAll" *@>
+                                    <button class="btn btn-sm btn-link text-success text-decoration-none fw-bold" @onclick="HandleAddAllToPrint">
                                         Add all devices to print list
                                     </button>
                                 </div>
@@ -398,6 +398,13 @@
         // Reset UI state
         _chosedDeviceID = 0;
         StateHasChanged();
+    }
+
+    private async Task HandleAddAllToPrint()
+    {
+        DataService.AddAllToPrintQueue();
+        StateHasChanged();
+        await Task.CompletedTask;
     }
 
 
