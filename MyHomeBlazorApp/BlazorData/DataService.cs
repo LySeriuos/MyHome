@@ -461,11 +461,19 @@ namespace MyHomeBlazorApp.BlazorData
             return temporaryDevicesList;                                // Return the copy
         }
 
-        public void CleanCurrentQue()
+        public void CleanCurrentQueue()
         {
             SelectedDevicesListToPrintQrCodes.Clear();
         }
 
+        public void RemoveFromQueue(DeviceProfile device)
+        {
+            DeviceProfile? deviceToRemoveFromList = SelectedDevicesListToPrintQrCodes.FirstOrDefault(d => d.DeviceID == device.DeviceID);
+            if (deviceToRemoveFromList != null)
+            {
+                SelectedDevicesListToPrintQrCodes.Remove(deviceToRemoveFromList);
+            }
+        }
         /// <summary>
         /// Getting item in the list by ID
         /// </summary>

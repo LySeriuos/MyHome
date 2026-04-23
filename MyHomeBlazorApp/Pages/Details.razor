@@ -109,7 +109,7 @@
                                                         <span class="me-2">@device.DeviceName</span>
                                                         <button type="button" class="btn-close" aria-label="Remove"
                                                                 style="font-size: 0.6rem;"
-                                                                @* @onclick="() => RemoveFromQueue(device)" *@>
+                                                                @onclick="() => DataService.RemoveFromQueue(device)">
                                                         </button>
                                                     </div>
                                                 }
@@ -399,6 +399,7 @@
         _chosedDeviceID = 0;
         StateHasChanged();
     }
+
 
     private async Task SendDeviceIDToCreateEmailComponent(int deviceId)
     {
