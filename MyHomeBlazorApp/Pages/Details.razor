@@ -37,9 +37,6 @@
 @using Microsoft.AspNetCore.Identity
 @attribute [Authorize]
 
-
-<h3>Details</h3>
-
 <main class="bodySection">
     <section class="bodySection-content">
         <div>
@@ -73,36 +70,56 @@
                     </div>
                 </TabPage>
                 <TabPage Text="Devices">
-                    <div class="grid">
-                        <div class="">
+                    <div class="container-fluid p-0" style="overflow-x: hidden;">
+                        <div class="grid">
                             <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button></div>
                             <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your device data</div>
                             <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Push Delete Icon to delete device</div>
-                            <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to create qr code for the device</div>
+                            <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to add device to printing list</div>
                             <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Push Envelope icon to prepare email with chosed device details</div>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <p class="mb-0">Choose device to print by clicking Qr Code icon.</p>
-                            <button class="btn btn-sm btn-success me-3">Print All Devices</button>
-                        </div>
-                        @if(DataService.GetCurrentQueue().Count() != 0)
-                        {
-                        <div>
-                            <p>Chosed devices to print:</p>
-                            <ul>
-                                @foreach (var device in DataService.GetCurrentQueue())
+                        <div class="row">
+                            <div class="col-md-7 col-lg-5">
+                                <div class="d-flex align-items-center justify-content-start gap-3 border rounded-pill px-3 py-1 mb-3 bg-light shadow-sm" style="width: fit-content;">
+
+                                    @* <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Click QR to add</small> *@
+                                    <button class="btn btn-sm btn-link text-success text-decoration-none fw-bold" @* @onclick="PrintAll" *@>
+                                        Add all devices to print list
+                                    </button>
+                                </div>
+
+
+                                @if (DataService.GetCurrentQueue().Any())
                                 {
-                                    <li>
-                                    <div class="d-flex align-items-center">
-                                        <p class="mb-0">@device.DeviceName</p>
-                                        <button class="btn btn-sm btn-danger me-3">Remove</button>
+                                    <div class="card shadow-sm border-0 bg-light">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                                                <span class="badge rounded-pill bg-success">
+                                                    @DataService.GetCurrentQueue().Count() Selected
+                                                </span>
+                                                <button class="btn btn-sm py-0 btn-success rounded-pill px-3 fw-bold shadow-sm" @* @onclick="NavToPrintPage" *@>
+                                                    Print <i class="bi bi-arrow-right-short"></i>
+                                                </button>
+                                            </div>
+
+                                            <div class="d-flex flex-wrap gap-1">
+                                                @foreach (var device in DataService.GetCurrentQueue())
+                                                {
+                                                    <div class="badge bg-light text-dark border d-flex align-items-center p-2" style="font-size: 0.9rem;">
+                                                        <span class="me-2">@device.DeviceName</span>
+                                                        <button type="button" class="btn-close" aria-label="Remove"
+                                                                style="font-size: 0.6rem;"
+                                                                @* @onclick="() => RemoveFromQueue(device)" *@>
+                                                        </button>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
                                     </div>
-                                    </li>
                                 }
-                            </ul>
-                            <Button>Open Print Page</Button>
+                            </div>
                         </div>
-                        }
+
 
                         @* <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
             <p>Envelope Icon is to prepatre email for the shop you bought the device</p>
