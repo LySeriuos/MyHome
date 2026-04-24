@@ -35,6 +35,7 @@
 @inject IdentityUserAccessor UserAccessor
 @inject MyHomeBlazorAppContext _dbcontext;
 @using Microsoft.AspNetCore.Identity
+@using System.Text.Json
 @attribute [Authorize]
 
 <main class="bodySection">
@@ -97,7 +98,7 @@
                                                 <span class="badge rounded-pill bg-success">
                                                     @DataService.GetCurrentQueue().Count() Selected
                                                 </span>
-                                                <button class="btn btn-sm py-0 btn-success rounded-pill px-3 fw-bold shadow-sm" @* @onclick="NavToPrintPage" *@>
+                                                <button class="btn btn-sm py-0 btn-success rounded-pill px-3 fw-bold shadow-sm" @onclick="NavToPrintPage">
                                                     Print <i class="bi bi-arrow-right-short"></i>
                                                 </button>
                                             </div>
@@ -405,6 +406,18 @@
         DataService.AddAllToPrintQueue();
         StateHasChanged();
         await Task.CompletedTask;
+    }
+
+    private async Task NavToPrintPage()
+    {
+        if(DataService.GetCurrentQueue().Any())
+        {
+            var list = DataService.GetCurrentQueue();
+            // saving the list to the local storage, otherwise list becames empty
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "printQueue", JsonSerializer.Serialize(list));
+            await JSRuntime.InvokeVoidAsync("open", "qrPrinting", "_blank");
+            
+        }
     }
 
 

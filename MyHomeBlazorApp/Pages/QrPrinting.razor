@@ -1,25 +1,27 @@
 ﻿@using MyHome
 @using MyHomeBlazorApp.BlazorData
+@using System.Text.Json
 @inject BlazorData.DataService _dataService
 @inject NavigationManager NavManager
+@inject IJSRuntime JS
+@inject IJSRuntime JSRuntime
 
 @page "/qrPrinting"
-@inject IJSRuntime JS
 
 
 
-@foreach(var device in Devices)
+@foreach (var device in Devices)
 {
     <p>@device.DeviceName <img width="200" src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID))" /></p>
 }
-<Button Class="btn btn-primary" @onclick="PrintPage">Print All Qr Codes</Button>
+<Button Class="btn btn-primary" @onclick="PrintPage">Print</Button>
 
 
 
 
 @code {
 
-    public List<DeviceProfile> Devices { get; set; } = new List<DeviceProfile>();    
+    public List<DeviceProfile>? Devices { get; set; } = new List<DeviceProfile>();    
     public UserProfile? User { get; set; }
     public byte[] image { get; set; }
 
@@ -39,11 +41,26 @@
         else
         {
             User = loadedUser.UserProfile;
-            Devices = _dataService.GetCurrentQueue();
         }
        
         await base.OnInitializedAsync();
 
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Getting devices list from local storage on the new tab.
+            var json = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "printQueue");
+
+            if (!string.IsNullOrEmpty(json))
+            {
+                Devices = JsonSerializer.Deserialize<List<DeviceProfile>>(json);
+
+               // refresh the UI manually.
+                StateHasChanged();
+            }
+        }
+    }
 }
