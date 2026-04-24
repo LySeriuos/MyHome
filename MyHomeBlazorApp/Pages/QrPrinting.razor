@@ -10,24 +10,103 @@
 
 
 
-@foreach (var device in Devices)
-{
-    <p>@device.DeviceName <img width="200" src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID))" /></p>
-}
-<Button Class="btn btn-primary" @onclick="PrintPage">Print</Button>
+<div class="d-print-none bg-light p-3 border-bottom mb-4 sticky-top">
+    <button class="btn btn-primary fw-bold px-4 shadow-sm" @onclick="PrintPage">
+        <i class="bi bi-printer-fill me-2"></i> Print All Labels
+    </button>
+    <span class="ms-3 text-muted">@Devices.Count devices in queue</span>
+</div>
+<div class="d-flex flex-wrap gap-3 justify-content-start">
+    @foreach (var device in Devices)
+    {
+        <div class="qr-label-card text-center border p-3 bg-white shadow-sm">
+            <div class="fw-bold text-truncate mb-2" style="max-width: 180px;">
+                @device.DeviceName
+            </div>
+
+            <img width="180"
+                 src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID))"
+                 class="img-fluid" />
+
+            <div class="text-muted small mt-2">
+                ID: @device.DeviceID
+            </div>
+        </div>
+    }
+</div>
+
+
+<style>
+    @@media print {
+        .sidebar, .nav-menu, .top-row, .navbar {
+            display: none !important;
+        }
+
+        .qr-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Forces exactly 3 columns */
+            gap: 10px;
+        }
+
+        .d-print-none {
+            display: none !important;
+        }
+    }
+
+    .main, .content, main {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    @@page {
+            size: auto;   /* auto is the current printer page size */
+            margin: 1cm;  /* Set a clean margin; 0 can sometimes cause issues */
+        }
+
+        /* Kill Switch 4: Remove any bottom spacing on the grid */
+        .qr-grid {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+    body {
+        background-color: white !important;
+        margin: 0.5cm;
+    }
+
+    .qr-label-card {
+        width: 150px; /* Adjust based on your physical label size */
+        border: 1px solid #eee;
+        text-align: center;
+        padding: 10px;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .d-print-none {
+        display: block; /* Ensure it's definitely visible on screen */
+    }
+</style>
 
 
 
 
 @code {
 
-    public List<DeviceProfile>? Devices { get; set; } = new List<DeviceProfile>();    
+    public List<DeviceProfile>? Devices { get; set; } = new List<DeviceProfile>();
     public UserProfile? User { get; set; }
     public byte[] image { get; set; }
 
-    private async Task PrintPage()    {
+    private async Task PrintPage()
+    {
 
         await JS.InvokeVoidAsync("window.print");
+    }
+
+    public void Dispose()
+    {
+        _dataService.CleanCurrentQueue();
+        StateHasChanged();
     }
     // C:\Users\shiranco.DESKTOP-HRN41TE\source\repos\MyHomeNew\MyHomeBlazorApp\Components\Account\Pages\Login.razor
     protected override async Task OnInitializedAsync()
@@ -42,7 +121,7 @@
         {
             User = loadedUser.UserProfile;
         }
-       
+
         await base.OnInitializedAsync();
 
     }
@@ -58,7 +137,7 @@
             {
                 Devices = JsonSerializer.Deserialize<List<DeviceProfile>>(json);
 
-               // refresh the UI manually.
+                // refresh the UI manually.
                 StateHasChanged();
             }
         }

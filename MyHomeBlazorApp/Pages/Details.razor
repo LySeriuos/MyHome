@@ -416,7 +416,8 @@
             // saving the list to the local storage, otherwise list becames empty
             await JSRuntime.InvokeVoidAsync("localStorage.setItem", "printQueue", JsonSerializer.Serialize(list));
             await JSRuntime.InvokeVoidAsync("open", "qrPrinting", "_blank");
-            
+            DataService.CleanCurrentQueue();
+            StateHasChanged();
         }
     }
 
