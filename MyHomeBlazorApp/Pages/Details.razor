@@ -343,6 +343,8 @@
     // Check IF the link to the file moves together with the device Profile!!!!!!!
     [Parameter]
     public int Tab { get; set; }
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
     private int SelectedRealEstateID
     {
@@ -370,18 +372,6 @@
     List<ToastMessage> messages = new List<ToastMessage>();
     List<DeviceProfile> chosedDevicesList { get; set; } = new();
 
-    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
-
-    private ToastMessage CreateToastMessage(ToastType toastType)
-    => new ToastMessage
-    {
-        Type = toastType,
-        Title = "Info message",
-        Message = $"{currentDevice.DeviceName} added to the Print Qr code list!",
-    };
-
-
-
     private async Task HandleQrCode(int _chosedDeviceID)
     {
 
@@ -391,14 +381,11 @@
         // Call the service
         string fileUrl = DataService.GenerateDeviceQrCode(_chosedDeviceID, currentUser.UserID);
         var chosedDevice = Logic.GetDeviceInfoByID(_chosedDeviceID, currentUser);
-        DataService.AddToPrintQueue(chosedDevice);
-
-        // Open the file in a new tab
-        await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
-
+        DataService.AddToPrintQueue(chosedDevice);       
         // Reset UI state
         _chosedDeviceID = 0;
         StateHasChanged();
+        await Task.CompletedTask;
     }
 
     private async Task HandleAddAllToPrint()
@@ -435,16 +422,8 @@
     private CustomReusableModal _reusableModal = default!;
     private SuccessModal _refSuccessModal = default!;
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
 
-    // // [Inject]
-    // // public AuthenticationStateProvider AuthenticationState { get; set; }
-
-
-
-
-
+    
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUserWithAllData;
