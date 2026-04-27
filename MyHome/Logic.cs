@@ -123,14 +123,10 @@ namespace MyHome
         /// <param name="deviceID">chosed device ID to generate Qr code for</param>
         /// <param name="userID">current user ID</param>
         /// <returns>byte array representing the Qr code image</returns>
-        public static byte[] GetQrCodeBytes(int deviceID, int userID)
+        public static byte[] GetQrCodeBytes(int userID, int deviceID)
         {
-            // Encode to Base64
-            string secretDeviceID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deviceID.ToString()));
-            string secretUserID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(userID.ToString()));
-
             // Create URL
-            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44/mobileDeviceInfo/{secretUserID}/{secretDeviceID}");
+            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44/mobileDeviceInfo/{userID}/{deviceID}");
 
             // Generate Graphic as Bytes
             using var qrGenerator = new QRCoder.QRCodeGenerator();
