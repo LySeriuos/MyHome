@@ -28,7 +28,7 @@
 <h3>MobileDeviceInfo</h3>
 <div class="w-25 p-3">
     <AddEditDeviceForm CurrentDevice="_currentDevice"
-    CurrentUser="_userProfile">
+                        CurrentUser="_userProfile">
     </AddEditDeviceForm>
 </div>
 
@@ -43,46 +43,38 @@
     private UserProfile? _currentUser { get; set; }
     private string? message;
     private DataService? DataServiceTest { get; set; }
+    private UserProfile? _loadedUser { get; set; }
 
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
+    {
+        // 1. Wait for the Master Query to finish
+        await DataService.LoadUserWithAllDataAsync();
+
+        if (DataService.CurrentAppUser?.UserProfile != null)
+        {
+            _userProfile = DataService.CurrentAppUser.UserProfile;            
+            _currentDevice = _userProfile.GetAllDevices()
+                .FirstOrDefault(d => d.DeviceID == DeviceID);
+            StateHasChanged();
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
     {
         try
         {
-            int userID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(UserID.ToString())));
-            int deviceID = int.Parse(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(DeviceID.ToString())));
-
-            UserProfile loggedInUser = DataService.CurrentAppUser.UserProfile;
-            // Check if the URL ID matches the Logged In User's ID
-            if (loggedInUser == null || userID != loggedInUser.UserID)
+            //Check if the service already has the user, if not, fetch it
+            if (DataService.CurrentAppUser == null)
             {
-                message = "Access Denied: This is not your device.";
-                return;
-            }
-            else
-            {
-                _userProfile = loggedInUser;
-                
-            }
-
-            _currentDevice = _userProfile.GetAllDevices().FirstOrDefault(d => d.DeviceID == deviceID);
-            if(_currentDevice == null)
-            {
-                message = "Device not found.";
+                await DataService.LoadUserWithAllDataAsync();
             }
         }
         catch (Exception ex)
         {
-            message = "An error occurred while processing the device information.";
-            Console.WriteLine($"Error in OnParametersSet: {ex.Message}");
+            Console.WriteLine($"Failed to load user: {ex.Message}");
         }
-    }
-
-    protected override void OnInitialized()
-    {
-        // currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-        // NavigationManager.LocationChanged += OnLocationChanged;
-        base.OnInitialized();
     }
 
 }
