@@ -10,121 +10,138 @@
 @inject IJSRuntime JSRuntime
 
 
-<EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" OnSubmit="DeviceFormSubmitted" @oninput="OnInput">
-    <DataAnnotationsValidator />
-    <div class="form-group row">
-        <label for="deviceName" class="col-sm-4 col-form-label">
-            Name
-        </label>
-        <div class="col-sm-8">
-            <InputText id="deviceName" @bind-Value="CurrentDevice.DeviceName" placeholder="Device Name" />
-        </div>
-        <ValidationMessage For=@( () => CurrentDevice.DeviceName ) />
+@if (showErrorMessageVisible)
+{
+    <div class="alert alert-danger">
+        @errorMessage
     </div>
-    <div class="form-group row">
-        <label for="deviceProduser" class="col-sm-4 col-form-label">
-            Produser
-        </label>
-        <div class="col-sm-8">
-            <InputText id="deviceProduser" @bind-Value="CurrentDevice.DeviceProduser" placeholder="Device Produser" />
+}
+@if (CurrentDevice != null)
+{
+    <EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" OnSubmit="DeviceFormSubmitted" @oninput="OnInput">
+        <DataAnnotationsValidator />
+        <div class="form-group row">
+            <label for="deviceName" class="col-sm-4 col-form-label">
+                Name
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceName" @bind-Value="CurrentDevice.DeviceName" placeholder="Device Name" />
+            </div>
+            <ValidationMessage For=@(() => CurrentDevice.DeviceName) />
         </div>
-    </div>
-    <div class="form-group row">
-        <label for="deviceType" class="col-sm-4 col-form-label">Type</label>
-        <div class="col-sm-8">
-            <InputSelect id="deviceType" @bind-Value="CurrentDevice.DeviceType" placeholder="Device Type">
-                @foreach (var type in Enum.GetValues(typeof(DeviceType)))
+        <div class="form-group row">
+            <label for="deviceProduser" class="col-sm-4 col-form-label">
+                Produser
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceProduser" @bind-Value="CurrentDevice.DeviceProduser" placeholder="Device Produser" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceType" class="col-sm-4 col-form-label">Type</label>
+            <div class="col-sm-8">
+                <InputSelect id="deviceType" @bind-Value="CurrentDevice.DeviceType" placeholder="Device Type">
+                    @foreach (var type in Enum.GetValues(typeof(DeviceType)))
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceSerialNumber" class="col-sm-4 col-form-label">
+                Serial Number
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceModelNumber" class="col-sm-4 col-form-label">
+                Model Number
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceModelNumber" @bind-Value="CurrentDevice.DeviceModelNumber" placeholder="Device Model Number" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceIpAddress" class="col-sm-4 col-form-label">
+                IP Address
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceIpAddress" @bind-Value="CurrentDevice.IpAddress" placeholder="Device Ip Address" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceMacAddress" class="col-sm-4 col-form-label">
+                Mac Address
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceMacAddress" @bind-Value="CurrentDevice.MacAdrress" placeholder="Mac Address" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
+                Manual Link
+            </label>
+            <div class="col-sm-8">
+                <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice.DeviceID, JSRuntime)">Manual</Button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+
+                <label class="form-label">Choose Real Estate</label>
+                <InputSelect @bind-Value="selectedTargetRealEstateId" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
+                    @if (CurrentUser.RealEstates == null || !CurrentUser.RealEstates.Any())
+                    {
+                        @* Option: User has NO real estate yet *@
+                        <option value="0">No Real Estates found (Save as Unassigned)</option>
+                    }
+                    else
+                    {
+                        <option selected value="0">Select Real Estate...or Will Be Saved As Unnassigned</option>
+                        @foreach (var realEstate in CurrentUser.RealEstates)
+                        {
+                            <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
+                        }
+                    }
+                </InputSelect>
+                @if (CurrentUser?.RealEstates == null || !CurrentUser.RealEstates.Any())
                 {
-                    <option value="@type">@type</option>
+                    <small class="text-muted d-block mt-1">
+                        Tip: You can move this to a Real Estate later.
+                    </small>
                 }
-            </InputSelect>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="deviceSerialNumber" class="col-sm-4 col-form-label">
-            Serial Number
-        </label>
-        <div class="col-sm-8">
-            <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number"/>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="deviceModelNumber" class="col-sm-4 col-form-label">
-            Model Number
-        </label>
-        <div class="col-sm-8">
-            <InputText id="deviceModelNumber" @bind-Value="CurrentDevice.DeviceModelNumber" placeholder="Device Model Number" />
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="deviceIpAddress" class="col-sm-4 col-form-label">
-            IP Address
-        </label>
-        <div class="col-sm-8">
-            <InputText id="deviceIpAddress" @bind-Value="CurrentDevice.IpAddress" placeholder="Device Ip Address" />
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="deviceMacAddress" class="col-sm-4 col-form-label">
-            Mac Address
-        </label>
-        <div class="col-sm-8">
-            <InputText id="deviceMacAddress" @bind-Value="CurrentDevice.MacAdrress" placeholder="Mac Address" />
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
-            Manual Link
-        </label>
-        <div class="col-sm-8">
-            <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice.DeviceID, JSRuntime)">Manual</Button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group">
-            @* ////// *@
-            @* There is no option to edit unassigned device without moving to other RealEstate *@
-            @* /////// *@
-            <label class="form-label">Choose Real Estate</label>
-            <InputSelect @bind-Value="_chosedRealEstateID" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
-                <option selected value="0" disabled>Select Real Estate...</option>
-                @foreach (var realEstate in CurrentUser.RealEstates)
-                {
-                    <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="() => _chosedRealEstateID" class="text-danger d-block" />
-        </div>
-    </div>
-    @if (showErrorMessageVisible == true)
-    {
-        <p class="text-danger d-block">@errorMessage</p>
-    }
-    <br>
-    @if (CurrentDevice.DeviceID != 0)
-    {
-        <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-        DevicesListAsQueryable="_devicesListAsQueryable">
-        </NextPreviuosButtons>
-    }
-    else if (_unassignedDevicesListAsQueryable.Count() > 1)
-    {
-        <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-        DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
-        </NextPreviuosButtons>
-    }
-    @if (IncludeButtons)
-    {
-        @if (fieldHasBeenChanged == true)
+                
+
+            </div>
+        </div>        
+        @if (CurrentDevice.DeviceID != 0)
         {
-            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+            <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                 DevicesListAsQueryable="_devicesListAsQueryable">
+            </NextPreviuosButtons>
         }
-        else
+        else if (_unassignedDevicesListAsQueryable.Count() > 1)
         {
-            <Button Color="ButtonColor.Primary" Disabled Type="ButtonType.Submit">Save changes</Button>
+            <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                 DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
+            </NextPreviuosButtons>
         }
-    }
-</EditForm>
+        @if (IncludeButtons)
+        {
+            @if (fieldHasBeenChanged == true)
+            {
+                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit">Save changes</Button>
+            }
+            else
+            {
+                <Button Color="ButtonColor.Primary" Disabled Type="ButtonType.Submit">Save changes</Button>
+            }
+        }
+    </EditForm>
+}
 <div>
     <SuccessModal @ref="_refSuccessModal" Title="Add/Edit Confirmation"></SuccessModal>
 </div>
@@ -138,13 +155,23 @@
     [Parameter]
     public EditForm refAddEditDeviceTest { get; set; } = new();
     [CascadingParameter]
-    public CustomReusableModal Parent { get; set; }    
+    public CustomReusableModal? Parent { get; set; }
     [Parameter]
     public EventCallback DataChangedEvent { get; set; }
+    [Parameter]
+    public int RealEstateIdToAddDevice
+    {
+        get => selectedTargetRealEstateId;
+        set
+        {
+            selectedTargetRealEstateId = value;
+        }
+    }
+    private int selectedTargetRealEstateId;
     private IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
     private IQueryable<DeviceProfile>? _unassignedDevicesListAsQueryable { get; set; }
     private EditContext? editContext { get; set; }
-    private int _chosedRealEstateID { get; set; } = new();
+    
     private SuccessModal _refSuccessModal = default!;
     private string? errorMessage;
     private bool chosedRealEstateIsValid;
@@ -169,7 +196,7 @@
     //todo: disable button if there is no changes in the editForm
     private async Task Init()
     {
-        _chosedRealEstateID = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
+        selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
         editContext = new(CurrentDevice);
         var list = await DataService.GetUserWithUnassignedDevicesListAsync();
         _unassignedDevicesListAsQueryable = list.AsQueryable();
@@ -195,87 +222,97 @@
             IncludeButtons = false;
             Parent.SaveDataChanges = Save;
         }
+
+        if (CurrentDevice.DeviceID == 0)
+        {
+            selectedTargetRealEstateId = 0;
+        }
+        else
+        {
+            selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
+        }
+
+
+        editContext = new(CurrentDevice);
+        fieldHasBeenChanged = false; 
+
         base.OnParametersSet();
     }
 
     private void RealEsatateIdToAddDeviceChanged()
     {
-        if (_chosedRealEstateID != 0)
-        {
-            showErrorMessageVisible = false;
-        }
-        else
-        {
-            showErrorMessageVisible = true;
-        }
+        fieldHasBeenChanged = true;
+        showErrorMessageVisible = (selectedTargetRealEstateId == 0);
     }
-
-    private bool CheckIfCurrentDeviceIsAssignedToRealEstate()
-    {
-        int realEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
-        if (realEstateId > 0)
-        {
-            // throw new InvalidOperationException("Something went wrong, this device shouldn't be assigned to the Real Estate");
-            deviceIsAssignedToRealEstate = true;
-        }
-        else
-        {
-            deviceIsAssignedToRealEstate = false;
-        }
-        return deviceIsAssignedToRealEstate;
-    }
-
-    private bool ChosedRealEstateIsValid()
-    {
-        if (_chosedRealEstateID == 0)
-        {
-            chosedRealEstateIsValid = false;
-            showErrorMessageVisible = true;
-            validDeviceForm = false;
-            errorMessage = "Please select Real Estate to Add Device";
-        }
-        else
-        {
-            chosedRealEstateIsValid = true;
-            showErrorMessageVisible = false;
-        }
-        return chosedRealEstateIsValid;
-    }
+   
 
     private async Task DeviceFormSubmitted(EditContext editContext)
     {
-        validDeviceForm = editContext.Validate();
-        ChosedRealEstateIsValid();
-        CheckIfCurrentDeviceIsAssignedToRealEstate();
+        // 1. Validate data annotations
+        if (!editContext.Validate()) return;
 
-        if (validDeviceForm != true)
-        {
-            validDeviceForm = editContext.Validate();
-            return;
-        }
+        bool isNewDevice = CurrentDevice.DeviceID == 0;
+        bool isCurrentlyAssigned = false;
 
-        if (CurrentDevice.DeviceID == 0 && validDeviceForm == true)
+        if (!isNewDevice)
         {
-            // DataService.AddNewDevice(CurrentDevice, _chosedRealEstateID);
-            DataService.AddNewDeviceToDataBase(CurrentDevice, _chosedRealEstateID);
-            _chosedRealEstateID = 0;
-        }
-        else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == false)
-        {
-            DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, _chosedRealEstateID, CurrentDevice);
-        }
-        else if (CurrentDevice.DeviceID != 0 & chosedRealEstateIsValid == true & deviceIsAssignedToRealEstate == true)
-        {
-            DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, _chosedRealEstateID);
+            // Check if the device is currently linked to a RealEstate
+            isCurrentlyAssigned = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID) > 0;
         }
 
-        DataService.UpdateObjectInDB();
-        await DataChangedEvent.InvokeAsync();
-        fieldHasBeenChanged = false;
-        showErrorMessageVisible = false;
-        if (Parent != null)
+        try
         {
-            await Parent.HideAsync();
+            // 2. Decision Logic
+            switch (isNewDevice, selectedTargetRealEstateId)
+            {
+                // Case 1: Add new device
+                case (true, _):
+                    await DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
+                    break;
+
+                // Case 2: Existing device moved to "Unassigned" (Target ID 0)
+                case (false, 0) when isCurrentlyAssigned:
+                    await DataService.MoveDeviceToUnnassignedList(CurrentDevice);
+                    break;
+
+                // Case 3: Move from Unassigned list to a specific Real Estate
+                case (false, var targetId) when !isCurrentlyAssigned && targetId != 0:
+                    await DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, targetId, CurrentDevice);
+                    break;
+
+                // Case 4: Transfer from one Real Estate to another
+                case (false, var targetId) when targetId != 0:
+                    await DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, targetId);
+                    break;
+
+                default:
+                    // Just update fields (Name, Serial Number, etc.) without changing location
+                    await DataService.UpdateObjectInDB();
+                    break;
+            }
+
+            // Finalize
+            await DataService.UpdateObjectInDB();
+            await DataChangedEvent.InvokeAsync();
+
+            // Reset state
+            selectedTargetRealEstateId = 0;
+            showErrorMessageVisible = false;
+            fieldHasBeenChanged = false;
+
+            if (Parent != null)
+            {
+                await Parent.HideAsync();
+            }
+            else
+            {
+                await _refSuccessModal.OnShowModalClick();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Database error: " + ex.Message;
+            showErrorMessageVisible = true;
         }
     }
 }

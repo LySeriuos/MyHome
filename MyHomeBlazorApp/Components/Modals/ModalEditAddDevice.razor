@@ -31,7 +31,7 @@
                     <div class="col-sm-8">
                         <InputText id="deviceName" @bind-Value="CurrentDevice.DeviceName" placeholder="Device Name" />
                     </div>
-                    <ValidationMessage For=@( () => CurrentDevice.DeviceName ) />
+                    <ValidationMessage For=@(() => CurrentDevice.DeviceName) />
                 </div>
                 <div class="form-group row">
                     <label for="deviceProduser" class="col-sm-4 col-form-label">
@@ -92,11 +92,11 @@
                         <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice.DeviceID, JSRuntime)">Manual</Button>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-3">
                     <div class="form-group">
 
-                        <label class="form-label">Choose Real Estate</label>
-                        <InputSelect @bind-Value="RealEsatateIdToAddDevice" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
+                        <label class="form-label">Select Real Estate:</label>
+                        <InputSelect @bind-Value="RealEstateIdToAddDevice" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
                             @if (CurrentUser.RealEstates == null || !CurrentUser.RealEstates.Any())
                             {
                                 @* Option: User has NO real estate yet *@
@@ -104,7 +104,7 @@
                             }
                             else
                             {
-                                <option selected value="0" disabled>Select Real Estate...or Will Be Saved As Unnassigned</option>
+                                <option selected value="0">Select Real Estate...or Will Be Saved As Unnassigned</option>
                                 @foreach (var realEstate in CurrentUser.RealEstates)
                                 {
                                     <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
@@ -129,7 +129,7 @@
                 <br>
                 <div class="btn-row">
                     <div class="left-buttons ">
-                        @if (CurrentDevice.DeviceID != 0 && RealEsatateIdToAddDevice != 0)
+                        @if (CurrentDevice.DeviceID != 0 && RealEstateIdToAddDevice != 0)
                         {
                             <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
                                                  DevicesListAsQueryable="_devicesListAsQueryable">
@@ -168,7 +168,7 @@
 
     private int selectedTargetRealEstateId;
     [Parameter]
-    public int RealEsatateIdToAddDevice
+    public int RealEstateIdToAddDevice
     {
         get => selectedTargetRealEstateId;
         set
@@ -209,7 +209,7 @@
     private void RealEsatateIdToAddDeviceChanged()
     {
         showErrorMessageVisible = false;
-        if (RealEsatateIdToAddDevice == 0)
+        if (RealEstateIdToAddDevice == 0)
         {
             // Reset any house-specific fields if you have them
             realEstateToAddDevice.RealEstateID = 0;
@@ -217,13 +217,13 @@
         else
         {
             // The user picked a RealEstate
-            realEstateToAddDevice.RealEstateID = RealEsatateIdToAddDevice;
+            realEstateToAddDevice.RealEstateID = RealEstateIdToAddDevice;
         }
-    }    
+    }
 
     private bool ChosedRealEstateIsValid()
     {
-        if (RealEsatateIdToAddDevice == 0)
+        if (RealEstateIdToAddDevice == 0)
         {
             chosedRealEstateIsValid = false;
             showErrorMessageVisible = true;
@@ -275,7 +275,7 @@
                 await DataService.UpdateObjectInDB();
                 break;
         }
-        
+
         try
         {
             await DataService.UpdateObjectInDB();
@@ -294,6 +294,9 @@
     }
     public async Task OnHideModalEditDeviceClick()
     {
+        RealEstateIdToAddDevice = 0;
+        selectedTargetRealEstateId = 0;
+        StateHasChanged();
         await refModalEditAddDevice.HideAsync();
     }
 
