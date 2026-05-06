@@ -207,11 +207,11 @@
         .ThenBy(d => d.DeviceID).AsQueryable();
     }
 
-    public void Save()
+    public async Task Save()
     {
         if (editContext != null)
         {
-            DeviceFormSubmitted(editContext);
+            await DeviceFormSubmitted(editContext);
         }
     }
 
@@ -220,7 +220,6 @@
         if (Parent != null)
         {
             IncludeButtons = false;
-            Parent.SaveDataChanges = Save;
         }
 
         if (CurrentDevice.DeviceID == 0)

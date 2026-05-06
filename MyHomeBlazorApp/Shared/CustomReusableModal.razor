@@ -7,25 +7,24 @@
         </CascadingValue>
     </BodyTemplate>
     <FooterTemplate>
-        <Button style="margin:5px" Color="ButtonColor.Primary" @onclick="HideAsync">Close</Button>
-        <Button Color="ButtonColor.Primary" @onclick="SaveDataChanges">Save changes</Button>
+        <Button Color="ButtonColor.Secondary" @onclick="HideAsync">Close</Button>        
     </FooterTemplate>
 </Modal>
 
 
 @code {
-
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment ChildContent { get; set; } = default!;
     [Parameter]
     public string? Title { get; set; }
-    public Action SaveDataChanges { get; set; }
     private Modal _reusableModal { get; set; } = default!;
+    private bool isSaving = false;
+
     public async Task ShowAsync()
     {
         await _reusableModal.ShowAsync();
     }
-    
+
     public async Task HideAsync()
     {
         await _reusableModal.HideAsync();

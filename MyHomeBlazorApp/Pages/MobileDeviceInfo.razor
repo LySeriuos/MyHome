@@ -25,11 +25,21 @@
 @inject IdentityUserAccessor UserAccessor
 @inject MyHomeBlazorAppContext _dbcontext;
 
-<h3>MobileDeviceInfo</h3>
+<h3>Device Details</h3>
 <div class="w-25 p-3">
     <AddEditDeviceForm CurrentDevice="_currentDevice"
                         CurrentUser="_userProfile">
     </AddEditDeviceForm>
+</div>
+<div>
+    <CustomReusableModal title="Device Information">
+        <ChildContent>
+            <AddEditDeviceForm CurrentDevice="_currentDevice"
+                            CurrentUser="_userProfile"
+             >
+            </AddEditDeviceForm>
+        </ChildContent>
+    </CustomReusableModal>
 </div>
 
 @code {
