@@ -10,51 +10,6 @@
 @inject IJSRuntime JSRuntime
 
 <style>
-    /* 1. The wrapper to center the form in the modal */
-    .form-body-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Centers the content */
-        width: 100%;
-    }
-
-    /* 2. Unified width for all inputs (Text & Select) */
-    .form-input-consistent {
-        width: 100%;
-        max-width: 400px; /* This sets the 'edge' for both sides */
-        margin-bottom: 1rem;
-    }
-
-    /* 3. The button row that matches the input width */
-    .form-actions-consistent {
-        display: flex;
-        justify-content: space-between; /* Prev/Next Left, Save Right */
-        width: 100%;
-        max-width: 400px; /* Must match the inputs to look 'same on both sides' */
-        margin-top: 10px;
-    }
-
-    .form-actions-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    /* Keeps Prev/Next buttons grouped together on the left */
-    .nav-buttons {
-        display: flex;
-        gap: 8px;
-    }
-
-    /* Ensures the save button doesn't stretch */
-    .save-wrapper {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px; /* Space between Cancel and Save */
-        flex-wrap: nowrap; /* Prevents them from stacking vertically */
-    }
-
     .btn-row {
         display: flex;
         justify-content: space-between;
