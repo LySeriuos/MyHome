@@ -543,8 +543,8 @@
     {
         _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         var unassignedList = await DataService.GetUserWithUnassignedDevicesListAsync();
-        var allDevicesList = DataService.GetAllUserDevices();
         _unassignedDevicesListAsQueryable = unassignedList.AsQueryable();
+        var allDevicesList = DataService.GetAllUserDevices();
         _devicesListAsQueryable = allDevicesList.AsQueryable();
         StateHasChanged();
     }

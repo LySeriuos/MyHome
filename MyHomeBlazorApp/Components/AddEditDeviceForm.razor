@@ -15,19 +15,20 @@
         justify-content: space-between;
         align-items: center;
     }
-    .form-select{
-        max-width:auto;
-        padding-left:10px;
-        padding-right:0;
+
+    .form-select {
+        max-width: auto;
+        padding-left: 10px;
+        padding-right: 0;
     }
 
     .left-buttons button,
     .right-buttons button {
         margin: 0 5px;
     }
-    .form-group
-    {
-        margin-bottom:10px;
+
+    .form-group {
+        margin-bottom: 10px;
     }
 </style>
 
@@ -55,7 +56,7 @@
                 Produser
             </label>
             <div class="col-sm-8">
-                <InputText id="deviceProduser" @bind-Value="CurrentDevice.DeviceProduser" placeholder="Device Produser" class="form-control"/>
+                <InputText id="deviceProduser" @bind-Value="CurrentDevice.DeviceProduser" placeholder="Device Produser" class="form-control" />
             </div>
         </div>
         <div class="form-group row">
@@ -85,22 +86,32 @@
                 <InputText id="deviceModelNumber" @bind-Value="CurrentDevice.DeviceModelNumber" placeholder="Device Model Number" class="form-control" />
             </div>
         </div>
-        <div class="form-group row">
-            <label for="deviceIpAddress" class="col-sm-4 col-form-label">
-                IP Address
-            </label>
-            <div class="col-sm-8">
-                <InputText id="deviceIpAddress" @bind-Value="CurrentDevice.IpAddress" placeholder="Device Ip Address" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="deviceMacAddress" class="col-sm-4 col-form-label">
-                Mac Address
-            </label>
-            <div class="col-sm-8">
-                <InputText id="deviceMacAddress" @bind-Value="CurrentDevice.MacAdrress" placeholder="Mac Address" class="form-control" />
-            </div>
-        </div>
+        <AuthorizeView Context="auth">
+            <Authorized>
+                <div class="form-group row">
+                    <label for="deviceIpAddress" class="col-sm-4 col-form-label">
+                        IP Address
+                    </label>
+                    <div class="col-sm-8">
+                        <InputText id="deviceIpAddress" @bind-Value="CurrentDevice.IpAddress" placeholder="Device Ip Address" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="deviceMacAddress" class="col-sm-4 col-form-label">
+                        Mac Address
+                    </label>
+                    <div class="col-sm-8">
+                        <InputText id="deviceMacAddress" @bind-Value="CurrentDevice.MacAdrress" placeholder="Mac Address" class="form-control" />
+                    </div>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                @* Optional: Show a message or just leave it empty *@
+                <div class="alert alert-light py-1">
+                    <small>Log in to view network details.</small>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
         <div class="form-group row">
             <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
                 Manual Link
@@ -146,16 +157,10 @@
         <br>
         <div class="btn-row">
             <div class="left-buttons col-sm-6 ">
-                @if (CurrentDevice.DeviceID != 0 && RealEstateIdToAddDevice != 0)
+                @if (CurrentDevice.DeviceID != 0 && _devicesListAsQueryable.Count() > 1)
                 {
                     <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
                                          DevicesListAsQueryable="_devicesListAsQueryable">
-                    </NextPreviuosButtons>
-                }
-                else if (_unassignedDevicesListAsQueryable.Count() > 1)
-                {
-                    <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                         DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
                     </NextPreviuosButtons>
                 }
             </div>
@@ -226,15 +231,10 @@
     private async Task Init()
     {
         selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
-        editContext = new(CurrentDevice);
-        var list = await DataService.GetUserWithUnassignedDevicesListAsync();
-        _unassignedDevicesListAsQueryable = list.AsQueryable();
-        _devicesListAsQueryable = DataService.CurrentUserWithAllData
-        .RealEstates
-        .SelectMany(realEstate => realEstate.DevicesProfiles)
-        .OrderBy(d => DataService.GetRealEstateByDeviceID(d.DeviceID))
-        .ThenBy(d => d.DeviceID).AsQueryable();
-    }
+        editContext = new(CurrentDevice);        
+        var allDevicesList = DataService.GetAllUserDevices();
+        _devicesListAsQueryable = allDevicesList.AsQueryable();
+        }
 
     public async Task Save()
     {
