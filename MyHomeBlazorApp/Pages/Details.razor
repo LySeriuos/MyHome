@@ -423,7 +423,7 @@
     private SuccessModal _refSuccessModal = default!;
 
 
-    
+
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUserWithAllData;
@@ -443,7 +443,9 @@
         };
         currentChosedRealEsate.RealEstateID = 0;
         StateHasChanged();
-        await refModalEditAddDevice.OnShowModalEditDeviceClick();
+        // await refModalEditAddDevice.OnShowModalEditDeviceClick();
+        await _reusableModal.ShowAsync();
+
     }
 
     private async Task NavigateToExtraWarrantyFile(int deviceID)

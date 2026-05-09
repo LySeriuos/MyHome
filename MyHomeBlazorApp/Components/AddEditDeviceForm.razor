@@ -10,57 +10,69 @@
 @inject IJSRuntime JSRuntime
 
 <style>
-    .form-select-custom {
-        width: auto;
-        min-width: 250px; /* Adjust this value to match your InputText width */
-        max-width: 100%;
-    }
-
-    /* Button container to push Save to the right */
-    .button-container {
+    /* 1. The wrapper to center the form in the modal */
+    .form-body-wrapper {
         display: flex;
-        justify-content: space-between; /* Spreads Prev/Next and Save apart */
-        align-items: center;
+        flex-direction: column;
+        align-items: center; /* Centers the content */
         width: 100%;
-        margin-top: 1rem;
     }
 
-    .navigation-group {
+    /* 2. Unified width for all inputs (Text & Select) */
+    .form-input-consistent {
+        width: 100%;
+        max-width: 400px; /* This sets the 'edge' for both sides */
+        margin-bottom: 1rem;
+    }
+
+    /* 3. The button row that matches the input width */
+    .form-actions-consistent {
         display: flex;
-        gap: 10px; /* Space between Previous and Next */
+        justify-content: space-between; /* Prev/Next Left, Save Right */
+        width: 100%;
+        max-width: 400px; /* Must match the inputs to look 'same on both sides' */
+        margin-top: 10px;
     }
 
-    /* Container for the whole form to keep it tidy */
-    .edit-form-container {
-        max-width: 500px; /* Adjust based on your modal size */
-        margin: 0 auto;
-    }
-
-        /* Force all inputs and selects to have the same width */
-        .edit-form-container .form-control,
-        .edit-form-container .form-select {
-            width: 100%;
-            max-width: 350px; /* This matches your 'Name' and 'Producer' fields */
-        }
-
-    /* The Button Row Layout */
     .form-actions-row {
         display: flex;
-        justify-content: space-between; /* Pushes Prev/Next left and Save right */
+        justify-content: space-between;
         align-items: center;
         width: 100%;
-        max-width: 350px; /* Match the input width above */
-        margin-top: 20px;
     }
 
+    /* Keeps Prev/Next buttons grouped together on the left */
     .nav-buttons {
         display: flex;
-        gap: 10px; /* Space between Previuos and Next */
+        gap: 8px;
     }
 
-    /* Fix for the Save Button component to ensure it aligns right */
+    /* Ensures the save button doesn't stretch */
     .save-wrapper {
-        margin-left: auto;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px; /* Space between Cancel and Save */
+        flex-wrap: nowrap; /* Prevents them from stacking vertically */
+    }
+
+    .btn-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .form-select{
+        max-width:auto;
+        padding-left:10px;
+        padding-right:0;
+    }
+
+    .left-buttons button,
+    .right-buttons button {
+        margin: 0 5px;
+    }
+    .form-group
+    {
+        margin-bottom:10px;
     }
 </style>
 
@@ -72,137 +84,136 @@
 }
 @if (CurrentDevice != null)
 {
-    <div class="edit-form-container">
-        <EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" OnSubmit="DeviceFormSubmitted" @oninput="OnInput">
-            <DataAnnotationsValidator />
-            <div class="form-group row mb-3">
-                <label for="deviceName" class="col-sm-4 col-form-label">
-                    Name
-                </label>
-                <div class="col-sm-8">
-                    <InputText id="deviceName" @bind-Value="CurrentDevice.DeviceName" placeholder="Device Name" />
-                </div>
-                <ValidationMessage For=@(() => CurrentDevice.DeviceName) />
+    <EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" OnSubmit="Save" @oninput="OnInput">
+        <DataAnnotationsValidator />
+        <div class="form-group row">
+            <label for="deviceName" class="col-sm-4 col-form-label">
+                Name
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceName" @bind-Value="CurrentDevice.DeviceName" placeholder="Device Name" class="form-control" />
             </div>
-            <div class="form-group row">
-                <label for="deviceProduser" class="col-sm-4 col-form-label">
-                    Produser
-                </label>
-                <div class="col-sm-8">
-                    <InputText id="deviceProduser" @bind-Value="CurrentDevice.DeviceProduser" placeholder="Device Produser" />
-                </div>
+            <ValidationMessage For=@(() => CurrentDevice.DeviceName) />
+        </div>
+        <div class="form-group row">
+            <label for="deviceProduser" class="col-sm-4 col-form-label">
+                Produser
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceProduser" @bind-Value="CurrentDevice.DeviceProduser" placeholder="Device Produser" class="form-control"/>
             </div>
-            <div class="form-group row">
-                <label for="deviceType" class="col-sm-4 col-form-label">Type</label>
-                <div class="col-sm-8">
-                    <InputSelect id="deviceType" @bind-Value="CurrentDevice.DeviceType" placeholder="Device Type">
-                        @foreach (var type in Enum.GetValues(typeof(DeviceType)))
-                        {
-                            <option value="@type">@type</option>
-                        }
-                    </InputSelect>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="deviceSerialNumber" class="col-sm-4 col-form-label">
-                    Serial Number
-                </label>
-                <div class="col-sm-8">
-                    <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number" />
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="deviceModelNumber" class="col-sm-4 col-form-label">
-                    Model Number
-                </label>
-                <div class="col-sm-8">
-                    <InputText id="deviceModelNumber" @bind-Value="CurrentDevice.DeviceModelNumber" placeholder="Device Model Number" />
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="deviceIpAddress" class="col-sm-4 col-form-label">
-                    IP Address
-                </label>
-                <div class="col-sm-8">
-                    <InputText id="deviceIpAddress" @bind-Value="CurrentDevice.IpAddress" placeholder="Device Ip Address" />
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="deviceMacAddress" class="col-sm-4 col-form-label">
-                    Mac Address
-                </label>
-                <div class="col-sm-8">
-                    <InputText id="deviceMacAddress" @bind-Value="CurrentDevice.MacAdrress" placeholder="Mac Address" />
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
-                    Manual Link
-                </label>
-                <div class="col-sm-8">
-                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice.DeviceID, JSRuntime)">Manual</Button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-
-                    <label class="form-label mt-3">Choose Real Estate:</label>
-                    <InputSelect @bind-Value="selectedTargetRealEstateId" class="form-select-custom" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
-                        @if (CurrentUser.RealEstates == null || !CurrentUser.RealEstates.Any())
-                        {
-                            @* Option: User has NO real estate yet *@
-                            <option value="0">No Real Estates found (Save as Unassigned)</option>
-                        }
-                        else
-                        {
-                            <option selected value="0">Select Real Estate...or Will Be Saved As Unnassigned</option>
-                            @foreach (var realEstate in CurrentUser.RealEstates)
-                            {
-                                <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
-                            }
-                        }
-                    </InputSelect>
-                    @if (CurrentUser?.RealEstates == null || !CurrentUser.RealEstates.Any())
+        </div>
+        <div class="form-group row">
+            <label for="deviceType" class="col-sm-4 col-form-label">Type</label>
+            <div class="col-sm-8">
+                <InputSelect id="deviceType" @bind-Value="CurrentDevice.DeviceType" placeholder="Device Type" class="form-select">
+                    @foreach (var type in Enum.GetValues(typeof(DeviceType)))
                     {
-                        <small class="text-muted d-block mt-1">
-                            Tip: You can move this to a Real Estate later.
-                        </small>
+                        <option value="@type">@type</option>
                     }
-
-
-                </div>
+                </InputSelect>
             </div>
-            <div class="form-actions-row">
-                <div class="nav-buttons">
-                    @if (CurrentDevice.DeviceID != 0)
+        </div>
+        <div class="form-group row">
+            <label for="deviceSerialNumber" class="col-sm-4 col-form-label">
+                Serial Number
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceModelNumber" class="col-sm-4 col-form-label">
+                Model Number
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceModelNumber" @bind-Value="CurrentDevice.DeviceModelNumber" placeholder="Device Model Number" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceIpAddress" class="col-sm-4 col-form-label">
+                IP Address
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceIpAddress" @bind-Value="CurrentDevice.IpAddress" placeholder="Device Ip Address" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceMacAddress" class="col-sm-4 col-form-label">
+                Mac Address
+            </label>
+            <div class="col-sm-8">
+                <InputText id="deviceMacAddress" @bind-Value="CurrentDevice.MacAdrress" placeholder="Mac Address" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="deviceManualBookLink" class="col-sm-4 col-form-label">
+                Manual Link
+            </label>
+            <div class="col-sm-8 align-content-center">
+                <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice.DeviceID, JSRuntime)">Manual</Button>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="form-group">
+
+                <label class="form-label">Select Real Estate:</label>
+                <InputSelect @bind-Value="RealEstateIdToAddDevice" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
+                    @if (CurrentUser.RealEstates == null || !CurrentUser.RealEstates.Any())
                     {
-                        <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                             DevicesListAsQueryable="_devicesListAsQueryable">
-                        </NextPreviuosButtons>
+                        @* Option: User has NO real estate yet *@
+                        <option value="0">No Real Estates found (Save as Unassigned)</option>
                     }
-                    else if (_unassignedDevicesListAsQueryable.Count() > 1)
+                    else
                     {
-                        <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                             DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
-                        </NextPreviuosButtons>
+                        <option selected value="0">Select Real Estate...or Will Be Saved As Unnassigned</option>
+                        @foreach (var realEstate in CurrentUser.RealEstates)
+                        {
+                            <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
+                        }
                     }
-                </div>
-                @if (IncludeButtons)
+                </InputSelect>
+                @if (CurrentUser?.RealEstates == null || !CurrentUser.RealEstates.Any())
                 {
+                    <small class="text-muted d-block mt-1">
+                        Tip: You can move this to a Real Estate later.
+                    </small>
+                }
+                @* <ValidationMessage For="() => selectedTargetRealEstateId.RealEstateID" class="text-danger d-block" /> *@
 
-                    <div class="save-wrapper">
-                        <AuthorizeView Context="auth">
-                            <Authorized>
-                                <ButtonSave Form="refAddEditDeviceTest"
-                                            ButtonEvent="Save"
-                                            IsButtonDisabled="@(!fieldHasBeenChanged)" />
-                            </Authorized>
-                        </AuthorizeView>
-                    </div>
+            </div>
+        </div>
+
+        @if (showErrorMessageVisible == true)
+        {
+            <p class="text-danger d-block">@errorMessage</p>
+        }
+        <br>
+        <div class="btn-row">
+            <div class="left-buttons col-sm-6 ">
+                @if (CurrentDevice.DeviceID != 0 && RealEstateIdToAddDevice != 0)
+                {
+                    <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                         DevicesListAsQueryable="_devicesListAsQueryable">
+                    </NextPreviuosButtons>
+                }
+                else if (_unassignedDevicesListAsQueryable.Count() > 1)
+                {
+                    <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                         DevicesListAsQueryable="_unassignedDevicesListAsQueryable">
+                    </NextPreviuosButtons>
                 }
             </div>
-        </EditForm>
-    </div>
+            <div class="right-buttons col-sm-6 text-end">
+                <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@(!fieldHasBeenChanged)" />
+                @if (IncludeButtons)
+                {
+                    <ButtonCloseCancel TextButton="Cancel" ButtonEvent="@(() => Parent?.HideAsync())" />
+                }
+            </div>
+        </div>
+    </EditForm>
+
 }
 <div>
     <SuccessModal @ref="_refSuccessModal" Title="Successful action!"></SuccessModal>
@@ -238,7 +249,7 @@
     private SuccessModal _refSuccessModal = default!;
     private string? errorMessage;
     private bool chosedRealEstateIsValid;
-    private bool IncludeButtons { get; set; } = true;
+    private bool IncludeButtons { get; set; } = false;
     private bool deviceIsAssignedToRealEstate;
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
@@ -282,7 +293,7 @@
     {
         if (Parent != null)
         {
-            IncludeButtons = false;
+            IncludeButtons = true;
         }
 
         if (CurrentDevice.DeviceID == 0)
