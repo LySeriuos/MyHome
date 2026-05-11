@@ -1,6 +1,6 @@
 ﻿@page "/mobileDeviceInfo"
 @page "/mobileDeviceInfo/{UserID:int}/{DeviceID:int}"
-
+@attribute [AllowAnonymous]
 
 @using Microsoft.EntityFrameworkCore
 @using MyHome.Models;
@@ -10,7 +10,6 @@
 @using MyHomeBlazorApp.Pages
 @using MyHomeBlazorApp.Components.TabComponents
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
 @implements IDisposable
 @inject PersistentComponentState ApplicationState
 @inherits OwningComponentBase
@@ -31,16 +30,7 @@
                         CurrentUser="_userProfile">
     </AddEditDeviceForm>
 </div>
-<div>
-    <CustomReusableModal title="Device Information">
-        <ChildContent>
-            <AddEditDeviceForm CurrentDevice="_currentDevice"
-                            CurrentUser="_userProfile"
-             >
-            </AddEditDeviceForm>
-        </ChildContent>
-    </CustomReusableModal>
-</div>
+
 
 @code {
 
@@ -57,33 +47,30 @@
 
 
     protected override async Task OnParametersSetAsync()
-    {
-        // 1. Wait for the Master Query to finish
-        await DataService.LoadUserWithAllDataAsync();
+{
+    _currentDevice = await DataService.GetDeviceForGuestAsync(UserID, DeviceID);
 
-        if (DataService.CurrentAppUser?.UserProfile != null)
-        {
-            _userProfile = DataService.CurrentAppUser.UserProfile;            
-            _currentDevice = _userProfile.GetAllDevices()
-                .FirstOrDefault(d => d.DeviceID == DeviceID);
-            StateHasChanged();
-        }
+    if (_currentDevice != null)
+    {
+        // Now you can see if it's assigned or not
+        // Example: if (_currentDevice.RealEstateID == null) { ... }
+        
+        // editContext = new(_currentDevice);
     }
+}
 
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            //Check if the service already has the user, if not, fetch it
-            if (DataService.CurrentAppUser == null)
-            {
-                await DataService.LoadUserWithAllDataAsync();
-            }
+            // Try to load the user, but don't stop the page if it fails (Guest Mode)
+            await DataService.LoadUserWithAllDataAsync();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load user: {ex.Message}");
+            // Log it, but don't crash. Guests won't have a user session.
+            Console.WriteLine($"Guest mode or user load failed: {ex.Message}");
         }
     }
 

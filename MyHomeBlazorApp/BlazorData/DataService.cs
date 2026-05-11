@@ -508,6 +508,37 @@ namespace MyHomeBlazorApp.BlazorData
             }
             return currentDevice;
         }
+
+        public async Task<DeviceProfile?> GetDeviceForGuestAsync(int userId, int deviceId)
+        {
+            // 1. Fetch User with BOTH potential device paths included
+            var user = await _dbcontext.Users
+                .Include(u => u.UserProfile)
+                    .ThenInclude(p => p.UnassignedDevicesList) // Path A
+                        .ThenInclude(d => d.DeviceWarranty)
+                .Include(u => u.UserProfile)
+                    .ThenInclude(p => p.RealEstates)           // Path B
+                        .ThenInclude(r => r.DevicesProfiles)
+                            .ThenInclude(d => d.DeviceWarranty)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.UserProfile != null && u.UserProfile.UserID == userId);
+
+            if (user?.UserProfile == null) return null;
+
+            // 2. Check the Unassigned List first
+            var unassignedDevice = user.UserProfile.UnassignedDevicesList?
+                .FirstOrDefault(d => d.DeviceID == deviceId);
+
+            if (unassignedDevice != null) return unassignedDevice;
+
+            // 3. If not there, check the Real Estate collections
+            var assignedDevice = user.UserProfile.RealEstates?
+                .SelectMany(r => r.DevicesProfiles)
+                .FirstOrDefault(d => d.DeviceID == deviceId);
+
+            return assignedDevice;
+        }
+
         /// <summary>
         /// Method to open new tab in web browser with device details to look for device manual
         /// </summary>
