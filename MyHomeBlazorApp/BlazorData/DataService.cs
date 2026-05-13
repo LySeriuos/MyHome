@@ -547,6 +547,17 @@ namespace MyHomeBlazorApp.BlazorData
         public async void Navigate(int deviceID, IJSRuntime jSRuntime)
         {
             DeviceProfile currentDevice = GetDeviceById(deviceID);
+            //DeviceProfile currentDevice = GetDeviceForGuestAsync(userId, deviceID);
+            var query = new Dictionary<string, string>
+            {
+            { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
+        };
+            string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(Program.Constants.BASE_API_URL, query);
+            await jSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
+        }
+
+        public async Task NavigateTest(DeviceProfile currentDevice, IJSRuntime jSRuntime)
+        {
             var query = new Dictionary<string, string>
             {
             { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
