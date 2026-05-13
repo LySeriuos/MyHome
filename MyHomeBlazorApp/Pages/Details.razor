@@ -634,7 +634,7 @@
         .ThenBy(d => d.DeviceID).AsQueryable();
 
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
-        DataService.CheckIfFileExsist();
+        DataService.CheckIfFileExist();
         // 1. Call the method to get the combined and "stamped" list
         List<DeviceProfile> allDevices = DataService.GetAllUserDevices();
 

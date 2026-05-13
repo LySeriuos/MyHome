@@ -2,23 +2,10 @@
 @inject BlazorData.DataService DataService
 @using MyHome.Models
 
-
-@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.FirstOrDefault().DeviceID)
+@if (isGuest)
 {
-    <Button style="margin:5px" Class="buttonsNextPreviuos" @onclick="OnModalDevicePreviuos">Previuos</Button>
-}
-else
-{
-    <Button style="margin:5px" Class="buttonsNextPreviuos" Disabled @onclick="OnModalDevicePreviuos">Previuos</Button>
-}
-
-@if (CurrentDevice != null && CurrentDevice.DeviceID != DevicesListAsQueryable.LastOrDefault().DeviceID)
-{
-    <Button style="margin:5px" Class="buttonsNextPreviuos" @onclick="OnModalDeviceNext">Next</Button>
-}
-else
-{
-    <Button style="margin:5px" Class="buttonsNextPreviuos" Disabled @onclick="OnModalDeviceNext">Next</Button>
+    <Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDevicePrevious" Disabled="@(NavigationDisabled || _isFirst)">Previous</Button>
+    <Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDeviceNext" Disabled="@(NavigationDisabled || _isLast)">Next</Button>
 }
 
 <style>
@@ -49,28 +36,28 @@ else
         word-break: break-word;
     }
 
-        .buttonsNextPreviuos:active,
-        .buttonsNextPreviuos:hover,
-        .buttonsNextPreviuos:focus {
+        .buttonsNextPrevious:active,
+        .buttonsNextPrevious:hover,
+        .buttonsNextPrevious:focus {
             outline: 0;
         }
 
 
-        .buttonsNextPreviuos:active {
+        .buttonsNextPrevious:active {
             background-color: black;
             box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
             color: #FFFFFF;
         }
 
-        .buttonsNextPreviuos:hover {
+        .buttonsNextPrevious:hover {
             background-color: black;
             border-color: black;
             color:white;
         }
 
-        .buttonsNextPreviuos:active:hover,
-        .buttonsNextPreviuos:focus:hover,
-        .buttonsNextPreviuos:focus {
+        .buttonsNextPrevious:active:hover,
+        .buttonsNextPrevious:focus:hover,
+        .buttonsNextPrevious:focus {
             background-color: black;
             box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
             color: #FFFFFF;
@@ -84,7 +71,13 @@ else
     public DeviceProfile? CurrentDevice {get;set;}
     [Parameter]
     public EventCallback<DeviceProfile> CurrentDeviceChanged { get; set; }
+    [Parameter]
+    public bool NavigationDisabled { get; set; }
     private int CurrentDeviceIndex = 0;
+    private bool isGuest => DataService.CurrentAppUser == null;
+    private bool hasMultipleDevices => DevicesListAsQueryable.Count() > 1;
+    private bool _isFirst => CurrentDevice?.DeviceID == DevicesListAsQueryable?.FirstOrDefault()?.DeviceID;
+    private bool _isLast => CurrentDevice?.DeviceID == DevicesListAsQueryable?.LastOrDefault()?.DeviceID;
 
     private async Task OnModalDeviceNext()
     {
@@ -98,7 +91,7 @@ else
         }
     }
 
-    private async Task OnModalDevicePreviuos()
+    private async Task OnModalDevicePrevious()
     {
         if (CurrentDevice != null)
         {

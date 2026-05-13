@@ -758,7 +758,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <summary>
         /// Checking if file exsists and if the link is active. If not so it will be changed to an empty string.
         /// </summary>
-        public void CheckIfFileExsist()
+        public void CheckIfFileExist()
         {
             // var files = Directory.GetFiles(Environment.CurrentDirectory + $"\\Files\\{DataService._currentUserWithAllData.UserID}", "*.*");
             if (_currentUserWithAllData == null)

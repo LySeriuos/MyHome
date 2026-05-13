@@ -122,28 +122,39 @@
         </div>
         <div class="row mt-3">
             <div class="form-group">
-
-                <label class="form-label">Select Real Estate:</label>
-                <InputSelect @bind-Value="RealEstateIdToAddDevice" class="form-select" @bind-Value:after="RealEsatateIdToAddDeviceChanged">
-                    @if (CurrentUser.RealEstates == null || !CurrentUser.RealEstates.Any())
-                    {
-                        @* Option: User has NO real estate yet *@
-                        <option value="0">No Real Estates found (Save as Unassigned)</option>
-                    }
-                    else
-                    {
-                        <option selected value="0">Select Real Estate...or Will Be Saved As Unnassigned</option>
-                        @foreach (var realEstate in CurrentUser.RealEstates)
-                        {
-                            <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
-                        }
-                    }
-                </InputSelect>
-                @if (CurrentUser?.RealEstates == null || !CurrentUser.RealEstates.Any())
+                @if (CurrentUser != null)
                 {
-                    <small class="text-muted d-block mt-1">
-                        Tip: You can move this to a Real Estate later.
-                    </small>
+
+                    <label class="form-label">Select Real Estate:</label>
+                    <InputSelect @bind-Value="RealEstateIdToAddDevice" class="form-select" @bind-Value:after="RealEstateIdToAddDeviceChanged">
+                        @if (CurrentUser.RealEstates == null || !CurrentUser.RealEstates.Any())
+                        {
+                            @* Option: User has NO real estate yet *@
+                            <option value="0">No Real Estates found (Save as Unassigned)</option>
+                        }
+                        else
+                        {
+                            <option selected value="0">Select Real Estate...or Will Be Saved As Unnassigned</option>
+                            @foreach (var realEstate in CurrentUser.RealEstates)
+                            {
+                                <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
+                            }
+                        }
+                    </InputSelect>
+
+                    @if (CurrentUser?.RealEstates == null || !CurrentUser.RealEstates.Any())
+                    {
+                        <small class="text-muted d-block mt-1">
+                            Tip: You can move this to a Real Estate later.
+                        </small>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-light py-1">
+                        <small>Log in to assign this device to a Real Estate.</small>
+                    </div>
+
                 }
                 @* <ValidationMessage For="() => selectedTargetRealEstateId.RealEstateID" class="text-danger d-block" /> *@
 
@@ -156,16 +167,15 @@
         }
         <br>
         <div class="btn-row">
-            <div class="left-buttons col-sm-6 ">
-                @if (CurrentDevice.DeviceID != 0 && _devicesListAsQueryable.Count() > 1)
-                {
+            <div class="left-buttons col-sm-6 ">                
                     <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                         DevicesListAsQueryable="_devicesListAsQueryable">
-                    </NextPreviuosButtons>
-                }
+                                         DevicesListAsQueryable="_devicesListAsQueryable"
+                                         NavigationDisabled = "@_navigationDisabled">
+                                     </NextPreviuosButtons>
+                
             </div>
             <div class="right-buttons col-sm-6 text-end">
-                <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@(!fieldHasBeenChanged)" />
+                <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@_saveDisabled" />
                 @if (IncludeButtons)
                 {
                     <ButtonCloseCancel TextButton="Cancel" ButtonEvent="@(() => Parent?.HideAsync())" />
@@ -192,7 +202,7 @@
     public CustomReusableModal? Parent { get; set; }
     [Parameter]
     public EventCallback DataChangedEvent { get; set; }
-    
+
     public int RealEstateIdToAddDevice
     {
         get => selectedTargetRealEstateId;
@@ -208,20 +218,23 @@
 
     private SuccessModal _refSuccessModal = default!;
     private string? errorMessage;
-    private bool chosedRealEstateIsValid;
+    private bool choseRealEstateIsValid;
     private bool IncludeButtons { get; set; } = false;
     private bool deviceIsAssignedToRealEstate;
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private bool fieldHasBeenChanged { get; set; } = false;
+    private bool _isGuest => DataService.CurrentAppUser == null;
+    private bool _navigationDisabled => _isGuest || (DataService.GetAllUserDevices()?.Count() > 1);
+    private bool _saveDisabled => !fieldHasBeenChanged || _isGuest;
 
 
     protected override async Task OnInitializedAsync()
     {
-
-        await Init();
-        base.OnInitialized();
+        // Just try to hydrate the DataService if a session exists
+        await DataService.LoadUserWithAllDataAsync();
     }
+
 
     private void OnInput()
     {
@@ -230,29 +243,29 @@
 
     //todo: disable button if there is no changes in the editForm
     private async Task Init()
-{
-    if (CurrentDevice == null)
     {
-        return;
-    }
+        if (CurrentDevice == null)
+        {
+            return;
+        }
 
-    // 1. Initialize the form context (this works for guests!)
-    editContext = new(CurrentDevice);        
+        // 1. Initialize the form context (this works for guests!)
+        editContext = new(CurrentDevice);
 
-    // 2. Only fetch the "full list" if someone is actually logged in
-    // This prevents the "No User Logged In" error for guests
-    if (DataService.CurrentAppUser != null)
-    {
-        var allDevicesList = DataService.GetAllUserDevices();
-        _devicesListAsQueryable = allDevicesList.AsQueryable();
+        // 2. Only fetch the "full list" if someone is actually logged in
+        // This prevents the "No User Logged In" error for guests
+        if (DataService.CurrentAppUser != null)
+        {
+            var allDevicesList = DataService.GetAllUserDevices();
+            _devicesListAsQueryable = allDevicesList.AsQueryable();
+        }
+        else
+        {
+            // For guests, we provide an empty list or just the current device
+            // so the UI components don't break
+            _devicesListAsQueryable = new List<DeviceProfile> { CurrentDevice }.AsQueryable();
+        }
     }
-    else
-    {
-        // For guests, we provide an empty list or just the current device
-        // so the UI components don't break
-        _devicesListAsQueryable = new List<DeviceProfile> { CurrentDevice }.AsQueryable();
-    }
-}
 
     public async Task Save()
     {
@@ -290,7 +303,7 @@
         base.OnParametersSet();
     }
 
-    private void RealEsatateIdToAddDeviceChanged()
+    private void RealEstateIdToAddDeviceChanged()
     {
         fieldHasBeenChanged = true;
         showErrorMessageVisible = (selectedTargetRealEstateId == 0);
