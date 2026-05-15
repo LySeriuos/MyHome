@@ -2,14 +2,14 @@
 @inject BlazorData.DataService DataService
 @using MyHome.Models
 
-@if (isGuest)
+@if (!isGuest)
 {
     <Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDevicePrevious" Disabled="@(NavigationDisabled || _isFirst)">Previous</Button>
     <Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDeviceNext" Disabled="@(NavigationDisabled || _isLast)">Next</Button>
 }
 
 <style>
-    .buttonsNextPreviuos {
+    .buttonsNextPrevious {
         align-items: flex-end;
         background-color: white;
         background-position: 0 0;
