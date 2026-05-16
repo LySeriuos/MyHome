@@ -108,10 +108,7 @@
                 </div>
             </Authorized>
             <NotAuthorized>
-                @* Optional: Show a message or just leave it empty *@
-                <div class="alert alert-light py-1">
-                    <small>Log in to view network details.</small>
-                </div>
+
             </NotAuthorized>
         </AuthorizeView>
         <div class="form-group row">
@@ -151,16 +148,6 @@
                         </small>
                     }
                 }
-                else
-                {
-                    <div class="alert alert-light py-1">
-                        <small>Log in to make changes or see more details.</small>
-                    </div>
-                    <div class="text-center">                       
-                        <Button Class="btn-outline-danger"
-                                @onclick= "NavigateToLoginWithReturnUrl">Login</Button>                        
-                    </div>
-                }
                 @* <ValidationMessage For="() => selectedTargetRealEstateId.RealEstateID" class="text-danger d-block" /> *@
 
             </div>
@@ -170,23 +157,39 @@
         {
             <p class="text-danger d-block">@errorMessage</p>
         }
-        <br>
-        <div class="btn-row">
-            <div class="left-buttons col-sm-6 ">
-                <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                     DevicesListAsQueryable="_devicesListAsQueryable"
-                                     NavigationDisabled="@_navigationDisabled">
-                </NextPreviuosButtons>
+        <br />
+        @if (_isGuest)
+        {
+            <div class="alert alert-light py-1">
+                <small>Log in to make changes or see more details.</small>
+            </div>
+            <div class="text-center">
+                <Button Class="btn-outline-danger"
+                        @onclick="NavigateToLoginWithReturnUrl">
+                    Login
+                </Button>
+            </div>
+        }
+        else
+        {
+            <br />
+            <div class="btn-row">
+                <div class="left-buttons col-sm-6 ">
+                    <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                         DevicesListAsQueryable="_devicesListAsQueryable"
+                                         NavigationDisabled="@_navigationDisabled">
+                    </NextPreviuosButtons>
 
+                </div>
+                <div class="right-buttons col-sm-6 text-end">
+                    <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@_saveDisabled" />
+                    @if (IncludeButtons)
+                    {
+                        <ButtonCloseCancel TextButton="Cancel" ButtonEvent="@(() => Parent?.HideAsync())" />
+                    }
+                </div>
             </div>
-            <div class="right-buttons col-sm-6 text-end">
-                <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@_saveDisabled" />
-                @if (IncludeButtons)
-                {
-                    <ButtonCloseCancel TextButton="Cancel" ButtonEvent="@(() => Parent?.HideAsync())" />
-                }
-            </div>
-        </div>
+        }
     </EditForm>
 
 }
