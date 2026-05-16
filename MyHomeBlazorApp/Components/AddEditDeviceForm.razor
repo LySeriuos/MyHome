@@ -8,6 +8,8 @@
 @using MyHomeBlazorApp.Components
 @inject BlazorData.DataService DataService
 @inject IJSRuntime JSRuntime
+@inject NavigationManager uriHelper
+@inject NavigationManager NavManager
 
 <style>
     .btn-row {
@@ -152,9 +154,12 @@
                 else
                 {
                     <div class="alert alert-light py-1">
-                        <small>Log in to assign this device to a Real Estate.</small>
+                        <small>Log in to make changes or see more details.</small>
                     </div>
-
+                    <div class="text-center">                       
+                        <Button Class="btn-outline-danger"
+                                @onclick='() => NavManager.NavigateTo("/Account/login")'>Login</Button>                        
+                    </div>
                 }
                 @* <ValidationMessage For="() => selectedTargetRealEstateId.RealEstateID" class="text-danger d-block" /> *@
 
@@ -167,12 +172,12 @@
         }
         <br>
         <div class="btn-row">
-            <div class="left-buttons col-sm-6 ">                
-                    <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
-                                         DevicesListAsQueryable="_devicesListAsQueryable"
-                                         NavigationDisabled = "@_navigationDisabled">
-                                     </NextPreviuosButtons>
-                
+            <div class="left-buttons col-sm-6 ">
+                <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                                     DevicesListAsQueryable="_devicesListAsQueryable"
+                                     NavigationDisabled="@_navigationDisabled">
+                </NextPreviuosButtons>
+
             </div>
             <div class="right-buttons col-sm-6 text-end">
                 <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@_saveDisabled" />
@@ -229,11 +234,6 @@
     private bool _saveDisabled => !fieldHasBeenChanged || _isGuest;
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Just try to hydrate the DataService if a session exists
-        await DataService.LoadUserWithAllDataAsync();
-    }
 
 
     private void OnInput()
@@ -241,6 +241,12 @@
         fieldHasBeenChanged = true;
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        // Just try to hydrate the DataService if a session exists
+        await DataService.LoadUserWithAllDataAsync();
+        Init();
+    }
     //todo: disable button if there is no changes in the editForm
     private async Task Init()
     {
@@ -295,7 +301,8 @@
         {
             selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
         }
-
+        // var allDevicesList = DataService.GetAllUserDevices();
+        // _devicesListAsQueryable = allDevicesList.AsQueryable();
 
         editContext = new(CurrentDevice);
         fieldHasBeenChanged = false;
