@@ -130,7 +130,15 @@
                 await SignInManager.UserManager.AddToRoleAsync(user, "user");
             }
             Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo("/maindashboard");
+            if (!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl != "/")
+            {
+                RedirectManager.RedirectTo(ReturnUrl);
+            }
+            else
+            {
+                //Default destination
+                RedirectManager.RedirectTo("/maindashboard");
+            }
         }
         else if (result.RequiresTwoFactor)
         {

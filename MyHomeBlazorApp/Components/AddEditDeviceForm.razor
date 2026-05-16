@@ -158,7 +158,7 @@
                     </div>
                     <div class="text-center">                       
                         <Button Class="btn-outline-danger"
-                                @onclick='() => NavManager.NavigateTo("/Account/login")'>Login</Button>                        
+                                @onclick= "NavigateToLoginWithReturnUrl">Login</Button>                        
                     </div>
                 }
                 @* <ValidationMessage For="() => selectedTargetRealEstateId.RealEstateID" class="text-danger d-block" /> *@
@@ -234,7 +234,12 @@
     private bool _saveDisabled => !fieldHasBeenChanged || _isGuest;
 
 
-
+    private void NavigateToLoginWithReturnUrl()
+    {
+        var currentUri = NavManager.ToBaseRelativePath(NavManager.Uri);
+        var escapedReturnUrl = Uri.EscapeDataString(currentUri);
+        NavManager.NavigateTo($"account/login?returnUrl={escapedReturnUrl}", forceLoad: true);
+    }
 
     private void OnInput()
     {
