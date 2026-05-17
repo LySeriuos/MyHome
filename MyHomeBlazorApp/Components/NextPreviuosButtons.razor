@@ -2,11 +2,10 @@
 @inject BlazorData.DataService DataService
 @using MyHome.Models
 
-@if (!isGuest)
-{
-    <Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDevicePrevious" Disabled="@(NavigationDisabled || _isFirst)">Previous</Button>
-    <Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDeviceNext" Disabled="@(NavigationDisabled || _isLast)">Next</Button>
-}
+
+<Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDevicePrevious" Disabled="@(_isFirst)">Previous</Button>
+<Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDeviceNext" Disabled="@(_isLast)">Next</Button>
+
 
 <style>
     .buttonsNextPrevious {
@@ -38,7 +37,7 @@
 
         .buttonsNextPrevious:active,
         .buttonsNextPrevious:hover,
-        .buttonsNextPrevious:focus {
+        .buttonsNextPrevious:focus:hover {
             outline: 0;
         }
 
@@ -52,52 +51,70 @@
         .buttonsNextPrevious:hover {
             background-color: black;
             border-color: black;
-            color:white;
+            color: white;
         }
 
         .buttonsNextPrevious:active:hover,
-        .buttonsNextPrevious:focus:hover,
-        .buttonsNextPrevious:focus {
+        .buttonsNextPrevious:focus:hover
+         {
             background-color: black;
             box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
             color: #FFFFFF;
         }
 </style>
 
-@code{
+@code {
     [Parameter]
     public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
     [Parameter]
-    public DeviceProfile? CurrentDevice {get;set;}
+    public DeviceProfile? CurrentDevice { get; set; }
     [Parameter]
     public EventCallback<DeviceProfile> CurrentDeviceChanged { get; set; }
-    [Parameter]
-    public bool NavigationDisabled { get; set; }
-    private int CurrentDeviceIndex = 0;
-    private bool isGuest => DataService.CurrentAppUser == null;
-    private bool hasMultipleDevices => DevicesListAsQueryable.Count() > 1;
-    private bool _isFirst => CurrentDevice?.DeviceID == DevicesListAsQueryable?.FirstOrDefault()?.DeviceID;
-    private bool _isLast => CurrentDevice?.DeviceID == DevicesListAsQueryable?.LastOrDefault()?.DeviceID;
+    
+    private List<DeviceProfile> _cachedDevices = new();
+    private int _currentDeviceIndex = -1;
+    //These checks if there is more then one list item as well.
+    private bool _isFirst => _cachedDevices.Count < 2 || _currentDeviceIndex <= 0;
+    private bool _isLast => _cachedDevices.Count < 2 || _currentDeviceIndex == -1 || _currentDeviceIndex >= _cachedDevices.Count - 1;
+
+    protected override void OnParametersSet()
+    {
+        if (DevicesListAsQueryable != null)
+        {
+            _cachedDevices = DevicesListAsQueryable.ToList();
+        }
+        else
+        {
+            _cachedDevices = new();
+        }
+        UpdateCurrentIndex();
+        base.OnParametersSet();
+    }
+
+    private void UpdateCurrentIndex()
+    {
+        if (CurrentDevice != null && _cachedDevices.Any())
+        {
+            // Use FindIndex matching on ID.
+            _currentDeviceIndex = _cachedDevices.FindIndex(d => d.DeviceID == CurrentDevice.DeviceID);
+        }
+        else
+        {
+            _currentDeviceIndex = -1;
+        }
+    }
 
     private async Task OnModalDeviceNext()
     {
-        if (CurrentDevice != null)
-        {
-            CurrentDeviceIndex = DevicesListAsQueryable.ToList().IndexOf(CurrentDevice);
-            CurrentDevice = DevicesListAsQueryable.ToList()[CurrentDeviceIndex + 1];
-            await CurrentDeviceChanged.InvokeAsync(CurrentDevice);
-            //one line code with linq
-            // CurrentDevice = allDevices[(allDevices.IndexOf(CurrentDevice) + 1) % allDevices.Count];
-        }
+        if (_isLast) return;
+        var nextDevice = _cachedDevices[_currentDeviceIndex + 1];
+        await CurrentDeviceChanged.InvokeAsync(nextDevice);
     }
 
     private async Task OnModalDevicePrevious()
     {
-        if (CurrentDevice != null)
-        {
-            CurrentDeviceIndex = DevicesListAsQueryable.ToList().IndexOf(CurrentDevice);
-            CurrentDevice = DevicesListAsQueryable.ToList()[CurrentDeviceIndex - 1];
-            await CurrentDeviceChanged.InvokeAsync(CurrentDevice);
-        }
+        if (_isFirst) return;
+        var previousDevice = _cachedDevices[_currentDeviceIndex - 1];
+        await CurrentDeviceChanged.InvokeAsync(previousDevice);
     }
 }

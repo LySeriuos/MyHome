@@ -177,7 +177,7 @@
                 <div class="left-buttons col-sm-6 ">
                     <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
                                          DevicesListAsQueryable="_devicesListAsQueryable"
-                                         NavigationDisabled="@_navigationDisabled">
+                                         >
                     </NextPreviuosButtons>
 
                 </div>
@@ -232,9 +232,8 @@
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private bool fieldHasBeenChanged { get; set; } = false;
-    private bool _isGuest => DataService.CurrentAppUser == null;
-    private bool _navigationDisabled => _isGuest || !(DataService.GetAllUserDevices()?.Count() > 1);
-    private bool _saveDisabled => !fieldHasBeenChanged || _isGuest;
+    private bool _isGuest => DataService.CurrentAppUser == null;    
+    private bool _saveDisabled => !fieldHasBeenChanged;
 
 
     private void NavigateToLoginWithReturnUrl()
