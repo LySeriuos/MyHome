@@ -41,6 +41,18 @@
             outline: 0;
         }
 
+    .btn:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+        box-shadow: none;
+    }
+
+    .btn-check:focus + .btn, .btn:focus {
+        outline: 0;
+        box-shadow: none;
+    }
 
         .buttonsNextPrevious:active {
             background-color: black;
