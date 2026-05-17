@@ -175,11 +175,10 @@
             <br />
             <div class="btn-row">
                 <div class="left-buttons col-sm-6 ">
-                    <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                    <NextPreviuosButtons CurrentDevice ="@CurrentDevice"
                                          DevicesListAsQueryable="_devicesListAsQueryable"
-                                         >
+                                         CurrentDeviceChanged="HandleDeviceSwitch">
                     </NextPreviuosButtons>
-
                 </div>
                 <div class="right-buttons col-sm-6 text-end">
                     <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@_saveDisabled" />
@@ -235,6 +234,13 @@
     private bool _isGuest => DataService.CurrentAppUser == null;    
     private bool _saveDisabled => !fieldHasBeenChanged;
 
+    private void HandleDeviceSwitch(DeviceProfile targetDevice)
+    {
+        
+        fieldHasBeenChanged = false;
+        CurrentDevice = targetDevice;        
+        editContext = new(CurrentDevice);
+    }
 
     private void NavigateToLoginWithReturnUrl()
     {

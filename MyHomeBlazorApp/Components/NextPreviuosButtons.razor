@@ -3,8 +3,8 @@
 @using MyHome.Models
 
 
-<Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDevicePrevious" Disabled="@(_isFirst)">Previous</Button>
-<Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDeviceNext" Disabled="@(_isLast)">Next</Button>
+<Button style="margin:5px" Class="buttonsNextPrevious" @ @onclick="OnModalDevicePrevious" Disabled="@_isFirst">Previous</Button>
+<Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDeviceNext" Disabled="@_isLast">Next</Button>
 
 
 <style>
