@@ -678,7 +678,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         #region Should be moved?
 
-        //  InputFile upploading handling // 
+        //  InputFile uploading handling // 
         /// <summary>
         /// Capturing file and creating filePath to return
         /// </summary>

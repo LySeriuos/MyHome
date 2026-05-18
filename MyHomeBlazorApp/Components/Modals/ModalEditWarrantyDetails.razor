@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="deviceExtendedWarrantyLength" class="col-sm-6 col-form-label">Extended warranty lentgh (years)</label>
+                <label for="deviceExtendedWarrantyLength" class="col-sm-6 col-form-label">Extended warranty length (years)</label>
                 <div class="col-sm-6">
                     <InputNumber id="deviceExtendedWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.ExtendedWarrantyinYears">Add extended warranty lentgh in years</InputNumber>
                 </div>
@@ -149,14 +149,14 @@
             }
             if (_extraWarrantyReceiptFile != null)
             {
-                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink); // deleting previuos file when loading new one
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink); // deleting previous file when loading new one
                 string _extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = _extraWarrantyReceiptFilePath;
             }
 
             if (_warrantyReceiptFile != null)
             {
-                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink); // deleting previuos file when loading new one
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink); // deleting previous file when loading new one
                 string warrantyReceiptFilePath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
             }

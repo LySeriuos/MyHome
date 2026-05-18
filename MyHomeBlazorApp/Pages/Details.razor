@@ -178,7 +178,7 @@
                                 }
                                 else
                                 {
-                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToWarrantyFile(context.DeviceID)">Open</Button>
+                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ReceiptLink)">Open</Button>
                                 }
 
                             </TemplateColumn>
@@ -191,7 +191,7 @@
                                 }
                                 else
                                 {
-                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyFile(context.DeviceID)">Open</Button>
+                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ExtraInsuranceWarrantyLink)">Open</Button>
                                 }
                             </TemplateColumn>
                         </QuickGrid>
@@ -448,21 +448,15 @@
 
     }
 
-    private async Task NavigateToExtraWarrantyFile(int deviceID)
+    private async Task NavigateToExtraWarrantyOrReceiptFile(int deviceID, string relativePath)
     {
-        currentDevice = DataService.GetDeviceById(deviceID);
-        string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
-        await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+        string fileUrl = DataService.GetFileUrl(relativePath, deviceID);
+        if (!string.IsNullOrEmpty(fileUrl))
+        {
+            await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
+        }
     }
-
-    private async Task NavigateToWarrantyFile(int deviceID)
-    {
-        currentDevice = DataService.GetDeviceById(deviceID);
-        string currentWarrantyReceiptLink = currentDevice.DeviceWarranty.ReceiptLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, currentDevice.DeviceID);
-        await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
-    }
+        
 
     private async Task OnModalDeleteSuccess()
     {
