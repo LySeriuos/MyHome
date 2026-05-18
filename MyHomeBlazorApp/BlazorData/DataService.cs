@@ -189,6 +189,19 @@ namespace MyHomeBlazorApp.BlazorData
             return UnassignedDevicesList;
         }
 
+        public async Task<bool> IsDeviceOwnedByUserAsync(int deviceId, string identityUserId)
+        {
+            // Check if the user owns the device, either in userProfile.RealEstates or in userProfile.UnassignedDevicesList
+            return await _dbcontext.Users
+                .AnyAsync(u => u.Id == identityUserId && (
+                    // Pathway 1: The device is linked to one of the user's real estates
+                    u.UserProfile.RealEstates.Any(r => r.DevicesProfiles.Any(d => d.DeviceID == deviceId))
+                    ||
+                    // Pathway 2: The device is in the user's unassigned list
+                    u.UserProfile.UnassignedDevicesList.Any(d => d.DeviceID == deviceId)
+                ));
+        }
+
         #endregion
 
         #region Real Estate
