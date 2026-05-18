@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using java.security;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -59,10 +60,33 @@ namespace MyHomeBlazorApp.BlazorData
             }
             return null;
         }
+        /// <summary>
+        /// Get the Domain User ID (UserProfile.UserID) for the currently authenticated user. 
+        /// This is the ID used in the rest of the database, not the IdentityUser ID. Returns 0 if not authenticated or if any issues arise. 
+        /// This method is crucial for linking the Identity system to the actual user data in the database. 
+        /// It should be called early in the app's lifecycle to establish the user's context. Note: 
+        /// This method assumes that every authenticated IdentityUser has a corresponding UserProfile with a valid UserID. 
+        /// If this is not guaranteed, additional error handling may be needed.
+        /// </summary>
+        /// <param name="principal">The claims principal representing the currently authenticated user.</param>
+        /// <returns>The domain user.UserProfile.UserId ID if available; otherwise, 0.</returns>
+        public async Task<int> GetDomainUserIdAsync(System.Security.Claims.ClaimsPrincipal principal)
+        {
+            if(principal.Identity?.IsAuthenticated != true) { return 0; }
+            
+            string? identityUserId = _userManager.GetUserId(principal);
+            if(string.IsNullOrEmpty(identityUserId)) { return 0; }
+
+            MyHomeBlazorAppUser? userWithProfile = await _dbcontext.Users
+                .Include(u => u.UserProfile)
+                .FirstOrDefaultAsync(u => u.Id == identityUserId);
+            return userWithProfile?.UserProfile?.UserID ?? 0;
+        }
+        
 
         public async Task<MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
         {
-            //Chek cache first
+            //Check cache first
             if (!string.IsNullOrEmpty(CurrentAppUser?.Id))
             {
                 return CurrentAppUser;
