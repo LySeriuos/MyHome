@@ -834,6 +834,17 @@ namespace MyHomeBlazorApp.BlazorData
             return fileUrl;
         }
 
+        public string GetSecureControllerFileUrl(int deviceId, string linkToTheFile)
+        {
+            if (string.IsNullOrEmpty(linkToTheFile)) return string.Empty;
+
+            // Extract just the file name (e.g., "receipt.pdf") from the full path string
+            var fileName = Path.GetFileName(linkToTheFile);
+
+            // Points directly to your secure API Controller endpoint!
+            return $"/api/files/{deviceId}/{fileName}";
+        }
+
         public async Task UpdateObjectInDB()
         {
             _dbcontext.UpdateRange(CurrentAppUser);

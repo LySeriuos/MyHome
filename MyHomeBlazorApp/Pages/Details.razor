@@ -179,6 +179,7 @@
                                 else
                                 {
                                     <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ReceiptLink)">Open</Button>
+                                    <a class="btn btn-sm btn btn-outline-info" href="/api/files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ReceiptLink))" target="_blank">Open</a>
                                 }
 
                             </TemplateColumn>
@@ -192,6 +193,7 @@
                                 else
                                 {
                                     <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ExtraInsuranceWarrantyLink)">Open</Button>
+                                    <a class="btn btn-sm btn btn-outline-info" href="/api/files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ExtraInsuranceWarrantyLink))" target="_blank">Open</a>
                                 }
                             </TemplateColumn>
                         </QuickGrid>
