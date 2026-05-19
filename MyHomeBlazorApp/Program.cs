@@ -45,6 +45,7 @@ namespace MyHomeBlazorApp
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
+            builder.Services.AddControllers();
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -100,12 +101,12 @@ namespace MyHomeBlazorApp
             {
                 Directory.CreateDirectory(filesPath);
             }
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(filesPath),
-                RequestPath = "/Files"
-            });
+            // Commented out to secure the files by not letting bypass API controller
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(filesPath),
+            //    RequestPath = "/Files"
+            //});
 
             //      app.UseRouting();
             app.UseAuthentication();
@@ -117,7 +118,7 @@ namespace MyHomeBlazorApp
             app.MapRazorComponents<App>()
                .AddInteractiveServerRenderMode();
             app.MapAdditionalIdentityEndpoints();
-
+            app.MapControllers();
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
