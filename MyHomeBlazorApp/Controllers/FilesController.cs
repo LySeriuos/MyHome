@@ -33,7 +33,9 @@ namespace MyHomeBlazorApp.Controllers
                 return Forbid();
             }
 
-            string filePath = Path.Combine(Program.Constants.SAVE_UPLOADED_FILES, deviceId.ToString(), fileName);
+            string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", identityUserId, deviceId.ToString());
+            string filePath = Path.Combine(baseFolder, fileName);
+
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound();
