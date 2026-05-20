@@ -35,7 +35,7 @@ namespace MyHomeBlazorApp.BlazorData
         public MyHomeBlazorAppUser? CurrentAppUser { get; set; }
         public List<DeviceProfile>? Devices => _currentUserWithAllData?.GetAllDevices();
         public List<DeviceProfile>? expiringDeviceDevices { get; set; } = new List<DeviceProfile>();
-        public DeviceProfile? FirstexpiringDeviceDevice { get; set; } = new DeviceProfile();
+        public DeviceProfile? FirstExpiringDevice { get; set; } = new DeviceProfile();
         public List<DeviceWarranty>? DevicesWarranties { get; set; } = new List<DeviceWarranty>();
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
@@ -124,7 +124,7 @@ namespace MyHomeBlazorApp.BlazorData
             if (_currentUserWithAllData != null)
             {
                 expiringDeviceDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithAllData, 180);
-                FirstexpiringDeviceDevice = FirstexpiringDeviceWarranty();
+                FirstExpiringDevice = FirstexpiringDeviceWarranty();
                 DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithAllData);
             }
             else
@@ -132,7 +132,7 @@ namespace MyHomeBlazorApp.BlazorData
                 // "Else" Case: Reset these to empty states so the UI doesn't show old data
                 expiringDeviceDevices = new List<DeviceProfile>();
                 DevicesWarranties = new List<DeviceWarranty>();
-                FirstexpiringDeviceDevice = null;
+                FirstExpiringDevice = null;
             }
         }
         public async Task LoadUserWithAllDataAsync()
