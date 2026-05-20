@@ -725,7 +725,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Created file path to the file in Blazor server</returns>
         public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors, DeviceProfile currentDevice)
         {
-            if (file is null) return "";
+            if (file is null) return "uploading error";
 
             try
             {

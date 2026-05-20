@@ -141,24 +141,55 @@
     {
         try
         {
-            DeviceProfile deviceToAddLink = new();
             errors.Clear();
+
             if (CurrentDevice != null)
             {
-                deviceToAddLink = DataService.Devices.First(d => d.DeviceID == CurrentDevice.DeviceID);
+                errors.Add("Error: Current device context is missing.");
+                return;
+
             }
+
+            var deviceToAddLink = DataService.Devices.FirstOrDefault(d => d.DeviceID == CurrentDevice.DeviceID);
+            if (deviceToAddLink == null)
+            {
+                errors.Add("Error: Device not found in the database.");
+                return;
+            }
+            if (deviceToAddLink.DeviceWarranty == null)
+            {
+                deviceToAddLink.DeviceWarranty = new DeviceWarranty();
+            }
+
+            Console.WriteLine($"Submission debug -> Warranty File Null? {_warrantyReceiptFile == null}");
+            Console.WriteLine($"Submission debug -> Extra File Null? {_extraWarrantyReceiptFile == null}");
+
             if (_extraWarrantyReceiptFile != null)
             {
-                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink); // deleting previous file when loading new one
-                string _extraWarrantyReceiptFilePath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
-                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = _extraWarrantyReceiptFilePath;
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
+
+                string extraPath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
+
+                if (string.IsNullOrEmpty(extraPath))
+                {
+                    errors.Add("Extra warranty upload processed but returned an empty path destination.");
+                    return; // Stop execution so the UI doesn't close on a hidden failure!
+                }
+                deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraPath;
             }
 
             if (_warrantyReceiptFile != null)
             {
-                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink); // deleting previous file when loading new one
-                string warrantyReceiptFilePath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
-                deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyReceiptFilePath;
+                DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
+
+                string warrantyPath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
+
+                if (string.IsNullOrEmpty(warrantyPath))
+                {
+                    errors.Add("Main warranty upload processed but returned an empty path destination.");
+                    return; // Stop execution
+                }
+                deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyPath;
             }
 
             await DataService.UpdateObjectInDB();
@@ -168,6 +199,7 @@
         catch (Exception ex)
         {
             errors.Add($"Error: {ex.Message}");
+            errors.Add($"Critical Form Submission Failure: {ex.Message}");
             throw;
         }
     }
