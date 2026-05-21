@@ -33,7 +33,7 @@ namespace MyHomeBlazorApp.Controllers
                 return Forbid();
             }
 
-            string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", identityUserId, deviceId.ToString());
+            string baseFolder = Path.Combine("/", "app", "Files", identityUserId, deviceId.ToString());
             string filePath = Path.Combine(baseFolder, fileName);
 
             if (!System.IO.File.Exists(filePath))

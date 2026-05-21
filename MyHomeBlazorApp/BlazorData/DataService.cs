@@ -734,7 +734,7 @@ namespace MyHomeBlazorApp.BlazorData
                 string deviceId = currentDevice.DeviceID.ToString();
 
                 // Build the path using Path.Combine and UPPERCASE "Files"
-                string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", userId, deviceId);
+                string baseFolder = Path.Combine("/", "app", "Files", userId, deviceId);
                 string filePath = Path.Combine(baseFolder, newFileName);
 
                 // Ensure the directory exists (Linux friendly)
@@ -765,6 +765,7 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        //baseFolder is changed in the DataService to meet docker requirements. 
         public string GenerateDeviceQrCode(int deviceId, int userId)
         {
             // Setup paths using Path.Combine (Crucial for Docker/Linux)
