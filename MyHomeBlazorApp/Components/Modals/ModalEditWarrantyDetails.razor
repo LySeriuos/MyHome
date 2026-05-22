@@ -8,28 +8,28 @@
 
 <style>
     .btn-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .left-buttons button,
     .right-buttons button {
-    margin: 0 5px;
+        margin: 0 5px;
     }
 </style>
 
 <Modal @ref="_refModalEditWarrantyDetails" Title="Edit Warranty Details">
     <BodyTemplate>
-        @if( CurrentDevice == null)
-            {
-                <div class="d-flex justify-content-center align-items-center" style="height:100vh;">
-                    <Spinner Color="SpinnerColor.Primary" Size="SpinnerSize.Large" />
-                    <span class="ms-3">Loading Warranty...</span>
-                </div>
-            }
-            else
-            {
+        @if (CurrentDevice == null)
+        {
+            <div class="d-flex justify-content-center align-items-center" style="height:100vh;">
+                <Spinner Color="SpinnerColor.Primary" Size="SpinnerSize.Large" />
+                <span class="ms-3">Loading Warranty...</span>
+            </div>
+        }
+        else
+        {
             <EditForm Model="@CurrentDevice" OnSubmit="WarrantyDetailsFormSubmitted">
                 <div class="form-group row align-items-center">
                     <label for="devicePurchaseDate" class="col-sm-6 col-form-label">Purchase Date</label>
@@ -52,21 +52,22 @@
                     <div class="col-sm-6">
                         @if (!string.IsNullOrEmpty(CurrentDevice?.DeviceWarranty?.ReceiptLink) && !_showWarrantyUploadBox)
                         {
-                            <div class="d-flex align-items-center justify-content-between p-2 bg-white border rounded shadow-sm">
-                                <div class="d-flex align-items-center gap-2">
+                            <div class="p-2 bg-white border rounded shadow-sm">
+                                <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-success">✓ Uploaded</span>
-                                    <small class="text-muted text-truncate" style="max-width: 140px;">
+                                    <small class="text-muted text-truncate" style="max-width: 180px;">
                                         @(Path.GetFileName(CurrentDevice.DeviceWarranty.ReceiptLink))
                                     </small>
                                 </div>
-                                <div class="btn-group btn-group-sm">
+
+                                <div class="d-flex gap-2">
                                     <a href="/api/Files/@CurrentDevice.DeviceID/@(Path.GetFileName(CurrentDevice.DeviceWarranty.ReceiptLink))"
-                                       target="_blank" class="btn btn-outline-primary">
-                                        Open
+                                       target="_blank" class="btn btn-sm btn-outline-primary px-3">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i> Open
                                     </a>
-                                    <Button class="btn btn-outline-danger" @onclick="() => _showWarrantyUploadBox = true">
-                                        Replace
-                                    </Button>
+                                    <button class="btn btn-sm btn-outline-danger px-3" @onclick="() => _showWarrantyUploadBox = true">
+                                        <i class="bi bi-arrow-repeat me-1"></i> Replace
+                                    </button>
                                 </div>
                             </div>
                         }
@@ -106,20 +107,21 @@
                     <div class="col-sm-6">
                         @if (!string.IsNullOrEmpty(CurrentDevice?.DeviceWarranty?.ExtraInsuranceWarrantyLink) && !_showExtraUploadBox)
                         {
-                            <div class="d-flex align-items-center justify-content-between p-2 bg-white border rounded shadow-sm">
-                                <div class="d-flex align-items-center gap-2">
+                            <div class="p-2 bg-white border rounded shadow-sm">
+                                <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-success">✓ Uploaded</span>
-                                    <small class="text-muted text-truncate" style="max-width: 140px;">
+                                    <small class="text-muted text-truncate" style="max-width: 180px;">
                                         @(Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
                                     </small>
                                 </div>
-                                <div class="btn-group btn-group-sm">
+
+                                <div class="d-flex gap-2">
                                     <a href="/api/Files/@CurrentDevice.DeviceID/@(Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))"
-                                       target="_blank" class="btn btn-outline-primary">
-                                        Open
+                                       target="_blank" class="btn btn-sm btn-outline-primary px-3">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i> Open
                                     </a>
-                                    <button type="button" class="btn btn-outline-danger" @onclick="() => _showExtraUploadBox = true">
-                                        Replace
+                                    <button class="btn btn-sm btn-outline-danger px-3" @onclick="() => _showWarrantyUploadBox = true">
+                                        <i class="bi bi-arrow-repeat me-1"></i> Replace
                                     </button>
                                 </div>
                             </div>
@@ -272,7 +274,7 @@
                     errors.Add("Extra warranty upload processed but returned an empty path destination.");
                     return;
                 }
-                // keeping path to the older uploaded file in case new one doesn't go through all the way. 
+                // keeping path to the older uploaded file in case new one doesn't go through all the way.
                 string oldExtraPath = deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink;
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraPath;
 
