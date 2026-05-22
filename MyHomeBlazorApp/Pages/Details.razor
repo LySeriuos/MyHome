@@ -179,7 +179,11 @@
                                 else
                                 {
                                     <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ReceiptLink)">Open</Button>
-                                    <a class="btn btn-sm btn btn-outline-info" href="/api/files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ReceiptLink))" target="_blank">Open</a>
+                                    <!-- 🟢 Update both file links in your EditForm to clean up backslashes on the fly -->
+                                    <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ReceiptLink.Replace('\\', '/')))"
+                                       target="_blank" class="btn btn-outline-primary">
+                                        Open
+                                    </a>
                                 }
 
                             </TemplateColumn>
@@ -193,7 +197,10 @@
                                 else
                                 {
                                     <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ExtraInsuranceWarrantyLink)">Open</Button>
-                                    <a class="btn btn-sm btn btn-outline-info" href="/api/files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ExtraInsuranceWarrantyLink))" target="_blank">Open</a>
+                                    <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))"
+                                       target="_blank" class="btn btn-outline-primary">
+                                        Open
+                                    </a>
                                 }
                             </TemplateColumn>
                         </QuickGrid>
@@ -332,8 +339,8 @@
 <div>
     <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
         <AddEditDeviceForm CurrentDevice="currentDevice"
-        CurrentUser="currentUser"
-        DataChangedEvent="DeviceDataHasChanged" />
+                           CurrentUser="currentUser"
+                           DataChangedEvent="DeviceDataHasChanged" />
     </CustomReusableModal>
 </div>
 
@@ -383,7 +390,7 @@
         // Call the service
         string fileUrl = DataService.GenerateDeviceQrCode(_chosedDeviceID, currentUser.UserID);
         var chosedDevice = Logic.GetDeviceInfoByID(_chosedDeviceID, currentUser);
-        DataService.AddToPrintQueue(chosedDevice);       
+        DataService.AddToPrintQueue(chosedDevice);
         // Reset UI state
         _chosedDeviceID = 0;
         StateHasChanged();
@@ -399,7 +406,7 @@
 
     private async Task NavToPrintPage()
     {
-        if(DataService.GetCurrentQueue().Any())
+        if (DataService.GetCurrentQueue().Any())
         {
             var list = DataService.GetCurrentQueue();
             // saving the list to the local storage, otherwise list becames empty
@@ -458,7 +465,7 @@
             await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
         }
     }
-        
+
 
     private async Task OnModalDeleteSuccess()
     {

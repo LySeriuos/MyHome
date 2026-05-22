@@ -40,7 +40,7 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile? CurrentDevice { get; set; } = new DeviceProfile();
         public List<DeviceProfile>? UnassignedDevicesList { get; set; }
         public List<DeviceProfile> SelectedDevicesListToPrintQrCodes { get; set; } = new();
-
+        public MyHomeBlazorAppContext DbContext => _dbcontext;
 
         #region User
 
@@ -723,6 +723,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="maxFileSize">Limited file size</param>
         /// <param name="errors">List to add errors and later print them as needed</param>
         /// <returns>Created file path to the file in Blazor server</returns>
+        /// This method is used to upload the file without loading it to the memory.
         public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors, DeviceProfile currentDevice)
         {
             if (file is null) return "uploading error";
@@ -762,6 +763,62 @@ namespace MyHomeBlazorApp.BlazorData
             {
                 errors.Add($"File: {file.Name} Error: {ex.Message}");
                 return ""; // Return empty instead of crashing the whole service
+            }
+        }
+
+        //This method is used to upload the file by loading it in the  local memory first and later adding it to the server if all requirements are ok.
+
+        public async Task<string> CaptureFilePathFromBytes(byte[] fileBytes, string originalName, DeviceProfile currentDevice)
+        {
+            // Safety check: if there are no bytes, return an empty string right away
+            if (fileBytes == null || fileBytes.Length == 0)
+            {
+                return "";
+            }
+
+            try
+            {                
+                string extension = Path.GetExtension(originalName);
+                string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
+                string userId = _currentUserWithAllData.UserID.ToString();
+                string deviceId = currentDevice.DeviceID.ToString();
+
+                string baseFolder;
+
+                // 🟢 SMART PATH CHECK: Detects if you are on Dev vs Production
+                if (OperatingSystem.IsWindows())
+                {
+                    // Local Dev: Saves inside your project directory (e.g., C:\YourProject\Files\1\7)
+                    baseFolder = Path.Combine(AppContext.BaseDirectory, "Files", userId, deviceId);
+                }
+                else
+                {
+                    // Linux Production / Docker container environment
+                    baseFolder = $"/app/Files/{userId}/{deviceId}";
+                }
+
+                // Standardize separators to forward slashes so it matches database strings cleanly
+                baseFolder = baseFolder.Replace('\\', '/');
+                string filePath = $"{baseFolder}/{newFileName}";
+
+                // Ensure directory exists locally or on server
+                string localCreationPath = OperatingSystem.IsWindows() ? baseFolder.Replace('/', '\\') : baseFolder;
+                if (!Directory.Exists(localCreationPath))
+                {
+                    Directory.CreateDirectory(localCreationPath);
+                }
+
+                // Write the memory array bytes directly to disk asynchronously
+                await System.IO.File.WriteAllBytesAsync(filePath, fileBytes);
+
+                // Return the clean absolute storage string to save in the DB context
+                return filePath;
+            }
+            catch (Exception ex)
+            {
+                // Log your error details to your terminal context console
+                Console.WriteLine($"[DataService Disk Write Error]: {ex.Message}");
+                return "";
             }
         }
 

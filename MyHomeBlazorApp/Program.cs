@@ -108,17 +108,17 @@ namespace MyHomeBlazorApp
             //    RequestPath = "/Files"
             //});
 
-            //      app.UseRouting();
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseAntiforgery();
             //      app.MapControllers();
             //      app.MapBlazorHub();
             app.MapIdentityApi<MyHomeBlazorAppUser>();
-            app.MapRazorComponents<App>()
-               .AddInteractiveServerRenderMode();
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();
+            app.MapRazorComponents<App>()
+               .AddInteractiveServerRenderMode();
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
