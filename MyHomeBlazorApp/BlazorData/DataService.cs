@@ -319,7 +319,7 @@ namespace MyHomeBlazorApp.BlazorData
             deviceToAdd.TempRealEstateName = chosedRealEstateID.ToString();
             // if user has not created any real estates so the device will be added to unnassigned list
             if (chosedRealEstateID == 0)
-            {
+            {                
                 await Task.Run(() => _currentUserWithAllData.UnassignedDevicesList.Add(deviceToAdd));
             }
             // if user has real estate, device will be added to chosed real estate
@@ -338,8 +338,9 @@ namespace MyHomeBlazorApp.BlazorData
                 //    return;
                 //}
 
-                await Task.Run(() => chosedRealEstate.DevicesProfiles.Add(deviceToAdd));
+                chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
             }
+            await _dbcontext.SaveChangesAsync();
 
         }
 
@@ -380,6 +381,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns></returns>
         public async Task RemoveDeviceFromDb(DeviceProfile deviceToDelete)
         {
+            
             _dbcontext.Remove(deviceToDelete);
             await UpdateObjectInDB();
         }
