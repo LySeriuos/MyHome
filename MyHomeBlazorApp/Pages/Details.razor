@@ -178,7 +178,7 @@
                                 }
                                 else
                                 {
-                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ReceiptLink)">Open</Button>
+                                    @* <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ReceiptLink)">Open</Button> *@
                                     <!-- 🟢 Update both file links in your EditForm to clean up backslashes on the fly -->
                                     <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ReceiptLink.Replace('\\', '/')))"
                                        target="_blank" class="btn btn-outline-primary">
@@ -196,7 +196,7 @@
                                 }
                                 else
                                 {
-                                    <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ExtraInsuranceWarrantyLink)">Open</Button>
+                                    @* <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ExtraInsuranceWarrantyLink)">Open</Button> *@
                                     <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))"
                                        target="_blank" class="btn btn-outline-primary">
                                         Open
