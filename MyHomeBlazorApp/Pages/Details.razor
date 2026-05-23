@@ -566,16 +566,20 @@
 
     private async Task OnShowModalDeleteDeviceClick(int deviceId)
     {
-        var deviceTarget = _unassignedDevicesListAsQueryable.FirstOrDefault(d => d.DeviceID == deviceId);
+        var deviceTarget = DataService.CurrentUserWithAllData.GetAllDevices()
+        .FirstOrDefault(d => d.DeviceID == deviceId);
+
         if (deviceTarget != null)
-        {
+        {           
             currentDevice = deviceTarget;
-            _deletedObjectName = currentDevice.DeviceName;
+            _deletedObjectName = deviceTarget.DeviceName;
+
             StateHasChanged();
-        }
-        if (refModalConfirmDeviceDeletion != null)
-        {
-            await refModalConfirmDeviceDeletion.OnShowModalClick();
+
+            if (refModalConfirmDeviceDeletion != null)
+            {
+                await refModalConfirmDeviceDeletion.OnShowModalClick();
+            }
         }
     }
 
