@@ -1,65 +1,108 @@
 ﻿@using MyHome.Models;
 @using MyHome;
 @using MyHomeBlazorApp.Pages
+@using Microsoft.EntityFrameworkCore
 @inject BlazorData.DataService DataService
 
 <style>
-    .modal-content
-    {
-    justify-content:flex-end !important;
-
+    .modal-content {
+        justify-content: flex-end !important;
     }
 
 </style>
 
-<Modal @ref="refModalConfirmDeviceDeletion" HeaderCssClass="justify-content-end">    
+<Modal @ref="refModalConfirmDeviceDeletion" HeaderCssClass="justify-content-end">
     <BodyTemplate>
-        <p class="m-auto">Are you sure you want To Delete @CurrentDeviceToDelete.DeviceName?</p>
+        @if (CurrentDeviceToDelete != null)
+        {
+            <p class="m-auto">Are you sure you want To Delete @CurrentDeviceToDelete.DeviceName?</p>
+        }
+        else
+        {
+            <p class="m-auto">Processing deletion...</p>
+        }
     </BodyTemplate>
     <FooterTemplate>
-        <Button Class="btn btn-danger" @onclick="()=>DeleteDevice_Click(true)">Delete</Button>
-        <ButtonCloseCancel TextButton="Cancel" ButtonEvent="()=>DeleteDevice_Click(false)" />
-        @* <Button @onclick="()=>DeleteDevice_Click(false)">Cancel</Button> *@
+        <Button Class="btn btn-danger" @onclick="() => DeleteDevice_Click(true)">Delete</Button>
+        <ButtonCloseCancel TextButton="Cancel" ButtonEvent="() => DeleteDevice_Click(false)" />
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @_errorMessage
+                <button type="button" class="btn-close" @onclick="() => _errorMessage = null" aria-label="Close"></button>
+            </div>
+        }
     </FooterTemplate>
 </Modal>
 @code {
-    [Parameter]
-    public DeviceProfile? CurrentDeviceToDelete { get; set; }
-    [Parameter]
-    public RealEstate? CurrentRealEstateToDeleteFrom { get; set; }
-    [Parameter]
-    public IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
+    [Parameter] public DeviceProfile? CurrentDeviceToDelete { get; set; }
+    [Parameter] public RealEstate? CurrentRealEstateToDeleteFrom { get; set; }
+    [Parameter] public IQueryable<DeviceProfile>? _devicesListAsQueryable { get; set; }
+    [Parameter] public EventCallback onDataChanged { get; set; }
+    [Parameter] public EventCallback eventCallback { get; set; }
+    [Parameter] public EventCallback OnUnnassignedDeviceListDataChanged { get; set; }
     private Modal? refModalConfirmDeviceDeletion { get; set; }
     private String? _deletedDeviceName;
     private DeviceProfile? _deviceToDelete { get; set; }
-
-    [Parameter] public EventCallback onDataChanged { get; set; }
-    [Parameter] public EventCallback eventCallback { get; set; }
-    [Parameter]
-    public EventCallback OnUnnassignedDeviceListDataChanged { get; set; }
+    private string? _errorMessage;
 
     private async Task DeleteDevice_Click(bool _confirmDeletion)
     {
-        if (_confirmDeletion == true && CurrentDeviceToDelete != null)
+        if (!_confirmDeletion)
         {
-            _deviceToDelete = DataService.CurrentUserWithAllData.GetAllDevices().FirstOrDefault(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
-
-            if (_deviceToDelete != null)
+            if (refModalConfirmDeviceDeletion != null)
             {
-                // // _deletedDeviceName = _deviceToDelete.DeviceName;
-                await DataService.RemoveDeviceFromDb(_deviceToDelete);
-                await onDataChanged.InvokeAsync();
-                await eventCallback.InvokeAsync();
-                await OnUnnassignedDeviceListDataChanged.InvokeAsync();
+                await refModalConfirmDeviceDeletion.HideAsync();
             }
-            else
-            {
-                return;
-            }
+            CurrentDeviceToDelete = null;
+            return;
         }
+
+        // 2. Hide the modal FIRST so the UI thread doesn't lock up if SQL errors out
         if (refModalConfirmDeviceDeletion != null)
         {
             await refModalConfirmDeviceDeletion.HideAsync();
+        }
+
+        if (CurrentDeviceToDelete != null)
+        {
+            try
+            {
+                _errorMessage = null; // Clear out any old error flags
+
+                _deviceToDelete = DataService.CurrentUserWithAllData.GetAllDevices()
+                    .FirstOrDefault(d => d.DeviceID == CurrentDeviceToDelete.DeviceID);
+
+                if (_deviceToDelete != null)
+                {
+                    await DataService.RemoveDeviceFromDb(_deviceToDelete);
+                    
+                    CurrentDeviceToDelete = null;
+                    _deviceToDelete = null;
+                    
+                    await onDataChanged.InvokeAsync();
+                    await eventCallback.InvokeAsync();
+                    await OnUnnassignedDeviceListDataChanged.InvokeAsync();
+                }
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Specifically catches issues like foreign key violations or database constraints
+                _errorMessage = "Could not delete device: This record is currently linked to other vital data.";
+                Console.WriteLine($"Database Update Error: {dbEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Catches general connectivity dropouts or generic system exceptions
+                _errorMessage = "An unexpected error occurred while processing the deletion. Please try again.";
+                Console.WriteLine($"General Exception during deletion: {ex.ToString()}");
+            }
+            finally
+            {
+                // This ensures that even if something fails, the UI state updates
+                // and doesn't leave tracking references permanently stuck
+                StateHasChanged();
+            }
         }
     }
     public async Task OnShowModalClick()

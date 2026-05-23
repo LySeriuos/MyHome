@@ -72,17 +72,17 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>The domain user.UserProfile.UserId ID if available; otherwise, 0.</returns>
         public async Task<int> GetDomainUserIdAsync(System.Security.Claims.ClaimsPrincipal principal)
         {
-            if(principal.Identity?.IsAuthenticated != true) { return 0; }
-            
+            if (principal.Identity?.IsAuthenticated != true) { return 0; }
+
             string? identityUserId = _userManager.GetUserId(principal);
-            if(string.IsNullOrEmpty(identityUserId)) { return 0; }
+            if (string.IsNullOrEmpty(identityUserId)) { return 0; }
 
             MyHomeBlazorAppUser? userWithProfile = await _dbcontext.Users
                 .Include(u => u.UserProfile)
                 .FirstOrDefaultAsync(u => u.Id == identityUserId);
             return userWithProfile?.UserProfile?.UserID ?? 0;
         }
-        
+
 
         public async Task<MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
         {
@@ -156,6 +156,7 @@ namespace MyHomeBlazorApp.BlazorData
                 .ThenInclude(d => d.DeviceWarranty)
                     .ThenInclude(w => w.Shop)
                         .ThenInclude(s => s.Address)
+                        .AsSplitQuery() // Tells EF Core to load collections cleanly in parallel queries
     .FirstOrDefaultAsync(u => u.Id == user.Id);
 
             if (fullUser != null)
@@ -319,7 +320,7 @@ namespace MyHomeBlazorApp.BlazorData
             deviceToAdd.TempRealEstateName = chosedRealEstateID.ToString();
             // if user has not created any real estates so the device will be added to unnassigned list
             if (chosedRealEstateID == 0)
-            {                
+            {
                 await Task.Run(() => _currentUserWithAllData.UnassignedDevicesList.Add(deviceToAdd));
             }
             // if user has real estate, device will be added to chosed real estate
@@ -381,9 +382,35 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns></returns>
         public async Task RemoveDeviceFromDb(DeviceProfile deviceToDelete)
         {
-            
-            _dbcontext.Remove(deviceToDelete);
-            await UpdateObjectInDB();
+            // Query the specific Device directly from its own table with its exact child dependencies
+            var fullDevice = await _dbcontext.Set<DeviceProfile>()
+                .Include(d => d.DeviceWarranty)
+                    .ThenInclude(w => w.Shop)
+                        .ThenInclude(s => s.Address)
+                .FirstOrDefaultAsync(d => d.DeviceID == deviceToDelete.DeviceID);
+
+            if (fullDevice != null)
+            {
+                // Manually remove the child structures from the bottom up to clear the database safely
+                if (fullDevice.DeviceWarranty != null)
+                {
+                    if (fullDevice.DeviceWarranty.Shop != null)
+                    {
+                        if (fullDevice.DeviceWarranty.Shop.Address != null)
+                        {
+                            _dbcontext.Remove(fullDevice.DeviceWarranty.Shop.Address);
+                        }
+                        _dbcontext.Remove(fullDevice.DeviceWarranty.Shop);
+                    }
+                    _dbcontext.Remove(fullDevice.DeviceWarranty);
+                }
+
+                // Remove the main device record
+                _dbcontext.Remove(fullDevice);
+                await UpdateObjectInDB();
+                //await _dbcontext.SaveChangesAsync();
+                //await LoadUserWithAllDataAsync();
+            }
         }
 
         /// <summary>
@@ -495,8 +522,8 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns></returns>
         public List<DeviceProfile> GetCurrentQueue()
         {
-            List <DeviceProfile> temporaryDevicesList = SelectedDevicesListToPrintQrCodes.ToList(); // Copy the list
-                             
+            List<DeviceProfile> temporaryDevicesList = SelectedDevicesListToPrintQrCodes.ToList(); // Copy the list
+
             return temporaryDevicesList;                                // Return the copy
         }
 
@@ -515,15 +542,15 @@ namespace MyHomeBlazorApp.BlazorData
         }
 
         public void AddAllToPrintQueue()
-        {           
-            List<DeviceProfile> allDevices = GetAllUserDevices();            
+        {
+            List<DeviceProfile> allDevices = GetAllUserDevices();
             foreach (var device in allDevices)
-            {               
+            {
                 if (!SelectedDevicesListToPrintQrCodes.Any(d => d.DeviceID == device.DeviceID))
                 {
                     SelectedDevicesListToPrintQrCodes.Add(device);
                 }
-            }            
+            }
         }
         /// <summary>
         /// Getting item in the list by ID
@@ -779,7 +806,7 @@ namespace MyHomeBlazorApp.BlazorData
             }
 
             try
-            {                
+            {
                 string extension = Path.GetExtension(originalName);
                 string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), extension);
                 string userId = _currentUserWithAllData.UserID.ToString();
