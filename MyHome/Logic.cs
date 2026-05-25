@@ -201,9 +201,23 @@ namespace MyHome
 
 
 
-        public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword, string savedQrCodeLink)
+        //public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword)
+        //{
+        //    // Explicitly define the WiFi payload type from QRCoder
+        //    QRCoder.PayloadGenerator.WiFi wifiPayLoad = new QRCoder.PayloadGenerator.WiFi(
+        //        wifiName,
+        //        wifiPassword,
+        //        QRCoder.PayloadGenerator.WiFi.Authentication.WPA
+        //    );
+
+        //    string generatedWifiQrCodeLink = wifiPayLoad.ToString();
+
+        //    // This calls your SkiaSharp generator method we fixed earlier
+        //    QrCodeGenerator(generatedWifiQrCodeLink);
+        //}
+
+        public static string CreateWifiSharingQrCode(string wifiName, string wifiPassword)
         {
-            // Explicitly define the WiFi payload type from QRCoder
             QRCoder.PayloadGenerator.WiFi wifiPayLoad = new QRCoder.PayloadGenerator.WiFi(
                 wifiName,
                 wifiPassword,
@@ -212,8 +226,30 @@ namespace MyHome
 
             string generatedWifiQrCodeLink = wifiPayLoad.ToString();
 
-            // This calls your SkiaSharp generator method we fixed earlier
-            QrCodeGenerator(generatedWifiQrCodeLink, savedQrCodeLink);
+            // Calls our new memory-isolated renderer
+            return WifiQrCodeMemoryGenerator(generatedWifiQrCodeLink);
+        }
+
+        public static string WifiQrCodeMemoryGenerator(string generatedQrCodeLink)
+        {
+            var qrCodeData = SkiaSharp.QrCode.QRCodeGenerator.CreateQrCode(generatedQrCodeLink, SkiaSharp.QrCode.ECCLevel.Q);
+
+            var info = new SKImageInfo(512, 512);
+            using var surface = SKSurface.Create(info);
+            using var canvas = surface.Canvas;
+
+            var rect = new SKRect(0, 0, info.Width, info.Height);
+
+            SkiaSharp.QrCode.QRCodeRenderer.Render(canvas, rect, qrCodeData, SKColors.White, SKColors.Black);
+
+            using var image = surface.Snapshot();
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+
+            // Convert the SkiaSharp drawing straight to bytes, then to a Base64 string url
+            byte[] imageBytes = data.ToArray();
+            string base64String = Convert.ToBase64String(imageBytes);
+
+            return $"data:image/png;base64,{base64String}";
         }
 
         /// <summary>
