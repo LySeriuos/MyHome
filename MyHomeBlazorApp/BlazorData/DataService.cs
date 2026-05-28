@@ -870,7 +870,7 @@ namespace MyHomeBlazorApp.BlazorData
             Logic.CreateQrCodeLinkToDevice(deviceId.ToString(), userId.ToString(), filePath);
 
             // Return the URL string for the browser to open
-            return $"/Files/{userId}/qrCodes/{fileName}";
+            return $"Files/{userId}/qrCodes/{fileName}";
         }
 
         /// <summary>
