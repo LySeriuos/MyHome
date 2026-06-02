@@ -467,8 +467,8 @@ namespace MyHomeBlazorApp.BlazorData
             if (realEstateToMoveFrom == null) return;
             if (realEstateToAddDevice != null)
             {
-                realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
                 realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
+                realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
             }
             await Task.CompletedTask;
         }
