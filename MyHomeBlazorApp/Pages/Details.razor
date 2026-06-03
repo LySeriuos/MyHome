@@ -130,7 +130,7 @@
                                 <div>
                                     <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
                                     <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
-                                    <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context.DeviceID)"><Icon Name="IconName.QrCode" /></Button>
+                                    <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context)"><Icon Name="IconName.QrCode" /></Button>
                                     <Button Class="btn btn-outline-info" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
                                 </div>
                             </TemplateColumn>
@@ -381,27 +381,10 @@
     List<ToastMessage> messages = new List<ToastMessage>();
     List<DeviceProfile> chosedDevicesList { get; set; } = new();
 
-    private void HandleQrCode(int _chosedDeviceID)
+    private void HandleQrCode(DeviceProfile targetDevice)
     {
-        if (_chosedDeviceID == 0) return;
-        try
-        {
-            currentUser = DataService.CurrentUserWithAllData;
-            string fileUrl = DataService.GenerateDeviceQrCode(_chosedDeviceID, currentUser.UserID);
-            var targetDevice = Logic.GetDeviceInfoByID(_chosedDeviceID, currentUser);
-            if (targetDevice != null)
-            {
-                DataService.AddToPrintQueue(targetDevice);
-            }
-            StateHasChanged();
-        }
-
-
-
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error adding QR to queue: {ex.Message}");
-        }
+        DataService.AddToPrintQueue(targetDevice);
+        StateHasChanged();
     }
 
     private async Task HandleAddAllToPrint()

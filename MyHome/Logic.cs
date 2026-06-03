@@ -126,7 +126,7 @@ namespace MyHome
         public static byte[] GetQrCodeBytes(int userID, int deviceID)
         {
             // Create URL
-            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44/mobileDeviceInfo/{userID}/{deviceID}");
+            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44:7211/mobileDeviceInfo/{userID}/{deviceID}");
 
             // Generate Graphic as Bytes
             using var qrGenerator = new QRCoder.QRCodeGenerator();
