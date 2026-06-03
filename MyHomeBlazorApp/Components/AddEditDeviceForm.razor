@@ -153,10 +153,10 @@
             </div>
         </div>
 
-        @if (showErrorMessageVisible == true)
+       @*  @if (showErrorMessageVisible == true)
         {
             <p class="text-danger d-block">@errorMessage</p>
-        }
+        } *@
         <br />
         @if (_isGuest)
         {
@@ -370,8 +370,7 @@
                     break;
 
                 default:
-                    // Just update fields (Name, Serial Number, etc.) without changing location
-                    await DataService.UpdateObjectInDB();
+                    // Just update fields (Name, Serial Number, etc.) without changing location                    
                     break;
             }
 
