@@ -408,15 +408,28 @@ else
         EmailRequest.Body = _preparedMessage;
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnParametersSet()
     {
         if (_chosedDeviceID != 0)
         {
-            _chosedDevice = _currentUser.GetAllDevices().First(d => d.DeviceID == _chosedDeviceID);
-            receiptFileName = GetFileName(_chosedDevice.DeviceWarranty.ReceiptLink);
-            extraWarrantyFileName = GetFileName(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink);
+            var foundDevice = _currentUser.GetAllDevices().FirstOrDefault(d => d.DeviceID == _chosedDeviceID);
+
+            if (foundDevice != null)
+            {
+                _chosedDevice = foundDevice;
+
+                if (_chosedDevice.DeviceWarranty == null)
+                {
+                    _chosedDevice.DeviceWarranty = new() { Shop = new() { Address = new() } };
+                }
+
+                receiptFileName = GetFileName(_chosedDevice.DeviceWarranty.ReceiptLink);
+                extraWarrantyFileName = GetFileName(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink);
+            }
+            else
+            {
+                _chosedDeviceID = 0;
+            }
         }
-        base.OnAfterRender(firstRender);
-        StateHasChanged();
     }
 }

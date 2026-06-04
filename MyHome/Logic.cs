@@ -25,7 +25,6 @@ namespace MyHome
                 List<DeviceProfile> devices = realEstate.DevicesProfiles;
                 foreach (DeviceProfile device in devices)
                 {
-                    string userDevice = device.DeviceName;
                     DeviceWarranty warranty = device.DeviceWarranty;
                     if (warranty != null)
                     {
@@ -36,9 +35,9 @@ namespace MyHome
                         {
                             expiringDevices.Add(device);
                         }
-                        expiringDevices = expiringDevices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).ToList();
                     }
                 }
+                expiringDevices = expiringDevices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).ToList();
             }
 
             return expiringDevices;
