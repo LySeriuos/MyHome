@@ -4,7 +4,7 @@
 @using MyHome.Models
 @using MyHomeBlazorApp.Components.Modals
 @using System.Text
-
+@using System.IO
 
 <style>
     .btn-row {
@@ -24,7 +24,6 @@
         @if (CurrentDevice == null)
         {
             <div class="d-flex justify-content-center align-items-center" style="height:100vh;">
-                <Spinner Color="SpinnerColor.Primary" Size="SpinnerSize.Large" />
                 <span class="ms-3">Loading Warranty...</span>
             </div>
         }
@@ -34,19 +33,19 @@
                 <div class="form-group row align-items-center">
                     <label for="devicePurchaseDate" class="col-sm-6 col-form-label">Purchase Date</label>
                     <div class="col-sm-6">
-                        <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="CurrentDevice.DeviceWarranty.PurchaseDate">Add Purchase Date</InputDate>
+                        <InputDate ParsingErrorMessage="Must be a date" id="devicePurchaseDate" @bind-Value="CurrentDevice.DeviceWarranty.PurchaseDate" />
                         <ValidationMessage For="@(() => CurrentDevice.DeviceWarranty.PurchaseDate)" />
                     </div>
                 </div>
-                @* Length of warranty/receipt *@
+
                 <div class="form-group row align-items-center">
                     <label for="deviceWarrantyLength" class="col-sm-6 col-form-label">Warranty Length (years)</label>
                     <div class="col-sm-6">
-                        <InputNumber id="deviceWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.Years">Add warranty length in years</InputNumber>
+                        <InputNumber id="deviceWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.Years" />
                     </div>
                 </div>
 
-                @* Receipt/Warranty file *@
+                @* Main Receipt/Warranty file *@
                 <div class="form-group row my-2 align-items-center">
                     <label for="WarrantyReceiptLink" class="col-sm-6 col-form-label">Warranty Receipt File</label>
                     <div class="col-sm-6">
@@ -56,17 +55,17 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-success">✓ Uploaded</span>
                                     <small class="text-muted text-truncate" style="max-width: 180px;">
-                                        @(Path.GetFileName(CurrentDevice.DeviceWarranty.ReceiptLink))
+                                        @(Path.GetFileName(CurrentDevice.DeviceWarranty.ReceiptLink.Replace('\\', '/')))
                                     </small>
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <a href="/api/Files/@CurrentDevice.DeviceID/@(Path.GetFileName(CurrentDevice.DeviceWarranty.ReceiptLink))"
+                                    <a href="/api/Files/@CurrentDevice.DeviceID/@(Path.GetFileName(CurrentDevice.DeviceWarranty.ReceiptLink.Replace('\\', '/')))"
                                        target="_blank" class="btn btn-sm btn-outline-primary px-3">
-                                        <i class="bi bi-box-arrow-up-right me-1"></i> Open
+                                        Open
                                     </a>
-                                    <button class="btn btn-sm btn-outline-danger px-3" @onclick="() => _showWarrantyUploadBox = true">
-                                        <i class="bi bi-arrow-repeat me-1"></i> Replace
+                                    <button type="button" class="btn btn-sm btn-outline-danger px-3" @onclick="() => _showWarrantyUploadBox = true">
+                                        Replace
                                     </button>
                                 </div>
                             </div>
@@ -93,15 +92,15 @@
                         }
                     </div>
                 </div>
-                @* Length of Extra warranty/insurance *@
+
                 <div class="form-group row">
                     <label for="deviceExtendedWarrantyLength" class="col-sm-6 col-form-label">Extended warranty length (years)</label>
                     <div class="col-sm-6">
-                        <InputNumber id="deviceExtendedWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.ExtendedWarrantyinYears">Add extended warranty length in years</InputNumber>
+                        <InputNumber id="deviceExtendedWarrantyLength" @bind-Value="CurrentDevice.DeviceWarranty.ExtendedWarrantyinYears" />
                     </div>
                 </div>
 
-                @* Extra warranty/insurance file *@
+                @* Extended warranty/insurance file *@
                 <div class="form-group row my-2 align-items-center">
                     <label for="extendedWarrantyLinkToReceipt" class="col-sm-6 col-form-label">Extended Warranty Receipt</label>
                     <div class="col-sm-6">
@@ -111,17 +110,18 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-success">✓ Uploaded</span>
                                     <small class="text-muted text-truncate" style="max-width: 180px;">
-                                        @(Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
+                                        @(Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))
                                     </small>
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <a href="/api/Files/@CurrentDevice.DeviceID/@(Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))"
+                                    <a href="/api/Files/@CurrentDevice.DeviceID/@(Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))"
                                        target="_blank" class="btn btn-sm btn-outline-primary px-3">
-                                        <i class="bi bi-box-arrow-up-right me-1"></i> Open
+                                        Open
                                     </a>
-                                    <button class="btn btn-sm btn-outline-danger px-3" @onclick="() => _showWarrantyUploadBox = true">
-                                        <i class="bi bi-arrow-repeat me-1"></i> Replace
+                                    @* 🛠️ FIXED: Flipped from _showWarrantyUploadBox to _showExtraUploadBox *@
+                                    <button type="button" class="btn btn-sm btn-outline-danger px-3" @onclick="() => _showExtraUploadBox = true">
+                                        Replace
                                     </button>
                                 </div>
                             </div>
@@ -148,11 +148,12 @@
                         }
                     </div>
                 </div>
-                <!-- === CHANGES END HERE FOR EXTENDED RECEIPT === -->
 
                 <div class="btn-row mt-3">
                     <div class="left-buttons">
-                        <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice"
+                        @* 🛠️ FIXED: Intercepting the device navigation change explicitly *@
+                        <NextPreviuosButtons CurrentDevice="@CurrentDevice"
+                                             CurrentDeviceChanged="HandleDeviceChanged"
                                              DevicesListAsQueryable="DevicesListAsQueryable">
                         </NextPreviuosButtons>
                     </div>
@@ -176,35 +177,46 @@
     </BodyTemplate>
 </Modal>
 
-
 @code {
+    [Parameter] public DeviceProfile? CurrentDevice { get; set; }
+    [Parameter] public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
+    [Parameter] public EventCallback OnDataChanged { get; set; }
 
-    [Parameter]
-    public DeviceProfile? CurrentDevice { get; set; }
-    [Parameter]
-    public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
-    [Parameter]
-    public EventCallback OnDataChanged { get; set; }
     private Modal _refModalEditWarrantyDetails { get; set; } = new();
-    private IBrowserFile? _warrantyReceiptFile;
-    private IBrowserFile? _extraWarrantyReceiptFile;
     private long maxFileSize = 1024 * 1024 * 3;
     private List<string> errors = new();
+
     private bool _showWarrantyUploadBox = false;
     private bool _showExtraUploadBox = false;
     private string _inputWarrantyFileId = Guid.NewGuid().ToString();
     private string _inputExtraWarrantyFileId = Guid.NewGuid().ToString();
+
     private byte[]? _warrantyBytes;
     private string _warrantyName = "";
     private byte[]? _extraBytes;
     private string _extraName = "";
-    //Some example
-    // creating new directory in user environmentenvironment
-    // readonly static string homePath = (Environment.OSVersion.Platform == PlatformID.Unix ||
-    //                Environment.OSVersion.Platform == PlatformID.MacOSX)
-    // ? Environment.GetEnvironmentVariable("HOME")
-    // : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
 
+    // 🛠️ NEW METHOD: Safely wipes out file bytes and toggles when switching devices
+    private void HandleDeviceChanged(DeviceProfile? newDevice)
+    {
+        CurrentDevice = newDevice;
+        ResetUploadState();
+    }
+
+    private void ResetUploadState()
+    {
+        _warrantyBytes = null;
+        _warrantyName = "";
+        _showWarrantyUploadBox = false;
+        _inputWarrantyFileId = Guid.NewGuid().ToString();
+
+        _extraBytes = null;
+        _extraName = "";
+        _showExtraUploadBox = false;
+        _inputExtraWarrantyFileId = Guid.NewGuid().ToString();
+
+        errors.Clear();
+    }
 
     private void ClearPendingWarranty()
     {
@@ -220,7 +232,6 @@
         _inputExtraWarrantyFileId = Guid.NewGuid().ToString();
     }
 
-    //Capture the streams into memory
     private async Task LoadExtraWarrantyFile(InputFileChangeEventArgs e)
     {
         if (e.File != null)
@@ -245,13 +256,11 @@
         }
     }
 
-
     private async Task WarrantyDetailsFormSubmitted(EditContext editContext)
     {
         try
         {
             errors.Clear();
-
             if (CurrentDevice == null)
             {
                 errors.Add("Error: Current device context is missing.");
@@ -268,13 +277,11 @@
             if (_extraBytes != null)
             {
                 string extraPath = await DataService.CaptureFilePathFromBytes(_extraBytes, _extraName, deviceToAddLink);
-
                 if (string.IsNullOrEmpty(extraPath))
                 {
                     errors.Add("Extra warranty upload processed but returned an empty path destination.");
                     return;
                 }
-                // keeping path to the older uploaded file in case new one doesn't go through all the way.
                 string oldExtraPath = deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink;
                 deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraPath;
 
@@ -286,78 +293,41 @@
 
             if (_warrantyBytes != null)
             {
-                // 1. Save the NEW file to disk first
                 string warrantyPath = await DataService.CaptureFilePathFromBytes(_warrantyBytes, _warrantyName, deviceToAddLink);
-
                 if (string.IsNullOrEmpty(warrantyPath))
                 {
                     errors.Add("Main warranty upload processed but returned an empty path destination.");
-                    return; // Exits safely without losing your historical database data
+                    return;
                 }
-
-                // 2. Keep a temporary backup reference to the old path before overwriting it
                 string oldReceiptPath = deviceToAddLink.DeviceWarranty.ReceiptLink;
-
-                // 3. Link up your new asset string path
                 deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyPath;
 
-                // 4. Now that the new file is 100% safe on disk, clean up the old file!
                 if (!string.IsNullOrEmpty(oldReceiptPath))
                 {
                     DataService.DeleteFileIfExists(oldReceiptPath);
                 }
             }
 
-            // if (_extraWarrantyReceiptFile != null)
-            // {
-            //     DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink);
-
-            //     string extraPath = await DataService.CaptureFilePath(_extraWarrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
-
-            //     if (string.IsNullOrEmpty(extraPath))
-            //     {
-            //         errors.Add("Extra warranty upload processed but returned an empty path destination.");
-            //         return; // Stop execution so the UI doesn't close on a hidden failure!
-            //     }
-            //     deviceToAddLink.DeviceWarranty.ExtraInsuranceWarrantyLink = extraPath;
-            // }
-
-            // if (_warrantyReceiptFile != null)
-            // {
-            //     DataService.DeleteFileIfExists(deviceToAddLink.DeviceWarranty.ReceiptLink);
-
-            //     string warrantyPath = await DataService.CaptureFilePath(_warrantyReceiptFile, maxFileSize, errors, deviceToAddLink);
-
-            //     if (string.IsNullOrEmpty(warrantyPath))
-            //     {
-            //         errors.Add("Main warranty upload processed but returned an empty path destination.");
-            //         return; // Stop execution
-            //     }
-            //     deviceToAddLink.DeviceWarranty.ReceiptLink = warrantyPath;
-            // }
-
             await DataService.UpdateObjectInDB();
+            ResetUploadState(); // 🛠️ Reset states after a successful save!
             await OnDataChanged.InvokeAsync();
             await _refModalEditWarrantyDetails.HideAsync();
         }
         catch (Exception ex)
         {
-            errors.Add($"Error: {ex.Message}");
             errors.Add($"Critical Form Submission Failure: {ex.Message}");
-            throw;
         }
     }
 
     public async Task OnShowModalEditWarrantyClick()
     {
+        ResetUploadState(); // 🛠️ Ensure modal opens clean
         await _refModalEditWarrantyDetails.ShowAsync();
     }
 
     public async Task OnHideModalEditWarrantyClick()
     {
-        errors.Clear();
+        ResetUploadState();
         await _refModalEditWarrantyDetails.HideAsync();
     }
-
 }
-
