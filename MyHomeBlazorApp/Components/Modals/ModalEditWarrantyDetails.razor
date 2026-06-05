@@ -118,8 +118,7 @@
                                     <a href="/api/Files/@CurrentDevice.DeviceID/@(Path.GetFileName(CurrentDevice.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))"
                                        target="_blank" class="btn btn-sm btn-outline-primary px-3">
                                         Open
-                                    </a>
-                                    @* 🛠️ FIXED: Flipped from _showWarrantyUploadBox to _showExtraUploadBox *@
+                                    </a>                                  
                                     <button type="button" class="btn btn-sm btn-outline-danger px-3" @onclick="() => _showExtraUploadBox = true">
                                         Replace
                                     </button>
@@ -150,8 +149,7 @@
                 </div>
 
                 <div class="btn-row mt-3">
-                    <div class="left-buttons">
-                        @* 🛠️ FIXED: Intercepting the device navigation change explicitly *@
+                    <div> class="left-buttons"
                         <NextPreviuosButtons CurrentDevice="@CurrentDevice"
                                              CurrentDeviceChanged="HandleDeviceChanged"
                                              DevicesListAsQueryable="DevicesListAsQueryable">
@@ -195,8 +193,7 @@
     private string _warrantyName = "";
     private byte[]? _extraBytes;
     private string _extraName = "";
-
-    // 🛠️ NEW METHOD: Safely wipes out file bytes and toggles when switching devices
+    
     private void HandleDeviceChanged(DeviceProfile? newDevice)
     {
         CurrentDevice = newDevice;

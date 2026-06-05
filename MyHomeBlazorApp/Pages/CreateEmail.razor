@@ -331,16 +331,13 @@ else
     }
 
     public string GetFileName(string fileLink)
+{
+    if (string.IsNullOrEmpty(fileLink))
     {
-        string fileName = "";
-        if (!String.IsNullOrEmpty(fileLink))
-        {
-            int getIndex = fileLink.LastIndexOf('\\');
-            string splitedString = fileLink.Remove(0, getIndex + 1);
-            fileName = splitedString;
-        }
-        return fileName;
+        return string.Empty;
     }
+    return Path.GetFileName(fileLink.Replace('\\', '/'));
+}
 
     protected override async Task OnInitializedAsync()
     {
