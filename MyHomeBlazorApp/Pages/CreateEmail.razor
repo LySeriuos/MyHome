@@ -11,50 +11,50 @@
 
 <style>
     textarea.form-control {
-    min-height: calc(10.5em + .75rem + 2px);
+        min-height: calc(10.5em + .75rem + 2px);
     }
 
     #emailForm {
-    max-width: 75%;
+        max-width: 75%;
     }
 
     .addNew-btn {
-    align-items: center;
-    color: #6b6b6d;
-    background-color: transparent;
-    border: solid 2px #f1e1d8;
-    border-radius: 1.3rem;
+        align-items: center;
+        color: #6b6b6d;
+        background-color: transparent;
+        border: solid 2px #f1e1d8;
+        border-radius: 1.3rem;
     }
 
-    .addNew-btn:hover {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    background: #e2c8c0;
-    color: #2d2a2b;
-    }
+        .addNew-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
 
-    .addNew-btn:focus, .addNew-btn:active:focus, .addNew-btn:focus {
-    background: #09223b;
-    color: rgb(255, 255, 255, .7);
-    border: none;
-    box-shadow: none;
-    }
+        .addNew-btn:focus, .addNew-btn:active:focus, .addNew-btn:focus {
+            background: #09223b;
+            color: rgb(255, 255, 255, .7);
+            border: none;
+            box-shadow: none;
+        }
 
     .card-btn {
-    color: #2d2a2b;
-    background-color: #cfd9e1;
-    border-color: #1861ac;
-    border-radius: 1.3rem;
+        color: #2d2a2b;
+        background-color: #cfd9e1;
+        border-color: #1861ac;
+        border-radius: 1.3rem;
     }
 
-    .card-btn:hover {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    background: #e2c8c0;
-    color: #2d2a2b;
-    }
+        .card-btn:hover {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background: #e2c8c0;
+            color: #2d2a2b;
+        }
 </style>
 
 
@@ -142,15 +142,19 @@
             @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ReceiptLink))
             {
                 <div class="col-3 text-start">
-                    <InputCheckbox id="reciept" @bind-Value="_chosedDeviceRecieptChecked">
+                    <InputCheckbox id="receipt" @bind-Value="_chosedDeviceRecieptChecked">
                     </InputCheckbox>
-                    <label>Reciept:</label>
+                    <label>Receipt:</label>
                 </div>
                 <div class="col text-start">
                     <p class="mb-0">@receiptFileName</p>
                 </div>
                 <div class="col">
-                    <Button Class="btn-dark btn-sm addNew-btn" @onclick="()=>NavigateToWarrantyFile()">Open</Button>
+                    <a href="/api/Files/@_chosedDevice.DeviceID/@(Path.GetFileName(_chosedDevice.DeviceWarranty.ReceiptLink.Replace('\\', '/')))"
+                       target="_blank" class="btn-dark btn-sm addNew-btn">
+                        Open
+                    </a>
+                    @* <Button Class="btn-dark btn-sm addNew-btn" @onclick="() => NavigateToWarrantyFile()">Open</Button> *@
                 </div>
             }
         </div>
@@ -159,14 +163,18 @@
             @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
             {
                 <div class="col-3 text-start">
-                    <InputCheckbox id="reciept" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
+                    <InputCheckbox id="extraWarranty" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
                     <label>Extra Warranty:</label>
                 </div>
                 <div class="col text-start">
                     <p class="mb-0">@extraWarrantyFileName</p>
                 </div>
                 <div class="col">
-                    <Button Class="btn-dark btn-sm addNew-btn" @onclick="()=>NavigateToExtraWarrantyFile()">Open</Button>
+                    <a href="/api/Files/@_chosedDevice.DeviceID/@(Path.GetFileName(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))"
+                       target="_blank" class="btn-dark btn-sm addNew-btn">
+                        Open
+                    </a>
+                    @* <Button Class="btn-dark btn-sm addNew-btn" @onclick="() => NavigateToExtraWarrantyFile()">Open</Button> *@
                 </div>
             }
         </div>
@@ -177,7 +185,7 @@
                 <div class="col-2 text-start">
                     <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
                     </InputCheckbox>
-                    <label>Shop Adress</label>
+                    <label>Shop Address</label>
                 </div>
                 <div class="col text-start">
                     <p>@_chosedDevice.DeviceWarranty.Shop.Address.StreetName @_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber @_chosedDevice.DeviceWarranty.Shop.Address.City</p>
@@ -247,8 +255,8 @@ else
 
     private async Task NavigateToExtraWarrantyFile()
     {
-        string currentExtraWarrrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        string fileUrl = DataService.GetFileUrl(currentExtraWarrrantyReceiptLink, _chosedDeviceID);
+        string currentExtraWarrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
+        string fileUrl = DataService.GetFileUrl(currentExtraWarrantyReceiptLink, _chosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
@@ -334,13 +342,13 @@ else
         return fileName;
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _currentUser = DataService.CurrentUserWithAllData;
-        _chosedDevice.DeviceWarranty = new();
-        _chosedDevice.DeviceWarranty.Shop = new();
-        _chosedDevice.DeviceWarranty.Shop.Address = new();
-        base.OnInitialized();
+        await DataService.InitializedUserAsync();
+        await DataService.LoadUserWithAllDataAsync();
+
+        init();
+        await base.OnInitializedAsync();
     }
     //Reloading the page sets all the strings to default values
     private void ClearTheEmailMessage()
@@ -408,11 +416,12 @@ else
         EmailRequest.Body = _preparedMessage;
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         if (_chosedDeviceID != 0)
         {
-            var foundDevice = _currentUser.GetAllDevices().FirstOrDefault(d => d.DeviceID == _chosedDeviceID);
+            var foundDevice = DataService.GetAllUserDevices()
+                .FirstOrDefault(d => d.DeviceID == _chosedDeviceID);
 
             if (foundDevice != null)
             {
@@ -431,5 +440,10 @@ else
                 _chosedDeviceID = 0;
             }
         }
+
+        await base.OnParametersSetAsync();
     }
+    
+    
 }
+

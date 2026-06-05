@@ -370,7 +370,6 @@ namespace MyHomeBlazorApp.BlazorData
                     device.TempRealEstateName = "Unassigned / 0";
                 }
             }
-
             return allDevices;
         }
 
