@@ -201,8 +201,11 @@
     @if (createdMessage)
     {
         <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail" id="emailForm">
+            <DataAnnotationsValidator />
             <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To" />
+            <ValidationMessage For="@(() => EmailRequest.To)" class="text-danger small" />
             <InputText @bind-Value="EmailRequest.Subject" class="form-control mt-2" placeholder="Subject" />
+            <ValidationMessage For="@(() => EmailRequest.Subject)" class="text-danger small" />
             <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
             <Button Type="ButtonType.Submit" class="btn btn-primary card-btn my-3">Send Email</Button>
         </EditForm>
@@ -225,7 +228,7 @@ else
     public EmailRequest EmailRequest { get; set; } = new();
     private DeviceProfile _deviceProfile { get; set; } = new();
     private DeviceProfile? _chosedDevice { get; set; }
-    private UserProfile _currentUser = new();
+    private UserProfile? _currentUser { get; set; }
     private SuccessModal _refSuccessModal = default!;
     private bool createdMessage { get; set; } = false;
     private bool _produserChecked { get; set; }
@@ -344,6 +347,10 @@ else
     {
         await DataService.InitializedUserAsync();
         await DataService.LoadUserWithAllDataAsync();
+       if (DataService.CurrentAppUser != null)
+    {
+        _currentUser = DataService.CurrentAppUser.UserProfile;
+    }
 
         init();
         await base.OnInitializedAsync();
