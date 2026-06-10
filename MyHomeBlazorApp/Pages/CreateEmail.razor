@@ -83,7 +83,7 @@
 </InputSelect> *@
 
 
-@if (_chosedDeviceID != 0)
+@if (ChosedDeviceID != 0)
 {
     <EditForm Model="_deviceProfile">
         <div class="row w-50 mr-0">
@@ -218,13 +218,13 @@ else
 
 @code {
     [Parameter]
-    public int _chosedDeviceID { get; set; } = new();
+    public int ChosedDeviceID { get; set; }
     [Parameter]
     public int currentUserID { get; set; }
     [SupplyParameterFromForm(FormName = "EmailForm")]
     public EmailRequest EmailRequest { get; set; } = new();
     private DeviceProfile _deviceProfile { get; set; } = new();
-    private DeviceProfile _chosedDevice { get; set; } = new();
+    private DeviceProfile? _chosedDevice { get; set; }
     private UserProfile _currentUser = new();
     private SuccessModal _refSuccessModal = default!;
     private bool createdMessage { get; set; } = false;
@@ -237,6 +237,7 @@ else
     private bool _warrantyIsValidUntilChecked { get; set; }
     private bool _extraWarrantyIsValidUntilChecked { get; set; }
     private bool _chosedDeviceShopAdressChecked { get; set; }
+    private bool _deviceNotFound = false;
     private string receiptFileName { get; set; } = "";
     private string extraWarrantyFileName { get; set; } = "";
     private string _producerStringToAdd = "";
@@ -256,14 +257,14 @@ else
     private async Task NavigateToExtraWarrantyFile()
     {
         string currentExtraWarrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
-        string fileUrl = DataService.GetFileUrl(currentExtraWarrantyReceiptLink, _chosedDeviceID);
+        string fileUrl = DataService.GetFileUrl(currentExtraWarrantyReceiptLink, ChosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
     private async Task NavigateToWarrantyFile()
     {
         string currentWarrantyReceiptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
-        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, _chosedDeviceID);
+        string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, ChosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
@@ -331,13 +332,13 @@ else
     }
 
     public string GetFileName(string fileLink)
-{
-    if (string.IsNullOrEmpty(fileLink))
     {
-        return string.Empty;
+        if (string.IsNullOrEmpty(fileLink))
+        {
+            return string.Empty;
+        }
+        return Path.GetFileName(fileLink.Replace('\\', '/'));
     }
-    return Path.GetFileName(fileLink.Replace('\\', '/'));
-}
 
     protected override async Task OnInitializedAsync()
     {
@@ -415,10 +416,10 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        if (_chosedDeviceID != 0)
+        if (ChosedDeviceID != 0)
         {
             var foundDevice = DataService.GetAllUserDevices()
-                .FirstOrDefault(d => d.DeviceID == _chosedDeviceID);
+                .FirstOrDefault(d => d.DeviceID == ChosedDeviceID);
 
             if (foundDevice != null)
             {
@@ -434,13 +435,14 @@ else
             }
             else
             {
-                _chosedDeviceID = 0;
+                _deviceNotFound = true;
+                _chosedDevice = null;
             }
         }
 
         await base.OnParametersSetAsync();
     }
-    
-    
+
+
 }
 
