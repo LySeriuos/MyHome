@@ -1,10 +1,17 @@
 ﻿@page "/createEmail"
 @page "/createEmail/{ChosedDeviceID:int}"
 @using MailKit.Net.Smtp
+@inject IOptions<AuthMessageSenderOptions> OAuthOptions
+@using Microsoft.Extensions.Options
 @using MimeKit
+@using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Components.Modals
 @using My_Home.Models
 @inject NavigationManager NavManager
+@using MyHomeBlazorApp.Models
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity.UI.Services
+@inject IEmailSender EmailSender
 
 @inject BlazorData.DataService DataService;
 @inject IJSRuntime JSRuntime
@@ -255,7 +262,7 @@ else
     private string _preparedMessage = "";
     private string _exrtraWarrantyFileLinkConfirmation = "";
     private string _receiptFileLinkConfirmation = "";
-
+    private string _errorMessage = "";
 
     private async Task NavigateToExtraWarrantyFile()
     {
@@ -271,52 +278,61 @@ else
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private async Task<string> SendEmail()
+    private async Task SendEmail() // Changed from Task<string> to work cleanly with Blazor forms
     {
         try
         {
+            _errorMessage = ""; // Clear out previous errors
+
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse("yourhomesupervisor@gmail.com"));
-            email.Cc.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
-            email.To.Add(MailboxAddress.Parse(EmailRequest.To));
-            email.Subject = EmailRequest.Subject;
-            email.ReplyTo.Add(MailboxAddress.Parse($"{_currentUser.Email}"));
-            var builder = new BodyBuilder();
-            // builder.HtmlBody = EmailRequest.Body;
-            builder.TextBody = EmailRequest.Body;
-            var attachments = new List<MimeEntity>();
 
-            if (_chosedDeviceRecieptChecked && !String.IsNullOrEmpty(_recieptLink))
+            // 🛠️ Safe CC & ReplyTo using the field populated during page initialization
+            if (!string.IsNullOrEmpty(_currentUser?.Email))
             {
-                // MimeEntity.Load($"{_recieptLink}");
-                builder.Attachments.Add($"{_recieptLink}");
+                email.Cc.Add(MailboxAddress.Parse(_currentUser.Email));
+                email.ReplyTo.Add(MailboxAddress.Parse(_currentUser.Email));
             }
 
-            if (_chosedDeviceExtraWarrantyRecieptChecked && !String.IsNullOrEmpty(_extraWarrantyRecieptLink))
+            email.To.Add(MailboxAddress.Parse(EmailRequest.To));
+            email.Subject = EmailRequest.Subject;
+
+            var builder = new BodyBuilder();
+            builder.TextBody = EmailRequest.Body;
+
+            // 🛠️ File-system safety checks before attempting attachments
+            if (_chosedDeviceRecieptChecked && !string.IsNullOrEmpty(_recieptLink) && System.IO.File.Exists(_recieptLink))
             {
-                // MimeEntity.Load($"{_extraWarrantyRecieptLink}");
-                builder.Attachments.Add($"{_extraWarrantyRecieptLink}");
+                builder.Attachments.Add(_recieptLink);
+            }
+
+            if (_chosedDeviceExtraWarrantyRecieptChecked && !string.IsNullOrEmpty(_extraWarrantyRecieptLink) && System.IO.File.Exists(_extraWarrantyRecieptLink))
+            {
+                builder.Attachments.Add(_extraWarrantyRecieptLink);
             }
 
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            string? pass = Environment.GetEnvironmentVariable("MyHomeGmailPassword");
+            await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+
+            // 💡 MAGIC LINE: Pulls password cleanly from launchSettings.json (local) or Docker (production)
+            string? pass = OAuthOptions.Value.MyHomeGmailPassword;
+
             await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", pass);
             await smtp.SendAsync(email);
-            email.Dispose();
             await smtp.DisconnectAsync(true);
+
+            // 🛠️ UI Updates on Success
             await _refSuccessModal.OnShowModalClick();
-            EmailRequest = new();
+            EmailRequest = new(); // Clear the form fields
             init();
-            return "Email sent successfully!";
         }
         catch (Exception ex)
         {
-            {
-                return $"Email sending failed. Error: {ex.Message}";
-            }
+            // 🛠️ Surface hidden connection or attachment errors directly to the user's screen
+            _errorMessage = $"Email sending failed. Error: {ex.Message}";
+            StateHasChanged();
         }
     }
 

@@ -1,62 +1,60 @@
 {
-  "profiles": {
-    "http": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr"
+  {
+    "profiles": {
+      "http": {
+        "commandName": "Project",
+        "launchBrowser": true,
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr"
+        },
+        "dotnetRunMessages": true,
+        "applicationUrl": "http://localhost:5067;http://*:5000"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5067;http://*:5000"
-    },
-    "https": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+      "https": {
+        "commandName": "Project",
+        "launchBrowser": true,
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr" // 💡 Added here
+        },
+        "dotnetRunMessages": true,
+        "applicationUrl": "https://localhost:7211;http://localhost:5067"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7211;http://localhost:5067"
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+      "IIS Express": {
+        "commandName": "IISExpress",
+        "launchBrowser": true,
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr" // 💡 Added here
+        }
+      },
+      "WSL": {
+        "commandName": "WSL2",
+        "launchBrowser": true,
+        "launchUrl": "https://localhost:7211",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ASPNETCORE_URLS": "https://localhost:7211;http://localhost:5067",
+          "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr" // 💡 Added here
+        },
+        "distributionName": ""
+      },
+      "Container (Dockerfile)": {
+        "commandName": "Docker",
+        "launchBrowser": true,
+        "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+        "environmentVariables": {
+          "ASPNETCORE_HTTPS_PORTS": "8081",
+          "ASPNETCORE_HTTP_PORTS": "8080",
+          "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr" // 💡 Added here
+        },
+        "publishAllPorts": true,
+        "useSSL": true,
+        "httpPort": 7211,
+        "sslPort": 443,
+        "DockerfileRunArguments": "-v \"C:\\Users\\shiranco.DESKTOP-HRN41TE\\source\\repos\\MyHomeNew\\MyHomeBlazorApp\\Files:/app/Files\""
       }
-    },
-    "WSL": {
-      "commandName": "WSL2",
-      "launchBrowser": true,
-      "launchUrl": "https://localhost:7211",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7211;http://localhost:5067"
-      },
-      "distributionName": ""
-    },
-    "Container (Dockerfile)": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
-      },
-      "publishAllPorts": true,
-      "useSSL": true,
-      "httpPort": 7211,
-      "sslPort": 443,
-      "DockerfileRunArguments": "-v \"C:\\Users\\shiranco.DESKTOP-HRN41TE\\source\\repos\\MyHomeNew\\MyHomeBlazorApp\\Files:/app/Files\""
-    }
-  },
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:44822",
-      "sslPort": 44370
     }
   }
 }
