@@ -1,5 +1,7 @@
 ﻿@page "/createEmail"
 @page "/createEmail/{ChosedDeviceID:int}"
+@rendermode InteractiveServer
+
 @using MailKit.Net.Smtp
 @inject IOptions<AuthMessageSenderOptions> OAuthOptions
 @using Microsoft.Extensions.Options
@@ -64,7 +66,6 @@
         }
 </style>
 
-
 <h3>Create an Email</h3>
 <hr />
 <hr />
@@ -79,26 +80,15 @@
 
 <hr />
 <hr />
-@* @bind-Value:after="RealEsatateIdToAddDeviceChanged" *@
-@* <label class="form-label">Choose The Device</label>
-<InputSelect @bind-Value="_chosedDeviceID" @bind-Value:after="init" class="form-select">
-    <option selected value="0" disabled>Select Real Estate...</option>
-    @foreach (var device in _currentUser.GetAllDevices())
-    {
-        <option value="@device.DeviceID">@device.DeviceName</option>
-    }
-</InputSelect> *@
-
 
 @if (ChosedDeviceID != 0)
 {
     <EditForm Model="_deviceProfile">
         <div class="row w-50 mr-0">
-            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceProduser))
+            @if (!String.IsNullOrEmpty(_chosedDevice?.DeviceProduser))
             {
                 <div class="col-2 text-start">
-                    <InputCheckbox id="produser" @bind-Value="_produserChecked">
-                    </InputCheckbox>
+                    <InputCheckbox id="produser" @bind-Value="_produserChecked"></InputCheckbox>
                     <label>Device Produser:</label>
                 </div>
                 <div class="col text-start">
@@ -107,11 +97,10 @@
             }
         </div>
         <div class="row w-50 mr-0">
-            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceSerialNumber))
+            @if (!String.IsNullOrEmpty(_chosedDevice?.DeviceSerialNumber))
             {
                 <div class="col-2 text-start">
-                    <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked">
-                    </InputCheckbox>
+                    <InputCheckbox id="serialNumber" @bind-Value="_serialNumberChecked"></InputCheckbox>
                     <label>Serial Number:</label>
                 </div>
                 <div class="col text-start">
@@ -120,11 +109,10 @@
             }
         </div>
         <div class="row w-50 mr-0">
-            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceModelNumber))
+            @if (!String.IsNullOrEmpty(_chosedDevice?.DeviceModelNumber))
             {
                 <div class="col-2 text-start">
-                    <InputCheckbox id="modelNumber" @bind-Value="_modelNumberChecked">
-                    </InputCheckbox>
+                    <InputCheckbox id="modelNumber" @bind-Value="_modelNumberChecked"></InputCheckbox>
                     <label>Model Number:</label>
                 </div>
                 <div class="col text-start">
@@ -133,24 +121,20 @@
             }
         </div>
         <div class="row w-50 mr-0">
-            @* Date issue! Which date format to use for editFrom to add new device? DateNow, new DateTime or default(DateTime)?  *@
             <div class="col-3 text-start">
-                <InputCheckbox id="shopDate" @bind-Value="_shopDateChecked">
-                </InputCheckbox>
+                <InputCheckbox id="shopDate" @bind-Value="_shopDateChecked"></InputCheckbox>
                 <label>Shop Date:</label>
             </div>
             <div class="col text-start">
-                <p>@_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()</p>
+                <p>@_chosedDevice?.DeviceWarranty?.PurchaseDate.ToShortDateString()</p>
             </div>
         </div>
         <hr />
         <div class="row w-50 mr-0">
-
-            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ReceiptLink))
+            @if (!String.IsNullOrEmpty(_chosedDevice?.DeviceWarranty?.ReceiptLink))
             {
                 <div class="col-3 text-start">
-                    <InputCheckbox id="receipt" @bind-Value="_chosedDeviceRecieptChecked">
-                    </InputCheckbox>
+                    <InputCheckbox id="receipt" @bind-Value="_chosedDeviceRecieptChecked"></InputCheckbox>
                     <label>Receipt:</label>
                 </div>
                 <div class="col text-start">
@@ -161,13 +145,12 @@
                        target="_blank" class="btn-dark btn-sm addNew-btn">
                         Open
                     </a>
-                    @* <Button Class="btn-dark btn-sm addNew-btn" @onclick="() => NavigateToWarrantyFile()">Open</Button> *@
                 </div>
             }
         </div>
         <hr />
         <div class="row w-50 mr-0">
-            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink))
+            @if (!String.IsNullOrEmpty(_chosedDevice?.DeviceWarranty?.ExtraInsuranceWarrantyLink))
             {
                 <div class="col-3 text-start">
                     <InputCheckbox id="extraWarranty" @bind-Value="_chosedDeviceExtraWarrantyRecieptChecked" />
@@ -181,17 +164,15 @@
                        target="_blank" class="btn-dark btn-sm addNew-btn">
                         Open
                     </a>
-                    @* <Button Class="btn-dark btn-sm addNew-btn" @onclick="() => NavigateToExtraWarrantyFile()">Open</Button> *@
                 </div>
             }
         </div>
 
         <div class="row w-50 mr-0">
-            @if (!String.IsNullOrEmpty(_chosedDevice.DeviceWarranty.Shop.Address.StreetName))
+            @if (!String.IsNullOrEmpty(_chosedDevice?.DeviceWarranty?.Shop?.Address?.StreetName))
             {
                 <div class="col-2 text-start">
-                    <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked">
-                    </InputCheckbox>
+                    <InputCheckbox id="shopAdress" @bind-Value="_chosedDeviceShopAdressChecked"></InputCheckbox>
                     <label>Shop Address</label>
                 </div>
                 <div class="col text-start">
@@ -200,22 +181,27 @@
             }
         </div>
     </EditForm>
-    <Button Class="btn btn-dark my-5 card-btn" @onclick="AddDetailsToTheEmailMessage">Create Email Message</Button>
+
+    <button type="button" class="btn btn-dark my-5 card-btn" @onclick="AddDetailsToTheEmailMessage">Create Email Message</button>
+
     @if (createdMessage)
     {
-        <Button class="btn btn-danger rounded-pill my-5 ms-5" @onclick="ClearTheEmailMessage">Clear Message</Button>
-    }
-    @if (createdMessage)
-    {
-        <EditForm Model="EmailRequest" FormName="EmailForm" OnSubmit="SendEmail" id="emailForm">
+        <button type="button" class="btn btn-danger rounded-pill my-5 ms-5" @onclick="ClearTheEmailMessage">Clear Message</button>
+
+        <EditForm Model="EmailRequest" FormName="EmailForm" OnValidSubmit="SendEmail" id="emailForm">
             <DataAnnotationsValidator />
+
             <InputText @bind-Value="EmailRequest.To" class="form-control mt-2" placeholder="To" />
             <ValidationMessage For="@(() => EmailRequest.To)" class="text-danger small" />
+
             <InputText @bind-Value="EmailRequest.Subject" class="form-control mt-2" placeholder="Subject" />
             <ValidationMessage For="@(() => EmailRequest.Subject)" class="text-danger small" />
+
             <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
-            <Button Type="ButtonType.Submit" class="btn btn-primary card-btn my-3">Send Email</Button>
+
+            <button type="submit" class="btn btn-primary card-btn my-3">Send Email</button>
         </EditForm>
+
         <div>
             <SuccessModal @ref="_refSuccessModal" Title="Email service notification" Text="Your email has been sent!"></SuccessModal>
         </div>
@@ -223,7 +209,7 @@
 }
 else
 {
-    <h3>Sorry,wrong Device ID. Try again!</h3>
+    <h3>Sorry, wrong Device ID. Try again!</h3>
 }
 
 @code {
@@ -231,8 +217,10 @@ else
     public int ChosedDeviceID { get; set; }
     [Parameter]
     public int currentUserID { get; set; }
+
     [SupplyParameterFromForm(FormName = "EmailForm")]
-    public EmailRequest EmailRequest { get; set; } = new();
+    public EmailRequestModel EmailRequest { get; set; } = new();
+
     private DeviceProfile _deviceProfile { get; set; } = new();
     private DeviceProfile? _chosedDevice { get; set; }
     private UserProfile? _currentUser { get; set; }
@@ -266,6 +254,7 @@ else
 
     private async Task NavigateToExtraWarrantyFile()
     {
+        if (_chosedDevice?.DeviceWarranty == null) return;
         string currentExtraWarrantyReceiptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
         string fileUrl = DataService.GetFileUrl(currentExtraWarrantyReceiptLink, ChosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
@@ -273,21 +262,19 @@ else
 
     private async Task NavigateToWarrantyFile()
     {
+        if (_chosedDevice?.DeviceWarranty == null) return;
         string currentWarrantyReceiptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
         string fileUrl = DataService.GetFileUrl(currentWarrantyReceiptLink, ChosedDeviceID);
         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
     }
 
-    private async Task SendEmail() // Changed from Task<string> to work cleanly with Blazor forms
+    private async Task SendEmail()
     {
         try
         {
-            _errorMessage = ""; // Clear out previous errors
-
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse("yourhomesupervisor@gmail.com"));
 
-            // 🛠️ Safe CC & ReplyTo using the field populated during page initialization
             if (!string.IsNullOrEmpty(_currentUser?.Email))
             {
                 email.Cc.Add(MailboxAddress.Parse(_currentUser.Email));
@@ -300,7 +287,6 @@ else
             var builder = new BodyBuilder();
             builder.TextBody = EmailRequest.Body;
 
-            // 🛠️ File-system safety checks before attempting attachments
             if (_chosedDeviceRecieptChecked && !string.IsNullOrEmpty(_recieptLink) && System.IO.File.Exists(_recieptLink))
             {
                 builder.Attachments.Add(_recieptLink);
@@ -316,26 +302,21 @@ else
             using var smtp = new SmtpClient();
             await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
 
-            // 💡 MAGIC LINE: Pulls password cleanly from launchSettings.json (local) or Docker (production)
             string? pass = OAuthOptions.Value.MyHomeGmailPassword;
 
             await smtp.AuthenticateAsync("yourhomesupervisor@gmail.com", pass);
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
-
-            // 🛠️ UI Updates on Success
             await _refSuccessModal.OnShowModalClick();
-            EmailRequest = new(); // Clear the form fields
+            EmailRequest = new();
             init();
         }
         catch (Exception ex)
         {
-            // 🛠️ Surface hidden connection or attachment errors directly to the user's screen
-            _errorMessage = $"Email sending failed. Error: {ex.Message}";
+            Console.WriteLine($"SMTP Infrastructure failure: {ex.Message}");
             StateHasChanged();
         }
     }
-
 
     private void init()
     {
@@ -363,15 +344,15 @@ else
     {
         await DataService.InitializedUserAsync();
         await DataService.LoadUserWithAllDataAsync();
-       if (DataService.CurrentAppUser != null)
-    {
-        _currentUser = DataService.CurrentAppUser.UserProfile;
-    }
+        if (DataService.CurrentAppUser != null)
+        {
+            _currentUser = DataService.CurrentAppUser.UserProfile;
+        }
 
         init();
         await base.OnInitializedAsync();
     }
-    //Reloading the page sets all the strings to default values
+
     private void ClearTheEmailMessage()
     {
         NavManager.NavigateTo(NavManager.Uri, true);
@@ -379,6 +360,8 @@ else
 
     private void AddDetailsToTheEmailMessage()
     {
+        if (_chosedDevice == null) return;
+
         createdMessage = true;
         if (_produserChecked)
         {
@@ -393,31 +376,28 @@ else
             _modelNumberStringToAdd = $"Its model number is {_chosedDevice.DeviceModelNumber}.";
         }
 
-        if (_chosedDeviceRecieptChecked)
+        if (_chosedDeviceRecieptChecked && _chosedDevice.DeviceWarranty != null)
         {
             _recieptLink = _chosedDevice.DeviceWarranty.ReceiptLink;
             _warrantyIsValidUntil = _chosedDevice.DeviceWarranty.WarrantyEnd.ToShortDateString();
             _receiptFileLinkConfirmation = $"The original receipt attached.";
         }
 
-        if (_chosedDeviceExtraWarrantyRecieptChecked)
+        if (_chosedDeviceExtraWarrantyRecieptChecked && _chosedDevice.DeviceWarranty != null)
         {
-
             _extraWarrantyRecieptLink = _chosedDevice.DeviceWarranty.ExtraInsuranceWarrantyLink;
             _warrantyIsValidUntil = _chosedDevice.DeviceWarranty.WarrantyEnd.ToShortDateString();
             _exrtraWarrantyFileLinkConfirmation = $"The extra warranty/insurance receipt attached.";
         }
 
-        if (_shopDateChecked)
+        if (_shopDateChecked && _chosedDevice.DeviceWarranty != null)
         {
             _shopDateStringToAdd = $"On {_chosedDevice.DeviceWarranty.PurchaseDate.ToShortDateString()},";
         }
 
-        if (_chosedDeviceShopAdressChecked)
+        if (_chosedDeviceShopAdressChecked && _chosedDevice.DeviceWarranty?.Shop?.Address != null)
         {
-            string stringToJoin = $"Bought from {_chosedDevice.DeviceWarranty.Shop.ShopName} at {_chosedDevice.DeviceWarranty.Shop.Address.StreetName}, {_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber}, {_chosedDevice.DeviceWarranty.Shop.Address.City}.";
-            // string joinedString = string.Join(",", string)
-            _shopAddress = stringToJoin;
+            _shopAddress = $"Bought from {_chosedDevice.DeviceWarranty.Shop.ShopName} at {_chosedDevice.DeviceWarranty.Shop.Address.StreetName}, {_chosedDevice.DeviceWarranty.Shop.Address.HouseNumber}, {_chosedDevice.DeviceWarranty.Shop.Address.City}.";
         }
 
         _preparedMessage = $@"Dear Sir/Madam,
@@ -465,7 +445,4 @@ else
 
         await base.OnParametersSetAsync();
     }
-
-
 }
-
