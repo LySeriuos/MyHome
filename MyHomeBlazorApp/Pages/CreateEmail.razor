@@ -3,19 +3,19 @@
 @rendermode InteractiveServer
 
 @using MailKit.Net.Smtp
-@inject IOptions<AuthMessageSenderOptions> OAuthOptions
+@using System.IO
 @using Microsoft.Extensions.Options
 @using MimeKit
 @using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Components.Modals
 @using My_Home.Models
-@inject NavigationManager NavManager
 @using MyHomeBlazorApp.Models
 @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity.UI.Services
-@inject IEmailSender EmailSender
-
-@inject BlazorData.DataService DataService;
+@using Microsoft.AspNetCore.Identity.UI
+@inject IWebHostEnvironment WebHostEnvironment
+@inject NavigationManager NavManager
+@inject IOptions<AuthMessageSenderOptions> OAuthOptions
+@inject BlazorData.DataService DataService
 @inject IJSRuntime JSRuntime
 
 <style>
@@ -286,15 +286,33 @@ else
 
             var builder = new BodyBuilder();
             builder.TextBody = EmailRequest.Body;
+            
 
-            if (_chosedDeviceRecieptChecked && !string.IsNullOrEmpty(_recieptLink) && System.IO.File.Exists(_recieptLink))
+            if (_chosedDeviceRecieptChecked && !string.IsNullOrEmpty(_recieptLink))
             {
-                builder.Attachments.Add(_recieptLink);
+                string physicalReceiptPath = ResolvePhysicalPath(_recieptLink);
+                if (System.IO.File.Exists(physicalReceiptPath))
+                {
+                    builder.Attachments.Add(physicalReceiptPath);
+                }
+                else
+                {
+                    Console.WriteLine($"[Attachment Warning] Receipt file not found at: {physicalReceiptPath}");
+                }                
             }
 
-            if (_chosedDeviceExtraWarrantyRecieptChecked && !string.IsNullOrEmpty(_extraWarrantyRecieptLink) && System.IO.File.Exists(_extraWarrantyRecieptLink))
+            if (_chosedDeviceExtraWarrantyRecieptChecked && !string.IsNullOrEmpty(_extraWarrantyRecieptLink))
             {
-                builder.Attachments.Add(_extraWarrantyRecieptLink);
+                string physicalExtraPath = ResolvePhysicalPath(_extraWarrantyRecieptLink);
+
+                if (System.IO.File.Exists(physicalExtraPath))
+                {
+                    builder.Attachments.Add(physicalExtraPath);
+                }
+                else
+                {
+                    Console.WriteLine($"[Attachment Warning] Extra Warranty file not found at: {physicalExtraPath}");
+                }
             }
 
             email.Body = builder.ToMessageBody();
@@ -316,6 +334,55 @@ else
             Console.WriteLine($"SMTP Infrastructure failure: {ex.Message}");
             StateHasChanged();
         }
+    }
+
+    private string ResolvePhysicalPath(string dbFilePath)
+    {
+        if (string.IsNullOrEmpty(dbFilePath))
+        {
+            return string.Empty;
+        }
+
+        // 1. FIRST PRIORITY: If the path is already perfectly valid for the current OS, use it!
+        // On the server, if the path is already "/app/Files/1/7/4xnc1rug.jpg", this will succeed instantly.
+        string normalizedPath = dbFilePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+        if (File.Exists(normalizedPath))
+        {
+            return normalizedPath;
+        }
+
+        // 2. SECOND PRIORITY: Clean up hardcoded Windows paths (e.g., C:/Users/.../Files/1/7/4xnc1rug.jpg)
+        // We locate where the "\Files\" section starts and slice out the relative trail.
+        int filesIndex = dbFilePath.IndexOf("/Files/", StringComparison.OrdinalIgnoreCase);
+        if (filesIndex == -1) filesIndex = dbFilePath.IndexOf("\\Files\\", StringComparison.OrdinalIgnoreCase);
+
+        if (filesIndex != -1)
+        {
+            // This extracts exactly: "Files/1/7/4xnc1rug.jpg"
+            string relativePath = dbFilePath.Substring(filesIndex + 1)
+                                            .Replace('/', Path.DirectorySeparatorChar)
+                                            .Replace('\\', Path.DirectorySeparatorChar);
+
+            // Combines with App Root:
+            // - Locally:  C:\Users\...\MyHomeBlazorApp\Files\1\7\4xnc1rug.jpg
+            // - In Docker: /app/Files/1/7/4xnc1rug.jpg
+            string combinedPath = Path.Combine(WebHostEnvironment.ContentRootPath, relativePath);
+            if (File.Exists(combinedPath))
+            {
+                return combinedPath;
+            }
+        }
+
+        // 3. FALLBACK: If the directory tree is unexpected, look for just the file directly inside the device folder
+        string fileName = Path.GetFileName(normalizedPath);
+        string fallbackDevicePath = Path.Combine(WebHostEnvironment.ContentRootPath, "Files", ChosedDeviceID.ToString(), fileName);
+        if (File.Exists(fallbackDevicePath))
+        {
+            return fallbackDevicePath;
+        }
+
+        // Return the normalized string if nothing else hits so MailKit can attempt a raw read
+        return normalizedPath;
     }
 
     private void init()
