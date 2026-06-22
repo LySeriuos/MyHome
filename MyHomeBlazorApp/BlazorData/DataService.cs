@@ -229,14 +229,13 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="realEstate">Created RealEstate</param>
 
 
-        public async Task AddNewRealEstateToDB(RealEstate currentRealEstate)
+        public void AddNewRealEstateToDB(RealEstate currentRealEstate)
         {
             //check if incoming realestate object has id 0, otherwise error 
             if (currentRealEstate.RealEstateID == 0)
             {
                 //currentRealEstate.Address;
-                _currentUserWithAllData.RealEstates.Add(currentRealEstate);
-                await _dbcontext.SaveChangesAsync();
+                _currentUserWithAllData.RealEstates.Add(currentRealEstate);               
             }
             else
             {
@@ -312,7 +311,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="deviceToAdd">Device object to be add</param>
         /// <param name="chosedRealEstateID">Real Estate Id to add new device into</param>
         /// <returns></returns>
-        public async Task AddNewDeviceToDataBase(DeviceProfile deviceToAdd, int chosedRealEstateID)
+        public void AddNewDeviceToDataBase(DeviceProfile deviceToAdd, int chosedRealEstateID)
         {
             deviceToAdd.DeviceWarranty ??= new();
             deviceToAdd.DeviceWarranty.Shop ??= new();
@@ -321,7 +320,7 @@ namespace MyHomeBlazorApp.BlazorData
             // if user has not created any real estates so the device will be added to unnassigned list
             if (chosedRealEstateID == 0)
             {
-                await Task.Run(() => _currentUserWithAllData.UnassignedDevicesList.Add(deviceToAdd));
+                _currentUserWithAllData.UnassignedDevicesList.Add(deviceToAdd);
             }
             // if user has real estate, device will be added to chosed real estate
             else
@@ -340,9 +339,7 @@ namespace MyHomeBlazorApp.BlazorData
                 //}
 
                 chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
-            }
-            await _dbcontext.SaveChangesAsync();
-
+            }            
         }
 
         public List<DeviceProfile> GetAllUserDevices()
@@ -454,7 +451,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="deviceToMoveID">DeviceProfile ID which will be moved </param>
         /// <param name="_currentUserWithAllData">Indentified user</param>
         /// <param name="realEstateIdToAddDevice">Real Estate ID to move in Device by deviceToMoveID</param>
-        public async Task MoveDeviceToOtherRealEstate(int deviceToMoveID, int realEstateIdToAddDevice)
+        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, int realEstateIdToAddDevice)
         {
             int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
             DeviceProfile? deviceToMove = _currentUserWithAllData.RealEstates
@@ -469,10 +466,10 @@ namespace MyHomeBlazorApp.BlazorData
                 realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
                 realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
             }
-            await Task.CompletedTask;
+            
         }
 
-        public async Task MoveDeviceToUnnassignedList(DeviceProfile targetDevice)
+        public void MoveDeviceToUnnassignedList(DeviceProfile targetDevice)
         {
             if (targetDevice != null || targetDevice.DeviceID != 0)
             {
@@ -486,8 +483,6 @@ namespace MyHomeBlazorApp.BlazorData
             {
                 return;
             }
-
-            await UpdateObjectInDB();
         }
 
         /// <summary>
@@ -497,7 +492,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="realEstateToAddDevice"></param>
         /// <param name="currentDevice"></param>
         /// <returns></returns>
-        public async Task MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUserWithAllData, int realEstateToAddDevice, DeviceProfile currentDevice)
+        public void MoveDeviceFromUnassignedDevicesProfile(UserProfile _currentUserWithAllData, int realEstateToAddDevice, DeviceProfile currentDevice)
         {
             _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateToAddDevice).DevicesProfiles.Add(currentDevice);
             _currentUserWithAllData.UnassignedDevicesList.Remove(currentDevice);
@@ -935,6 +930,7 @@ namespace MyHomeBlazorApp.BlazorData
         {
             _dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
+            //_dbcontext.ChangeTracker.Clear();
         }
 
         #endregion

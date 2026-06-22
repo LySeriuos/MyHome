@@ -255,20 +255,20 @@
         {
             //Case 1: Add new device (any real estate ID, if there is no real estates it will get realEsateID == 0)
             case (true, _):
-                await DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
+                DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
                 break;
             // Case 2: Existing device move to Unnassigned device list
             case (false, 0) when isCurrentlyAssigned:
-                await DataService.MoveDeviceToUnnassignedList(CurrentDevice);
+                DataService.MoveDeviceToUnnassignedList(CurrentDevice);
                 break;
             // Case 3: Exsisting Device move from unnassigend devices list to chosed real estate
             case (false, var targetId) when !isCurrentlyAssigned && targetId != 0:
-                await DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, targetId, CurrentDevice);
+                DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, targetId, CurrentDevice);
                 break;
 
             // Case 4: Exsisting device move from one Realestate to other
             case (false, var targetId) when targetId != 0:
-                await DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, targetId);
+                DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, targetId);
                 break;
 
             default:

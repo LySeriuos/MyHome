@@ -351,22 +351,22 @@
             {
                 // Case 1: Add new device
                 case (true, _):
-                    await DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
+                    DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
                     break;
 
                 // Case 2: Existing device moved to "Unassigned" (Target ID 0)
                 case (false, 0) when isCurrentlyAssigned:
-                    await DataService.MoveDeviceToUnnassignedList(CurrentDevice);
+                    DataService.MoveDeviceToUnnassignedList(CurrentDevice);
                     break;
 
                 // Case 3: Move from Unassigned list to a specific Real Estate
                 case (false, var targetId) when !isCurrentlyAssigned && targetId != 0:
-                    await DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, targetId, CurrentDevice);
+                    DataService.MoveDeviceFromUnassignedDevicesProfile(CurrentUser, targetId, CurrentDevice);
                     break;
 
                 // Case 4: Transfer from one Real Estate to another
                 case (false, var targetId) when targetId != 0:
-                    await DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, targetId);
+                    DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, targetId);
                     break;
 
                 default:
