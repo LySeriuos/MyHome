@@ -153,7 +153,7 @@
             </div>
         </div>
 
-       @*  @if (showErrorMessageVisible == true)
+        @*  @if (showErrorMessageVisible == true)
         {
             <p class="text-danger d-block">@errorMessage</p>
         } *@
@@ -175,7 +175,7 @@
             <br />
             <div class="btn-row">
                 <div class="left-buttons col-sm-6 ">
-                    <NextPreviuosButtons CurrentDevice ="@CurrentDevice"
+                    <NextPreviuosButtons CurrentDevice="@CurrentDevice"
                                          DevicesListAsQueryable="_devicesListAsQueryable"
                                          CurrentDeviceChanged="HandleDeviceSwitch">
                     </NextPreviuosButtons>
@@ -231,14 +231,14 @@
     private bool validDeviceForm;
     private bool showErrorMessageVisible = false;
     private bool fieldHasBeenChanged { get; set; } = false;
-    private bool _isGuest => DataService.CurrentAppUser == null;    
+    private bool _isGuest => DataService.CurrentAppUser == null;
     private bool _saveDisabled => !fieldHasBeenChanged;
 
     private void HandleDeviceSwitch(DeviceProfile targetDevice)
     {
-        
+
         fieldHasBeenChanged = false;
-        CurrentDevice = targetDevice;        
+        CurrentDevice = targetDevice;
         editContext = new(CurrentDevice);
     }
 
@@ -256,30 +256,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Init();
-    }
-    //todo: disable button if there is no changes in the editForm
-    private async Task Init()
-    {
+
         if (CurrentDevice == null)
         {
             return;
         }
-
-        // 1. Initialize the form context (this works for guests!)
+        
         editContext = new(CurrentDevice);
-
-        // 2. Only fetch the "full list" if someone is actually logged in
-        // This prevents the "No User Logged In" error for guests
+        
         if (DataService.CurrentAppUser != null)
         {
             var allDevicesList = DataService.GetAllUserDevices();
             _devicesListAsQueryable = allDevicesList.AsQueryable();
         }
         else
-        {
-            // For guests, we provide an empty list or just the current device
-            // so the UI components don't break
+        {            
             _devicesListAsQueryable = new List<DeviceProfile> { CurrentDevice }.AsQueryable();
         }
     }
@@ -304,16 +295,14 @@
             IncludeButtons = true;
         }
 
-        if (CurrentDevice.DeviceID == 0)
-        {
-            selectedTargetRealEstateId = 0;
-        }
-        else
-        {
-            selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
-        }
-        // var allDevicesList = DataService.GetAllUserDevices();
-        // _devicesListAsQueryable = allDevicesList.AsQueryable();
+        // if (CurrentDevice.DeviceID == 0)
+        // {
+        //     selectedTargetRealEstateId = 0;
+        // }
+        // else
+        // {
+        //     selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
+        // }        
 
         editContext = new(CurrentDevice);
         fieldHasBeenChanged = false;
@@ -368,7 +357,7 @@
                     break;
 
                 default:
-                    // Just update fields (Name, Serial Number, etc.) without changing location                    
+                    // Just update fields (Name, Serial Number, etc.) without changing location
                     break;
             }
 

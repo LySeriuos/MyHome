@@ -426,8 +426,7 @@
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUserWithAllData;
-        currentDevice = DataService.GetDeviceById(deviceID);
-        currentRealEstate.RealEstateID = DataService.GetRealEstateByDeviceID(currentDevice.DeviceID);
+        currentDevice = DataService.GetDeviceById(deviceID);        
         await _reusableModal.ShowAsync();
     }
     // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
