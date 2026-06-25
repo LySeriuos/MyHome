@@ -136,7 +136,7 @@
                             <option selected value="0">Select Real Estate...or Will Be Saved As Unnassigned</option>
                             @foreach (var realEstate in CurrentUser.RealEstates)
                             {
-                                <option value="@realEstate.RealEstateID">@realEstate.RealEstateName</option>
+                                <option value="@realEstate.RealEstateID">@realEstate.RealEstateName || @realEstate.RealEstateID</option>
                             }
                         }
                     </InputSelect>
@@ -256,8 +256,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Just try to hydrate the DataService if a session exists
-        await DataService.LoadUserWithAllDataAsync();
         Init();
     }
     //todo: disable button if there is no changes in the editForm
