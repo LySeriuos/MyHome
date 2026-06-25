@@ -377,8 +377,8 @@
             // Finalize
             await DataService.UpdateObjectInDB();
             await DataChangedEvent.InvokeAsync();
+            StateHasChanged();
 
-            // Reset state
             selectedTargetRealEstateId = 0;
             showErrorMessageVisible = false;
             fieldHasBeenChanged = false;
