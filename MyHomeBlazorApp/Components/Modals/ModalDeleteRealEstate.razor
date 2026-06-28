@@ -10,21 +10,21 @@
         <p>Are you sure you want to delete @CurrentRealEstate.RealEstateName together with Devices?</p>
     </BodyTemplate>
     <FooterTemplate>
-        @if (CurrentRealEstate.DevicesProfiles.Count > 0)
+        @if (CurrentRealEstate.DevicesProfiles.Any())
         {
-            <Button @onclick="()=> CallTheRequest()" Class="btn btn-danger">Delete Only Real Estate</Button>
-            <Button @onclick="()=> DeleteRealEstate_Click(true)" Class=" btn btn-danger">Delete Real Estate With Devices</Button>
+            <Button @onclick="() => CallTheRequest()" Class="btn btn-danger">Delete Only Real Estate</Button>
+            <Button @onclick="() => DeleteRealEstateFromDb()" Class=" btn btn-danger">Delete Real Estate With Devices</Button>
         }
         else
         {
-            <Button @onclick="()=> DeleteRealEstate_Click(true)" Class="btn btn-danger">Delete Real Estate</Button>
+            <Button @onclick="() => DeleteRealEstateFromDb()" Class="btn btn-danger">Delete Real Estate</Button>
         }
-        <ButtonCloseCancel TextButton="Cancel" ButtonEvent="()=>OnHideModalDeleteRealEstateCloseClick()"/>
+        <ButtonCloseCancel TextButton="Cancel" ButtonEvent="() => OnHideModalDeleteRealEstateCloseClick()" />
     </FooterTemplate>
 </Modal>
 
 @code {
-    
+
     private Modal? refModalRealEstateDelete { get; set; }
     [Parameter]
     public RealEstate? CurrentRealEstate { get; set; }
@@ -33,7 +33,7 @@
     [Parameter]
     public EventCallback OnDeleteSuccess { get; set; }
     [Parameter]
-    public EventCallback <int> OnRequestReassignDevicesListToOtherRealEsatate { get; set; }
+    public EventCallback<int> OnRequestReassignDevicesListToOtherRealEsatate { get; set; }
 
     private async Task CallTheRequest()
     {
@@ -43,19 +43,18 @@
         }
     }
     //TODO this method is called twice, need to check why!
-    public async Task DeleteRealEstate_Click(bool _confirmDeletion)
+    public async Task DeleteRealEstateFromDb()
     {
-        if (_confirmDeletion == true)
+
+        if (CurrentRealEstate.RealEstateID != 0)
         {
-            if (CurrentRealEstate.RealEstateID != 0)
-            {
-                await DataService.RemoveRealEstate(CurrentRealEstate.RealEstateID);                
-            }
-            else
-            {
-                throw new ArgumentException("Real Estate doesn't exist!");                
-            }
-        }        
+            await DataService.RemoveRealEstateFromDb(CurrentRealEstate.RealEstateID, includeDevices: true);
+        }
+        else
+        {
+            throw new ArgumentException("Real Estate doesn't exist!");
+        }
+
         await OnHideModalDeleteRealEstateCloseClick();
         await OnDataChanged.InvokeAsync();
         await OnDeleteSuccess.InvokeAsync();

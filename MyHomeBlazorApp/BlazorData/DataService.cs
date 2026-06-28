@@ -235,7 +235,7 @@ namespace MyHomeBlazorApp.BlazorData
             if (currentRealEstate.RealEstateID == 0)
             {
                 //currentRealEstate.Address;
-                _currentUserWithAllData.RealEstates.Add(currentRealEstate);               
+                _currentUserWithAllData.RealEstates.Add(currentRealEstate);
             }
             else
             {
@@ -287,19 +287,49 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to delete(remove) RealEstate from the RealEstates list
         /// </summary>
         /// <param name="contextChosedRealEstateID">Chosed RealEstate</param>
-        public async Task RemoveRealEstate(int contextChosedRealEstateID)
+        public async Task RemoveRealEstateFromDb(int realEstateId, bool includeDevices)
         {
-            bool realEstateExsits = _currentUserWithAllData.RealEstates.Contains(GetRealEstate(contextChosedRealEstateID));
-            if (realEstateExsits == true)
+            var realEstate = await _dbcontext.Set<RealEstate>()
+                .Include(r => r.Address)
+                .Include(r => r.DevicesProfiles)
+                    .ThenInclude(d => d.DeviceWarranty)
+                        .ThenInclude(w => w.Shop)
+                            .ThenInclude(s => s.Address)
+                .FirstOrDefaultAsync(r => r.RealEstateID == realEstateId);
+
+            if (realEstate == null) return;
+            
+            if (realEstate.Address != null)
             {
-                RealEstate realEstateToDelete = _currentUserWithAllData.RealEstates.First(r => r.RealEstateID == contextChosedRealEstateID);
-                _dbcontext.Remove(realEstateToDelete);
-                await UpdateObjectInDB();
+                _dbcontext.Remove(realEstate.Address);
             }
-            else
+            
+            if (realEstate.DevicesProfiles != null)
             {
-                return;
+                if (includeDevices)
+                {                    
+                    foreach (var device in realEstate.DevicesProfiles.ToList())
+                    {
+                        if (device.DeviceWarranty?.Shop?.Address is { } shopAddress)
+                            _dbcontext.Remove(shopAddress);
+
+                        if (device.DeviceWarranty?.Shop is { } shop)
+                            _dbcontext.Remove(shop);
+
+                        if (device.DeviceWarranty is { } warranty)
+                            _dbcontext.Remove(warranty);
+
+                        _dbcontext.Remove(device); // Physically deletes the device record
+                    }
+                }
+                else
+                {                   
+                    realEstate.DevicesProfiles.Clear();
+                }
             }
+            
+            _dbcontext.Remove(realEstate);            
+            await _dbcontext.SaveChangesAsync();
         }
 
         #endregion
@@ -339,7 +369,7 @@ namespace MyHomeBlazorApp.BlazorData
                 //}
 
                 chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
-            }            
+            }
         }
 
         public List<DeviceProfile> GetAllUserDevices()
@@ -466,7 +496,7 @@ namespace MyHomeBlazorApp.BlazorData
                 realEstateToMoveFrom.DevicesProfiles.Remove(deviceToMove);
                 realEstateToAddDevice.DevicesProfiles.Add(deviceToMove);
             }
-            
+
         }
 
         public void MoveDeviceToUnnassignedList(DeviceProfile targetDevice)
@@ -928,7 +958,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task UpdateObjectInDB()
         {
-            _dbcontext.UpdateRange(CurrentAppUser);
+            //_dbcontext.UpdateRange(CurrentAppUser);
             await _dbcontext.SaveChangesAsync();
             //_dbcontext.ChangeTracker.Clear();
         }

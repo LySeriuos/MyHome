@@ -475,7 +475,7 @@
 
     private async Task OnModalRealEstateDeleteRequest()
     {
-        await refModalRealEstateDelete.DeleteRealEstate_Click(true);
+        await refModalRealEstateDelete.DeleteRealEstateFromDb();
     }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
