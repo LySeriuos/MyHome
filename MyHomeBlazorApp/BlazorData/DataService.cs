@@ -214,13 +214,14 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>RealEstate object</returns>
         public RealEstate? GetRealEstate(int realEstateID)
         {
-            if (_currentUserWithAllData == null || _currentUserWithAllData.RealEstates == null)
-            {
-                return new RealEstate();
-            }
+            if (_currentUserWithAllData?.RealEstates == null) return null;
 
             var foundRealEstate = _currentUserWithAllData.RealEstates.FirstOrDefault(r => r.RealEstateID == realEstateID);
-            return foundRealEstate ?? new RealEstate();
+            if (foundRealEstate != null)
+            {
+                return foundRealEstate;
+            }
+            return null;
         }
 
         /// <summary>
@@ -250,20 +251,16 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>RealEstate's ID</returns>
         public int GetRealEstateByDeviceID(int deviceId)
         {
-            if (CurrentUserWithAllData.RealEstates == null) return 0;
-
-            foreach (var realEstate in CurrentUserWithAllData.RealEstates)
+            if (_currentUserWithAllData?.RealEstates == null) return 0;
+            var foundRealEstate = _currentUserWithAllData.RealEstates.FirstOrDefault(re => re.DevicesProfiles.Any(d => d.DeviceID == deviceId));
+            if (foundRealEstate != null)
             {
-                foreach (var device in realEstate.DevicesProfiles)
-                {
-                    if (device.DeviceID == deviceId)
-                    {
-                        return realEstate.RealEstateID;
-                    }
-                }
+                return foundRealEstate.RealEstateID;
             }
             return 0;
         }
+
+
 
         /// <summary>
         /// To get last added RealEstate in RealEstates list
@@ -287,50 +284,103 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to delete(remove) RealEstate from the RealEstates list
         /// </summary>
         /// <param name="contextChosedRealEstateID">Chosed RealEstate</param>
-        public async Task RemoveRealEstateFromDb(int realEstateId, bool includeDevices)
+        public async Task RemoveRealEstateFromDb(int realEstateId)
         {
-            var realEstate = await _dbcontext.Set<RealEstate>()
+            var sourceRealEstate = await GetRealEstateWithAllData(realEstateId);
+
+            if (sourceRealEstate == null) return;
+
+            if (sourceRealEstate.Address != null)
+            {
+                _dbcontext.Remove(sourceRealEstate.Address);
+            }
+
+            if (sourceRealEstate.DevicesProfiles != null)
+            {
+                foreach (var device in sourceRealEstate.DevicesProfiles.ToList())
+                {
+                    if (device.DeviceWarranty?.Shop?.Address is { } shopAddress)
+                        _dbcontext.Remove(shopAddress);
+
+                    if (device.DeviceWarranty?.Shop is { } shop)
+                        _dbcontext.Remove(shop);
+
+                    if (device.DeviceWarranty is { } warranty)
+                        _dbcontext.Remove(warranty);
+
+                    _dbcontext.Remove(device); // Physically deletes the device record
+                }
+            }
+
+            _dbcontext.Remove(sourceRealEstate);
+            await _dbcontext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRealEstateAndKeepUnassignedDevices(int realEstateId)
+        {
+            var sourceRealEstate = await GetRealEstateWithAllData(realEstateId);
+            
+            if (sourceRealEstate == null) return;
+            if (sourceRealEstate.DevicesProfiles != null)
+            {
+                foreach (var targetDevice in sourceRealEstate.DevicesProfiles.ToList())
+                {
+                    _currentUserWithAllData.UnassignedDevicesList.Add(targetDevice);
+                    sourceRealEstate.DevicesProfiles.Remove(targetDevice);
+                }
+                await UpdateObjectInDB();
+            }
+
+            _dbcontext.Remove(sourceRealEstate);
+
+            if (sourceRealEstate.Address != null)
+            {
+                _dbcontext.Remove(sourceRealEstate.Address);
+            }
+
+            sourceRealEstate.DevicesProfiles?.Clear();
+            await _dbcontext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRealEstateAndReassignDevices(int sourceId, int targetRealEstateId)
+        {
+            var sourceRealEstate = await GetRealEstateWithAllData(sourceId);
+            var targetRealEstate = await _dbcontext.Set<RealEstate>()
+                .Include(r => r.DevicesProfiles)
+                .FirstOrDefaultAsync(r => r.RealEstateID == targetRealEstateId);
+
+            if (sourceRealEstate == null || targetRealEstate == null) return;
+            
+            if (sourceRealEstate.DevicesProfiles != null)
+            {
+                foreach (var device in sourceRealEstate.DevicesProfiles.ToList())
+                {
+                    sourceRealEstate.DevicesProfiles.Remove(device);
+                    targetRealEstate.DevicesProfiles.Add(device);
+                }
+                await UpdateObjectInDB();
+            }
+            if (sourceRealEstate.Address != null)
+            {
+                _dbcontext.Remove(sourceRealEstate.Address);
+            }
+
+            _dbcontext.Remove(sourceRealEstate);
+            _currentUserWithAllData.RealEstates.Remove(sourceRealEstate);
+            await _dbcontext.SaveChangesAsync();
+        }
+
+        private Task<RealEstate?> GetRealEstateWithAllData(int id)
+        {
+            return _dbcontext.Set<RealEstate>()
                 .Include(r => r.Address)
                 .Include(r => r.DevicesProfiles)
                     .ThenInclude(d => d.DeviceWarranty)
                         .ThenInclude(w => w.Shop)
                             .ThenInclude(s => s.Address)
-                .FirstOrDefaultAsync(r => r.RealEstateID == realEstateId);
-
-            if (realEstate == null) return;
-            
-            if (realEstate.Address != null)
-            {
-                _dbcontext.Remove(realEstate.Address);
-            }
-            
-            if (realEstate.DevicesProfiles != null)
-            {
-                if (includeDevices)
-                {                    
-                    foreach (var device in realEstate.DevicesProfiles.ToList())
-                    {
-                        if (device.DeviceWarranty?.Shop?.Address is { } shopAddress)
-                            _dbcontext.Remove(shopAddress);
-
-                        if (device.DeviceWarranty?.Shop is { } shop)
-                            _dbcontext.Remove(shop);
-
-                        if (device.DeviceWarranty is { } warranty)
-                            _dbcontext.Remove(warranty);
-
-                        _dbcontext.Remove(device); // Physically deletes the device record
-                    }
-                }
-                else
-                {                   
-                    realEstate.DevicesProfiles.Clear();
-                }
-            }
-            
-            _dbcontext.Remove(realEstate);            
-            await _dbcontext.SaveChangesAsync();
+                .FirstOrDefaultAsync(r => r.RealEstateID == id);
         }
+
 
         #endregion
         #region Devices

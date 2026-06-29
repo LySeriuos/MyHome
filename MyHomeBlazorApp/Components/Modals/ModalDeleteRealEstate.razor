@@ -6,11 +6,48 @@
 
 <Modal @ref="refModalRealEstateDelete" Title="Delete Confirm">
     <BodyTemplate>
-        <p class="text-danger">Attention! If you will delete this RealEsatate it´s devices will be removed too!</p>
-        <p>Are you sure you want to delete @CurrentRealEstate.RealEstateName together with Devices?</p>
+        @* <p class="text-danger">Attention! If you will delete this RealEstate it´s devices will be removed too!</p>
+        <p>Are you sure you want to delete @CurrentRealEstate.RealEstateName together with Devices?</p> *@
+        @if (CurrentStep == DeleteStep.MainConfirmation)
+        {
+            <p>Are you sure you want to delete <strong>@CurrentRealEstate?.RealEstateName</strong>?</p>
+
+            @if (CurrentRealEstate?.DevicesProfiles?.Count > 0)
+            {
+                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="GoToReassignStep" Class="btn btn-warning btn-small">Delete Only Real Estate</Button>
+                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger btn-small">Delete Real Estate With All Devices</Button>
+            }
+            else
+            {
+                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger">Confirm Delete</Button>
+            }
+        }
+        else if (CurrentStep == DeleteStep.DeviceManagement)
+        {
+            <h5>What should we do with the (@CurrentRealEstate?.DevicesProfiles?.Count) attached devices?</h5>            
+            <div class="my-3">
+                <label>Move devices to this Real Estate:</label>
+                <select @bind="SelectedTargetRealEstateId" class="form-control">
+                    <option value="0">-- Select a Destination --</option>
+                    @foreach (var re in AllOtherRealEstates)
+                    {
+                        if (CurrentRealEstate != null && re.RealEstateID != CurrentRealEstate.RealEstateID && re.RealEstateID != 0)
+                        {
+                            <option value="@re.RealEstateID">@re.RealEstateName</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteReassignAndDelete" Class="btn btn-danger" Disabled="@(SelectedTargetRealEstateId == 0)">Move Devices & Delete</Button>
+                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteUnassignAndDelete" Class="btn btn-danger">Leave Devices Unassigned & Delete</Button>
+                
+            </div>
+        }
     </BodyTemplate>
     <FooterTemplate>
-        @if (CurrentRealEstate.DevicesProfiles.Any())
+       @*  @if (CurrentRealEstate.DevicesProfiles.Any())
         {
             <Button @onclick="() => CallTheRequest()" Class="btn btn-danger">Delete Only Real Estate</Button>
             <Button @onclick="() => DeleteRealEstateFromDb()" Class=" btn btn-danger">Delete Real Estate With Devices</Button>
@@ -18,7 +55,9 @@
         else
         {
             <Button @onclick="() => DeleteRealEstateFromDb()" Class="btn btn-danger">Delete Real Estate</Button>
-        }
+        } *@
+
+        <Button type="ButtonType.Button" Color="ButtonColor.Dark" Outline="true" @onclick="BackToMainStep" Class="btn btn-outline-light">Back</Button>
         <ButtonCloseCancel TextButton="Cancel" ButtonEvent="() => OnHideModalDeleteRealEstateCloseClick()" />
     </FooterTemplate>
 </Modal>
@@ -34,34 +73,80 @@
     public EventCallback OnDeleteSuccess { get; set; }
     [Parameter]
     public EventCallback<int> OnRequestReassignDevicesListToOtherRealEsatate { get; set; }
+    [Parameter]
+    public EventCallback OnDevicesListDataChanged { get; set; }
+    [Parameter] public List<RealEstate> AllOtherRealEstates { get; set; } = new(); // Populate this from your parent view
+    private enum DeleteStep { MainConfirmation, DeviceManagement }
+    private DeleteStep CurrentStep { get; set; } = DeleteStep.MainConfirmation;
+    private int SelectedTargetRealEstateId { get; set; }
+    
 
-    private async Task CallTheRequest()
+
+    // Navigation logic inside the wizard
+    private void GoToReassignStep() => CurrentStep = DeleteStep.DeviceManagement;
+    private void BackToMainStep() => CurrentStep = DeleteStep.MainConfirmation;
+
+   
+    private async Task ExecuteDeleteEverything()
     {
-        if (CurrentRealEstate != null)
-        {
-            await OnRequestReassignDevicesListToOtherRealEsatate.InvokeAsync(CurrentRealEstate.RealEstateID);
-        }
+        if (CurrentRealEstate == null) return;
+        await DataService.RemoveRealEstateFromDb(CurrentRealEstate.RealEstateID);
+        await FinalizeAndClose();
     }
-    //TODO this method is called twice, need to check why!
-    public async Task DeleteRealEstateFromDb()
+
+    private async Task ExecuteUnassignAndDelete()
     {
+        if (CurrentRealEstate == null) return;
+        await DataService.DeleteRealEstateAndKeepUnassignedDevices(CurrentRealEstate.RealEstateID);        
+        await FinalizeAndClose();
+    }
 
-        if (CurrentRealEstate.RealEstateID != 0)
-        {
-            await DataService.RemoveRealEstateFromDb(CurrentRealEstate.RealEstateID, includeDevices: true);
-        }
-        else
-        {
-            throw new ArgumentException("Real Estate doesn't exist!");
-        }
+    private async Task ExecuteReassignAndDelete()
+    {
+        if (CurrentRealEstate == null || SelectedTargetRealEstateId == 0) return;
+        await DataService.DeleteRealEstateAndReassignDevices(CurrentRealEstate.RealEstateID, SelectedTargetRealEstateId);
+        await FinalizeAndClose();
+    }
 
-        await OnHideModalDeleteRealEstateCloseClick();
+    private async Task FinalizeAndClose()
+    {
         await OnDataChanged.InvokeAsync();
+        await OnDevicesListDataChanged.InvokeAsync();
+        CurrentStep = DeleteStep.MainConfirmation; 
+        SelectedTargetRealEstateId = 0;   
+        await OnHideModalDeleteRealEstateCloseClick();
         await OnDeleteSuccess.InvokeAsync();
-        StateHasChanged();
-        CurrentRealEstate = new();
-
     }
+
+
+
+    // private async Task CallTheRequest()
+    // {
+    //     if (CurrentRealEstate != null)
+    //     {
+    //         await OnRequestReassignDevicesListToOtherRealEsatate.InvokeAsync(CurrentRealEstate.RealEstateID);
+    //     }
+    // }
+    // //TODO this method is called twice, need to check why!
+    // public async Task DeleteRealEstateFromDb()
+    // {
+
+    //     if (CurrentRealEstate.RealEstateID != 0)
+    //     {
+    //         await DataService.RemoveRealEstateFromDb(CurrentRealEstate.RealEstateID);
+    //     }
+    //     else
+    //     {
+    //         throw new ArgumentException("Real Estate doesn't exist!");
+    //     }
+
+    //     await OnHideModalDeleteRealEstateCloseClick();
+    //     await OnDataChanged.InvokeAsync();
+    //     await OnDeleteSuccess.InvokeAsync();
+    //     StateHasChanged();
+    //     CurrentRealEstate = new();
+
+    // }
 
     public async Task OnHideModalDeleteRealEstateCloseClick()
     {
