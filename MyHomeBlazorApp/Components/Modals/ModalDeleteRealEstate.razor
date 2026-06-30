@@ -41,23 +41,15 @@
 
             <div class="d-flex justify-content-between mt-4">
                 <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteReassignAndDelete" Class="btn btn-danger" Disabled="@(SelectedTargetRealEstateId == 0)">Move Devices & Delete</Button>
-                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteUnassignAndDelete" Class="btn btn-danger">Leave Devices Unassigned & Delete</Button>
-                
+                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteUnassignAndDelete" Class="btn btn-danger">Leave Devices Unassigned & Delete</Button>                
             </div>
         }
     </BodyTemplate>
     <FooterTemplate>
-       @*  @if (CurrentRealEstate.DevicesProfiles.Any())
+        @if (CurrentStep == DeleteStep.DeviceManagement)
         {
-            <Button @onclick="() => CallTheRequest()" Class="btn btn-danger">Delete Only Real Estate</Button>
-            <Button @onclick="() => DeleteRealEstateFromDb()" Class=" btn btn-danger">Delete Real Estate With Devices</Button>
+            <Button type="ButtonType.Button" Color="ButtonColor.Dark" Outline="true" @onclick="BackToMainStep" Class="btn btn-outline-light">Back</Button>
         }
-        else
-        {
-            <Button @onclick="() => DeleteRealEstateFromDb()" Class="btn btn-danger">Delete Real Estate</Button>
-        } *@
-
-        <Button type="ButtonType.Button" Color="ButtonColor.Dark" Outline="true" @onclick="BackToMainStep" Class="btn btn-outline-light">Back</Button>
         <ButtonCloseCancel TextButton="Cancel" ButtonEvent="() => OnHideModalDeleteRealEstateCloseClick()" />
     </FooterTemplate>
 </Modal>
@@ -75,11 +67,10 @@
     public EventCallback<int> OnRequestReassignDevicesListToOtherRealEsatate { get; set; }
     [Parameter]
     public EventCallback OnDevicesListDataChanged { get; set; }
-    [Parameter] public List<RealEstate> AllOtherRealEstates { get; set; } = new(); // Populate this from your parent view
+    [Parameter] public List<RealEstate> AllOtherRealEstates { get; set; } = new();
     private enum DeleteStep { MainConfirmation, DeviceManagement }
     private DeleteStep CurrentStep { get; set; } = DeleteStep.MainConfirmation;
-    private int SelectedTargetRealEstateId { get; set; }
-    
+    private int SelectedTargetRealEstateId { get; set; }    
 
 
     // Navigation logic inside the wizard
@@ -117,36 +108,6 @@
         await OnHideModalDeleteRealEstateCloseClick();
         await OnDeleteSuccess.InvokeAsync();
     }
-
-
-
-    // private async Task CallTheRequest()
-    // {
-    //     if (CurrentRealEstate != null)
-    //     {
-    //         await OnRequestReassignDevicesListToOtherRealEsatate.InvokeAsync(CurrentRealEstate.RealEstateID);
-    //     }
-    // }
-    // //TODO this method is called twice, need to check why!
-    // public async Task DeleteRealEstateFromDb()
-    // {
-
-    //     if (CurrentRealEstate.RealEstateID != 0)
-    //     {
-    //         await DataService.RemoveRealEstateFromDb(CurrentRealEstate.RealEstateID);
-    //     }
-    //     else
-    //     {
-    //         throw new ArgumentException("Real Estate doesn't exist!");
-    //     }
-
-    //     await OnHideModalDeleteRealEstateCloseClick();
-    //     await OnDataChanged.InvokeAsync();
-    //     await OnDeleteSuccess.InvokeAsync();
-    //     StateHasChanged();
-    //     CurrentRealEstate = new();
-
-    // }
 
     public async Task OnHideModalDeleteRealEstateCloseClick()
     {

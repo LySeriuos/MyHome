@@ -82,13 +82,10 @@
                         <div class="row">
                             <div class="col-md-7 col-lg-5">
                                 <div class="d-flex align-items-center justify-content-start gap-3 border rounded-pill px-3 py-1 mb-3 bg-light shadow-sm" style="width: fit-content;">
-
-                                    @* <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Click QR to add</small> *@
                                     <Button Class="btn btn-sm btn-link text-success text-decoration-none fw-bold" @onclick="HandleAddAllToPrint">
                                         Add all devices to print list
                                     </Button>
                                 </div>
-
 
                                 @if (DataService.GetCurrentQueue().Any())
                                 {
@@ -120,11 +117,6 @@
                                 }
                             </div>
                         </div>
-
-
-                        @* <Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button>
-            <p>Envelope Icon is to prepatre email for the shop you bought the device</p>
-            <p>Qr Code Icon is to create qr code for device</p> *@
                         <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
                             <TemplateColumn>
                                 <div>
@@ -164,13 +156,11 @@
                             </TemplateColumn>
                             <TemplateColumn Title="Real Estate/ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
                                 <span>@context.TempRealEstateName</span>
-                            </TemplateColumn>
-                            @* how to make output "no data" if user didn't put in details for alomst each part. Some will be *@
+                            </TemplateColumn>                           
                             <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
                             <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
                             <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
                             <PropertyColumn Title="Warranty Length (Years)" Property="@(d => d.DeviceWarranty.Years)" />
-                            @* it would be great for user to uppload the receipts or insurances to database to make it easy to find! Other method it could be linked in the user device *@
                             <TemplateColumn Title="Receipt">
                                 @if (String.IsNullOrEmpty(context.DeviceWarranty.ReceiptLink))
                                 {
@@ -178,17 +168,13 @@
                                 }
                                 else
                                 {
-                                    @* <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ReceiptLink)">Open</Button> *@
-                                    <!-- 🟢 Update both file links in your EditForm to clean up backslashes on the fly -->
                                     <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ReceiptLink.Replace('\\', '/')))"
                                        target="_blank" class="btn btn-sm btn btn-outline-info">
                                         Open
                                     </a>
                                 }
-
                             </TemplateColumn>
                             <PropertyColumn Title="Extra Warranty Length (Years)" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
-                            @* maybe I should separate extended warranty and insurance because it is easier to track and to see what is valid *@
                             <TemplateColumn Title="Extra's Receipt">
                                 @if (String.IsNullOrEmpty(context.DeviceWarranty.ExtraInsuranceWarrantyLink))
                                 {
@@ -196,7 +182,6 @@
                                 }
                                 else
                                 {
-                                    @* <Button class="btn btn-sm btn btn-outline-info" @onclick="() => NavigateToExtraWarrantyOrReceiptFile(context.DeviceID, context.DeviceWarranty.ExtraInsuranceWarrantyLink)">Open</Button> *@
                                     <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))"
                                        target="_blank" class="btn btn-sm btn btn-outline-info">
                                         Open
@@ -231,38 +216,10 @@
                                 <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
                                 <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
                                 <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
-
                             </QuickGrid>
                         }
                     </div>
                 </TabPage>
-                @* this will be commented out because of changes structure. *@
-                @* @if (_unassignedDevicesListAsQueryable != null && _unassignedDevicesListAsQueryable.AsQueryable().Any())
-                {
-                    <TabPage Text="Unassigned Devices">
-                        <div class="grid">
-                            <QuickGrid tabindex="5" Items="_unassignedDevicesListAsQueryable">
-                                <TemplateColumn>
-                                    <div>
-                                        <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditDeviceClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
-                                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
-                                    </div>
-                                </TemplateColumn>
-                                <PropertyColumn Title="ID" Property="@(d=>d.DeviceID)" Sortable="true" />
-                                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-                                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-                                <TemplateColumn Title="Manual">
-                                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context.DeviceID, JSRuntime)">Manual</Button>
-                                </TemplateColumn>
-                            </QuickGrid>
-                        </div>
-                    </TabPage>
-                } *@
             </TabControl>
         </div>
     </section>
@@ -271,19 +228,10 @@
 
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
-                            CurrentRealEstate="@currentRealEstate"                            
+                            CurrentRealEstate="@currentRealEstate"
                             OnDataChanged="RealEstateDataHasChanged">
     </ModalEditAddRealEstate>
-</div>
-
-<div>
-    <ModalEditAddDevice @ref="@refModalEditAddDevice"
-                        CurrentDevice="@currentDevice"
-                        CurrentUser="@currentUser"
-                        RealEstateIdToAddDevice="@currentRealEstate.RealEstateID"
-                        changedDeviceListData="DeviceDataHasChanged">
-    </ModalEditAddDevice>
-</div>
+</div> 
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
                               CurrentDevice="@currentDevice"
@@ -303,22 +251,11 @@
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
                            CurrentRealEstate="@currentRealEstate"
                            OnDataChanged="RealEstateDataHasChanged"
-                           OnDeleteSuccess="OnModalDeleteSuccess"
-                           OnRequestReassignDevicesListToOtherRealEsatate="OnModalReassignDevicesRequest"
+                           OnDeleteSuccess="OnModalDeleteSuccess"                          
                            OnDevicesListDataChanged="DeviceDataHasChanged"
                            AllOtherRealEstates="@_realEstatesList">
     </ModalDeleteRealEstate>
 </div>
-@* <div>
-    <ModalReassignDevices @ref="@refModalReasignDevices"
-                          SelectedRealEstateID="@SelectedRealEstateID"
-                          CurrentUser="@currentUser"
-                          CurrentRealEstate="@currentRealEstate"
-                          OnDataChanged="RealEstateDataHasChanged"
-                          OnDeleteRealEstate="OnModalRealEstateDeleteRequest"
-                          OnUnnassignedDeviceListDataChanged="HandleUnnassignedDevicesListDataChanged">
-    </ModalReassignDevices>
-</div> *@
 <div>
     <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
                                 CurrentDeviceToDelete="@currentDevice"
@@ -428,7 +365,7 @@
     private async Task ShowDeviceEditFormInModal(int deviceID)
     {
         currentUser = DataService.CurrentUserWithAllData;
-        currentDevice = DataService.GetDeviceById(deviceID);        
+        currentDevice = DataService.GetDeviceById(deviceID);
         await _reusableModal.ShowAsync();
     }
     // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
@@ -473,12 +410,7 @@
     {
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
-    }
-
-    // private async Task OnModalRealEstateDeleteRequest()
-    // {
-    //     await refModalRealEstateDelete.DeleteRealEstateFromDb();
-    // }
+    }   
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
@@ -495,11 +427,8 @@
             // Adding error to the log
             Console.WriteLine($"Error: RealEstate ID {targetRealEstate.RealEstateID} not found in DataService.");
 
-            // Show a message to the user (if you use BlazorBootstrap)
-            // ToastService.Notify(new(ToastType.Danger, "Could not find the property data. Please refresh."));
-
-            // Optional: Trigger a refresh of the user data just in case
-            await DataService.InitializedUserAsync();
+            
+            await DataService.InitializedUserAsync(); //test this
         }
     }
 
@@ -528,11 +457,11 @@
     private ModalDeleteSuccessful refModalDeleteSuccess = default!;
     private ModalConfirmDeviceDeletion refModalConfirmDeviceDeletion = default!;
 
-    private async Task OnModalReassignDevicesRequest(int realEstateId)
-    {
-        // this Id will be passed to other modal to be able to move devices list
-        await refModalReasignDevices.OnShowModalReasignDevices(realEstateId);
-    }
+    // private async Task OnModalReassignDevicesRequest(int realEstateId)
+    // {
+    //     // this Id will be passed to other modal to be able to move devices list
+    //     await refModalReasignDevices.OnShowModalReasignDevices(realEstateId);
+    // }
 
     private async Task DeviceDataHasChanged()
     {
