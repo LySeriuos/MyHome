@@ -156,7 +156,7 @@
                             </TemplateColumn>
                             <TemplateColumn Title="Real Estate/ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
                                 <span>@context.TempRealEstateName</span>
-                            </TemplateColumn>                           
+                            </TemplateColumn>
                             <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
                             <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
                             <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
@@ -231,7 +231,7 @@
                             CurrentRealEstate="@currentRealEstate"
                             OnDataChanged="RealEstateDataHasChanged">
     </ModalEditAddRealEstate>
-</div> 
+</div>
 <div>
     <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
                               CurrentDevice="@currentDevice"
@@ -251,7 +251,7 @@
     <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
                            CurrentRealEstate="@currentRealEstate"
                            OnDataChanged="RealEstateDataHasChanged"
-                           OnDeleteSuccess="OnModalDeleteSuccess"                          
+                           OnDeleteSuccess="OnModalDeleteSuccess"
                            OnDevicesListDataChanged="DeviceDataHasChanged"
                            AllOtherRealEstates="@_realEstatesList">
     </ModalDeleteRealEstate>
@@ -410,7 +410,7 @@
     {
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         StateHasChanged();
-    }   
+    }
 
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
@@ -427,7 +427,7 @@
             // Adding error to the log
             Console.WriteLine($"Error: RealEstate ID {targetRealEstate.RealEstateID} not found in DataService.");
 
-            
+
             await DataService.InitializedUserAsync(); //test this
         }
     }
@@ -443,9 +443,24 @@
     private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
     {
         currentUser = DataService.CurrentUserWithAllData;
+        if (currentUser?.RealEstates == null) return; // Guard against null user data
+
         _realEstatesList = currentUser.RealEstates;
+
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
-        _deletedObjectName = currentRealEstate.RealEstateName;
+
+        if (currentRealEstate == null)
+        {
+            return;
+        }
+        else
+        {
+            _deletedObjectName = currentRealEstate.RealEstateName;
+        }
+
+        // Give Blazor a tiny millisecond to push the 'currentRealEstate'
+        // object down to the child modal's parameters before JS tries to render it.
+        // await Task.Yield();
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
 
@@ -565,7 +580,8 @@
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         DataService.CheckIfFileExist();
         // 1. Call the method to get the combined and "stamped" list
-        List<DeviceProfile> allDevices = DataService.GetAllUserDevices();
+        List<DeviceProfile>
+    allDevices = DataService.GetAllUserDevices();
 
         // 2. Convert it to IQueryable so QuickGrid sorting works perfectly!
         _devicesListAsQueryable = allDevices.AsQueryable();

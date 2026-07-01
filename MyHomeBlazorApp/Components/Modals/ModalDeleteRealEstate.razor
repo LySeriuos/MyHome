@@ -8,40 +8,50 @@
     <BodyTemplate>
         @* <p class="text-danger">Attention! If you will delete this RealEstate it´s devices will be removed too!</p>
         <p>Are you sure you want to delete @CurrentRealEstate.RealEstateName together with Devices?</p> *@
-        @if (CurrentStep == DeleteStep.MainConfirmation)
+        @if (CurrentRealEstate == null)
         {
-            <p>Are you sure you want to delete <strong>@CurrentRealEstate?.RealEstateName</strong>?</p>
-
-            @if (CurrentRealEstate?.DevicesProfiles?.Count > 0)
-            {
-                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="GoToReassignStep" Class="btn btn-warning btn-small">Delete Only Real Estate</Button>
-                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger btn-small">Delete Real Estate With All Devices</Button>
-            }
-            else
-            {
-                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger">Confirm Delete</Button>
-            }
+            <div class="text-center p-3">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span> Loading real estate data...</span>
+            </div>
         }
-        else if (CurrentStep == DeleteStep.DeviceManagement)
+        else
         {
-            <h5>What should we do with the (@CurrentRealEstate?.DevicesProfiles?.Count) attached devices?</h5>            
-            <div class="my-3">
-                <label>Move devices to this Real Estate:</label>
-                <select @bind="SelectedTargetRealEstateId" class="form-control">
-                    <option value="0">-- Select a Destination --</option>
-                    @foreach (var re in AllOtherRealEstates)
-                    {
-                        if (CurrentRealEstate != null && re.RealEstateID != CurrentRealEstate.RealEstateID && re.RealEstateID != 0)
+            @if (CurrentStep == DeleteStep.MainConfirmation)
+            {
+                <p>Are you sure you want to delete <strong>@CurrentRealEstate?.RealEstateName</strong>?</p>
+
+                @if (CurrentRealEstate?.DevicesProfiles?.Count > 0)
+                {
+                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="GoToReassignStep" Class="btn btn-warning btn-small">Delete Only Real Estate</Button>
+                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger btn-small">Delete Real Estate With All Devices</Button>
+                }
+                else
+                {
+                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger">Confirm Delete</Button>
+                }
+            }
+            else if (CurrentStep == DeleteStep.DeviceManagement)
+            {
+                <h5>What should we do with the (@CurrentRealEstate?.DevicesProfiles?.Count) attached devices?</h5>
+                <div class="my-3">
+                    <label>Move devices to this Real Estate:</label>
+                    <select @bind="SelectedTargetRealEstateId" class="form-control">
+                        <option value="0">-- Select a Destination --</option>
+                        @foreach (var re in AllOtherRealEstates)
                         {
-                            <option value="@re.RealEstateID">@re.RealEstateName</option>
+                            if (CurrentRealEstate != null && re.RealEstateID != CurrentRealEstate.RealEstateID && re.RealEstateID != 0)
+                            {
+                                <option value="@re.RealEstateID">@re.RealEstateName</option>
+                            }
                         }
-                    }
-                </select>
-            </div>
-            <div class="d-flex justify-content-between mt-4">
-                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteReassignAndDelete" Class="btn btn-danger" Disabled="@(SelectedTargetRealEstateId == 0)">Move Devices & Delete</Button>
-                <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteUnassignAndDelete" Class="btn btn-danger">Leave Devices Unassigned & Delete</Button>                
-            </div>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteReassignAndDelete" Class="btn btn-danger" Disabled="@(SelectedTargetRealEstateId == 0)">Move Devices & Delete</Button>
+                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteUnassignAndDelete" Class="btn btn-danger">Leave Devices Unassigned & Delete</Button>
+                </div>
+            }
         }
     </BodyTemplate>
     <FooterTemplate>
@@ -61,20 +71,20 @@
     [Parameter]
     public EventCallback OnDataChanged { get; set; }
     [Parameter]
-    public EventCallback OnDeleteSuccess { get; set; }   
+    public EventCallback OnDeleteSuccess { get; set; }
     [Parameter]
     public EventCallback OnDevicesListDataChanged { get; set; }
     [Parameter] public List<RealEstate> AllOtherRealEstates { get; set; } = new();
     private enum DeleteStep { MainConfirmation, DeviceManagement }
     private DeleteStep CurrentStep { get; set; } = DeleteStep.MainConfirmation;
-    private int SelectedTargetRealEstateId { get; set; }    
+    private int SelectedTargetRealEstateId { get; set; }
 
 
     // Navigation logic inside the wizard
     private void GoToReassignStep() => CurrentStep = DeleteStep.DeviceManagement;
     private void BackToMainStep() => CurrentStep = DeleteStep.MainConfirmation;
 
-   
+
     private async Task ExecuteDeleteEverything()
     {
         if (CurrentRealEstate == null) return;
@@ -85,7 +95,7 @@
     private async Task ExecuteUnassignAndDelete()
     {
         if (CurrentRealEstate == null) return;
-        await DataService.DeleteRealEstateAndKeepUnassignedDevices(CurrentRealEstate.RealEstateID);        
+        await DataService.DeleteRealEstateAndKeepUnassignedDevices(CurrentRealEstate.RealEstateID);
         await FinalizeAndClose();
     }
 
@@ -100,8 +110,8 @@
     {
         await OnDataChanged.InvokeAsync();
         await OnDevicesListDataChanged.InvokeAsync();
-        CurrentStep = DeleteStep.MainConfirmation; 
-        SelectedTargetRealEstateId = 0;   
+        CurrentStep = DeleteStep.MainConfirmation;
+        SelectedTargetRealEstateId = 0;
         await OnHideModalDeleteRealEstateCloseClick();
         await OnDeleteSuccess.InvokeAsync();
     }
