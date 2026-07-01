@@ -60,30 +60,12 @@ namespace MyHomeBlazorApp.BlazorData
             }
             return null;
         }
+       
+
         /// <summary>
-        /// Get the Domain User ID (UserProfile.UserID) for the currently authenticated user. 
-        /// This is the ID used in the rest of the database, not the IdentityUser ID. Returns 0 if not authenticated or if any issues arise. 
-        /// This method is crucial for linking the Identity system to the actual user data in the database. 
-        /// It should be called early in the app's lifecycle to establish the user's context. Note: 
-        /// This method assumes that every authenticated IdentityUser has a corresponding UserProfile with a valid UserID. 
-        /// If this is not guaranteed, additional error handling may be needed.
+        /// Get Authenticated User from Identity system and load the corresponding UserProfile from the database.
         /// </summary>
-        /// <param name="principal">The claims principal representing the currently authenticated user.</param>
-        /// <returns>The domain user.UserProfile.UserId ID if available; otherwise, 0.</returns>
-        public async Task<int> GetDomainUserIdAsync(System.Security.Claims.ClaimsPrincipal principal)
-        {
-            if (principal.Identity?.IsAuthenticated != true) { return 0; }
-
-            string? identityUserId = _userManager.GetUserId(principal);
-            if (string.IsNullOrEmpty(identityUserId)) { return 0; }
-
-            MyHomeBlazorAppUser? userWithProfile = await _dbcontext.Users
-                .Include(u => u.UserProfile)
-                .FirstOrDefaultAsync(u => u.Id == identityUserId);
-            return userWithProfile?.UserProfile?.UserID ?? 0;
-        }
-
-
+        /// <returns>Logged in user as current application user.</returns>
         public async Task<MyHomeBlazorAppUser?> GetAuthenticatedUserAsync()
         {
             //Check cache first
@@ -103,6 +85,11 @@ namespace MyHomeBlazorApp.BlazorData
 
             return CurrentAppUser;
         }
+
+        /// <summary>
+        /// Preloads the authenticated user and their full UserProfile with all related data. This method should be called at the start of the application to ensure that all user-related data is available for subsequent operations. It checks if the user is already loaded to avoid redundant database calls. If the user is not authenticated or if any issues arise, it will log a message and return without loading any data.
+        /// </summary>
+        /// <returns></returns>
         public async Task InitializedUserAsync()
         {
             if (_currentUserWithAllData?.UserID != 0 && _currentUserWithAllData != null)
@@ -135,6 +122,11 @@ namespace MyHomeBlazorApp.BlazorData
                 FirstExpiringDevice = null;
             }
         }
+
+        /// <summary>
+        /// Loads the authenticated user along with all related data (UserProfile, RealEstates, DevicesProfiles, DeviceWarranties, Shops, and Addresses) in a single database query. This method is designed to minimize database round-trips and improve performance by using eager loading with Include and ThenInclude. It also uses AsSplitQuery to handle large collections efficiently. If the user is not authenticated or if any issues arise during the loading process, it will log a message and return without loading any data.
+        /// </summary>
+        /// <returns>User with all the data</returns>
         public async Task LoadUserWithAllDataAsync()
         {
             var user = await GetAuthenticatedUserAsync();
@@ -167,6 +159,14 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
+        /// <summary>
+        /// Asynchronously retrieves the list of unassigned device profiles associated with the currently authenticated
+        /// user.
+        /// </summary>
+        /// <remarks>If no user is currently authenticated, the method attempts to authenticate the user
+        /// before retrieving the unassigned devices. The returned list is never null.</remarks>
+        /// <returns>A list of <see cref="DeviceProfile"/> objects representing devices that are unassigned for the current user.
+        /// Returns an empty list if no user is authenticated or if there are no unassigned devices.</returns>
         public async Task<List<DeviceProfile>> GetUserWithUnassignedDevicesListAsync()
         {
             //Ensuring that user is logged in 
@@ -190,6 +190,12 @@ namespace MyHomeBlazorApp.BlazorData
             return UnassignedDevicesList;
         }
 
+        /// <summary>
+        /// Extra check if device is owned by user. This is a security measure to ensure that users can only access devices they own, either through their real estates or their unassigned devices list.
+        /// </summary>
+        /// <param name="deviceId">The ID of the device to check ownership for.</param>
+        /// <param name="identityUserId">The ID of the user to check against.</param>
+        /// <returns>True if the device is owned by the user; otherwise, false.</returns>
         public async Task<bool> IsDeviceOwnedByUserAsync(int deviceId, string identityUserId)
         {
             // Check if the user owns the device, either in userProfile.RealEstates or in userProfile.UnassignedDevicesList
@@ -410,13 +416,7 @@ namespace MyHomeBlazorApp.BlazorData
                 if (chosedRealEstate == null)
                 {
                     throw new Exception("Selected Real Estate not found.");
-                }
-
-                //if (_currentUserWithAllData.GetAllDevices().Any(d => d.DeviceID == deviceToAdd.DeviceID))
-                //{   //Should twrow an error that device with this ID already
-                //    //throw new Exception("Selected Real Estate not found.");
-                //    return;
-                //}
+                }               
 
                 chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
             }
@@ -484,8 +484,7 @@ namespace MyHomeBlazorApp.BlazorData
                 // Remove the main device record
                 _dbcontext.Remove(fullDevice);
                 await UpdateObjectInDB();
-                //await _dbcontext.SaveChangesAsync();
-                //await LoadUserWithAllDataAsync();
+                
             }
         }
 
@@ -677,24 +676,7 @@ namespace MyHomeBlazorApp.BlazorData
                 .FirstOrDefault(d => d.DeviceID == deviceId);
 
             return assignedDevice;
-        }
-
-        /// <summary>
-        /// Method to open new tab in web browser with device details to look for device manual
-        /// </summary>
-        /// <param name="deviceID"> Device by ID</param>
-        /// <param name="jSRuntime">js function to open a new tab</param>
-        //public async void Navigate(int deviceID, IJSRuntime jSRuntime)
-        //{
-        //    DeviceProfile currentDevice = GetDeviceById(deviceID);
-        //    //DeviceProfile currentDevice = GetDeviceForGuestAsync(userId, deviceID);
-        //    var query = new Dictionary<string, string>
-        //    {
-        //    { $"{currentDevice.DeviceProduser}", $"{currentDevice.DeviceModelNumber}" }
-        //};
-        //    string buildedUrl = Util.BuildUrlWithQueryStringUsingStringConcat(Program.Constants.BASE_API_URL, query);
-        //    await jSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
-        //}
+        }       
 
         public async Task Navigate(DeviceProfile currentDevice, IJSRuntime jSRuntime)
         {
@@ -710,28 +692,7 @@ namespace MyHomeBlazorApp.BlazorData
 
 
         #region ShopDetails
-
-        /// <summary>
-        /// Adding new warranties profile to the shop
-        /// </summary>
-        /// <param name="shop">Shop profile to add warranties profile</param>
-        public async Task AddShopInfo(Shop shop)
-        {
-            DeviceWarranty currentWarranty = CurrentDevice.DeviceWarranty;
-            currentWarranty.Shop = shop;
-            await _dbcontext.SaveChangesAsync();
-        }
-
-        /// <summary>
-        /// Creating new Shop object and assigning adrress object to it
-        /// </summary>
-        /// <param name="address"></param>
-        public async Task AddShopAdrress(Address address)
-        {
-            Shop shop = CurrentDevice.DeviceWarranty.Shop;
-            shop.Address = address;
-            await _dbcontext.SaveChangesAsync();
-        }
+               
 
         #endregion
 
@@ -766,20 +727,6 @@ namespace MyHomeBlazorApp.BlazorData
 
             return firstexpiringDeviceDevice;
         }
-
-        /// <summary>
-        /// Method to update device warranty details 
-        /// </summary>
-        /// <param name="deviceWarranty">Chosed device warranty profile</param>
-        /// <returns>Updating warranty details</returns>
-        public async Task AddDeviceWarrantyInfo(DeviceWarranty deviceWarranty)
-        {       // Do I need to take Years to database? How to awoid it ?   
-            deviceWarranty.WarrantyPeriod = GetTimeSpanFromYears(deviceWarranty.Years);
-            deviceWarranty.ExtraInsuranceWarrantyLenght = GetTimeSpanFromYears(deviceWarranty.ExtendedWarrantyinYears);
-            CurrentDevice.DeviceWarranty = deviceWarranty;
-            await _dbcontext.SaveChangesAsync();
-        }
-
 
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 
         {
@@ -818,57 +765,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         #region Should be moved?
 
-        //  InputFile uploading handling // 
-        /// <summary>
-        /// Capturing file and creating filePath to return
-        /// </summary>
-        /// <param name="file">Loaded file in InputFile</param>
-        /// <param name="maxFileSize">Limited file size</param>
-        /// <param name="errors">List to add errors and later print them as needed</param>
-        /// <returns>Created file path to the file in Blazor server</returns>
-        /// This method is used to upload the file without loading it to the memory.
-        public async Task<string> CaptureFilePath(IBrowserFile file, long maxFileSize, List<string> errors, DeviceProfile currentDevice)
-        {
-            if (file is null) return "uploading error";
-
-            try
-            {
-                string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
-                string userId = _currentUserWithAllData.UserID.ToString();
-                string deviceId = currentDevice.DeviceID.ToString();
-
-                // Build the path using Path.Combine and UPPERCASE "Files"
-                string baseFolder = Path.Combine("/", "app", "Files", userId, deviceId);
-                string filePath = Path.Combine(baseFolder, newFileName);
-
-                // Ensure the directory exists (Linux friendly)
-                if (!Directory.Exists(baseFolder))
-                {
-                    Directory.CreateDirectory(baseFolder);
-                }
-
-                if (file.Size <= maxFileSize)
-                {
-                    // Open stream and copy to the Linux-friendly path
-                    // No need for fs.Close() when using 'await using'
-                    await using FileStream fs = new(filePath, FileMode.Create);
-                    await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
-                }
-                else
-                {
-                    errors.Add($"File: {file.Name} Error: File exceeds the maximum size of {maxFileSize} bytes.");
-                    return "";
-                }
-
-                return filePath;
-            }
-            catch (Exception ex)
-            {
-                errors.Add($"File: {file.Name} Error: {ex.Message}");
-                return ""; // Return empty instead of crashing the whole service
-            }
-        }
-
+        
         //This method is used to upload the file by loading it in the  local memory first and later adding it to the server if all requirements are ok.
 
         public async Task<string> CaptureFilePathFromBytes(byte[] fileBytes, string originalName, DeviceProfile currentDevice)
@@ -924,28 +821,7 @@ namespace MyHomeBlazorApp.BlazorData
                 return "";
             }
         }
-
-        //baseFolder is changed in the DataService to meet docker requirements. 
-        public string GenerateDeviceQrCode(int deviceId, int userId)
-        {
-            // Setup paths using Path.Combine (Crucial for Docker/Linux)
-            string baseFolder = Path.Combine(Directory.GetCurrentDirectory(), "Files", userId.ToString(), "qrCodes");
-            string fileName = $"DeviceID{deviceId}.png";
-            string filePath = Path.Combine(baseFolder, fileName);
-
-            // Create Directory if it doesn't exist
-            if (!Directory.Exists(baseFolder))
-            {
-                Directory.CreateDirectory(baseFolder);
-            }
-
-            // Calling Logic class to generate the actual file
-            // Ensure Logic.CreateQrCodeLinkToDevice is accessible here
-            Logic.CreateQrCodeLinkToDevice(deviceId.ToString(), userId.ToString(), filePath);
-
-            // Return the URL string for the browser to open
-            return $"Files/{userId}/qrCodes/{fileName}";
-        }
+        
 
         /// <summary>
         /// Checking if there is a file assigned to the filepath. 
@@ -993,24 +869,11 @@ namespace MyHomeBlazorApp.BlazorData
             var file = Path.GetFileName(linkToTheFile);
             string fileUrl = $"files/{_currentUserWithAllData.UserID}/{deviceId}/{file}";
             return fileUrl;
-        }
-
-        public string GetSecureControllerFileUrl(int deviceId, string linkToTheFile)
-        {
-            if (string.IsNullOrEmpty(linkToTheFile)) return string.Empty;
-
-            // Extract just the file name (e.g., "receipt.pdf") from the full path string
-            var fileName = Path.GetFileName(linkToTheFile);
-
-            // Points directly to your secure API Controller endpoint!
-            return $"/api/files/{deviceId}/{fileName}";
-        }
+        }       
 
         public async Task UpdateObjectInDB()
-        {
-            //_dbcontext.UpdateRange(CurrentAppUser);
-            await _dbcontext.SaveChangesAsync();
-            //_dbcontext.ChangeTracker.Clear();
+        {            
+            await _dbcontext.SaveChangesAsync();            
         }
 
         #endregion
