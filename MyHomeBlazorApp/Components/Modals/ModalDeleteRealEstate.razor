@@ -101,8 +101,14 @@
 
     private async Task ExecuteReassignAndDelete()
     {
+        Console.WriteLine($"ExecuteReassignAndDelete fired. Source={CurrentRealEstate?.RealEstateID}, Target={SelectedTargetRealEstateId}");
+
         if (CurrentRealEstate == null || SelectedTargetRealEstateId == 0) return;
-        await DataService.DeleteRealEstateAndReassignDevices(CurrentRealEstate.RealEstateID, SelectedTargetRealEstateId);
+
+        await DataService.DeleteRealEstateAndReassignDevices(
+            CurrentRealEstate.RealEstateID,
+            SelectedTargetRealEstateId);
+
         await FinalizeAndClose();
     }
 
@@ -123,6 +129,11 @@
 
     public async Task OnShowModalDeleteRealEstateClick()
     {
+        CurrentStep = DeleteStep.MainConfirmation;
+        SelectedTargetRealEstateId = 0;
+        await InvokeAsync(StateHasChanged);
+
         await refModalRealEstateDelete.ShowAsync();
+
     }
 }

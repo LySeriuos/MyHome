@@ -443,26 +443,20 @@
     private async Task OnShowModalChooseOptionDeleteRealEstate(int currentRealEstateID)
     {
         currentUser = DataService.CurrentUserWithAllData;
-        if (currentUser?.RealEstates == null) return; // Guard against null user data
-
         _realEstatesList = currentUser.RealEstates;
 
         currentRealEstate = DataService.GetRealEstate(currentRealEstateID);
 
-        if (currentRealEstate == null)
+        if (currentRealEstate == null || currentRealEstate.RealEstateID == 0)
         {
+            Console.WriteLine($"RealEstate ID {currentRealEstateID} not found.");
             return;
         }
-        else
-        {
-            _deletedObjectName = currentRealEstate.RealEstateName;
-        }
 
-        // Give Blazor a tiny millisecond to push the 'currentRealEstate'
-        // object down to the child modal's parameters before JS tries to render it.
-        // await Task.Yield();
+        _deletedObjectName = currentRealEstate.RealEstateName;
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
+    
 
     #endregion
 
