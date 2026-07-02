@@ -23,12 +23,12 @@
 
                 @if (CurrentRealEstate?.DevicesProfiles?.Count > 0)
                 {
-                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="GoToReassignStep" Class="btn btn-warning btn-small">Delete Only Real Estate</Button>
-                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger btn-small">Delete Real Estate With All Devices</Button>
+                    <Button Type="ButtonType.Button" Size="ButtonSize.Small" @onclick="GoToReassignStep" Class="btn btn-warning btn-small">Delete Only Real Estate</Button>
+                    <Button Type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger btn-small">Delete Real Estate With All Devices</Button>
                 }
                 else
                 {
-                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger">Confirm Delete</Button>
+                    <Button Type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteDeleteEverything" Class="btn btn-danger">Confirm Delete</Button>
                 }
             }
             else if (CurrentStep == DeleteStep.DeviceManagement)
@@ -48,8 +48,8 @@
                     </select>
                 </div>
                 <div class="d-flex justify-content-between mt-4">
-                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteReassignAndDelete" Class="btn btn-danger" Disabled="@(SelectedTargetRealEstateId == 0)">Move Devices & Delete</Button>
-                    <Button type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteUnassignAndDelete" Class="btn btn-danger">Leave Devices Unassigned & Delete</Button>
+                    <Button Type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteReassignAndDelete" Class="btn btn-danger" Disabled="@(SelectedTargetRealEstateId == 0)">Move Devices & Delete</Button>
+                    <Button Type="ButtonType.Button" Size="ButtonSize.Small" @onclick="ExecuteUnassignAndDelete" Class="btn btn-danger">Leave Devices Unassigned & Delete</Button>
                 </div>
             }
         }
@@ -57,7 +57,7 @@
     <FooterTemplate>
         @if (CurrentStep == DeleteStep.DeviceManagement)
         {
-            <Button type="ButtonType.Button" Color="ButtonColor.Dark" Outline="true" @onclick="BackToMainStep" Class="btn btn-outline-light">Back</Button>
+            <Button Type="ButtonType.Button" Color="ButtonColor.Dark" Outline="true" @onclick="BackToMainStep" Class="btn btn-outline-light">Back</Button>
         }
         <ButtonCloseCancel TextButton="Cancel" ButtonEvent="() => OnHideModalDeleteRealEstateCloseClick()" />
     </FooterTemplate>
