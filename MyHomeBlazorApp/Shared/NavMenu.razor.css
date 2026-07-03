@@ -3,8 +3,18 @@
 }
 
 .navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(76, 74, 75, 0.08);
+    border-color: rgba(76, 74, 75, 0.45);
 }
+
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.15rem rgba(76, 74, 75, 0.25);
+    }
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%2876, 74, 75, 0.95%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
 
 .top-row {
     height: 3.5rem;
@@ -154,9 +164,8 @@
     font-size: inherit;
 }
 
-.sub-nav-item
-{
-    top:0px;
+.sub-nav-item {
+    top: 0px;
 }
 
 @media (min-width: 641px) {
