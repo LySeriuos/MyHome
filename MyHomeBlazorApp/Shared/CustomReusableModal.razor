@@ -1,6 +1,8 @@
 ﻿@using BlazorBootstrap
 
-<Modal Title="@Title" @ref="_reusableModal">
+<Modal Title="@Title" @ref="_reusableModal"
+       IsScrollable="true"
+       Fullscreen="ModalFullscreen.SmallDown">
     <BodyTemplate>
         <CascadingValue Value="this">
             @ChildContent

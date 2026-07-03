@@ -22,7 +22,7 @@
         @* <AddEditDeviceComponent Device="@CurrentDevice" EditContext="@editDeviceContext"/> *@
         @if (CurrentDevice != null)
         {
-            <EditForm Model="@CurrentDevice" OnSubmit="DeviceFormSubmitted">
+            <EditForm Model="@CurrentDevice" OnSubmit="DeviceFormSubmitted" id="deviceForm">
                 <DataAnnotationsValidator />
                 <div class="form-group row">
                     <label for="deviceName" class="col-sm-4 col-form-label">
@@ -143,7 +143,7 @@
                         }
                     </div>
                     <div class="right-buttons">
-                        <ButtonSave />
+                        <ButtonSave Form="deviceForm" />
                         <ButtonCloseCancel TextButton="Cancel" ButtonEvent="OnHideModalEditDeviceClick" />
                     </div>
                 </div>
