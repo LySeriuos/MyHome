@@ -41,16 +41,15 @@
 <main class="bodySection">
     <section class="bodySection-content">
         <div>
-
             <TabControl TabID="TabID">
-                <TabPage Text="Real Estates">
+                <TabPage Text="Estates">
                     <div class="grid">
                         <div class="">
                             <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
                             <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Real Estate data</div>
                             <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Push Delete Icon to delete Real Estate with devices or delete Real Estate and move devices to other Real Estate</div>
                         </div>
-                        <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable">
+                        <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable" Class="table-responsive">
                             <TemplateColumn>
                                 <div>
                                     <Button Class="btn btn-outline-dark icon-button" @onclick="() => OnShowModalRealEstateClick(context.RealEstateID)"><Icon Name="IconName.PencilFill" /></Button>
@@ -71,7 +70,7 @@
                     </div>
                 </TabPage>
                 <TabPage Text="Devices">
-                    <div class="container-fluid p-0" style="overflow-x: hidden;">
+                    <div class="container-fluid p-0">
                         <div class="grid">
                             <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button></div>
                             <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your device data</div>
@@ -117,30 +116,32 @@
                                 }
                             </div>
                         </div>
-                        <QuickGrid tabindex="2" Items="@_devicesListAsQueryable">
-                            <TemplateColumn>
-                                <div>
-                                    <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
-                                    <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
-                                    <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context)"><Icon Name="IconName.QrCode" /></Button>
-                                    <Button Class="btn btn-outline-info" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
-                                </div>
-                            </TemplateColumn>
-                            <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
-                                <span>@context.TempRealEstateName</span>
-                            </TemplateColumn>
-                            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
-                            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
-                            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
-                            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
-                            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
-                            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
-                            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
-                            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
-                            <TemplateColumn Title="Manual">
-                                <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context, JSRuntime)">Manual</Button>
-                            </TemplateColumn>
-                        </QuickGrid>
+                        <div class="details-tab-content">
+                            <QuickGrid tabindex="2" Items="@_devicesListAsQueryable" Responsive="true">
+                                <TemplateColumn>
+                                    <div>
+                                        <Button Class="btn btn-outline-dark" @onclick="() => ShowDeviceEditFormInModal(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                                        <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteDeviceClick(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
+                                        <Button Class="btn btn-outline-success" @onclick="() => HandleQrCode(context)"><Icon Name="IconName.QrCode" /></Button>
+                                        <Button Class="btn btn-outline-info" @onclick="() => SendDeviceIDToCreateEmailComponent(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
+                                    </div>
+                                </TemplateColumn>
+                                <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
+                                    <span>@context.TempRealEstateName</span>
+                                </TemplateColumn>
+                                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                                <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+                                <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+                                <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+                                <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+                                <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+                                <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+                                <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+                                <TemplateColumn Title="Manual">
+                                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context, JSRuntime)">Manual</Button>
+                                </TemplateColumn>
+                            </QuickGrid>
+                        </div>
                     </div>
                 </TabPage>
                 <TabPage Text="Devices Warranties">
@@ -148,7 +149,7 @@
                         <div class="">
                             <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Warranties data</div>
                         </div>
-                        <QuickGrid tabindex="3" Class="text-center" Items="@_devicesListAsQueryable">
+                        <QuickGrid tabindex="3" Class="text-center table-responsive" Items="@_devicesListAsQueryable">
                             <TemplateColumn>
                                 <div>
                                     <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddDeviceWarrantyClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
@@ -198,7 +199,7 @@
                         </div>
                         @if (_devicesListAsQueryable != null)
                         {
-                            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable">
+                            <QuickGrid tabindex="4" Items="@_devicesListAsQueryable" Class="table-responsive">
                                 <TemplateColumn>
                                     <div>
                                         <Button Class="btn btn-outline-dark" @onclick="() => OnShowModalEditAddShopClick(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
@@ -279,7 +280,7 @@
     <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
         <AddEditDeviceForm CurrentDevice="currentDevice"
                            CurrentUser="currentUser"
-                           DataChangedEvent="DeviceDataHasChanged"/>
+                           DataChangedEvent="DeviceDataHasChanged" />
     </CustomReusableModal>
 </div>
 
@@ -456,7 +457,7 @@
         _deletedObjectName = currentRealEstate.RealEstateName;
         await refModalRealEstateDelete.OnShowModalDeleteRealEstateClick();
     }
-    
+
 
     #endregion
 
