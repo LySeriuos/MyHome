@@ -199,7 +199,17 @@
 
             <InputTextArea @bind-Value="EmailRequest.Body" class="form-control mt-2" placeholder="Body" />
 
-            <button type="submit" class="btn btn-primary card-btn my-3">Send Email</button>
+            <button type="submit" class="btn card-btn my-3" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    <span>Sending...</span>
+                }
+                else
+                {
+                    <span>Send Email</span>
+                }
+            </button>
         </EditForm>
 
         <div>
@@ -236,6 +246,7 @@ else
     private bool _extraWarrantyIsValidUntilChecked { get; set; }
     private bool _chosedDeviceShopAdressChecked { get; set; }
     private bool _deviceNotFound = false;
+    private bool isLoading;
     private string receiptFileName { get; set; } = "";
     private string extraWarrantyFileName { get; set; } = "";
     private string _producerStringToAdd = "";
@@ -270,6 +281,7 @@ else
 
     private async Task SendEmail()
     {
+        isLoading = true;
         try
         {
             var email = new MimeMessage();
@@ -286,7 +298,7 @@ else
 
             var builder = new BodyBuilder();
             builder.TextBody = EmailRequest.Body;
-            
+
 
             if (_chosedDeviceRecieptChecked && !string.IsNullOrEmpty(_recieptLink))
             {
@@ -326,6 +338,7 @@ else
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
             await _refSuccessModal.OnShowModalClick();
+            isLoading = false;
             EmailRequest = new();
             init();
         }
