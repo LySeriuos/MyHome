@@ -1,6 +1,11 @@
 ﻿@inherits LayoutComponentBase
+
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+
+@using MyHomeBlazorApp.BlazorData
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
 
 
 <PageTitle>MyHomeBlazorApp</PageTitle>
@@ -11,7 +16,23 @@
     </div>
 
     <main>
-        
+        @if (_isImpersonating)
+        {
+            <div class="impersonation-banner">
+                <span>
+                    <Icon Name="IconName.ExclamationDiamondFill" Size="IconSize.x2" Color="IconColor.Warning" /><strong> Impersonation Mode</strong> -
+                    You are logged in as <strong class="text-danger">@_currentUserName</strong>
+                </span>
+
+                <Button Color="ButtonColor.Warning"
+                        Size="ButtonSize.Small"
+                        @onclick="ReturnToAdmin">
+                    <Icon Name="IconName.ArrowReturnLeft" />
+                    Return to Admin
+                </Button>
+            </div>
+        }
+
         <article class="content px-4">
             @Body
         </article>
@@ -39,14 +60,35 @@
     [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
-    protected async override Task OnInitializedAsync()
+
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthStateTask { get; set; } = default!;
+
+    private bool _isImpersonating;
+    private string? _currentUserName;
+
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        var user = (await AuthStat).User;
-        if (!user.Identity.IsAuthenticated)
+        var authenticationState = await AuthStateTask;
+        var user = authenticationState.User;
+
+        if (user.Identity?.IsAuthenticated != true)
         {
-            // RedirectManager.RedirectTo(ReturnUrl);
-            NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+            return;
         }
+
+        _isImpersonating = user.HasClaim(
+            claim => claim.Type == ImpersonationClaimTypes.OriginalAdminId);
+
+        _currentUserName =
+            user.Identity?.Name ??
+            user.FindFirst(ClaimTypes.Email)?.Value;
+    }
+
+    private void ReturnToAdmin()
+    {
+        NavigationManager.NavigateTo(
+            "/Account/ReturnToAdmin",
+            forceLoad: true);
     }
 }

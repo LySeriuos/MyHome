@@ -1,6 +1,7 @@
 ﻿@page "/userManagement"
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using MyHomeBlazorApp.BlazorData
+@inject BlazorData.DataService DataService;
 @inject UserManager<MyHomeBlazorAppUser> UserManager
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
@@ -96,7 +97,7 @@
                     <Button Class="btn btn-outline-danger" @onclick="() => OnShowModalDeleteUser(context)">Delete User</Button>
                 </TemplateColumn>
                 <TemplateColumn Title="Login As User">
-                    @if (_user == context)
+                    @if (_user != context)
                     {
                         <Button Class="btn btn-outline-success" @onclick="() => SignInAsChosedUser(context)">Login as this User</Button>
                     }
@@ -149,7 +150,7 @@
     string nameSearch = "";
     [Parameter]
     public MyHomeBlazorAppUser? ChosedUser { get; set; }
-    private MyHomeBlazorAppUser _user { get; set; } = new();
+    private MyHomeBlazorAppUser? _user { get; set; }
     private EditContext editContext;
     public Action DataChanged;
     private List<MyHomeBlazorAppUser> _users { get; set; }
@@ -168,7 +169,7 @@
         // var userClaims = await SignInManager.UserManager.GetClaimsAsync(userToBeLogedIn);
         // var result = SignInManager.SignInWithClaimsAsync(userToBeLogedIn, false, userClaims);
 
-        NavManager.NavigateTo("/Account/LoginChosedUser/" + userToBeLogedIn.Id, true);
+        NavManager.NavigateTo("/Account/LoginChoseUser/" + userToBeLogedIn.Id, true);
     }
 
     public async Task<string> UserRole(MyHomeBlazorAppUser user)
@@ -230,11 +231,24 @@
         await refModalDeleteUser.HideAsync();
     }
 
-    protected override void OnInitialized()
+    // protected override void OnInitialized()
+    // {
+    //     _user = DataService.CurrentAppUser;
+    //     // _users = dbcontext.Users.ToList();
+    //     _users = UserManager.Users.ToList();
+    //     editContext = new(_user);
+    // }
+
+    protected override async Task OnInitializedAsync()
     {
-        // _users = dbcontext.Users.ToList();
+        await DataService.GetAuthenticatedUserAsync();
+
+        _user = DataService.CurrentAppUser;
         _users = UserManager.Users.ToList();
-        editContext = new(_user);
+        if (_user is null)
+            return;
+
+        editContext = new EditContext(_user);
     }
 
     private void UsersDataHasChanged()
