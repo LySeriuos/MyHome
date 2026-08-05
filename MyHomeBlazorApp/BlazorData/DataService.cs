@@ -30,7 +30,7 @@ namespace MyHomeBlazorApp.BlazorData
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private UserManager<MyHomeBlazorAppUser> _userManager;
         private MyHomeBlazorAppContext _dbcontext;
-        private UserProfile _currentUserWithAllData;
+        private UserProfile? _currentUserWithAllData;
         public UserProfile CurrentUserWithAllData => _currentUserWithAllData ?? new UserProfile();
         public MyHomeBlazorAppUser? CurrentAppUser { get; set; }
         public List<DeviceProfile>? Devices => _currentUserWithAllData?.GetAllDevices();
@@ -134,15 +134,15 @@ namespace MyHomeBlazorApp.BlazorData
 
             // The "Master Query": One trip to the DB for everything
             var fullUser = await _dbcontext.Users
-    .Include(u => u.UserProfile)
+    .Include(u => u.UserProfile!)
         .ThenInclude(p => p.UnassignedDevicesList)
             .ThenInclude(d => d.DeviceWarranty)
                 .ThenInclude(w => w.Shop)
                     .ThenInclude(s => s.Address)
-    .Include(u => u.UserProfile)
+    .Include(u => u.UserProfile!)
         .ThenInclude(p => p.RealEstates)
             .ThenInclude(r => r.Address)
-    .Include(u => u.UserProfile)
+    .Include(u => u.UserProfile!)
         .ThenInclude(p => p.RealEstates)
             .ThenInclude(r => r.DevicesProfiles)
                 .ThenInclude(d => d.DeviceWarranty)
@@ -181,7 +181,7 @@ namespace MyHomeBlazorApp.BlazorData
             }
 
             var userWithData = await _dbcontext.Users
-                .Include(u => u.UserProfile)
+                .Include(u => u.UserProfile!)
                 .ThenInclude(u => u.UnassignedDevicesList)
                 .FirstOrDefaultAsync(u => u.Id == CurrentAppUser.Id);
 
@@ -202,7 +202,7 @@ namespace MyHomeBlazorApp.BlazorData
             return await _dbcontext.Users
                 .AnyAsync(u => u.Id == identityUserId && (
                     // Pathway 1: The device is linked to one of the user's real estates
-                    u.UserProfile.RealEstates.Any(r => r.DevicesProfiles.Any(d => d.DeviceID == deviceId))
+                    u.UserProfile!.RealEstates.Any(r => r.DevicesProfiles.Any(d => d.DeviceID == deviceId))
                     ||
                     // Pathway 2: The device is in the user's unassigned list
                     u.UserProfile.UnassignedDevicesList.Any(d => d.DeviceID == deviceId)
