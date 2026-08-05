@@ -91,7 +91,7 @@
                 if (CurrentRealEstate == null || CurrentRealEstate.RealEstateID == 0)
                 {
 
-                    DataService.AddNewRealEstateToDB(CurrentRealEstate);
+                    await DataService.AddNewRealEstateToDBAsync(CurrentRealEstate);
                 }
 
                 await DataService.UpdateObjectInDB();

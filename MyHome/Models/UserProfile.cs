@@ -1,11 +1,4 @@
-﻿using My_Home.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MyHome.Models
 {
@@ -19,7 +12,7 @@ namespace MyHome.Models
             set { _userID = value; }
         }
 
-        private string _userName;
+        private string _userName = String.Empty;
 
         public string UserName
         {
@@ -27,7 +20,7 @@ namespace MyHome.Models
             set { _userName = value; }
         }
 
-        private string _email;
+        private string _email = String.Empty;
 
         public string Email
         {

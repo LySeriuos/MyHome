@@ -281,7 +281,7 @@
         // load the user 
         await DataService.InitializedUserAsync();
         _loadedUser = DataService.CurrentUserWithAllData;
-        
+
         if (_loadedUser != null)
         {
             // Check Last Device
@@ -296,6 +296,10 @@
             if (lastRE != null && lastRE.RealEstateID != 0)
             {
                 _displayLastRealEstate = $"ID: {lastRE.RealEstateID} | {lastRE.RealEstateName}";
+            }
+            else
+            {
+                _displayLastRealEstate = "No properties added yet";
             }
 
             // Check Warranties

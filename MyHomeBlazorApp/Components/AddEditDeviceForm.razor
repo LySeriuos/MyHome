@@ -214,7 +214,7 @@
     private bool _isGuest => DataService.CurrentAppUser == null;
     private bool _saveDisabled => editContext == null || (!editContext.IsModified() && selectedTargetRealEstateId == _originalRealEstateId);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         // Cache the enum once to prevent repetitive reflection overhead on re-renders
         _deviceTypes = Enum.GetValues(typeof(DeviceType));
@@ -226,7 +226,7 @@
 
         if (DataService.CurrentAppUser != null)
         {
-            var allDevicesList = DataService.GetAllUserDevices();
+            var allDevicesList = await DataService.GetAllUserDevicesAsync();
             _devicesListAsQueryable = allDevicesList.AsQueryable();
         }
         else
@@ -306,7 +306,7 @@
             switch (isNewDevice, selectedTargetRealEstateId)
             {
                 case (true, _):
-                    DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
+                    await DataService.AddNewDeviceToDataBaseAsync(CurrentDevice, selectedTargetRealEstateId);
                     break;
 
                 case (false, 0) when isCurrentlyAssigned:

@@ -501,7 +501,9 @@ else
     {
         if (ChosedDeviceID != 0)
         {
-            var foundDevice = DataService.GetAllUserDevices()
+            var allDevices = await DataService.GetAllUserDevicesAsync();
+
+            var foundDevice = allDevices
                 .FirstOrDefault(d => d.DeviceID == ChosedDeviceID);
 
             if (foundDevice != null)

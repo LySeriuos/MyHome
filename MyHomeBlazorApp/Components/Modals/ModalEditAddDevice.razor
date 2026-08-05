@@ -255,7 +255,7 @@
         {
             //Case 1: Add new device (any real estate ID, if there is no real estates it will get realEsateID == 0)
             case (true, _):
-                DataService.AddNewDeviceToDataBase(CurrentDevice, selectedTargetRealEstateId);
+                await DataService.AddNewDeviceToDataBaseAsync(CurrentDevice, selectedTargetRealEstateId);
                 break;
             // Case 2: Existing device move to Unnassigned device list
             case (false, 0) when isCurrentlyAssigned:
@@ -268,7 +268,7 @@
 
             // Case 4: Exsisting device move from one Realestate to other
             case (false, var targetId) when targetId != 0:
-                DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, targetId);
+                await DataService.MoveDeviceToOtherRealEstateAsync(CurrentDevice.DeviceID, targetId);
                 break;
 
             default:

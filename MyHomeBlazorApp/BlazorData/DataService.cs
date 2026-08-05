@@ -60,7 +60,7 @@ namespace MyHomeBlazorApp.BlazorData
             }
             return null;
         }
-       
+
 
         /// <summary>
         /// Get Authenticated User from Identity system and load the corresponding UserProfile from the database.
@@ -189,6 +189,23 @@ namespace MyHomeBlazorApp.BlazorData
 
             return UnassignedDevicesList;
         }
+        /// <summary>
+        /// Checks if valid data exists for the authenticated user. If not, it attempts to load the user with all related data. This method is useful for ensuring that the application has the necessary user data before performing operations that depend on it.
+        /// </summary>
+        /// <returns>Loads the user data with all related information if available; otherwise, throws an exception.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when user data could not be loaded.</exception>
+        private async Task EnsureUserDataLoadedAsync()
+        {
+            if (_currentUserWithAllData == null || _currentUserWithAllData.UserID == 0)
+            {
+                await InitializedUserAsync();
+            }
+
+            if (_currentUserWithAllData == null || _currentUserWithAllData.UserID == 0)
+            {
+                throw new InvalidOperationException("User data could not be loaded.");
+            }
+        }
 
         /// <summary>
         /// Extra check if device is owned by user. This is a security measure to ensure that users can only access devices they own, either through their real estates or their unassigned devices list.
@@ -236,18 +253,24 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="realEstate">Created RealEstate</param>
 
 
-        public void AddNewRealEstateToDB(RealEstate currentRealEstate)
+        public async Task AddNewRealEstateToDBAsync(RealEstate currentRealEstate)
         {
-            //check if incoming realestate object has id 0, otherwise error 
-            if (currentRealEstate.RealEstateID == 0)
+            if (_currentUserWithAllData == null)
             {
-                //currentRealEstate.Address;
-                _currentUserWithAllData.RealEstates.Add(currentRealEstate);
+                await InitializedUserAsync();
             }
-            else
+
+            if (_currentUserWithAllData == null)
+            {
+                throw new InvalidOperationException("User data must be loaded before adding a real estate.");
+            }
+
+            if (currentRealEstate.RealEstateID != 0)
             {
                 throw new ArgumentException("Wrong RealEstate ID", nameof(currentRealEstate.RealEstateID));
             }
+
+            _currentUserWithAllData.RealEstates.Add(currentRealEstate);
         }
 
         /// <summary>
@@ -271,20 +294,12 @@ namespace MyHomeBlazorApp.BlazorData
         /// <summary>
         /// To get last added RealEstate in RealEstates list
         /// </summary>
-        /// <returns>Last added RealEstate in the list</returns>
-        public RealEstate LastAddedRealEstate()
+        /// <returns>Last added RealEstate in the list</returns>        
+        public RealEstate? LastAddedRealEstate()
         {
-            RealEstate lastRealEstate;
-            if (_currentUserWithAllData.RealEstates.Count == 0)
-            {
-                lastRealEstate = new RealEstate();
-            }
-            else
-            {
-                lastRealEstate = _currentUserWithAllData.RealEstates.LastOrDefault();
-            }
-            return lastRealEstate;
+            return _currentUserWithAllData?.RealEstates.LastOrDefault();
         }
+
 
         /// <summary>
         /// Method to delete(remove) RealEstate from the RealEstates list
@@ -324,9 +339,23 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task DeleteRealEstateAndKeepUnassignedDevices(int realEstateId)
         {
+            if (_currentUserWithAllData is null)
+            {
+                await LoadUserWithAllDataAsync();
+            }
+
+            if (_currentUserWithAllData is null)
+            {
+                throw new InvalidOperationException("User data could not be loaded.");
+            }
+
             var sourceRealEstate = await GetRealEstateWithAllData(realEstateId);
-            
-            if (sourceRealEstate == null) return;
+
+            if (sourceRealEstate == null)
+            {
+                return;
+            }            
+
             if (sourceRealEstate.DevicesProfiles != null)
             {
                 foreach (var targetDevice in sourceRealEstate.DevicesProfiles.ToList())
@@ -350,13 +379,23 @@ namespace MyHomeBlazorApp.BlazorData
 
         public async Task DeleteRealEstateAndReassignDevices(int sourceId, int targetRealEstateId)
         {
+            if (_currentUserWithAllData is null)
+            {
+                await InitializedUserAsync();
+            }
+
+            if (_currentUserWithAllData is null)
+            {
+                throw new InvalidOperationException("User data could not be loaded.");
+            }
+
             var sourceRealEstate = await GetRealEstateWithAllData(sourceId);
             var targetRealEstate = await _dbcontext.Set<RealEstate>()
                 .Include(r => r.DevicesProfiles)
                 .FirstOrDefaultAsync(r => r.RealEstateID == targetRealEstateId);
 
-            if (sourceRealEstate == null || targetRealEstate == null) return;
-            
+            if (sourceRealEstate == null || targetRealEstate == null) return;           
+
             if (sourceRealEstate.DevicesProfiles != null)
             {
                 foreach (var device in sourceRealEstate.DevicesProfiles.ToList())
@@ -397,8 +436,11 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="deviceToAdd">Device object to be add</param>
         /// <param name="chosedRealEstateID">Real Estate Id to add new device into</param>
         /// <returns></returns>
-        public void AddNewDeviceToDataBase(DeviceProfile deviceToAdd, int chosedRealEstateID)
+        public async Task AddNewDeviceToDataBaseAsync(DeviceProfile deviceToAdd, int chosedRealEstateID)
         {
+            await EnsureUserDataLoadedAsync();
+            UserProfile currentUser = _currentUserWithAllData
+    ?? throw new InvalidOperationException("User data could not be loaded.");
             deviceToAdd.DeviceWarranty ??= new();
             deviceToAdd.DeviceWarranty.Shop ??= new();
             deviceToAdd.DeviceWarranty.Shop.Address ??= new();
@@ -416,14 +458,23 @@ namespace MyHomeBlazorApp.BlazorData
                 if (chosedRealEstate == null)
                 {
                     throw new Exception("Selected Real Estate not found.");
-                }               
+                }
 
                 chosedRealEstate.DevicesProfiles.Add(deviceToAdd);
             }
         }
 
-        public List<DeviceProfile> GetAllUserDevices()
+        public async Task <List<DeviceProfile>> GetAllUserDevicesAsync()
         {
+            if (_currentUserWithAllData is null)
+            {
+                await InitializedUserAsync();
+            }
+
+            if (_currentUserWithAllData is null)
+            {
+                throw new InvalidOperationException("User data could not be loaded.");
+            }
             // Get the raw lists
             var assigned = _currentUserWithAllData.RealEstates
                 .SelectMany(re => re.DevicesProfiles).ToList();
@@ -484,7 +535,7 @@ namespace MyHomeBlazorApp.BlazorData
                 // Remove the main device record
                 _dbcontext.Remove(fullDevice);
                 await UpdateObjectInDB();
-                
+
             }
         }
 
@@ -614,9 +665,9 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
-        public void AddAllToPrintQueue()
+        public async Task AddAllToPrintQueue()
         {
-            List<DeviceProfile> allDevices = GetAllUserDevices();
+            List<DeviceProfile> allDevices = await GetAllUserDevicesAsync();
             foreach (var device in allDevices)
             {
                 if (!SelectedDevicesListToPrintQrCodes.Any(d => d.DeviceID == device.DeviceID))
@@ -676,7 +727,7 @@ namespace MyHomeBlazorApp.BlazorData
                 .FirstOrDefault(d => d.DeviceID == deviceId);
 
             return assignedDevice;
-        }       
+        }
 
         public async Task Navigate(DeviceProfile currentDevice, IJSRuntime jSRuntime)
         {
@@ -692,7 +743,7 @@ namespace MyHomeBlazorApp.BlazorData
 
 
         #region ShopDetails
-               
+
 
         #endregion
 
@@ -765,7 +816,7 @@ namespace MyHomeBlazorApp.BlazorData
 
         #region Should be moved?
 
-        
+
         //This method is used to upload the file by loading it in the  local memory first and later adding it to the server if all requirements are ok.
 
         public async Task<string> CaptureFilePathFromBytes(byte[] fileBytes, string originalName, DeviceProfile currentDevice)
@@ -821,7 +872,7 @@ namespace MyHomeBlazorApp.BlazorData
                 return "";
             }
         }
-        
+
 
         /// <summary>
         /// Checking if there is a file assigned to the filepath. 
@@ -869,11 +920,11 @@ namespace MyHomeBlazorApp.BlazorData
             var file = Path.GetFileName(linkToTheFile);
             string fileUrl = $"files/{_currentUserWithAllData.UserID}/{deviceId}/{file}";
             return fileUrl;
-        }       
+        }
 
         public async Task UpdateObjectInDB()
-        {            
-            await _dbcontext.SaveChangesAsync();            
+        {
+            await _dbcontext.SaveChangesAsync();
         }
 
         #endregion

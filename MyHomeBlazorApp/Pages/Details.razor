@@ -478,7 +478,7 @@
         // _devicesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).AsQueryable();
         var unassignedList = await DataService.GetUserWithUnassignedDevicesListAsync();
         _unassignedDevicesListAsQueryable = unassignedList.AsQueryable();
-        var allDevicesList = DataService.GetAllUserDevices();
+        var allDevicesList = await DataService.GetAllUserDevicesAsync();
         _devicesListAsQueryable = allDevicesList.AsQueryable();
         StateHasChanged();
     }
@@ -488,7 +488,7 @@
         // Re-fetch the unassigned list so .Any() becomes false
         var unassigned = await DataService.GetUserWithUnassignedDevicesListAsync();
         _unassignedDevicesListAsQueryable = unassigned.AsQueryable();
-        var allDevicesList = DataService.GetAllUserDevices();
+        var allDevicesList = await DataService.GetAllUserDevicesAsync();
         _devicesListAsQueryable = allDevicesList.AsQueryable();
         _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.AsQueryable();
         // currentUser = await DataService.GetFullUserAsync();
@@ -576,7 +576,7 @@
         DataService.CheckIfFileExist();
         // 1. Call the method to get the combined and "stamped" list
         List<DeviceProfile>
-    allDevices = DataService.GetAllUserDevices();
+    allDevices = await DataService.GetAllUserDevicesAsync();
 
         // 2. Convert it to IQueryable so QuickGrid sorting works perfectly!
         _devicesListAsQueryable = allDevices.AsQueryable();
