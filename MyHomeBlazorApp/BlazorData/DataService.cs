@@ -354,7 +354,7 @@ namespace MyHomeBlazorApp.BlazorData
             if (sourceRealEstate == null)
             {
                 return;
-            }            
+            }
 
             if (sourceRealEstate.DevicesProfiles != null)
             {
@@ -394,7 +394,7 @@ namespace MyHomeBlazorApp.BlazorData
                 .Include(r => r.DevicesProfiles)
                 .FirstOrDefaultAsync(r => r.RealEstateID == targetRealEstateId);
 
-            if (sourceRealEstate == null || targetRealEstate == null) return;           
+            if (sourceRealEstate == null || targetRealEstate == null) return;
 
             if (sourceRealEstate.DevicesProfiles != null)
             {
@@ -464,7 +464,7 @@ namespace MyHomeBlazorApp.BlazorData
             }
         }
 
-        public async Task <List<DeviceProfile>> GetAllUserDevicesAsync()
+        public async Task<List<DeviceProfile>> GetAllUserDevicesAsync()
         {
             if (_currentUserWithAllData is null)
             {
@@ -546,8 +546,13 @@ namespace MyHomeBlazorApp.BlazorData
         public DeviceProfile? LastAddedDevice()
         {
             List<DeviceProfile>? devices = Devices;
-            DeviceProfile? device = devices.LastOrDefault();
-            return device;
+
+            if (devices != null)
+            {
+                return devices.LastOrDefault();
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -557,6 +562,16 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="currentRealEstate">RealEstate to move from(delete) devices list</param>
         public async Task MoveDevicesListToOtherRealEstate(int targetRealEstateId, RealEstate currentRealEstate)
         {
+            if (_currentUserWithAllData is null)
+            {
+                await InitializedUserAsync();
+            }
+
+            if (_currentUserWithAllData is null)
+            {
+                throw new InvalidOperationException("User data could not be loaded.");
+            }
+
             RealEstate? targetRealEstate = _currentUserWithAllData.RealEstates
         .FirstOrDefault(r => r.RealEstateID == targetRealEstateId);
             if (targetRealEstate == null || currentRealEstate == null)
@@ -581,8 +596,18 @@ namespace MyHomeBlazorApp.BlazorData
         /// <param name="deviceToMoveID">DeviceProfile ID which will be moved </param>
         /// <param name="_currentUserWithAllData">Indentified user</param>
         /// <param name="realEstateIdToAddDevice">Real Estate ID to move in Device by deviceToMoveID</param>
-        public void MoveDeviceToOtherRealEstate(int deviceToMoveID, int realEstateIdToAddDevice)
+        public async Task MoveDeviceToOtherRealEstateAsync(int deviceToMoveID, int realEstateIdToAddDevice)
         {
+            if (_currentUserWithAllData is null)
+            {
+                await InitializedUserAsync();
+            }
+
+            if (_currentUserWithAllData is null)
+            {
+                throw new InvalidOperationException("User data could not be loaded.");
+            }
+
             int realEstateIdToMoveFrom = GetRealEstateByDeviceID(deviceToMoveID);
             DeviceProfile? deviceToMove = _currentUserWithAllData.RealEstates
         .SelectMany(r => r.DevicesProfiles)

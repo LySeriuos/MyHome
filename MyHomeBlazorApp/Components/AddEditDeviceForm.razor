@@ -318,7 +318,7 @@
                     break;
 
                 case (false, var targetId) when targetId != 0:
-                    DataService.MoveDeviceToOtherRealEstate(CurrentDevice.DeviceID, targetId);
+                    await DataService.MoveDeviceToOtherRealEstateAsync(CurrentDevice.DeviceID, targetId);
                     break;
 
                 default:
