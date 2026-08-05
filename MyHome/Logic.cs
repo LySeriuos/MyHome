@@ -25,7 +25,6 @@ namespace MyHome
                 List<DeviceProfile> devices = realEstate.DevicesProfiles;
                 foreach (DeviceProfile device in devices)
                 {
-                    string userDevice = device.DeviceName;
                     DeviceWarranty warranty = device.DeviceWarranty;
                     if (warranty != null)
                     {
@@ -36,9 +35,9 @@ namespace MyHome
                         {
                             expiringDevices.Add(device);
                         }
-                        expiringDevices = expiringDevices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).ToList();
                     }
                 }
+                expiringDevices = expiringDevices.OrderBy(d => d.DeviceWarranty.WarrantyEnd).ToList();
             }
 
             return expiringDevices;
@@ -126,7 +125,7 @@ namespace MyHome
         public static byte[] GetQrCodeBytes(int userID, int deviceID)
         {
             // Create URL
-            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44/mobileDeviceInfo/{userID}/{deviceID}");
+            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44:7211/mobileDeviceInfo/{userID}/{deviceID}");
 
             // Generate Graphic as Bytes
             using var qrGenerator = new QRCoder.QRCodeGenerator();

@@ -4,8 +4,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "AuthMessageSenderOptions__MyHomeGmailPassword": "ezhcqhcbqvleytzr"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5067;http://*:5000"
@@ -55,8 +54,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:44822",
-      "sslPort": 44370
+      "applicationUrl": "http://localhost:55439/",
+      "sslPort": 44339
     }
   }
 }

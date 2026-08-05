@@ -6,20 +6,20 @@
 
 <style>
     .btn-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .left-buttons button,
     .right-buttons button {
-    margin: 0 5px;
+        margin: 0 5px;
     }
 </style>
 
 <Modal @ref="refModalEditAddRealEstate" Title="Edit Real Estate Details">
     <BodyTemplate>
-        <EditForm id="realEstateForm123" method="get" Model="CurrentRealEstate" OnSubmit="@RealEsatateFormSubmitted">
+        <EditForm id="realEstateForm123" method="get" Model="CurrentRealEstate" OnSubmit="@RealEstateFormSubmitted">
             <DataAnnotationsValidator />
             <div class="form-group row">
                 <label for="realEstateName" class="col-sm-4 col-form-label">
@@ -27,7 +27,7 @@
                 </label>
                 <div class="col-sm-8">
                     <InputText id="realEstateName" class="form-control" placeholder="Real Estate Name"
-                    @bind-Value="CurrentRealEstate.RealEstateName" />
+                               @bind-Value="CurrentRealEstate.RealEstateName" />
 
                 </div>
 
@@ -41,7 +41,7 @@
                     {
                         @if (CurrentRealEstate.RealEstateID != _realEstatesListAsQueryable.FirstOrDefault().RealEstateID && CurrentRealEstate.RealEstateID != 0)
                         {
-                            <ButtonPreviuosNext ButtonEvent="OnModalRealEstatePreviuos" ButtonName="Previuos"  />
+                            <ButtonPreviuosNext ButtonEvent="OnModalRealEstatePreviuos" ButtonName="Previuos" />
                         }
                         else
                         {
@@ -70,41 +70,42 @@
 
 @code {
     [Parameter]
-    public RealEstate CurrentRealEstate { get; set; } = new();
+    public RealEstate? CurrentRealEstate { get; set; }
     [Parameter]
     public EventCallback OnDataChanged { get; set; }
     private IQueryable<RealEstate> _realEstatesListAsQueryable { get; set; }
     private Modal refModalEditAddRealEstate { get; set; } = new();
     private EditContext? editContext;
     private bool validRealEstate;
-    public RealEstate? realEstateModel = new();
 
 
-    private async Task RealEsatateFormSubmitted(EditContext editContext)
+
+    private async Task RealEstateFormSubmitted(EditContext editContext)
     {
-        // editContext.Field(realEstateModel.RealEstateID.ToString());
-        //call form validation
         validRealEstate = editContext.Validate();
+
         if (validRealEstate == true)
         {
-            if (CurrentRealEstate == null || CurrentRealEstate.RealEstateID == 0)
+            try
             {
-                validRealEstate = editContext.Validate();
-                await DataService.AddNewRealEstateToDB(CurrentRealEstate);
-                // Adding to xml data file
-                // DataService.AddNewRealEstateToXML(CurrentRealEstate);
-            }
-            else
-            {
-                validRealEstate = editContext.Validate();
+                if (CurrentRealEstate == null || CurrentRealEstate.RealEstateID == 0)
+                {
+
+                    DataService.AddNewRealEstateToDB(CurrentRealEstate);
+                }
+
                 await DataService.UpdateObjectInDB();
+                await OnDataChanged.InvokeAsync();
+                await refModalEditAddRealEstate.HideAsync();
             }
-            await OnDataChanged.InvokeAsync();
-            await refModalEditAddRealEstate.HideAsync();
+            catch (Exception ex)
+            {
+                // Handle database errors cleanly here if needed
+                Console.WriteLine($"Error saving Real Estate: {ex.Message}");
+            }
         }
         else
         {
-            validRealEstate = editContext.Validate();
             return;
         }
     }
@@ -149,13 +150,23 @@
     {
         if (DataService.CurrentUserWithAllData.RealEstates == null)
         {
-            _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.DefaultIfEmpty<RealEstate>().AsQueryable();
+            _realEstatesListAsQueryable = Enumerable.Empty<RealEstate>().AsQueryable();
         }
         else
         {
             _realEstatesListAsQueryable = DataService.CurrentUserWithAllData.RealEstates.ToList().AsQueryable();
         }
-        editContext = new(CurrentRealEstate);
+
         base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (CurrentRealEstate == null)
+        {
+            CurrentRealEstate = new RealEstate();
+        }
+
+        base.OnParametersSet();
     }
 }

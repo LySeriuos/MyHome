@@ -1,0 +1,85 @@
+﻿@page "/Account/LoginChoseUser/{Id}"
+
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using MyHomeBlazorApp.BlazorData
+@using System.Security.Claims
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject MyHomeBlazorAppContext dbcontext
+@inject NavigationManager NavManager
+@inject IdentityRedirectManager RedirectManager
+@attribute [Authorize(Roles = "Admin")]
+<h3>LogIn Chosed User</h3>
+
+<Modal @ref="refWarningModal" Title="Warning!">
+    <BodyTemplate>
+        <p>You are Loged in as:</p>
+        <ul>
+            <li>
+                User: @userToLogIn
+            </li>
+            <li>
+                ID: @userToLogIn.Id
+            </li>
+        </ul>
+        <p>Change to Admin requires Log Out from user and Login as Admin!</p>
+        <Button Color="ButtonColor.Primary" @onclick="refWarningModal.HideAsync">Close</Button>
+    </BodyTemplate>
+</Modal>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    MyHomeBlazorAppUser? userToLogIn { get; set; } = new();
+    Modal refWarningModal { get; set; } = default!;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authenticationState =
+            await authenticationStateProvider.GetAuthenticationStateAsync();
+
+        var currentPrincipal = authenticationState.User;
+
+        // Get the currently logged-in administrator.
+        var adminUser = await UserManager.GetUserAsync(currentPrincipal);
+
+        if (adminUser is null ||
+            !await UserManager.IsInRoleAsync(adminUser, "Admin"))
+        {
+            NavManager.NavigateTo("/Account/AccessDenied", forceLoad: true);
+            return;
+        }
+
+        // Prevent nested impersonation.
+        if (currentPrincipal.HasClaim(
+                claim => claim.Type == ImpersonationClaimTypes.OriginalAdminId))
+        {
+            NavManager.NavigateTo("/", forceLoad: true);
+            return;
+        }
+
+        var selectedUser = await UserManager.FindByIdAsync(Id);
+
+        if (selectedUser is null)
+        {
+            NavManager.NavigateTo("/UserManagement", forceLoad: true);
+            return;
+        }
+
+        var impersonationClaims = new[]
+        {
+            new Claim(
+                ImpersonationClaimTypes.OriginalAdminId,
+                adminUser.Id)
+        };
+
+        await SignInManager.SignInWithClaimsAsync(
+            selectedUser,
+            isPersistent: false,
+            impersonationClaims);
+
+        NavManager.NavigateTo("/", forceLoad: true);
+    }
+}

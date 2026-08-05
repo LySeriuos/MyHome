@@ -79,6 +79,7 @@ namespace MyHomeBlazorApp
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazorBootstrap();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("AuthMessageSenderOptions"));
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddTransient<IEmailSender<MyHomeBlazorAppUser>, EmailSender>();
             var app = builder.Build();
 

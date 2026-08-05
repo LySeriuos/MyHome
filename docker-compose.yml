@@ -1,0 +1,17 @@
+services:
+  myhome:
+    image: lyseriuos/myhomeblazorapp:latest
+    container_name: myhome
+    ports:
+      - "7211:8080"
+    volumes:
+      - ./dp-keys:/home/app/.aspnet/DataProtection-Keys
+      - type: bind
+        source: ./MyHome.db
+        target: /app/BlazorData/MyHome.db
+      - type: bind
+        source: ./uploaded-files
+        target: /app/Files
+    environment:
+      - AuthMessageSenderOptions__MyHomeGmailPassword=ezhcqhcbqvleytzr
+    restart: always

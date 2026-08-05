@@ -98,7 +98,7 @@
     private MyHomeBlazorAppUser user = default!;
     private string? username;
     private string? phoneNumber;
-    private UserProfile? currentUserWithAllData;
+    private UserProfile? _currentUserWithAllData { get; set; }
     private int realEstatesCount;
     private int devicesCount;
 
@@ -114,14 +114,15 @@
         username = await UserManager.GetUserNameAsync(user);
         phoneNumber = await UserManager.GetPhoneNumberAsync(user);
         Input.PhoneNumber ??= phoneNumber;
-
+        await DataService.LoadUserWithAllDataAsync();
+        _currentUserWithAllData = DataService.CurrentUserWithAllData;
         //Preloading data to the page. Without these got error 500 on the page
-        if (DataService.CurrentUserWithAllData != null)
+        if (_currentUserWithAllData != null)
         {
-            var devices = DataService.CurrentUserWithAllData.GetAllDevices();
+            var devices = _currentUserWithAllData.GetAllDevices();
             devicesCount = devices != null ? devices.Count() : 0;
 
-            var estates = DataService.CurrentUserWithAllData.RealEstates;
+            var estates = _currentUserWithAllData.RealEstates;
             realEstatesCount = estates != null ? estates.Count() : 0;
         }
         else

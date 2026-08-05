@@ -1,0 +1,48 @@
+﻿@page "/Account/ReturnToAdmin"
+
+@using Microsoft.AspNetCore.Authorization
+@using BlazorData
+@inject UserManager<MyHomeBlazorAppUser> UserManager
+@inject SignInManager<MyHomeBlazorAppUser> SignInManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavManager
+
+@attribute [Authorize]
+
+<h3>Returning to administrator...</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authenticationState =
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        var currentPrincipal = authenticationState.User;
+
+        var originalAdminId = currentPrincipal.FindFirst(
+            ImpersonationClaimTypes.OriginalAdminId)?.Value;
+
+        if (string.IsNullOrWhiteSpace(originalAdminId))
+        {
+            NavManager.NavigateTo("/", forceLoad: true);
+            return;
+        }
+
+        var originalAdmin = await UserManager.FindByIdAsync(originalAdminId);
+
+        if (originalAdmin is null ||
+            !await UserManager.IsInRoleAsync(originalAdmin, "Admin"))
+        {
+            await SignInManager.SignOutAsync();
+            NavManager.NavigateTo("/Account/Login", forceLoad: true);
+            return;
+        }
+
+        // Normal sign-in removes the impersonation claim.
+        await SignInManager.SignInAsync(
+            originalAdmin,
+            isPersistent: false);
+
+        NavManager.NavigateTo("/UserManagement", forceLoad: true);
+    }
+}
