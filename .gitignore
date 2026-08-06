@@ -363,3 +363,13 @@ MigrationBackup/
 FodyWeavers.xsd
 /MyHomeBlazorApp/Components/Modals/ModalDeleteRealEstate.razor
 /MyHome/docker-compose.yml
+
+# SQLite runtime data
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# User-uploaded runtime files
+**/Files/
