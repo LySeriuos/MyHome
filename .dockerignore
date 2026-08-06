@@ -21,6 +21,12 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/*.db
+**/*.db-wal
+**/*.db-shm
+**/*.sqlite
+**/*.sqlite3
+**/Files/**
 LICENSE
 README.md
 !**/.gitignore
