@@ -1,7 +1,7 @@
 ﻿using MyHome.Models;
-using System.IO;
 using SkiaSharp;
 using SkiaSharp.QrCode;
+using System.IO;
 
 namespace MyHome
 {
@@ -122,10 +122,10 @@ namespace MyHome
         /// <param name="deviceID">chosed device ID to generate Qr code for</param>
         /// <param name="userID">current user ID</param>
         /// <returns>byte array representing the Qr code image</returns>
-        public static byte[] GetQrCodeBytes(int userID, int deviceID)
+        public static byte[] GetQrCodeBytes(int userID, int deviceID, string baseUrl)
         {
             // Create URL
-            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"http://192.168.8.217:5211/mobileDeviceInfo/{userID}/{deviceID}");
+            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"{baseUrl.TrimEnd('/')}/mobileDeviceInfo/{userID}/{deviceID}");
 
             // Generate Graphic as Bytes
             using var qrGenerator = new QRCoder.QRCodeGenerator();
@@ -141,13 +141,14 @@ namespace MyHome
         /// <param name="deviceID">Qr Code link to the device by device ID </param>
         /// <param name="userID">current user by user ID </param>
         /// <param name="savedQrCodeLink">Path to saved Qr Code</param>
-        public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string savedQrCodeLink)
+        /// <param name="baseUrl">Base URL for the QR code generation</param>
+        public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string savedQrCodeLink, string baseUrl)
         {
             string secretDeviceID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deviceID.ToString()));
             string secretUserID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(userID.ToString()));
             //var url = $"http://your-ip/mobileDeviceInfo/{secretUserID}/{secretDeviceID}";
             // TODO: change Ip Address to the real after it will be conneected to the domain name
-            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"https://85.215.169.44/mobileDeviceInfo/{secretUserID}/{secretDeviceID}");
+            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"{baseUrl.TrimEnd('/')}/mobileDeviceInfo/{secretUserID}/{secretDeviceID}");
 
             string generatedQrCodeLink = qrCodePayload.ToString();
 
