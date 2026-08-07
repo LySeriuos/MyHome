@@ -767,14 +767,14 @@ namespace MyHomeBlazorApp.BlazorData
         public string? GetManualUrl(DeviceProfile currentDevice)
         {
             if (string.IsNullOrWhiteSpace(currentDevice.DeviceProduser) ||
-                string.IsNullOrWhiteSpace(currentDevice.DeviceSerialNumber))
+                string.IsNullOrWhiteSpace(currentDevice.DeviceModelNumber))
             {
                 return null;
             }
 
             var searchText =
                 $"{currentDevice.DeviceProduser.Trim()} " +
-                $"{currentDevice.DeviceSerialNumber.Trim()} manual";
+                $"{currentDevice.DeviceModelNumber.Trim()} manual";
 
             return $"{Program.Constants.BASE_API_URL}" +
                    $"?q={Uri.EscapeDataString(searchText)}";
