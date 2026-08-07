@@ -48,3 +48,35 @@ jobs:
             lyseriuos/myhomeblazorapp:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=min
+
+  deploy-staging:
+    name: Deploy staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    needs:
+      - docker-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          SERVER_KNOWN_HOSTS: ${{ secrets.SERVER_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/staging_deploy
+          chmod 600 ~/.ssh/staging_deploy
+          printf '%s\n' "$SERVER_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy staging
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        run: |
+          ssh \
+            -i ~/.ssh/staging_deploy \
+            -p "$SERVER_PORT" \
+            -o BatchMode=yes \
+            "$SERVER_USER@$SERVER_HOST" \
+            /home/lyseriuos/bin/deploy-staging.sh
