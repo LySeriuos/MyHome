@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MyHomeBlazorApp.BlazorData;
+using System.Net;
 
 namespace WebPWrecover.Services;
 
@@ -31,14 +32,34 @@ public class EmailSender : IEmailSender, IEmailSender<MyHomeBlazorAppUser>
 
     public AuthMessageSenderOptions Options { get; } //Set with Secret Manager.
 
-   
+
 
     // --- Identity Specific Methods ---
-    public async Task SendConfirmationLinkAsync(MyHomeBlazorAppUser user, string email, string confirmationLink) =>
-        await SendEmailAsync(email, "Confirm your email", $"Please confirm your account by clicking here: {confirmationLink}");
+    public Task SendConfirmationLinkAsync(
+    MyHomeBlazorAppUser user,
+    string email,
+    string confirmationLink)
+    {
+        var link = WebUtility.HtmlDecode(confirmationLink);
 
-    public async Task SendPasswordResetLinkAsync(MyHomeBlazorAppUser user, string email, string resetLink) =>
-        await SendEmailAsync(email, "Reset your password", $"Please reset your password by clicking here: {resetLink}");
+        return SendEmailAsync(
+            email,
+            "Confirm your email",
+            $"Please confirm your account by clicking here: {link}");
+    }
+
+    public Task SendPasswordResetLinkAsync(
+        MyHomeBlazorAppUser user,
+        string email,
+        string resetLink)
+    {
+        var link = WebUtility.HtmlDecode(resetLink);
+
+        return SendEmailAsync(
+            email,
+            "Reset your password",
+            $"Please reset your password by clicking here: {link}");
+    }
 
     public async Task SendPasswordResetCodeAsync(MyHomeBlazorAppUser user, string email, string resetCode) =>
         await SendEmailAsync(email, "Reset your password", $"Your reset code is: {resetCode}");
