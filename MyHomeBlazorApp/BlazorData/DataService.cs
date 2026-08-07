@@ -764,6 +764,21 @@ namespace MyHomeBlazorApp.BlazorData
             await jSRuntime.InvokeVoidAsync("open", buildedUrl, "_blank");
         }
 
+        public string? GetManualUrl(DeviceProfile currentDevice)
+        {
+            if (string.IsNullOrWhiteSpace(currentDevice.DeviceProduser) ||
+                string.IsNullOrWhiteSpace(currentDevice.DeviceSerialNumber))
+            {
+                return null;
+            }
+
+            var searchText =
+                $"{currentDevice.DeviceProduser.Trim()} " +
+                $"{currentDevice.DeviceSerialNumber.Trim()} manual";
+
+            return $"{Program.Constants.BASE_API_URL}" +
+                   $"?q={Uri.EscapeDataString(searchText)}";
+        }
         #endregion
 
 

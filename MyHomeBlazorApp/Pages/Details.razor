@@ -138,7 +138,7 @@
                                 <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
                                 <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
                                 <TemplateColumn Title="Manual">
-                                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context, JSRuntime)">Manual</Button>
+                                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.GetManualUrl(context)">Find Manual</Button>
                                 </TemplateColumn>
                             </QuickGrid>
                         </div>

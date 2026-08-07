@@ -11,25 +11,63 @@
 @inject NavigationManager NavManager
 
 <style>
+    .device-form {
+        width: 100%;
+        max-width: 720px;
+        margin-inline: auto;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control,
+    .form-select {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
     .btn-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 0.75rem;
     }
 
-    .form-select {
-        max-width: auto;
-        padding-left: 10px;
-        padding-right: 0;
+    .left-buttons,
+    .right-buttons {
+        flex: 1 1 0;
     }
 
-    .left-buttons button,
-    .right-buttons button {
-        margin: 0 5px;
-    }
+    @@media (max-width: 576px) {
+        .device-form {
+            padding: 0.75rem;
+        }
 
-    .form-group {
-        margin-bottom: 10px;
+        .btn-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .left-buttons,
+        .right-buttons {
+            width: 100%;
+        }
+
+        .right-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            text-align: center !important;
+        }
+
+        .left-buttons {
+            text-align: center;
+        }
     }
 </style>
 
@@ -42,7 +80,7 @@
 
 @if (CurrentDevice != null)
 {
-    <EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" OnSubmit="Save">
+    <EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" class="device-form" OnSubmit="Save">
         <DataAnnotationsValidator />
 
         <div class="form-group row">
@@ -104,9 +142,28 @@
         </AuthorizeView>
 
         <div class="form-group row">
-            <label for="deviceManualBookLink" class="col-sm-4 col-form-label">Manual Link</label>
-            <div class="col-sm-8 align-content-center">
-                <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(CurrentDevice, JSRuntime)">Manual</Button>
+            <label class="col-sm-4 col-form-label">Manual Link</label>
+
+            <div class="col-sm-8">
+                @{
+                    var manualUrl = DataService.GetManualUrl(CurrentDevice);
+                }
+
+                @if (manualUrl != null)
+                {
+                    <a class="btn btn-sm btn-outline-info"
+                       href="@manualUrl"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        Find Manual
+                    </a>
+                }
+                else
+                {
+                    <span class="text-muted">
+                        Producer and serial number are required.
+                    </span>
+                }
             </div>
         </div>
 
@@ -156,13 +213,13 @@
         {
             <br />
             <div class="btn-row">
-                <div class="left-buttons col-sm-6">
+                <div class="left-buttons">
                     <NextPreviuosButtons CurrentDevice="CurrentDevice"
                                          DevicesListAsQueryable="_devicesListAsQueryable"
                                          CurrentDeviceChanged="HandleDeviceSwitch">
                     </NextPreviuosButtons>
                 </div>
-                <div class="right-buttons col-sm-6 text-end">
+                <div class="right-buttons">
                     <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@_saveDisabled" />
                     @if (_includeButtons)
                     {
