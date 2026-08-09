@@ -280,6 +280,7 @@
     <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
         <AddEditDeviceForm CurrentDevice="currentDevice"
                            CurrentUser="currentUser"
+                           ChosenRealEstateId="chosenRealEsatateId"
                            DataChangedEvent="DeviceDataHasChanged" />
     </CustomReusableModal>
 </div>
@@ -309,6 +310,7 @@
     public bool listHasBeenChanged = false;
     private RealEstate currentChosedRealEsate = new();
     private RealEstate currentRealEstate = new();
+    private int chosenRealEsatateId;
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
     private DeviceProfile? currentDevice { get; set; }
@@ -329,7 +331,7 @@
 
     private async Task HandleAddAllToPrint()
     {
-        DataService.AddAllToPrintQueue();
+        await DataService.AddAllToPrintQueue();
         StateHasChanged();
         await Task.CompletedTask;
     }
@@ -364,7 +366,9 @@
 
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
-    {
+    {   
+        
+        chosenRealEsatateId = DataService.GetRealEstateByDeviceID(deviceID);
         currentUser = DataService.CurrentUserWithAllData;
         currentDevice = DataService.GetDeviceById(deviceID);
         await _reusableModal.ShowAsync();

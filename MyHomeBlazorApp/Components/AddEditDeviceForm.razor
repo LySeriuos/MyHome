@@ -7,8 +7,8 @@
 @using MyHomeBlazorApp.Components
 
 @inject BlazorData.DataService DataService
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
+@inject IJSRuntime JSRuntime
 
 <style>
     .device-form {
@@ -80,7 +80,7 @@
 
 @if (CurrentDevice != null)
 {
-    <EditForm @ref="refAddEditDeviceTest" EditContext="@editContext" id="refAddEditDeviceTest" class="device-form" OnSubmit="Save">
+    <EditForm @ref="refAddEditDeviceForm" EditContext="@editContext" id="refAddEditDeviceForm" class="device-form" OnSubmit="Save">
         <DataAnnotationsValidator />
 
         <div class="form-group row">
@@ -172,7 +172,7 @@
                 @if (CurrentUser != null)
                 {
                     <label class="form-label">Select Real Estate:</label>
-                    <InputSelect @bind-Value="RealEstateIdToAddDevice" class="form-select" @bind-Value:after="RealEstateIdToAddDeviceChanged">
+                    <InputSelect @bind-Value="_selectedRealEstateId" class="form-select" @bind-Value:after="RealEstateIdToAddDeviceChanged">
                         @if (CurrentUser.RealEstates == null || !CurrentUser.RealEstates.Any())
                         {
                             <option value="0">No Real Estates found (Save as Unassigned)</option>
@@ -220,7 +220,7 @@
                     </NextPreviuosButtons>
                 </div>
                 <div class="right-buttons">
-                    <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceTest" IsButtonDisabled="@_saveDisabled" />
+                    <ButtonSave ButtonEvent="Save" Form="refAddEditDeviceForm" IsButtonDisabled="@_saveDisabled" />
                     @if (_includeButtons)
                     {
                         <ButtonCloseCancel TextButton="Cancel" ButtonEvent="CancelForm" />
@@ -243,7 +243,10 @@
     public UserProfile? CurrentUser { get; set; }
 
     [Parameter]
-    public EditForm refAddEditDeviceTest { get; set; } = new();
+    public int ChosenRealEstateId { get; set; }
+
+    [Parameter]
+    public EditForm refAddEditDeviceForm { get; set; } = new();
 
     [CascadingParameter]
     public CustomReusableModal? Parent { get; set; }
@@ -251,13 +254,7 @@
     [Parameter]
     public EventCallback DataChangedEvent { get; set; }
 
-    public int RealEstateIdToAddDevice
-    {
-        get => selectedTargetRealEstateId;
-        set => selectedTargetRealEstateId = value;
-    }
-
-    private int selectedTargetRealEstateId;
+    private int _selectedRealEstateId;
     private int _originalRealEstateId;
     private IQueryable<DeviceProfile>? _devicesListAsQueryable;
     private EditContext? editContext;
@@ -267,9 +264,10 @@
     private bool showErrorMessageVisible = false;
     private Array _deviceTypes = default!;
     private DeviceProfile? _previousDevice;
+    private DeviceProfile? _originalDevice;
 
-    private bool _isGuest => DataService.CurrentAppUser == null;
-    private bool _saveDisabled => editContext == null || (!editContext.IsModified() && selectedTargetRealEstateId == _originalRealEstateId);
+    private bool _isGuest => DataService.CurrentAppUser == null;    
+    private bool _saveDisabled => !HasActualChanges();
 
     protected override async Task OnInitializedAsync()
     {
@@ -302,40 +300,28 @@
         }
 
         // Only swap context if we actually navigated to a totally different device record
-        if (CurrentDevice != _previousDevice)
-        {
-            editContext = new(CurrentDevice);
-            _previousDevice = CurrentDevice;
+        LoadDeviceIntoForm(CurrentDevice);
 
-            if (CurrentDevice.DeviceID == 0)
-            {
-                selectedTargetRealEstateId = 0;
-            }
-            else
-            {
-                selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
-            }
-            _originalRealEstateId = selectedTargetRealEstateId;
-        }
 
         base.OnParametersSet();
     }
 
-    private void HandleDeviceSwitch(DeviceProfile targetDevice)
-    {
-        CurrentDevice = targetDevice;
-        _previousDevice = targetDevice;
-        editContext = new(CurrentDevice);
+    private async Task HandleDeviceSwitch(DeviceProfile targetDevice)
+    {        
+        if (HasActualChanges())
+        {
+            bool discard = await JSRuntime.InvokeAsync<bool>(
+                "confirm",
+                "You have unsaved changes. Discard them and change device?");
 
-        if (CurrentDevice.DeviceID == 0)
-        {
-            selectedTargetRealEstateId = 0;
+            if (!discard)
+                return;
+
+            RestoreOriginalDevice();
         }
-        else
-        {
-            selectedTargetRealEstateId = DataService.GetRealEstateByDeviceID(CurrentDevice.DeviceID);
-        }
-        _originalRealEstateId = selectedTargetRealEstateId;
+
+        showErrorMessageVisible = false;
+        LoadDeviceIntoForm(targetDevice);
     }
 
     public async Task Save()
@@ -360,10 +346,10 @@
 
         try
         {
-            switch (isNewDevice, selectedTargetRealEstateId)
+            switch (isNewDevice, _selectedRealEstateId)
             {
                 case (true, _):
-                    await DataService.AddNewDeviceToDataBaseAsync(CurrentDevice, selectedTargetRealEstateId);
+                    await DataService.AddNewDeviceToDataBaseAsync(CurrentDevice, _selectedRealEstateId);
                     break;
 
                 case (false, 0) when isCurrentlyAssigned:
@@ -386,7 +372,7 @@
             await DataChangedEvent.InvokeAsync();
             StateHasChanged();
 
-            selectedTargetRealEstateId = 0;
+            _selectedRealEstateId = 0;
             _originalRealEstateId = 0;
             showErrorMessageVisible = false;
             editContext.MarkAsUnmodified();
@@ -407,6 +393,63 @@
         }
     }
 
+    private void LoadDeviceIntoForm(DeviceProfile device)
+    {
+        CurrentDevice = device;
+        _previousDevice = device;
+        editContext = new EditContext(device);
+
+        _originalDevice = new DeviceProfile
+        {
+            DeviceID = device.DeviceID,
+            DeviceName = device.DeviceName,
+            DeviceProduser = device.DeviceProduser,
+            DeviceSerialNumber = device.DeviceSerialNumber,
+            DeviceModelNumber = device.DeviceModelNumber,
+            DeviceType = device.DeviceType,
+            IpAddress = device.IpAddress,
+            MacAdrress = device.MacAdrress
+        };
+
+        _selectedRealEstateId = device.DeviceID == 0
+            ? ChosenRealEstateId
+            : DataService.GetRealEstateByDeviceID(device.DeviceID);
+
+        _originalRealEstateId = _selectedRealEstateId;
+    }
+
+    private bool HasActualChanges()
+    {
+        if (CurrentDevice is null || _originalDevice is null)
+            return false;
+
+        return CurrentDevice.DeviceName != _originalDevice.DeviceName
+            || CurrentDevice.DeviceProduser != _originalDevice.DeviceProduser
+            || CurrentDevice.DeviceSerialNumber != _originalDevice.DeviceSerialNumber
+            || CurrentDevice.DeviceModelNumber != _originalDevice.DeviceModelNumber
+            || CurrentDevice.DeviceType != _originalDevice.DeviceType
+            || CurrentDevice.IpAddress != _originalDevice.IpAddress
+            || CurrentDevice.MacAdrress != _originalDevice.MacAdrress
+            || _selectedRealEstateId != _originalRealEstateId;
+    }
+
+    private void RestoreOriginalDevice()
+    {
+        if (CurrentDevice is null || _originalDevice is null)
+            return;
+
+        CurrentDevice.DeviceName = _originalDevice.DeviceName;
+        CurrentDevice.DeviceProduser = _originalDevice.DeviceProduser;
+        CurrentDevice.DeviceSerialNumber = _originalDevice.DeviceSerialNumber;
+        CurrentDevice.DeviceModelNumber = _originalDevice.DeviceModelNumber;
+        CurrentDevice.DeviceType = _originalDevice.DeviceType;
+        CurrentDevice.IpAddress = _originalDevice.IpAddress;
+        CurrentDevice.MacAdrress = _originalDevice.MacAdrress;
+
+        _selectedRealEstateId = _originalRealEstateId;
+        editContext?.MarkAsUnmodified();
+    }
+
     private void NavigateToLoginWithReturnUrl()
     {
         var currentUri = NavManager.ToBaseRelativePath(NavManager.Uri);
@@ -416,7 +459,7 @@
 
     private void RealEstateIdToAddDeviceChanged()
     {
-        showErrorMessageVisible = (selectedTargetRealEstateId == 0);
+        showErrorMessageVisible = (_selectedRealEstateId == 0);
     }
 
 
