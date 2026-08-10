@@ -366,8 +366,7 @@
 
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
-    {   
-        
+    {  
         chosenRealEsatateId = DataService.GetRealEstateByDeviceID(deviceID);
         currentUser = DataService.CurrentUserWithAllData;
         currentDevice = DataService.GetDeviceById(deviceID);
@@ -384,6 +383,7 @@
             DeviceType = DeviceType.Other
         };
         currentChosedRealEsate.RealEstateID = 0;
+        chosenRealEsatateId = 0;
         StateHasChanged();
         // await refModalEditAddDevice.OnShowModalEditDeviceClick();
         await _reusableModal.ShowAsync();
