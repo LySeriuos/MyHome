@@ -90,124 +90,62 @@
             <div>
                 @if (_wifiQrCodeUrl is null)
                 {
-                   <UserAccountCardComponent Title="Create Wifi Connection Qr Code"
-                                          IconName="IconName.QrCode"
-                                          DoubleCard="false">
-                    <ChildContent>
-                        <p>This tool will help you to create QR code for sharing wifi. Just add your current wifi name and password. By scanning created QR code you can connect to wifi directly. Good for sharing with guests.</p>
-                        <EditForm Model="wifiModel" class="my-5" OnSubmit="HandleWifiSharingQrCode">
-                            <DataAnnotationsValidator />
-                            <div class="row">
-                                <div class="my-2 ms-3">
+                    <UserAccountCardComponent Title="Create Wifi Connection Qr Code"
+                                              IconName="IconName.QrCode"
+                                              DoubleCard="false">
+                        <ChildContent>
+                            <p>This tool will help you to create QR code for sharing wifi. Just add your current wifi name and password. By scanning created QR code you can connect to wifi directly. Good for sharing with guests.</p>
+                            <EditForm Model="wifiModel" class="my-5" OnSubmit="HandleWifiSharingQrCode">
+                                <DataAnnotationsValidator />
+                                <div class="row">
+                                    <div class="my-2 ms-3">
 
-                                    <label class="form-check-label" for="wifiName">
-                                        Wifi Name
-                                    </label>
-                                    <InputText class="margin-label" id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
-                                    <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
+                                        <label class="form-check-label" for="wifiName">
+                                            Wifi Name
+                                        </label>
+                                        <InputText class="margin-label" id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
+                                        <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
 
+                                    </div>
+                                    <div class="my-2 ms-3">
+                                        <label class="form-check-label" for="wifiPassword">
+                                            Wifi Pasword
+                                        </label>
+                                        <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
+                                        <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
+
+                                        <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
+                                    </div>
                                 </div>
-                                <div class="my-2 ms-3">
-                                    <label class="form-check-label" for="wifiPassword">
-                                        Wifi Pasword
-                                    </label>
-                                    <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
-                                    <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
-
-                                    <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
+                                <br />
+                                <div class="text-center">
+                                    <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Class="btn card-btn btn-rounded text-center">Get Qr Code</Button>
                                 </div>
-                            </div>
-                            <br />
-                            <div class="text-center">
-                                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Class="btn card-btn btn-rounded text-center">Get Qr Code</Button>
-                            </div>
-                        </EditForm>
-                    </ChildContent>
-                </UserAccountCardComponent>           
+                            </EditForm>
+                        </ChildContent>
+                    </UserAccountCardComponent>
                 }
                 else
                 {
-                    <div class="text-center">
-                        <h4>Scan to connect</h4>
+                    <div class="d-flex justify-content-start w-100">
+                        <div class="text-center" style="width: 250px;">
+                            <h4>Scan to connect</h4>
 
-                        <img src="@_wifiQrCodeUrl"
-                             width="250"
-                             class="img-fluid"
-                             alt="Wi-Fi QR code" />
+                            <img src="@_wifiQrCodeUrl"
+                                 width="250"
+                                 class="img-fluid"
+                                 alt="Wi-Fi QR code" />
 
-                        <div class="mt-3">
-                            <button type="button"
-                                    class="btn btn-success"
-                                    @onclick="CloseWifiQrCode">
-                                Close
-                            </button>
+                            <div class="mt-3">
+                                <button type="button"
+                                        class="btn btn-success"
+                                        @onclick="CloseWifiQrCode">
+                                    Close
+                                </button>
+                            </div>
                         </div>
                     </div>
                 }
-                @* <UserAccountCardComponent Title="Create Wifi Connection Qr Code"
-                                          IconName="IconName.QrCode"
-                                          DoubleCard="false">
-                    <ChildContent>
-                        <p>This tool will help you to create QR code for sharing wifi. Just add your current wifi name and password. By scanning created QR code you can connect to wifi directly. Good for sharing with guests.</p>
-                        <EditForm Model="wifiModel" class="my-5" OnSubmit="HandleWifiSharingQrCode">
-                            <DataAnnotationsValidator />
-                            <div class="row">
-                                <div class="my-2 ms-3">
-
-                                    <label class="form-check-label" for="wifiName">
-                                        Wifi Name
-                                    </label>
-                                    <InputText class="margin-label" id="wifiName" @bind-Value="wifiModel.WifiName"></InputText>
-                                    <ValidationMessage For="() => wifiModel.WifiName" class="text-danger d-block" />
-
-                                </div>
-                                <div class="my-2 ms-3">
-                                    <label class="form-check-label" for="wifiPassword">
-                                        Wifi Pasword
-                                    </label>
-                                    <InputText type="@TxtType" name="password" id="wifiPassword" @bind-Value="wifiModel.WifiPassword"></InputText>
-                                    <span class="e-input-eye" @onclick="ShowPassword"><i class="@changedClass" style="font-size: 1.2rem; color: black;"></i></span>
-
-                                    <ValidationMessage For="() => wifiModel.WifiPassword" class="text-danger d-block" />
-                                </div>
-                            </div>
-                            <br />
-                            <div class="text-center">
-                                <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Class="btn card-btn btn-rounded text-center">Get Qr Code</Button>
-                            </div>
-                        </EditForm>
-                    </ChildContent>
-                </UserAccountCardComponent>
-            </div>
-            @if (!string.IsNullOrWhiteSpace(_wifiQrCodeUrl))
-            {
-                <div class="card mt-3 mx-auto"
-                     style="max-width: 350px;">
-
-                    <div class="card-body text-center">
-                        <h5 class="card-title">
-                            Wi-Fi QR Code
-                        </h5>
-
-                        <p class="text-muted">
-                            Scan this code to connect.
-                        </p>
-
-                        <img src="@_wifiQrCodeUrl"
-                             width="250"
-                             class="img-fluid"
-                             alt="Wi-Fi QR code" />
-
-                        <div class="mt-3">
-                            <button type="button"
-                                    class="btn btn-secondary"
-                                    @onclick="CloseWifiQrCode">
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            } *@
             </div>
         </section>
     </main>
@@ -300,31 +238,7 @@
         _wifiQrCodeUrl = null;
         wifiModel = new();
     }
-
-
-    // private async void HandleWifiSharingQrCode(EditContext editWifiContext)
-    // {
-    //     Directory.CreateDirectory($"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode");
-    //     string filePath = $"{Environment.CurrentDirectory}\\files\\{currentUser.UserID}\\WifiQrCode\\Wifi.png";
-    //     valid = editWifiContext.Validate();
-    //     currentUser = DataService.CurrentUserWithAllData;
-    //     if (valid == true)
-    //     {
-    //         valid = editWifiContext.Validate();
-    //         Logic.CreateWifiSharingQrCode(wifiModel.WifiName, wifiModel.WifiPassword, filePath);
-    //         var file = Path.GetFileName(filePath);
-    //         string fileUrl = $"files/{currentUser.UserID}/WifiQrCode/{file}";
-    //         await JSRuntime.InvokeVoidAsync("open", fileUrl, "_blank");
-    //     }
-    //     else
-    //     {
-    //         return;
-    //     }
-
-    //     wifiModel = new();
-    //     StateHasChanged();
-    // }
-
+    
     protected override void OnInitialized()
     {
         currentUser = DataService.CurrentUserWithAllData;
