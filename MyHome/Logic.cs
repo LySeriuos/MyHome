@@ -1,7 +1,4 @@
 ﻿using MyHome.Models;
-using SkiaSharp;
-using SkiaSharp.QrCode;
-using System.IO;
 
 namespace MyHome
 {
@@ -116,141 +113,77 @@ namespace MyHome
             devices.Remove(foundDevice);
             return deviceWasAdded;
         }
-        /// <summary>
-        /// New method to create Qr code as byte array to send it to the client side and generate image there without saving it on the server side, because of security reasons and to avoid problems with file management on the server side. This method will be used in the PdfController to generate Qr code for each device in the PDF file.
-        /// </summary>
-        /// <param name="deviceID">chosed device ID to generate Qr code for</param>
-        /// <param name="userID">current user ID</param>
-        /// <returns>byte array representing the Qr code image</returns>
-        public static byte[] GetQrCodeBytes(int userID, int deviceID, string baseUrl)
-        {
-            // Create URL
-            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"{baseUrl.TrimEnd('/')}/mobileDeviceInfo/{userID}/{deviceID}");
+        
+        // QR Code Section Start
 
-            // Generate Graphic as Bytes
+        /// <summary>
+        /// Generates QrCode image
+        /// </summary>
+        /// <param name="payload">data to add into qrcode</param>
+        /// <returns>QrCode image</returns>
+        private static byte[] CreateQrCodeBytes(string payload)
+        {
             using var qrGenerator = new QRCoder.QRCodeGenerator();
-            var qrCodeData = qrGenerator.CreateQrCode(qrCodePayload.ToString(), QRCoder.QRCodeGenerator.ECCLevel.Q);
-            var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
 
-            return qrCode.GetGraphic(20); // Returns byte[]
+            using var qrCodeData = qrGenerator.CreateQrCode(
+                payload,
+                QRCoder.QRCodeGenerator.ECCLevel.Q);
+
+            using var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
+
+            return qrCode.GetGraphic(20);
         }
 
         /// <summary>
-        /// Method to create QrCode Link to reach devices info  
+        /// Creates link to the qrcode
         /// </summary>
-        /// <param name="deviceID">Qr Code link to the device by device ID </param>
-        /// <param name="userID">current user by user ID </param>
-        /// <param name="savedQrCodeLink">Path to saved Qr Code</param>
-        /// <param name="baseUrl">Base URL for the QR code generation</param>
-        public static void CreateQrCodeLinkToDevice(string deviceID, string userID, string savedQrCodeLink, string baseUrl)
+        /// <param name="userID">Current user</param>
+        /// <param name="deviceID">Current device</param>
+        /// <param name="baseUrl">base url to open created qr code</param>
+        /// <returns></returns>
+        public static byte[] GetQrCodeBytes(
+    int userID,
+    int deviceID,
+    string baseUrl)
         {
-            string secretDeviceID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deviceID.ToString()));
-            string secretUserID = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(userID.ToString()));
-            //var url = $"http://your-ip/mobileDeviceInfo/{secretUserID}/{secretDeviceID}";
-            // TODO: change Ip Address to the real after it will be conneected to the domain name
-            var qrCodePayload = new QRCoder.PayloadGenerator.Url($"{baseUrl.TrimEnd('/')}/mobileDeviceInfo/{secretUserID}/{secretDeviceID}");
+            string url =
+                $"{baseUrl.TrimEnd('/')}/mobileDeviceInfo/{userID}/{deviceID}";
 
-            string generatedQrCodeLink = qrCodePayload.ToString();
+            var urlPayload = new QRCoder.PayloadGenerator.Url(url);
 
-            // Call your static generator method
-            QrCodeGenerator(generatedQrCodeLink, savedQrCodeLink);
+            return CreateQrCodeBytes(urlPayload.ToString());
         }
 
         /// <summary>
-        /// Create and save Qr code image
+        /// Creates link to the wifi qr code
         /// </summary>
-        /// <param name="generatedQrCodeLink">Generated qr code link to the url address </param>
-        /// <param name="savedQrCodeLink">link of saved Qr code on local mashine</param>
-        //public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
-        //{
-        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
-        //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(generatedQrCodeLink, QRCodeGenerator.ECCLevel.Q);
-        //    QRCode qrCode = new QRCode(qrCodeData);
-        //    Bitmap qrCodeImage = qrCode.GetGraphic(20);
-        //    qrCodeImage.Save(savedQrCodeLink);
-        //}
-
-
-
-        // Inside your Logic class
-
-        public static void QrCodeGenerator(string generatedQrCodeLink, string savedQrCodeLink)
+        /// <param name="wifiName">Added Wifi name</param>
+        /// <param name="wifiPassword">Added Password</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">error message </exception>
+        public static string CreateWifiSharingQrCode(
+    string wifiName,
+    string wifiPassword)
         {
-            // Use the full namespace to avoid the conflict with QRCoder
-            var qrCodeData = SkiaSharp.QrCode.QRCodeGenerator.CreateQrCode(generatedQrCodeLink, SkiaSharp.QrCode.ECCLevel.Q);
+            if (string.IsNullOrWhiteSpace(wifiName))
+            {
+                throw new ArgumentException(
+                    "Wi-Fi name is required.",
+                    nameof(wifiName));
+            }
 
-            var info = new SKImageInfo(512, 512);
-            using var surface = SKSurface.Create(info);
-            using var canvas = surface.Canvas;
+            var wifiPayload = new QRCoder.PayloadGenerator.WiFi(
+                wifiName.Trim(),
+                wifiPassword ?? string.Empty,
+                QRCoder.PayloadGenerator.WiFi.Authentication.WPA);
 
-            var rect = new SKRect(0, 0, info.Width, info.Height);
+            byte[] imageBytes =
+                CreateQrCodeBytes(wifiPayload.ToString());
 
-            // Use the full namespace here as well
-            SkiaSharp.QrCode.QRCodeRenderer.Render(canvas, rect, qrCodeData, SKColors.White, SKColors.Black);
-
-            using var image = surface.Snapshot();
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-
-            var folder = Path.GetDirectoryName(savedQrCodeLink);
-            if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            using var stream = File.Open(savedQrCodeLink, FileMode.Create, FileAccess.Write);
-            data.SaveTo(stream);
+            return $"data:image/png;base64,{Convert.ToBase64String(imageBytes)}";
         }
 
-
-
-        //public static void CreateWifiSharingQrCode(string wifiName, string wifiPassword)
-        //{
-        //    // Explicitly define the WiFi payload type from QRCoder
-        //    QRCoder.PayloadGenerator.WiFi wifiPayLoad = new QRCoder.PayloadGenerator.WiFi(
-        //        wifiName,
-        //        wifiPassword,
-        //        QRCoder.PayloadGenerator.WiFi.Authentication.WPA
-        //    );
-
-        //    string generatedWifiQrCodeLink = wifiPayLoad.ToString();
-
-        //    // This calls your SkiaSharp generator method we fixed earlier
-        //    QrCodeGenerator(generatedWifiQrCodeLink);
-        //}
-
-        public static string CreateWifiSharingQrCode(string wifiName, string wifiPassword)
-        {
-            QRCoder.PayloadGenerator.WiFi wifiPayLoad = new QRCoder.PayloadGenerator.WiFi(
-                wifiName,
-                wifiPassword,
-                QRCoder.PayloadGenerator.WiFi.Authentication.WPA
-            );
-
-            string generatedWifiQrCodeLink = wifiPayLoad.ToString();
-
-            // Calls our new memory-isolated renderer
-            return WifiQrCodeMemoryGenerator(generatedWifiQrCodeLink);
-        }
-
-        public static string WifiQrCodeMemoryGenerator(string generatedQrCodeLink)
-        {
-            var qrCodeData = SkiaSharp.QrCode.QRCodeGenerator.CreateQrCode(generatedQrCodeLink, SkiaSharp.QrCode.ECCLevel.Q);
-
-            var info = new SKImageInfo(512, 512);
-            using var surface = SKSurface.Create(info);
-            using var canvas = surface.Canvas;
-
-            var rect = new SKRect(0, 0, info.Width, info.Height);
-
-            SkiaSharp.QrCode.QRCodeRenderer.Render(canvas, rect, qrCodeData, SKColors.White, SKColors.Black);
-
-            using var image = surface.Snapshot();
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-
-            // Convert the SkiaSharp drawing straight to bytes, then to a Base64 string url
-            byte[] imageBytes = data.ToArray();
-            string base64String = Convert.ToBase64String(imageBytes);
-
-            return $"data:image/png;base64,{base64String}";
-        }
+        // Qr Code Section end
 
         /// <summary>
         /// Method to remove device from the xml database
