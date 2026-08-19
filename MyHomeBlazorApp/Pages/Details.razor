@@ -138,7 +138,7 @@
                                 <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
                                 <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
                                 <TemplateColumn Title="Manual">
-                                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.Navigate(context, JSRuntime)">Manual</Button>
+                                    <Button class="btn-sm btn btn-outline-info" @onclick="() => DataService.GetManualUrl(context)">Find Manual</Button>
                                 </TemplateColumn>
                             </QuickGrid>
                         </div>
@@ -280,6 +280,7 @@
     <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
         <AddEditDeviceForm CurrentDevice="currentDevice"
                            CurrentUser="currentUser"
+                           ChosenRealEstateId="chosenRealEsatateId"
                            DataChangedEvent="DeviceDataHasChanged" />
     </CustomReusableModal>
 </div>
@@ -309,6 +310,7 @@
     public bool listHasBeenChanged = false;
     private RealEstate currentChosedRealEsate = new();
     private RealEstate currentRealEstate = new();
+    private int chosenRealEsatateId;
     private Address currentRealEstateAddress = new();
     private Address shopAddress = new();
     private DeviceProfile? currentDevice { get; set; }
@@ -329,7 +331,7 @@
 
     private async Task HandleAddAllToPrint()
     {
-        DataService.AddAllToPrintQueue();
+        await DataService.AddAllToPrintQueue();
         StateHasChanged();
         await Task.CompletedTask;
     }
@@ -364,7 +366,8 @@
 
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
-    {
+    {  
+        chosenRealEsatateId = DataService.GetRealEstateByDeviceID(deviceID);
         currentUser = DataService.CurrentUserWithAllData;
         currentDevice = DataService.GetDeviceById(deviceID);
         await _reusableModal.ShowAsync();
@@ -380,6 +383,7 @@
             DeviceType = DeviceType.Other
         };
         currentChosedRealEsate.RealEstateID = 0;
+        chosenRealEsatateId = 0;
         StateHasChanged();
         // await refModalEditAddDevice.OnShowModalEditDeviceClick();
         await _reusableModal.ShowAsync();

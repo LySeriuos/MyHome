@@ -28,7 +28,11 @@
                 <label for="email" class="form-label">Email</label>
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Resend</button>
+            <button type="submit"
+                    class="w-100 btn btn-lg btn-primary"
+                    onclick="setTimeout(() => { this.disabled = true; this.textContent = 'Sending...'; }, 0)">
+                Resend
+            </button>
         </EditForm>
     </div>
 </div>
@@ -41,20 +45,38 @@
 
     private async Task OnValidSubmitAsync()
     {
-        var user = await UserManager.FindByEmailAsync(Input.Email!);
+        message = "Sending verification email...";
+
+        var user = await UserManager.FindByEmailAsync(Input.Email);
+
         if (user is null)
         {
+            // Avoid revealing whether an address is registered.
             message = "Verification email sent. Please check your email.";
             return;
         }
 
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        var callbackUrl = NavigationManager.GetUriWithQueryParameters(
-            NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-            new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
-        await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
+
+        code = WebEncoders.Base64UrlEncode(
+            Encoding.UTF8.GetBytes(code));
+
+        var callbackUrl =
+            NavigationManager.GetUriWithQueryParameters(
+                NavigationManager
+                    .ToAbsoluteUri("Account/ConfirmEmail")
+                    .AbsoluteUri,
+                new Dictionary<string, object?>
+                {
+                    ["userId"] = userId,
+                    ["code"] = code
+                });
+
+        await EmailSender.SendConfirmationLinkAsync(
+            user,
+            Input.Email,
+            HtmlEncoder.Default.Encode(callbackUrl));
 
         message = "Verification email sent. Please check your email.";
     }

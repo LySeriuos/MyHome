@@ -5,6 +5,7 @@
 @inject NavigationManager NavManager
 @inject IJSRuntime JS
 @inject IJSRuntime JSRuntime
+@inject IConfiguration Configuration
 
 @page "/qrPrinting"
 
@@ -23,10 +24,12 @@
             <div class="fw-bold text-truncate mb-2" style="max-width: 180px;">
                 @device.DeviceName
             </div>
-
+            @* this generates the QR code again whenever the component rerenders. 
+            That is acceptable for a small device list. 
+            If the page contains many devices or rerenders frequently, caching the generated images would improve performance. *@
             <img width="180"
-                 src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID))"
-                 class="img-fluid" />
+                 src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID, baseUrl))"
+                 class="img-fluid" alt="Device Qr Code" />
 
             <div class="text-muted small mt-2">
                 ID: @device.DeviceID
@@ -58,16 +61,18 @@
         padding: 0 !important;
         width: 100% !important;
     }
-    @@page {
-            size: auto;   /* auto is the current printer page size */
-            margin: 1cm;  /* Set a clean margin; 0 can sometimes cause issues */
-        }
 
-        /* Kill Switch 4: Remove any bottom spacing on the grid */
-        .qr-grid {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
+    @@page {
+        size: auto; /* auto is the current printer page size */
+        margin: 1cm; /* Set a clean margin; 0 can sometimes cause issues */
+    }
+
+    /* Kill Switch 4: Remove any bottom spacing on the grid */
+    .qr-grid {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
     body {
         background-color: white !important;
         margin: 0.5cm;
@@ -96,6 +101,7 @@
     public List<DeviceProfile>? Devices { get; set; } = new List<DeviceProfile>();
     public UserProfile? User { get; set; }
     public byte[] image { get; set; }
+    private string? baseUrl = string.Empty;
 
     private async Task PrintPage()
     {
@@ -126,20 +132,36 @@
 
     }
 
+    protected override void OnInitialized()
+    {
+        baseUrl = Configuration["QrCode:BaseUrl"] ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            throw new InvalidOperationException(
+                "The QR code base URL is missing from the application settings.");
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!firstRender)
         {
-            // Getting devices list from local storage on the new tab.
-            var json = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "printQueue");
+            return;
+        }
 
-            if (!string.IsNullOrEmpty(json))
-            {
-                Devices = JsonSerializer.Deserialize<List<DeviceProfile>>(json);
+        // JavaScript interop must wait until after the component is rendered.
+        string? json = await JSRuntime.InvokeAsync<string?>(
+            "localStorage.getItem",
+            "printQueue");
 
-                // refresh the UI manually.
-                StateHasChanged();
-            }
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            Devices =
+                JsonSerializer.Deserialize<List<DeviceProfile>>(json)
+                ?? new List<DeviceProfile>();
+
+            StateHasChanged();
         }
     }
 }

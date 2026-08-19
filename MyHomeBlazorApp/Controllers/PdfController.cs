@@ -13,12 +13,20 @@ namespace MyHomeBlazorApp.Controllers
 
     public class PdfController : ControllerBase
     {
+        private readonly string _baseUrl;
         private readonly DataService _dataService;
-        public PdfController(DataService dataService)
+
+        public PdfController(IConfiguration configuration, DataService dataService)
         {
             _dataService = dataService;
-        }
+            _baseUrl = configuration["QrCode:BaseUrl"] ?? string.Empty;
 
+            if (string.IsNullOrWhiteSpace(_baseUrl))
+            {
+                throw new InvalidOperationException(
+                    "The QR code base URL is missing from application settings.");
+            }
+        }
         [HttpGet("generate-qr")] // This makes the URL: /api/pdf/generate-qr
         public IActionResult GenerateQrPdf()
         {
@@ -39,7 +47,7 @@ namespace MyHomeBlazorApp.Controllers
             // Original method here was _dataService.GetQueueAndClear().
             List<DeviceProfile> devicesList = _dataService.GetCurrentQueue();
 
-            if (devicesList.Count != 0)
+            if (devicesList.Count == 0)
             {
                 return Content("No devices selected.");
             }
@@ -62,7 +70,7 @@ namespace MyHomeBlazorApp.Controllers
                             columns.RelativeColumn();
                             columns.RelativeColumn();
                         });
-                        
+
 
                         // 2. Loop through your IDs
                         foreach (var device in devicesList)
@@ -71,7 +79,7 @@ namespace MyHomeBlazorApp.Controllers
                             table.Cell().Padding(5).Column(col =>
                             {
                                 // Future QR Image logic goes here
-                                byte[] qrBytes = Logic.GetQrCodeBytes(device.DeviceID, currentUserId);
+                                byte[] qrBytes = Logic.GetQrCodeBytes(currentUserId, device.DeviceID, _baseUrl);
                                 col.Item().Image(qrBytes);
 
                                 col.Item().AlignCenter().Text($"Device ID: {device.DeviceID}")
