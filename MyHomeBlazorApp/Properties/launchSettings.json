@@ -46,8 +46,7 @@
       "publishAllPorts": true,
       "useSSL": true,
       "httpPort": 7211,
-      "sslPort": 443,
-      "DockerfileRunArguments": "-v \"C:\\Users\\shiranco.DESKTOP-HRN41TE\\source\\repos\\MyHomeNew\\MyHomeBlazorApp\\Files:/app/Files\""
+      "sslPort": 443     
     }
   },
   "iisSettings": {
