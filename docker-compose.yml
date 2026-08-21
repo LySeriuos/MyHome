@@ -13,5 +13,5 @@ services:
         source: ./uploaded-files
         target: /app/Files
     environment:
-      - AuthMessageSenderOptions__MyHomeGmailPassword=ezhcqhcbqvleytzr
+      - AuthMessageSenderOptions__MyHomeGmailPassword=${MYHOME_EMAIL_PASSWORD}
     restart: always
