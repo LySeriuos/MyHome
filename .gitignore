@@ -361,7 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/MyHomeBlazorApp/Components/Modals/ModalDeleteRealEstate.razor
 /MyHome/docker-compose.yml
 
 # SQLite runtime data
