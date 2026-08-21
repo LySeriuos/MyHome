@@ -3,6 +3,10 @@
 ###############################################################################
 * text=auto
 
+*.yml text eol=lf
+*.yaml text eol=lf
+Dockerfile text eol=lf
+*.sh text eol=lf
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

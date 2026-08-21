@@ -1,17 +1,21 @@
 services:
   myhome:
+    build:
+      context: .
+      dockerfile: MyHomeBlazorApp/Dockerfile
     image: lyseriuos/myhomeblazorapp:latest
     container_name: myhome
     ports:
       - "7211:8080"
     volumes:
-      - ./dp-keys:/home/app/.aspnet/DataProtection-Keys
-      - type: bind
-        source: ./MyHome.db
-        target: /app/BlazorData/MyHome.db
-      - type: bind
-        source: ./uploaded-files
-        target: /app/Files
+      - myhome-data:/app/BlazorData
+      - myhome-files:/app/Files
+      - myhome-keys:/home/app/.aspnet/DataProtection-Keys
     environment:
-      - AuthMessageSenderOptions__MyHomeGmailPassword=${MYHOME_EMAIL_PASSWORD}
-    restart: always
+      ASPNETCORE_ENVIRONMENT: Development
+    restart: unless-stopped
+
+volumes:
+  myhome-data:
+  myhome-files:
+  myhome-keys:

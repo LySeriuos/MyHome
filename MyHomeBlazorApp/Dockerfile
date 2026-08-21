@@ -42,9 +42,18 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 USER root
-RUN mkdir -p /app/BlazorData /app/Files \
-    && chown -R app:app /app/BlazorData /app/Files \
-    && chmod -R 775 /app/BlazorData /app/Files
+RUN mkdir -p \
+        /app/BlazorData \
+        /app/Files \
+        /home/app/.aspnet/DataProtection-Keys \
+    && chown -R app:app \
+        /app/BlazorData \
+        /app/Files \
+        /home/app/.aspnet \
+    && chmod -R 775 \
+        /app/BlazorData \
+        /app/Files \
+        /home/app/.aspnet
 
 USER app
 ENTRYPOINT ["dotnet", "MyHomeBlazorApp.dll"]
