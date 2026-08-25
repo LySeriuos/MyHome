@@ -83,14 +83,12 @@ SERVER_HOST	VPS IP address or hostname
 SERVER_USER	Non-root SSH deployment account
 SERVER_PORT	SSH port
 SERVER_KNOWN_HOSTS	Pinned public SSH host key
-STAGING_SSH_PRIVATE_KEY	Deployment SSH private key
+DEPLOY_SSH_PRIVATE_KEY	Deployment SSH private key
 
 
 Secret values must never be committed, printed in logs, or included in
 documentation.
-The current STAGING_SSH_PRIVATE_KEY name is historical: the same deployment
-key is used by both environments. Renaming it to DEPLOY_SSH_PRIVATE_KEY
-would describe its scope more accurately.
+
 Concurrency
 The workflow allows one active run per Git reference. A newer push cancels an
 older in-progress run for the same branch. This prevents an older commit from
@@ -104,3 +102,5 @@ Failure behavior
   database backup for diagnosis or restoration.
 A failed workflow does not automatically mean the currently running website
 is offline. Always check the environment URL and server container status.
+
+
