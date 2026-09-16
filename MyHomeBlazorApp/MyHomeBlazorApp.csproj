@@ -50,4 +50,8 @@
 		<Folder Include="Files\2\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Include="wwwroot\images\demoImages\MainDashboard.png" />
+	</ItemGroup>
+
 </Project>
