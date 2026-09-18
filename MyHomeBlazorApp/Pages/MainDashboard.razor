@@ -1,12 +1,11 @@
 ﻿@page "/maindashboard"
 @using MyHome.Models;
-@using MyHomeBlazorApp.BlazorData;
-@using MyHome;
-@using MyHomeBlazorApp.Pages
+@using MyHomeBlazorApp.BlazorData
 @using BlazorBootstrap
-@using MyHomeBlazorApp.Components
-@inject NavigationManager uriHelper;
-@inject BlazorData.DataService DataService;
+@using MyHomeBlazorApp.DemoData
+@inject NavigationManager uriHelper
+@inject BlazorData.DataService DataService
+@inject DemoDataSeeder DemoDataSeeder
 
 <html>
 <head>
@@ -128,7 +127,21 @@
 <PageTitle>Main Dashboard</PageTitle>
 
 <body>
-    <main class="bodySection">
+    <section>
+
+        <Button class="btn btn-primary"
+                @onclick="LoadDemoData"
+                disabled="@_isLoadingDemoData">
+            @(_isLoadingDemoData ? "Loading..." : "Load Demo Data")
+        </Button>
+
+        @if (!string.IsNullOrEmpty(_demoMessage))
+        {
+            <p class="mt-2">@_demoMessage</p>
+        }
+
+    </section>
+    <main class="bodySection">        
         <section class="bodySection-content">
             @if( _loadedUser == null)
             {
@@ -149,10 +162,8 @@
                             <CardBody>
                                 <CardTitle class="fw-bolder">Welcome Back, @_loadedUser.UserName!</CardTitle>
                                     <CardText>Date Today: </CardText>
-                                    <CardText>@DateTime.UtcNow.ToLongDateString()</CardText>
-                                </CardBody>
-                                @*   <ul>
-                    </ul> *@
+                                    <CardText>@DateTime.Now.ToLongDateString()</CardText>
+                                </CardBody>                               
                                 <CardBody Class="text-center">
                                     <CardLink Class="btn btn-primary card-btn btn-rounded" To="Account/Manage">User Account</CardLink>
                                 </CardBody>
@@ -271,6 +282,42 @@
     //     return _realEstateItemsList;
     // }
 
+    private bool _isLoadingDemoData;
+    private string? _demoMessage;
+
+    private async Task LoadDemoData()
+    {
+        try
+        {
+            _isLoadingDemoData = true;
+            _demoMessage = null;
+
+            await DataService.LoadUserWithAllDataAsync();
+
+            var user = DataService.CurrentAppUser;
+
+            if (user == null)
+            {
+                _demoMessage = "User could not be found.";
+                return;
+            }
+
+            await DemoDataSeeder.SeedDemoDataAsync(user.Id);
+
+            await DataService.LoadUserWithAllDataAsync();
+
+            _demoMessage = "Demo data loaded successfully.";
+        }
+        catch (Exception ex)
+        {
+            _demoMessage = ex.Message;
+        }
+        finally
+        {
+            _isLoadingDemoData = false;
+        }
+    }
+
     List<string> userItemsList = new List<string>()
     {
         $"Date Today: {DateTime.UtcNow.ToLongDateString()}"
@@ -303,7 +350,7 @@
             }
 
             // Check Warranties
-            var expiringDevice = DataService.FirstexpiringDeviceWarranty();
+            var expiringDevice = DataService.FirstExpiringDeviceWarranty();
             if (expiringDevice != null && expiringDevice.DeviceID != 0 && expiringDevice.DeviceWarranty != null)
             {
                 _showWarrantyCard = true;
