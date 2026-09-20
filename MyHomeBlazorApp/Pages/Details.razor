@@ -46,8 +46,8 @@
                     <div class="grid">
                         <div class="">
                             <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="OnShowModalAddNewRealEstate">+ Add New Real Estate</Button>
-                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Real Estate data</div>
-                            <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Push Delete Icon to delete Real Estate with devices or delete Real Estate and move devices to other Real Estate</div>
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your Real Estate data</div>
+                            <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Press Delete Icon to delete Real Estate with devices or delete Real Estate and move devices to other Real Estate</div>
                         </div>
                         <QuickGrid tabindex="1" Items="@_realEstatesListAsQueryable" Class="table-responsive">
                             <TemplateColumn>
@@ -73,10 +73,10 @@
                     <div class="container-fluid p-0">
                         <div class="grid">
                             <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="OnShowModalAddNewDevice">+ Add New Device</Button></div>
-                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your device data</div>
-                            <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Push Delete Icon to delete device</div>
-                            <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Push Qr Code Icon to add device to printing list</div>
-                            <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Push Envelope icon to prepare email with chosed device details</div>
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your device data</div>
+                            <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Press Delete Icon to delete device</div>
+                            <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Press Qr Code Icon to add device to printing list</div>
+                            <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Press Envelope icon to prepare email with chosed device details</div>
                         </div>
                         <div class="row">
                             <div class="col-md-7 col-lg-5">
@@ -163,7 +163,7 @@
                 <TabPage Text="Devices Warranties">
                     <div class="grid my-5">
                         <div class="">
-                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your Warranties data</div>
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your Warranties data</div>
                         </div>
                         <QuickGrid tabindex="3" Class="text-center table-responsive" Items="@_devicesListAsQueryable">
                             <TemplateColumn>
@@ -174,7 +174,7 @@
                             <TemplateColumn Title="Real Estate/ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
                                 <span>@context.TempRealEstateName</span>
                             </TemplateColumn>
-                            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                            <PropertyColumn Title="Device Name" Property="@(d => d.DeviceName)" Sortable="true" />
                             <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
                             <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
                             <PropertyColumn Title="Warranty Length (Years)" Property="@(d => d.DeviceWarranty.Years)" />
@@ -211,7 +211,7 @@
                 <TabPage Text="Shops Details">
                     <div class="grid my-5">
                         <div class="">
-                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Push Edit Icon to change your device purchase shop data</div>
+                            <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your device purchase shop data</div>
                         </div>
                         @if (_devicesListAsQueryable != null)
                         {
@@ -224,7 +224,7 @@
                                 <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
                                     <span>@context.TempRealEstateName</span>
                                 </TemplateColumn>
-                                <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+                                <PropertyColumn Title="Device Name" Property="@(d => d.DeviceName)" Sortable="true" />
                                 <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
                                 <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
                                 <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
@@ -246,7 +246,8 @@
 <div>
     <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
                             CurrentRealEstate="@currentRealEstate"
-                            OnDataChanged="RealEstateDataHasChanged">
+                            OnDataChanged="RealEstateDataHasChanged"
+                            ModalTitle="@modalTitle">
     </ModalEditAddRealEstate>
 </div>
 <div>
@@ -293,7 +294,7 @@
 
 @* CustomReusableModal is for adding different forms in one modal to save code lines *@
 <div>
-    <CustomReusableModal @ref="_reusableModal" Title="Edit Device Details">
+    <CustomReusableModal @ref="_reusableModal" Title="@modalTitle">
         <AddEditDeviceForm CurrentDevice="currentDevice"
                            CurrentUser="currentUser"
                            ChosenRealEstateId="chosenRealEsatateId"
@@ -323,6 +324,7 @@
     private string _chooseOptionValue = "Choose Real Estate";
     private string? _deletedObjectName;
     private string message = "";
+    private string modalTitle = "";
     public bool listHasBeenChanged = false;
     private RealEstate currentChosedRealEsate = new();
     private RealEstate currentRealEstate = new();
@@ -382,7 +384,8 @@
 
 
     private async Task ShowDeviceEditFormInModal(int deviceID)
-    {  
+    {
+        modalTitle = "Edit Devices Details";
         chosenRealEsatateId = DataService.GetRealEstateByDeviceID(deviceID);
         currentUser = DataService.CurrentUserWithAllData;
         currentDevice = DataService.GetDeviceById(deviceID);
@@ -391,6 +394,7 @@
     // user = await UserAccessor.GetRequiredUserAsync(HttpContext);
     private async Task OnShowModalAddNewDevice()
     {
+        modalTitle = "Add New Device";
         currentUser = DataService.CurrentUserWithAllData;
         currentDevice = new DeviceProfile
         {
@@ -400,10 +404,8 @@
         };
         currentChosedRealEsate.RealEstateID = 0;
         chosenRealEsatateId = 0;
-        StateHasChanged();
-        // await refModalEditAddDevice.OnShowModalEditDeviceClick();
-        await _reusableModal.ShowAsync();
-
+        StateHasChanged();        
+        await _reusableModal.ShowAsync();       
     }
 
     private async Task NavigateToExtraWarrantyOrReceiptFile(int deviceID, string relativePath)
@@ -436,25 +438,24 @@
     private async Task OnShowModalRealEstateClick(int realEstateID)
     {
         RealEstate? targetRealEstate = DataService.GetRealEstate(realEstateID);
-        if (targetRealEstate.RealEstateID != 0)
+        if (targetRealEstate is null)
         {
-            currentRealEstate = targetRealEstate;
-            currentRealEstateAddress = currentRealEstate.Address;
-            await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
-        }
-        else
-        {
-            // ELSE: Something went wrong.
-            // Adding error to the log
-            Console.WriteLine($"Error: RealEstate ID {targetRealEstate.RealEstateID} not found in DataService.");
+            Console.WriteLine(
+                $"Error: RealEstate ID {realEstateID} not found in DataService.");
 
-
-            await DataService.InitializedUserAsync(); //test this
+            return;
         }
+        currentRealEstate = targetRealEstate;
+        currentRealEstateAddress = targetRealEstate.Address;
+
+        modalTitle = "Edit Real Estate";
+        await refModalEditAddRealEstate.OnShowModalEditAddRealEstateClick();
+        
     }
 
     private async Task OnShowModalAddNewRealEstate()
     {
+        modalTitle = "Add New Real Estate";
         currentRealEstate = new();
         currentRealEstateAddress = new();
         currentRealEstateAddress = currentRealEstate.Address;
