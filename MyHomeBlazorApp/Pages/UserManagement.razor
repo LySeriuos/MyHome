@@ -182,7 +182,7 @@
             var userRoles = await UserManager.GetRolesAsync(user);
             userRole = userRoles.FirstOrDefault();
         }
-        return userRole.ToString();
+        return userRole ?? "";
     }
 
     public async Task OnShowModalDeleteUser(MyHomeBlazorAppUser user)
