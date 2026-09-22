@@ -1,55 +1,472 @@
 ﻿@page "/walkThrough"
 @attribute [AllowAnonymous]
 
-<h3>Walk through the Application</h3>
+<h3>Application Walkthrough</h3>
 
-<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Underline">
+<Tabs EnableFadeEffect="true" Class="demo-tabs" NavStyle="NavStyle.Underline">
     <Tab Title="Main Dashboard" IsActive="true">
-        <Content>
-            <p class="mt-3">
-                The Main Dashboard provides a quick overview of the most relevant information in MyHome. 
-                It displays the current date, the most recently added real estate and device, and highlights the device with the nearest warranty expiration date.
-                The dashboard also shows the total number of registered real estates and devices, giving the user an immediate summary of their MyHome data.
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Main Dashboard</h4>
+
+            <p>
+                The Main Dashboard provides a quick overview of the user's MyHome data.
+                It displays the total number of registered real estates and devices,
+                together with the most recently added property and device.
+                It also highlights the device with the nearest upcoming warranty
+                expiration, allowing important information to be seen immediately
+                after signing in.
             </p>
-            <Image Src="/images/demoImages/MainDashboard.png" Alt="placeholder" />
-        </Content>
-    </Tab>
-    <Tab Title="Real Estates">
-        <Content>
-            <p class="mt-3">This is the placeholder content for the <b>Real Estates</b> tab.</p>
-        </Content>
-    </Tab>
-    <Tab Title="Devices">
-        <Content>
-            <p class="mt-3">This is the placeholder content for the <b>Devices</b> tab.</p>
-        </Content>
-    </Tab>
+
+            <Image Src="/Images/DemoImages/MainDashboard.png"
+                   Alt="MyHome Main Dashboard" />
+
+            <h4 class="mt-5">Quick Navigation</h4>
+
+            <p>
+                Each dashboard card also provides direct access to the corresponding
+                section of the application. Users can quickly open their account,
+                real estates, devices, or warranties without navigating through
+                multiple pages.
+            </p>
+
+        </div>
+    </Content>
+</Tab>
+   <Tab Title="Real Estates">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Real Estate Management</h4>
+
+            <p>
+                MyHome allows users to manage multiple real estates within a single
+                account. Each property stores its own name and address information
+                and acts as a container for the devices assigned to that location.
+            </p>
+
+            <Image Src="/Images/DemoImages/RealEstateManagement.png"
+                   Alt="Real Estate Management" />
+
+
+            <h4 class="mt-5">Add a Real Estate</h4>
+
+            <p>
+                Users can add a new property by entering its name and address.
+                Once created, devices can be assigned to the property.
+            </p>
+
+            <Image Src="/Images/DemoImages/AddRealEstate.png"
+                   Alt="Add Real Estate" />
+
+
+            <h4 class="mt-5">Edit a Real Estate</h4>
+
+            <p>
+                Existing property information can be updated at any time,
+                allowing the user to change the property name or address.
+            </p>
+
+            <Image Src="/Images/DemoImages/EditRealEstate.png"
+                   Alt="Edit Real Estate" />
+
+
+            <h4 class="mt-5">Deleting a Real Estate</h4>
+
+            <p>
+                Deleting a real estate requires additional handling when devices
+                are still assigned to it. Instead of automatically deleting those
+                devices together with the property, MyHome allows the user to decide
+                what should happen to them.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeleteRealEstate.png"
+                   Alt="Delete Real Estate" />
+
+
+            <h4 class="mt-5">Keep or Reassign Devices</h4>
+
+            <p>
+                When a property contains devices, they can be kept as unassigned
+                devices or moved to another existing real estate before the property
+                is deleted. This prevents device information from being lost.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeleteRealEstateWithDevices.png"
+                   Alt="Keep or Reassign Devices When Deleting Real Estate" />
+
+        </div>
+    </Content>
+</Tab>
+   <Tab Title="Devices">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Device Management</h4>
+
+            <p>
+                The Devices section provides an overview of all registered devices.
+                Users can view device information, search for devices, and access
+                actions for editing, deleting, generating QR codes, and creating emails.
+                Devices are connected to real estates and can be managed individually.
+            </p>
+
+            <Image Src="/Images/DemoImages/Devices.png"
+                   Alt="Device Management" />
+
+
+            <h4 class="mt-5">Edit Device</h4>
+
+            <p>
+                Device information can be updated at any time. Users can edit details
+                such as the device name, type, manufacturer, model, serial number,
+                IP address, MAC address, and assigned real estate.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeviceEdit.png"
+                   Alt="Edit Device Details" />
+
+
+            <h4 class="mt-5">Delete Device</h4>
+
+            <p>
+                Before a device is permanently removed, MyHome displays a confirmation
+                dialog to help prevent accidental deletion.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeviceDelete.png"
+                   Alt="Delete Device Confirmation" />
+
+
+            <h4 class="mt-5">Device QR Codes</h4>
+
+            <p>
+                MyHome can generate QR codes for registered devices. Each QR code
+                provides a quick way to identify a physical device and access its
+                information in the application.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeviceQrLabels.png"
+                   Alt="Generated Device QR Codes" />
+
+
+            <h4 class="mt-5">Print QR Codes</h4>
+
+            <p>
+                Generated QR codes can be prepared for printing directly from the
+                application, making it possible to create physical labels for devices
+                around the property.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeviceQrPrint.png"
+                   Alt="Print Device QR Codes" />
+
+
+            <h4 class="mt-5">Create Device Email</h4>
+
+            <p>
+                Users can select device information and generate an email containing
+                the relevant details. This can be useful when contacting a retailer,
+                manufacturer, service company, or other support provider.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeviceEmailSelection.png"
+                   Alt="Select Device Information for Email" />
+
+
+            <h4 class="mt-5">Generated Email</h4>
+
+            <p>
+                MyHome automatically prepares the selected device information in an
+                email, reducing the need to manually copy model numbers, serial numbers,
+                and other device details.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeviceEmailCreated.png"
+                   Alt="Generated Device Email" />
+
+        </div>
+    </Content>
+</Tab>
     <Tab Title="Devices Warranties">
-        <Content>
-            <p class="mt-3">This is the placeholder content for the <b>Devices Warranties</b> tab.</p>
-        </Content>
-    </Tab>
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Device Warranty Management</h4>
+
+            <p>
+                The Device Warranties section keeps warranty and purchase information
+                connected to each registered device. Users can store the purchase date,
+                warranty period, extended warranty information, receipts, and insurance
+                documents. This makes it easier to find important documentation and
+                monitor upcoming warranty expiration dates.
+            </p>
+
+            <Image Src="/Images/DemoImages/DeviceWarranties.png"
+                   Alt="Device Warranty Management" />
+
+
+            <h4 class="mt-5">Edit Warranty Details</h4>
+
+            <p>
+                Warranty information can be updated directly from the warranty overview.
+                Users can change the purchase date, warranty length, and extended warranty
+                period. MyHome automatically calculates the warranty expiration date based
+                on the stored warranty information.
+            </p>
+
+            <p>
+                Warranty receipts and extended warranty documents can also be uploaded
+                and stored with the device. Existing documents can be opened or replaced,
+                keeping purchase and warranty documentation easily accessible in one place.
+            </p>
+
+            <Image Src="/Images/DemoImages/EditDeviceWarranty.png"
+                   Alt="Edit Device Warranty Details" />
+
+        </div>
+    </Content>
+</Tab>
     <Tab Title="Shop Details">
-        <Content>
-            <p class="mt-3">This is the placeholder content for the <b>Shop Details</b> tab.</p>
-        </Content>
-    </Tab>
-    <Tab Title="Wifi Qr Code">
-        <Content>
-            <p class="mt-3">This is the placeholder content for the <b>Wifi Qr Code</b> tab.</p>
-        </Content>
-    </Tab>
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Shop Details</h4>
+
+            <p>
+                Purchase shop information is connected to registered devices.
+                Users can view and update the shop name, website, phone number
+                and address, keeping purchase information together with the
+                corresponding device and warranty data.
+            </p>
+
+            <Image Src="/images/demoImages/ShopDetails.png"
+                   Alt="Device Shop Details" />
+
+        </div>
+    </Content>
+</Tab>
+    <Tab Title="Wifi QR Code">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Wi-Fi QR Code Generator</h4>
+
+            <p>
+                MyHome includes a tool for generating a QR code from a Wi-Fi
+                network name and password. The generated QR code can be scanned
+                by another device to simplify connecting to the network.
+            </p>
+
+            <Image Src="/images/demoImages/WifiQrCode.png"
+                   Alt="Wi-Fi QR Code Generator" />
+
+        </div>
+    </Content>
+</Tab>
     <Tab Title="User Management">
         <Content>
-            <p class="mt-3">This is the placeholder content for the <b>User Management</b> tab.</p>
+            <div class="demo-content">
+
+                <h4 class="mt-3">User Management Dashboard</h4>
+
+                <p>
+                    Administrators can manage registered users from a dedicated dashboard.
+                    Users can be searched, assigned roles, deleted, or temporarily accessed
+                    for support and troubleshooting.
+                </p>
+
+                <Image Src="/images/demoImages/UserManagement.png"
+                       Alt="User Management Dashboard" />
+
+                <h4 class="mt-5">Role Management</h4>
+
+                <p>
+                    Administrators can change a user's role directly from the user management
+                    dashboard. Role-based authorization is implemented using ASP.NET Core Identity.
+                </p>
+
+                <Image Src="/images/demoImages/RoleManagement.png"
+                       Alt="User Role Management" />
+
+                <h4 class="mt-5">Delete User</h4>
+
+                <p>
+                    User deletion requires confirmation before the account is removed,
+                    helping prevent accidental administrative actions.
+                </p>
+
+                <Image Src="/images/demoImages/DeleteUser.png"
+                       Alt="Delete User Confirmation" />
+
+                <h4 class="mt-5">Login as User</h4>
+
+                <p>
+                    Administrators can temporarily access the application as another user
+                    for support and troubleshooting. While impersonation mode is active,
+                    a visible banner identifies the current user and provides an option
+                    to return to the administrator account.
+                </p>
+
+                <Image Src="/images/demoImages/Impersonation.png"
+                       Alt="Administrator Impersonation Mode" />
+
+            </div>
         </Content>
     </Tab>
     <Tab Title="User Account">
-        <Content>
-            <p class="mt-3">This is the placeholder content for the <b>User Account</b> tab.</p>
-        </Content>
-    </Tab>
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Account Overview</h4>
+
+            <p>
+                Users can manage their personal account information from the account
+                area. The overview also displays a summary of the user's registered
+                real estates and devices.
+            </p>
+
+            <Image Src="/images/demoImages/UserProfile.png"
+                   Alt="User Account Profile" />
+
+            <h4 class="mt-5">Email Management</h4>
+
+            <p>
+                Users can view their current email address and update it through
+                the account management interface.
+            </p>
+
+            <Image Src="/images/demoImages/UserEmail.png"
+                   Alt="User Email Management" />
+
+            <h4 class="mt-5">Password Management</h4>
+
+            <p>
+                Users can securely change their password by providing their current
+                password and confirming the new password.
+            </p>
+
+            <Image Src="/images/demoImages/UserPassword.png"
+                   Alt="User Password Management" />
+
+        </div>
+    </Content>
+</Tab>
 </Tabs>
+<footer class="demo-footer">
+    <div class="container text-center py-4">
+
+        <p class="mb-2">
+            MyHome — C# / .NET / Blazor Portfolio Project
+        </p>
+
+        <a href="https://github.com/LySeriuos/MyHome"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="me-3">
+            <i class="bi bi-github"></i>
+            GitHub
+        </a>
+
+        <a href="YOUR_LINKEDIN_URL"
+           target="_blank"
+           rel="noopener noreferrer">
+            <i class="bi bi-linkedin"></i>
+            LinkedIn
+        </a>
+
+    </div>
+</footer>
+<style>
+    .demo-content {
+    max-width: 1200px;
+    margin-top: 20px;
+    padding-bottom: 4rem;
+}
+
+.demo-content h3 {
+    margin-bottom: 10px;
+}
+
+.demo-content h4 {
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+
+.demo-content p {
+    max-width: 900px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.demo-screenshot {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+.demo-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    min-height: 55px;
+    padding: 12px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+
+    background-color: white;
+    border-top: 1px solid #dee2e6;
+
+    z-index: 1000;
+}
+
+.demo-footer a {
+    text-decoration: none;
+}
+
+.demo-tabs .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.demo-tabs .nav-link {
+    border: 1px solid #d8e3e8;
+    border-radius: 12px 12px 0 0;
+
+    padding: 10px 22px;
+
+    background-color: #edf4f7;
+    color: #495057;
+
+    font-weight: 500;
+
+    transition: all 0.2s ease;
+}
+
+/* Mouse hover */
+.demo-tabs .nav-link:hover {
+    background-color: #e1edf2;
+    color: #212529;
+}
+
+/* Selected tab */
+.demo-tabs .nav-link.active {
+    background-color: #efdcd3;
+    color: #212529;
+
+    border-color: #efdcd3;
+    font-weight: 600;
+}
+</style>
 
 @code {
 
