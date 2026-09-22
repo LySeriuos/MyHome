@@ -1,16 +1,18 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using MyHomeBlazorApp.BlazorData;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Components.Authorization;
 using MyHomeBlazorApp.Components.Account;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Data.Sqlite;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using MyHomeBlazorApp.DemoData;
+using System.Security.Cryptography.X509Certificates;
 using WebPWrecover.Services;
+using MyHomeBlazorApp.DemoData;
 //using MyHomeBlazorApp.Components.Account;
 namespace MyHomeBlazorApp
 {
@@ -41,6 +43,7 @@ namespace MyHomeBlazorApp
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+            builder.Services.AddScoped<DemoDataSeeder>();
 
             builder.Services.AddControllers();
             builder.Services.AddAuthentication(options =>

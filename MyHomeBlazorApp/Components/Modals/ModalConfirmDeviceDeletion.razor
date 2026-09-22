@@ -5,13 +5,12 @@
 @inject BlazorData.DataService DataService
 
 <style>
-    .modal-content {
+   /*  .modal-header {
         justify-content: flex-end !important;
-    }
-
+    } */
 </style>
 
-<Modal @ref="refModalConfirmDeviceDeletion" HeaderCssClass="justify-content-end">
+<Modal @ref="refModalConfirmDeviceDeletion" Title="Delete Confirm">
     <BodyTemplate>
         @if (CurrentDeviceToDelete != null)
         {
@@ -76,10 +75,10 @@
                 if (_deviceToDelete != null)
                 {
                     await DataService.RemoveDeviceFromDb(_deviceToDelete);
-                    
+
                     CurrentDeviceToDelete = null;
                     _deviceToDelete = null;
-                    
+
                     await onDataChanged.InvokeAsync();
                     await eventCallback.InvokeAsync();
                     await OnUnnassignedDeviceListDataChanged.InvokeAsync();

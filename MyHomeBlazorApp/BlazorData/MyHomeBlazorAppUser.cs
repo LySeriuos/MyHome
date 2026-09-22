@@ -7,16 +7,13 @@ namespace MyHomeBlazorApp.BlazorData
     public class MyHomeBlazorAppUser : IdentityUser
     {
         public UserProfile? UserProfile { get; set; }
-        ////public Role Role { get; set; }
-        //public UserProfile ID;
 
-        //  public int UserProfileID;
-
+        public bool IsDemoUser { get; set; } = false;
     }
-//public enum Role
-//    {
-//        Admin,
-//        User
-//    }  
+    //public enum Role
+    //    {
+    //        Admin,
+    //        User
+    //    }  
 
 }

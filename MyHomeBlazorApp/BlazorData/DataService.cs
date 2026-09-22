@@ -12,7 +12,6 @@ using sun.security.jca;
 using System.Xml;
 //using System.Data.Entity;
 
-
 namespace MyHomeBlazorApp.BlazorData
 
 {
@@ -111,7 +110,7 @@ namespace MyHomeBlazorApp.BlazorData
             if (_currentUserWithAllData != null)
             {
                 expiringDeviceDevices = Logic.ExpiringDevicesWarrantiesInDays(_currentUserWithAllData, 180);
-                FirstExpiringDevice = FirstexpiringDeviceWarranty();
+                FirstExpiringDevice = FirstExpiringDeviceWarranty();
                 DevicesWarranties = Logic.GetUserDevicesWarranties(_currentUserWithAllData);
             }
             else
@@ -297,7 +296,9 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Last added RealEstate in the list</returns>        
         public RealEstate? LastAddedRealEstate()
         {
-            return _currentUserWithAllData?.RealEstates.LastOrDefault();
+            return _currentUserWithAllData?
+                .RealEstates
+                .MaxBy(r => r.RealEstateID);
         }
 
 
@@ -545,14 +546,7 @@ namespace MyHomeBlazorApp.BlazorData
         /// <returns>Returns last added device in the list</returns>
         public DeviceProfile? LastAddedDevice()
         {
-            List<DeviceProfile>? devices = Devices;
-
-            if (devices != null)
-            {
-                return devices.LastOrDefault();
-            }
-
-            return null;
+            return Devices?.MaxBy(d => d.DeviceID);
         }
 
         /// <summary>
@@ -793,30 +787,16 @@ namespace MyHomeBlazorApp.BlazorData
         /// Method to get a device with closest expirig date to the actual date 
         /// </summary>
         /// <returns>expiringDevice device profile</returns>
-        public DeviceProfile FirstexpiringDeviceWarranty()
+        public DeviceProfile? FirstExpiringDeviceWarranty()
         {
-            List<DeviceProfile>? devicesList = _currentUserWithAllData.RealEstates.SelectMany(realEstate => realEstate.DevicesProfiles).ToList();
-            //List<DeviceWarranty> warranties = DevicesWarranties;
-            List<DeviceProfile> validWarrantiesList = new();
-            DeviceProfile firstexpiringDeviceDevice = new();
-            var counting = 0;
-            DateTime date = DateTime.Now;
-
-            foreach (DeviceProfile device in devicesList)
-            {
-                counting = date.CompareTo(device.DeviceWarranty.WarrantyEnd);
-                if (counting < 0)
-                {
-                    validWarrantiesList.Add(device);
-                }
-            }
-            if (validWarrantiesList.Count != 0)
-            {
-                var sortedList = validWarrantiesList.OrderBy(d => d.DeviceWarranty.WarrantyEnd);
-                firstexpiringDeviceDevice = sortedList.FirstOrDefault();
-            }
-
-            return firstexpiringDeviceDevice;
+            return _currentUserWithAllData?
+                .RealEstates
+                .SelectMany(r => r.DevicesProfiles)
+                .Where(d =>
+                    d.DeviceWarranty != null &&
+                    d.DeviceWarranty.WarrantyEnd >= DateTime.Today)
+                .OrderBy(d => d.DeviceWarranty.WarrantyEnd)
+                .FirstOrDefault();
         }
 
         public static TimeSpan GetTimeSpanFromYears(int years) // add days from editform 

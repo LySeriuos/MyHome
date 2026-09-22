@@ -109,14 +109,6 @@
                 </InputSelect>
             </div>
         </div>
-
-        <div class="form-group row">
-            <label for="deviceSerialNumber" class="col-sm-4 col-form-label">Serial Number</label>
-            <div class="col-sm-8">
-                <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number" class="form-control" />
-            </div>
-        </div>
-
         <div class="form-group row">
             <label for="deviceModelNumber" class="col-sm-4 col-form-label">Model Number</label>
             <div class="col-sm-8">
@@ -126,6 +118,12 @@
 
         <AuthorizeView Context="auth">
             <Authorized>
+                <div class="form-group row">
+                    <label for="deviceSerialNumber" class="col-sm-4 col-form-label">Serial Number</label>
+                    <div class="col-sm-8">
+                        <InputText id="deviceSerialNumber" @bind-Value="CurrentDevice.DeviceSerialNumber" placeholder="Device Serial Number" class="form-control" />
+                    </div>
+                </div>
                 <div class="form-group row">
                     <label for="deviceIpAddress" class="col-sm-4 col-form-label">IP Address</label>
                     <div class="col-sm-8">
@@ -266,7 +264,7 @@
     private DeviceProfile? _previousDevice;
     private DeviceProfile? _originalDevice;
 
-    private bool _isGuest => DataService.CurrentAppUser == null;    
+    private bool _isGuest => DataService.CurrentAppUser == null;
     private bool _saveDisabled => !HasActualChanges();
 
     protected override async Task OnInitializedAsync()
@@ -307,7 +305,7 @@
     }
 
     private async Task HandleDeviceSwitch(DeviceProfile targetDevice)
-    {        
+    {
         if (HasActualChanges())
         {
             bool discard = await JSRuntime.InvokeAsync<bool>(
