@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyHomeBlazorApp.BlazorData;
 
@@ -10,9 +11,11 @@ using MyHomeBlazorApp.BlazorData;
 namespace MyHomeBlazorApp.Migrations
 {
     [DbContext(typeof(MyHomeBlazorAppContext))]
-    partial class MyHomeBlazorAppContextModelSnapshot : ModelSnapshot
+    [Migration("20260917103056_AddIsDemoUser")]
+    partial class AddIsDemoUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -187,7 +190,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("MyHome.Models.DeviceProfile", b =>
@@ -238,7 +241,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("UserProfileUserID");
 
-                    b.ToTable("DeviceProfile", (string)null);
+                    b.ToTable("DeviceProfile");
                 });
 
             modelBuilder.Entity("MyHome.Models.DeviceWarranty", b =>
@@ -275,7 +278,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("ShopId");
 
-                    b.ToTable("DeviceWarranty", (string)null);
+                    b.ToTable("DeviceWarranty");
                 });
 
             modelBuilder.Entity("MyHome.Models.RealEstate", b =>
@@ -300,7 +303,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("UserProfileUserID");
 
-                    b.ToTable("RealEstate", (string)null);
+                    b.ToTable("RealEstate");
                 });
 
             modelBuilder.Entity("MyHome.Models.Shop", b =>
@@ -325,7 +328,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.ToTable("Shop", (string)null);
+                    b.ToTable("Shop");
                 });
 
             modelBuilder.Entity("MyHome.Models.UserProfile", b =>
@@ -342,7 +345,7 @@ namespace MyHomeBlazorApp.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("UserProfile", (string)null);
+                    b.ToTable("UserProfile");
                 });
 
             modelBuilder.Entity("MyHomeBlazorApp.BlazorData.MyHomeBlazorAppUser", b =>

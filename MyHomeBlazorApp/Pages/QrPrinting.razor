@@ -27,7 +27,7 @@
             @* this generates the QR code again whenever the component rerenders. 
             That is acceptable for a small device list. 
             If the page contains many devices or rerenders frequently, caching the generated images would improve performance. *@
-            <img width="180"
+            <img width="120"
                  src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID, baseUrl))"
                  class="img-fluid" alt="Device Qr Code" />
 
@@ -41,25 +41,33 @@
 
 <style>
     @@media print {
-        .sidebar, .nav-menu, .top-row, .navbar {
-            display: none !important;
+
+        html,
+        body,
+        .page,
+        .bodySection,
+        .bodySection-content,
+        main,
+        .main,
+        .content {
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            overflow: visible !important;
         }
 
-        .qr-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Forces exactly 3 columns */
-            gap: 10px;
-        }
-
+        .sidebar,
+        .nav-menu,
+        .top-row,
+        .navbar,
         .d-print-none {
             display: none !important;
         }
-    }
 
-    .main, .content, main {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
+        .qr-label-card {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
     }
 
     @@page {

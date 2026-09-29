@@ -42,11 +42,11 @@
 .bodySection {
     background-image: url(/Images/freepik__retouch__10901.png);
     background-repeat: repeat;
-    position: relative;
-    /* background-size: cover; */
     background-position: center;
-    position: relative; /* Needed for overlay positioning */
-    height: 100vh;
+    position: relative;
+    min-height: 100vh;
+    height: auto;
+    padding-bottom: 2rem;
 }
 
     .bodySection::before {

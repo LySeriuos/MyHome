@@ -17,7 +17,7 @@
     }
 </style>
 
-<Modal @ref="refModalEditAddRealEstate" Title="Edit Real Estate Details">
+<Modal @ref="refModalEditAddRealEstate" Title="@ModalTitle">
     <BodyTemplate>
         <EditForm id="realEstateForm123" method="get" Model="CurrentRealEstate" OnSubmit="@RealEstateFormSubmitted">
             <DataAnnotationsValidator />
@@ -73,6 +73,8 @@
     public RealEstate? CurrentRealEstate { get; set; }
     [Parameter]
     public EventCallback OnDataChanged { get; set; }
+    [Parameter]
+    public string ModalTitle { get; set; } = "";
     private IQueryable<RealEstate> _realEstatesListAsQueryable { get; set; }
     private Modal refModalEditAddRealEstate { get; set; } = new();
     private EditContext? editContext;
