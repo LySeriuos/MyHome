@@ -10,7 +10,6 @@
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
-@inject IConfiguration Configuration
 @inject IdentityRedirectManager RedirectManager
 
 
@@ -130,27 +129,7 @@
             {
                 await SignInManager.UserManager.AddToRoleAsync(user, "user");
             }
-
-            var adminEmail = Configuration["BootstrapAdminEmail"];
-            if (user.Email == adminEmail)
-            {
-                var isAdmin = await SignInManager.UserManager.IsInRoleAsync(user, "Admin");
-
-                if (!isAdmin)
-                {
-                    var adminResult =
-                        await SignInManager.UserManager.AddToRoleAsync(user, "Admin");
-
-                    if (!adminResult.Succeeded)
-                    {
-                        Logger.LogError(
-                            "Failed to add Admin role: {Errors}",
-                            string.Join(", ",
-                                adminResult.Errors.Select(e => e.Description)));
-                    }
-                }
-            }
-
+            
             Logger.LogInformation("User logged in.");
             if (!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl != "/")
             {
