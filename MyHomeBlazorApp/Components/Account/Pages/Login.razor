@@ -129,6 +129,7 @@
             {
                 await SignInManager.UserManager.AddToRoleAsync(user, "user");
             }
+            
             Logger.LogInformation("User logged in.");
             if (!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl != "/")
             {
