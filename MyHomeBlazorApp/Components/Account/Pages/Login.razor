@@ -6,7 +6,7 @@
 @using MyHomeBlazorApp.BlazorData
 @using MyHomeBlazorApp.Components.Account
 @using System.Security.Claims
-
+@inject IConfiguration Configuration
 @inject SignInManager<MyHomeBlazorAppUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
