@@ -130,6 +130,39 @@
                 await SignInManager.UserManager.AddToRoleAsync(user, "user");
             }
             
+            var bootstrapAdminEmail = Configuration["BootstrapAdminEmail"];
+
+            if (!string.IsNullOrEmpty(bootstrapAdminEmail) &&
+                string.Equals(
+                    user.Email,
+                    bootstrapAdminEmail,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                var isAdmin =
+                    await SignInManager.UserManager.IsInRoleAsync(user, "Admin");
+
+                if (!isAdmin)
+                {
+                    var adminResult =
+                        await SignInManager.UserManager.AddToRoleAsync(user, "Admin");
+
+                    if (adminResult.Succeeded)
+                    {
+                        Logger.LogInformation(
+                            "Bootstrap Admin role successfully assigned.");
+                    }
+                    else
+                    {
+                        foreach (var error in adminResult.Errors)
+                        {
+                            Logger.LogError(
+                                "Admin role assignment failed: {Error}",
+                                error.Description);
+                        }
+                    }
+                }
+            }
+
             Logger.LogInformation("User logged in.");
             if (!string.IsNullOrEmpty(ReturnUrl) && ReturnUrl != "/")
             {
