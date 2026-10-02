@@ -1,9 +1,109 @@
 ﻿@page "/walkThrough"
 @attribute [AllowAnonymous]
 
-<h3>Application Walkthrough</h3>
+<h3 class="mb-3">MyHome Project Walkthrough</h3>
+
+<p class="walkthrough-introduction">
+    MyHome keeps device information, receipts, warranties and manuals
+    organized by property, making important records easier to find when
+    they are needed. Explore the sections below to see how the application works.
+    All screenshots contain fictitious test data, and no registration is required.
+</p>
 
 <Tabs EnableFadeEffect="true" Class="demo-tabs" NavStyle="NavStyle.Underline">
+     <Tab Title="About My Home" IsActive="true">
+    <Content>
+        <div class="demo-content">
+
+            <h4>About MyHome</h4>
+
+            <p>
+                MyHome started from a common problem: receipts, warranty documents
+                and product information are often stored in different places or lost
+                over time.
+            </p>
+
+            <p>
+                The application keeps devices, purchase details, warranties, receipts
+                and manuals connected to the property where they belong. QR codes can
+                be attached to physical devices, providing quick access to relevant
+                information and making it easier to prepare device details when
+                contacting a retailer or service provider.
+            </p>
+
+            <h4>Why I Built It</h4>
+
+            <p>
+                I built MyHome as a full-stack portfolio project to gain practical
+                experience beyond isolated coding exercises. Developing it required
+                me to work with data relationships, authentication and authorization,
+                file handling, email integration, QR-code generation, deployment and
+                separate application environments.
+            </p>
+
+            <h4>Technical Implementation</h4>
+
+            <p>
+                MyHome is built with C#, .NET, Blazor, Entity Framework Core and
+                SQLite. GitHub Actions builds Docker images and deploys updated
+                versions through separate staging and production workflows. The two
+                environments use separate databases and persistent storage.
+            </p>
+
+            <h4>About the Developer</h4>
+
+            <p>
+                I am transitioning into software development after working with
+                warehouse operations and automated systems. In my current role, I
+                monitor automated equipment, investigate operational failures,
+                restore systems when possible and coordinate mechanical repairs with
+                technicians when required.
+            </p>
+
+            <p>
+                This experience has trained me to investigate problems systematically,
+                understand dependencies and focus on solutions that work reliably in
+                practice. MyHome is where I apply that way of thinking to software
+                development.
+            </p>
+
+            <p>
+                <strong>This walkthrough contains only fictitious test data.</strong>
+            </p>
+
+            <div class="profile-links">
+    <a class="profile-button github-button"
+       href="https://github.com/LySeriuos/MyHome"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="View MyHome source code on GitHub">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor"
+                  d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.77 2.72 1.26 3.38.96.11-.75.41-1.26.74-1.55-2.57-.29-5.27-1.28-5.27-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.05 0 0 .97-.31 3.16 1.18a10.98 10.98 0 0 1 5.75 0c2.19-1.49 3.15-1.18 3.15-1.18.63 1.58.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.71 5.39-5.29 5.68.42.36.79 1.07.79 2.16v3.2c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .7Z" />
+        </svg>
+
+        <span>View Source Code</span>
+    </a>
+
+    <a class="profile-button linkedin-button"
+       href="https://www.linkedin.com/in/paulius-drungilas-4875b180/"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Connect with Paulius Drungilas on LinkedIn">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor"
+                  d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.29ZM5.32 7.41a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.1 20.45H3.54V8.98H7.1v11.47Z" />
+        </svg>
+
+        <span>Connect on LinkedIn</span>
+    </a>
+</div>
+
+        </div>
+    </Content>
+</Tab>
     <Tab Title="Main Dashboard" IsActive="true">
     <Content>
         <div class="demo-content">
@@ -189,7 +289,7 @@
         </div>
     </Content>
 </Tab>
-    <Tab Title="Devices Warranties">
+    <Tab Title="Device Warranties">
     <Content>
         <div class="demo-content">
 
@@ -247,7 +347,7 @@
         </div>
     </Content>
 </Tab>
-    <Tab Title="Wifi QR Code">
+    <Tab Title="Wi-Fi QR Code">
     <Content>
         <div class="demo-content">
 
