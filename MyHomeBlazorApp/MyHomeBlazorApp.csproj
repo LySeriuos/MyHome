@@ -48,6 +48,8 @@
 	<ItemGroup>
 		<Folder Include="Files\11\qrCodes\" />
 		<Folder Include="Files\2\" />
+		<Folder Include="Authentication\" />
+		<Folder Include="Services\" />
 	</ItemGroup>
 
 </Project>
