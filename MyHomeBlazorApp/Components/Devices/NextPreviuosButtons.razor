@@ -1,0 +1,133 @@
+@namespace MyHomeBlazorApp.Components
+@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+
+<Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDevicePrevious" Disabled="@_isFirst">Previous</Button>
+<Button style="margin:5px" Class="buttonsNextPrevious" @onclick="OnModalDeviceNext" Disabled="@_isLast">Next</Button>
+
+
+<style>
+    .buttonsNextPrevious {
+        align-items: flex-end;
+        background-color: white;
+        background-position: 0 0;
+        border: 1px solid black;
+        border-radius: 11px;
+        box-sizing: border-box;
+        color: black;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 33.4929px;
+        list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+        padding: 2px 12px;
+        text-align: right;
+        text-decoration: none;
+        text-shadow: none;
+        text-underline-offset: 1px;
+        transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        white-space: nowrap;
+        word-break: break-word;
+    }
+
+        .buttonsNextPrevious:active,
+        .buttonsNextPrevious:hover,
+        .buttonsNextPrevious:focus:hover {
+            outline: 0;
+        }
+
+    .btn:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+        box-shadow: none;
+    }
+
+    .btn-check:focus + .btn, .btn:focus {
+        outline: 0;
+        box-shadow: none;
+    }
+
+        .buttonsNextPrevious:active {
+            background-color: black;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
+
+        .buttonsNextPrevious:hover {
+            background-color: black;
+            border-color: black;
+            color: white;
+        }
+
+        .buttonsNextPrevious:active:hover,
+        .buttonsNextPrevious:focus:hover
+         {
+            background-color: black;
+            box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+            color: #FFFFFF;
+        }
+</style>
+
+@code {
+    [Parameter]
+    public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
+    [Parameter]
+    public DeviceProfile? CurrentDevice { get; set; }
+    [Parameter]
+    public EventCallback<DeviceProfile> CurrentDeviceChanged { get; set; }
+    
+    private List<DeviceProfile> _cachedDevices = new();
+    private int _currentDeviceIndex = -1;
+    //These checks if there is more then one list item as well.
+    private bool _isFirst => _cachedDevices.Count < 2 || _currentDeviceIndex <= 0;
+    private bool _isLast => _cachedDevices.Count < 2 || _currentDeviceIndex == -1 || _currentDeviceIndex >= _cachedDevices.Count - 1;
+
+    protected override void OnParametersSet()
+    {
+        if (DevicesListAsQueryable != null)
+        {
+            _cachedDevices = DevicesListAsQueryable.ToList();
+        }
+        else
+        {
+            _cachedDevices = new();
+        }
+        UpdateCurrentIndex();
+        base.OnParametersSet();
+    }
+
+    private void UpdateCurrentIndex()
+    {
+        if (CurrentDevice != null && _cachedDevices.Any())
+        {
+            // Use FindIndex matching on ID.
+            _currentDeviceIndex = _cachedDevices.FindIndex(d => d.DeviceID == CurrentDevice.DeviceID);
+        }
+        else
+        {
+            _currentDeviceIndex = -1;
+        }
+    }
+
+    private async Task OnModalDeviceNext()
+    {
+        if (_isLast) return;
+        var nextDevice = _cachedDevices[_currentDeviceIndex + 1];
+        await CurrentDeviceChanged.InvokeAsync(nextDevice);
+    }
+
+    private async Task OnModalDevicePrevious()
+    {
+        if (_isFirst) return;
+        var previousDevice = _cachedDevices[_currentDeviceIndex - 1];
+        await CurrentDeviceChanged.InvokeAsync(previousDevice);
+    }
+}

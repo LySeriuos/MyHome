@@ -1,4 +1,4 @@
-﻿@page "/QrCoder"
+@page "/QrCoder"
 
 @using MyHome.Models;
 @using MyHome;
@@ -218,7 +218,7 @@
 
         try
         {
-            _wifiQrCodeUrl = Logic.CreateWifiSharingQrCode(
+            _wifiQrCodeUrl = QrCodeGenerator.CreateWifiSharingQrCode(
                 wifiModel.WifiName,
                 wifiModel.WifiPassword);
 

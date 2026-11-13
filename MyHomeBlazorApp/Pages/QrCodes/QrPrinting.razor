@@ -1,4 +1,4 @@
-﻿@page "/qrPrinting"
+@page "/qrPrinting"
 
 @using MyHome
 @using MyHomeBlazorApp.BlazorData
@@ -29,7 +29,7 @@
             That is acceptable for a small device list. 
             If the page contains many devices or rerenders frequently, caching the generated images would improve performance. *@
             <img width="120"
-                 src="data:image/png;base64,@Convert.ToBase64String(Logic.GetQrCodeBytes(User.UserID, device.DeviceID, baseUrl))"
+                 src="data:image/png;base64,@Convert.ToBase64String(QrCodeGenerator.GetQrCodeBytes(User.UserID, device.DeviceID, baseUrl))"
                  class="img-fluid" alt="Device Qr Code" />
 
             <div class="text-muted small mt-2">

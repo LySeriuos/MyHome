@@ -1,0 +1,61 @@
+@namespace MyHomeBlazorApp.Components.DetailsTabs
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using MyHome.Models
+@using MyHomeBlazorApp.Components
+
+<div class="grid my-5">
+    <div class="">
+        <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your Warranties data</div>
+    </div>
+    <QuickGrid tabindex="3" Class="text-center table-responsive" Items="@Items">
+        <TemplateColumn>
+            <div>
+                <Button Class="btn btn-outline-dark" @onclick="() => OnEdit.InvokeAsync(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+            </div>
+        </TemplateColumn>
+        <TemplateColumn Title="Real Estate/ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
+            <span>@context.TempRealEstateName</span>
+        </TemplateColumn>
+        <PropertyColumn Title="Device Name" Property="@(d => d.DeviceName)" Sortable="true" />
+        <PropertyColumn Title="Purchase Date" Property="@(d => d.DeviceWarranty.PurchaseDate.ToShortDateString())" Sortable="true" />
+        <PropertyColumn Title="Expires" Property="@(d => d.DeviceWarranty.WarrantyEnd.ToShortDateString())" Sortable="true" />
+        <PropertyColumn Title="Warranty Length (Years)" Property="@(d => d.DeviceWarranty.Years)" />
+        <TemplateColumn Title="Receipt">
+            @if (String.IsNullOrEmpty(context.DeviceWarranty.ReceiptLink))
+            {
+                <span class="text-sm"><small>No File</small></span>
+            }
+            else
+            {
+                <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ReceiptLink.Replace('\\', '/')))"
+                   target="_blank" class="btn btn-sm btn btn-outline-info">
+                    Open
+                </a>
+            }
+        </TemplateColumn>
+        <PropertyColumn Title="Extra Warranty Length (Years)" Property="@(d => d.DeviceWarranty.ExtendedWarrantyinYears)" Sortable="true" />
+        <TemplateColumn Title="Extra's Receipt">
+            @if (String.IsNullOrEmpty(context.DeviceWarranty.ExtraInsuranceWarrantyLink))
+            {
+                <span class="text-sm"><small>No File</small></span>
+            }
+            else
+            {
+                <a href="/api/Files/@context.DeviceID/@(Path.GetFileName(context.DeviceWarranty.ExtraInsuranceWarrantyLink.Replace('\\', '/')))"
+                   target="_blank" class="btn btn-sm btn btn-outline-info">
+                    Open
+                </a>
+            }
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+
+
+@code {
+    [Parameter]
+    public IQueryable<DeviceProfile>? Items { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnEdit { get; set; }
+}

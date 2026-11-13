@@ -1,0 +1,46 @@
+@namespace MyHomeBlazorApp.Components.DetailsTabs
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using MyHome.Models
+@using MyHomeBlazorApp.Components
+
+<div class="grid">
+    <div class="">
+        <Button Class="btn my-3 addNew-btn btn-rounded" @onclick="() => OnAdd.InvokeAsync()">+ Add New Real Estate</Button>
+        <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your Real Estate data</div>
+        <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Press Delete Icon to delete Real Estate with devices or delete Real Estate and move devices to other Real Estate</div>
+    </div>
+    <QuickGrid tabindex="1" Items="@Items" Class="table-responsive">
+        <TemplateColumn>
+            <div>
+                <Button Class="btn btn-outline-dark icon-button" @onclick="() => OnEdit.InvokeAsync(context.RealEstateID)"><Icon Name="IconName.PencilFill" /></Button>
+                <Button Class="btn btn-outline-danger" @onclick="() => OnDelete.InvokeAsync(context.RealEstateID)"><Icon Name="IconName.Trash3Fill" /></Button>
+            </div>
+        </TemplateColumn>
+        <PropertyColumn Title="ID" Property="@(r => r.RealEstateID)" Sortable="true" />
+        <PropertyColumn Title="Name" Property="@(r => r.RealEstateName)" Sortable="true" />
+        <PropertyColumn Title="Street Name" Property="@(r => r.Address.StreetName)" />
+        <PropertyColumn Title="House Number" Property="@(r => r.Address.HouseNumber)" />
+        <TemplateColumn Title="Number's Extension">
+            <NoData Text="@context.Address.HouseNumberExtension"></NoData>
+        </TemplateColumn>
+        <PropertyColumn Property="@(r => r.Address.City)" Sortable="true" />
+        <PropertyColumn Property="@(r => r.Address.Country)" Sortable="true" />
+        <PropertyColumn Title="Total Devices" Property="@(r => r.DevicesProfiles.Count())" />
+    </QuickGrid>
+</div>
+
+
+@code {
+    [Parameter]
+    public IQueryable<RealEstate>? Items { get; set; }
+
+    [Parameter]
+    public EventCallback OnAdd { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+}

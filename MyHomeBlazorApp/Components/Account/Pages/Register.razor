@@ -1,4 +1,4 @@
-﻿@page "/Account/Register"
+@page "/Account/Register"
 
 @using System.ComponentModel.DataAnnotations
 @using System.Text
@@ -156,14 +156,15 @@
             RedirectManager.RedirectTo(
                 "Account/RegisterConfirmation",
                 new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
+                return;
         }
 
-        // ONLY sign in automatically if they DON'T need to confirm their email
-        await SignInManager.SignInAsync(user, isPersistent: false);
-        RedirectManager.RedirectTo(ReturnUrl);
+        // // ONLY sign in automatically if they DON'T need to confirm their email
+        // await SignInManager.SignInAsync(user, isPersistent: false);
+        // RedirectManager.RedirectTo(ReturnUrl);
 
-        await SignInManager.SignInAsync(user, isPersistent: false);
-        RedirectManager.RedirectTo(ReturnUrl);
+        // await SignInManager.SignInAsync(user, isPersistent: false);
+        // RedirectManager.RedirectTo(ReturnUrl);
     }
 
     private MyHomeBlazorAppUser CreateUser()

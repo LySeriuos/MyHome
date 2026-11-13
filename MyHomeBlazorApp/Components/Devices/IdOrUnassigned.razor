@@ -1,0 +1,15 @@
+@namespace MyHomeBlazorApp.Components
+@if (ObjID == 0)
+{
+    <span>Unassigned</span>
+}
+else
+{
+    <span>@ObjID</span>
+}
+
+
+@code {
+    [Parameter]
+    public int? ObjID { get; set; }
+}

@@ -1,0 +1,126 @@
+@namespace MyHomeBlazorApp.Components.DetailsTabs
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using MyHome.Models
+@using MyHomeBlazorApp.Components
+@inject MyHomeBlazorApp.BlazorData.DataService DataService
+
+<div class="container-fluid p-0">
+    <div class="grid">
+        <div class="col"><Button Class="btn my-3 addNew-btn" @onclick="() => OnAdd.InvokeAsync()">+ Add New Device</Button></div>
+        <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your device data</div>
+        <div class="col my-3"><Icon Color="IconColor.Danger" Name="IconName.Trash3Fill" /> Press Delete Icon to delete device</div>
+        <div class="col my-3"><Icon Color="IconColor.Success" Name="IconName.QrCode" /> Press Qr Code Icon to add device to printing list</div>
+        <div class="col my-3"><Icon Color="IconColor.Info" Size="IconSize.None" Name="IconName.EnvelopeOpen" /> Press Envelope icon to prepare email with chosed device details</div>
+    </div>
+    <div class="row">
+        <div class="col-md-7 col-lg-5">
+            <div class="d-flex align-items-center justify-content-start gap-3 border rounded-pill px-3 py-1 mb-3 bg-light shadow-sm" style="width: fit-content;">
+                <Button Class="btn btn-sm btn-link text-success text-decoration-none fw-bold" @onclick="() => OnQueueAll.InvokeAsync()">
+                    Add all devices to print list
+                </Button>
+            </div>
+
+            @if (DataService.GetCurrentQueue().Any())
+            {
+                <div class="card shadow-sm border-0 bg-light">
+                    <div class="card-body p-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                            <span class="badge rounded-pill bg-success">
+                                @DataService.GetCurrentQueue().Count() Selected
+                            </span>
+                            <button class="btn btn-sm py-0 btn-success rounded-pill px-3 fw-bold shadow-sm" @onclick="() => OnPrint.InvokeAsync()">
+                                Print <i class="bi bi-arrow-right-short"></i>
+                            </button>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-1">
+                            @foreach (var device in DataService.GetCurrentQueue())
+                            {
+                                <div class="badge bg-light text-dark border d-flex align-items-center p-2" style="font-size: 0.9rem;">
+                                    <span class="me-2">@device.DeviceName</span>
+                                    <button type="button" class="btn-close" aria-label="Remove"
+                                            style="font-size: 0.6rem;"
+                                            @onclick="() => OnRemoveQueuedDevice.InvokeAsync(device)">
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="details-tab-content">
+        <QuickGrid tabindex="2" Items="@Items" Responsive="true">
+            <TemplateColumn>
+                <div>
+                    <Button Class="btn btn-outline-dark" @onclick="() => OnEdit.InvokeAsync(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                    <Button Class="btn btn-outline-danger" @onclick="() => OnDelete.InvokeAsync(context.DeviceID)"><Icon Name="IconName.Trash3Fill" /></Button>
+                    <Button Class="btn btn-outline-success" @onclick="() => OnQueueDevice.InvokeAsync(context)"><Icon Name="IconName.QrCode" /></Button>
+                    <Button Class="btn btn-outline-info" @onclick="() => OnCreateEmail.InvokeAsync(context.DeviceID)"><Icon Name="IconName.EnvelopeOpen" /></Button>
+                </div>
+            </TemplateColumn>
+            <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
+                <span>@context.TempRealEstateName</span>
+            </TemplateColumn>
+            <PropertyColumn Title="Device ID" Property="@(d => d.DeviceID)" Sortable="true" />
+            <PropertyColumn Title="Name" Property="@(d => d.DeviceName)" Sortable="true" />
+            <PropertyColumn Title="Produser" Property="@(d => d.DeviceProduser)" Sortable="true" />
+            <PropertyColumn Title="Type" Property="@(d => d.DeviceType)" Sortable="true" />
+            <PropertyColumn Title="Serial Number" Property="@(d => d.DeviceSerialNumber)" />
+            <PropertyColumn Title="Model Number" Property="@(d => d.DeviceModelNumber)" />
+            <PropertyColumn Title="IP Address" Property="@(d => d.IpAddress)" />
+            <PropertyColumn Title="Mac Address" Property="@(d => d.MacAdrress)" />
+            <TemplateColumn Title="Manual">
+                @{
+                    var manualUrl = DataService.GetManualUrl(context);
+                }
+
+                @if (manualUrl != null)
+                {
+                    <a class="btn btn-sm btn-outline-info"
+                       href="@manualUrl"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        Find Manual
+                    </a>
+                }
+                else
+                {
+                    <span class="text-muted">N/A</span>
+                }
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public IQueryable<DeviceProfile>? Items { get; set; }
+
+    [Parameter]
+    public EventCallback OnAdd { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<DeviceProfile> OnQueueDevice { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnCreateEmail { get; set; }
+
+    [Parameter]
+    public EventCallback OnQueueAll { get; set; }
+
+    [Parameter]
+    public EventCallback OnPrint { get; set; }
+
+    [Parameter]
+    public EventCallback<DeviceProfile> OnRemoveQueuedDevice { get; set; }
+}

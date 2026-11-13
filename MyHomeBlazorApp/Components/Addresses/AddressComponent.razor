@@ -1,0 +1,69 @@
+@namespace MyHomeBlazorApp.Components
+@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+
+
+<EditForm Model="@CurrentObjectAddress"> 
+    <div class="form-group row mt-2 align-items-center">
+        <label for="streetName" class="col-sm-4 col-form-label">
+            Street Name
+        </label>
+        <div class="col-sm-8">
+            <InputText id="streetName" class="form-control" placeholder="Street Name"
+                       @bind-Value="@CurrentObjectAddress.StreetName" />
+        </div>
+    </div>
+    <div class="form-group row mt-2 align-items-center">
+        <label for="houseNumber" class="col-sm-4 col-form-label">
+            House Number
+        </label>
+        <div class="col-sm-8">
+            <InputNumber id="houseNumber" class="form-control" placeholder="House Number"
+                         @bind-Value="@CurrentObjectAddress.HouseNumber" />
+        </div>
+    </div>
+    <div class="form-group row mt-2 align-items-center">
+        <label for="houseNumberExtension" class="col-sm-4 col-form-label">
+            House Number Extension
+        </label>
+        <div class="col-sm-8">
+            <InputText id="houseNumberExtension" class="form-control" placeholder="House Number Extension"
+                       @bind-Value="@CurrentObjectAddress.HouseNumberExtension" />
+        </div>
+    </div>
+
+    <div class="form-group row mt-2 align-items-center">
+        <label for="city" class="col-sm-4 col-form-label">
+            City
+        </label>
+        <div class="col-sm-8">
+            <InputText id="city" class="form-control" placeholder="City"
+                       @bind-Value="@CurrentObjectAddress.City" />
+        </div>
+    </div>
+    <div class="form-group row mt-2 align-items-center">
+        <label for="country" class="col-sm-4 col-form-label">
+            Country
+        </label>
+        <div class="col-sm-8 mt-2 align-items-center">
+            <InputText id="country" class="form-control" placeholder="Country"
+                       @bind-Value="@CurrentObjectAddress.Country" />
+        </div>
+    </div>
+    @if(DisplaySubmitButton)
+    {
+        <Button Type="ButtonType.Submit" class="btn btn-danger">Save</Button>
+    }
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public Address? CurrentObjectAddress { get; set; }
+    [Parameter]
+    public bool DisplaySubmitButton { get; set; } = true;
+
+
+}

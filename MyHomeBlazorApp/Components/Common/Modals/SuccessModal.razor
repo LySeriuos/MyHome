@@ -1,0 +1,29 @@
+@namespace MyHomeBlazorApp.Components.Modals
+<Modal @ref="refModalSuccess" Title="@Title">
+    <BodyTemplate>
+        @Text
+    </BodyTemplate>
+    <FooterTemplate>
+        <ButtonCloseCancel TextButton="Close" ButtonEvent="OnHideModalClick"/>
+        @* <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button *@
+    </FooterTemplate>
+</Modal>
+
+@code {
+    [Parameter]
+    public String? Title { get; set; }
+    [Parameter]
+    public String? Text { get; set; }
+    private Modal refModalSuccess { get; set; } = new();
+    
+
+    public async Task OnHideModalClick()
+    {
+        await refModalSuccess.HideAsync();
+    }
+
+    public async Task OnShowModalClick()
+    {
+        await refModalSuccess.ShowAsync();
+    }
+}

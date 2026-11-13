@@ -1,0 +1,574 @@
+@namespace MyHomeBlazorApp.Pages
+@page "/walkThrough"
+@attribute [AllowAnonymous]
+
+<h3 class="mb-3">MyHome Project Walkthrough</h3>
+
+<p class="walkthrough-introduction">
+    MyHome keeps device information, receipts, warranties and manuals
+    organized by property, making important records easier to find when
+    they are needed. Explore the sections below to see how the application works.
+    All screenshots contain fictitious test data, and no registration is required.
+</p>
+
+<Tabs EnableFadeEffect="true" Class="demo-tabs" NavStyle="NavStyle.Underline">
+     <Tab Title="About My Home" IsActive="true">
+    <Content>
+        <div class="demo-content">
+
+            <h4>About MyHome</h4>
+
+            <p>
+                MyHome started from a common problem: receipts, warranty documents
+                and product information are often stored in different places or lost
+                over time.
+            </p>
+
+            <p>
+                The application keeps devices, purchase details, warranties, receipts
+                and manuals connected to the property where they belong. QR codes can
+                be attached to physical devices, providing quick access to relevant
+                information and making it easier to prepare device details when
+                contacting a retailer or service provider.
+            </p>
+
+            <h4>Why I Built It</h4>
+
+            <p>
+                I built MyHome as a full-stack portfolio project to gain practical
+                experience beyond isolated coding exercises. Developing it required
+                me to work with data relationships, authentication and authorization,
+                file handling, email integration, QR-code generation, deployment and
+                separate application environments.
+            </p>
+
+            <h4>Technical Implementation</h4>
+
+            <p>
+                MyHome is built with C#, .NET, Blazor, Entity Framework Core and
+                SQLite. GitHub Actions builds Docker images and deploys updated
+                versions through separate staging and production workflows. The two
+                environments use separate databases and persistent storage.
+            </p>
+
+            <h4>About the Developer</h4>
+
+            <p>
+                I am transitioning into software development after working with
+                warehouse operations and automated systems. In my current role, I
+                monitor automated equipment, investigate operational failures,
+                restore systems when possible and coordinate mechanical repairs with
+                technicians when required.
+            </p>
+
+            <p>
+                This experience has trained me to investigate problems systematically,
+                understand dependencies and focus on solutions that work reliably in
+                practice. MyHome is where I apply that way of thinking to software
+                development.
+            </p>
+
+            <p>
+                <strong>This walkthrough contains only fictitious test data.</strong>
+            </p>
+
+            <div class="profile-links">
+    <a class="profile-button github-button"
+       href="https://github.com/LySeriuos/MyHome"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="View MyHome source code on GitHub">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor"
+                  d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.77 2.72 1.26 3.38.96.11-.75.41-1.26.74-1.55-2.57-.29-5.27-1.28-5.27-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.05 0 0 .97-.31 3.16 1.18a10.98 10.98 0 0 1 5.75 0c2.19-1.49 3.15-1.18 3.15-1.18.63 1.58.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.71 5.39-5.29 5.68.42.36.79 1.07.79 2.16v3.2c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .7Z" />
+        </svg>
+
+        <span>View Source Code</span>
+    </a>
+
+    <a class="profile-button linkedin-button"
+       href="https://www.linkedin.com/in/paulius-drungilas-4875b180/"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Connect with Paulius Drungilas on LinkedIn">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor"
+                  d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.29ZM5.32 7.41a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.1 20.45H3.54V8.98H7.1v11.47Z" />
+        </svg>
+
+        <span>Connect on LinkedIn</span>
+    </a>
+</div>
+
+        </div>
+    </Content>
+</Tab>
+    <Tab Title="Main Dashboard" IsActive="true">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Main Dashboard</h4>
+
+            <p>
+                The Main Dashboard provides a quick overview of the user's MyHome data.
+                It displays the total number of registered real estates and devices,
+                together with the most recently added property and device.
+                It also highlights the device with the nearest upcoming warranty
+                expiration, allowing important information to be seen immediately
+                after signing in.
+            </p>
+
+            <Image Src="/images/demoImages/MainDashboard.png"
+                   Alt="MyHome Main Dashboard" />
+
+            <h4 class="mt-5">Quick Navigation</h4>
+
+            <p>
+                Each dashboard card also provides direct access to the corresponding
+                section of the application. Users can quickly open their account,
+                real estates, devices, or warranties without navigating through
+                multiple pages.
+            </p>
+
+        </div>
+    </Content>
+</Tab>
+   <Tab Title="Real Estates">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Real Estate Management</h4>
+
+            <p>
+                MyHome allows users to manage multiple real estates within a single
+                account. Each property stores its own name and address information
+                and acts as a container for the devices assigned to that location.
+            </p>
+
+            <Image Src="/images/demoImages/RealEstateManagement.png"
+                   Alt="Real Estate Management" />
+
+
+            <h4 class="mt-5">Add a Real Estate</h4>
+
+            <p>
+                Users can add a new property by entering its name and address.
+                Once created, devices can be assigned to the property.
+            </p>
+
+            <Image Src="/images/demoImages/AddRealEstate.png"
+                   Alt="Add Real Estate" />
+
+
+            <h4 class="mt-5">Edit a Real Estate</h4>
+
+            <p>
+                Existing property information can be updated at any time,
+                allowing the user to change the property name or address.
+            </p>
+
+            <Image Src="/images/demoImages/EditRealEstate.png"
+                   Alt="Edit Real Estate" />
+
+
+            <h4 class="mt-5">Deleting a Real Estate</h4>
+
+            <p>
+                Deleting a real estate requires additional handling when devices
+                are still assigned to it. Instead of automatically deleting those
+                devices together with the property, MyHome allows the user to decide
+                what should happen to them.
+            </p>
+
+            <Image Src="/images/demoImages/DeleteRealEstate.png"
+                   Alt="Delete Real Estate" />
+
+
+            <h4 class="mt-5">Keep or Reassign Devices</h4>
+
+            <p>
+                When a property contains devices, they can be kept as unassigned
+                devices or moved to another existing real estate before the property
+                is deleted. This prevents device information from being lost.
+            </p>
+
+            <Image Src="/images/demoImages/DeleteRealEstateWithDevices.png"
+                   Alt="Keep or Reassign Devices When Deleting Real Estate" />
+
+        </div>
+    </Content>
+</Tab>
+   <Tab Title="Devices">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Device Management</h4>
+
+            <p>
+                The Devices section provides an overview of all registered devices.
+                Users can view device information, search for devices, and access
+                actions for editing, deleting, generating QR codes, and creating emails.
+                Devices are connected to real estates and can be managed individually.
+            </p>
+
+            <Image Src="/images/demoImages/Devices.png"
+                   Alt="Device Management" />
+
+
+            <h4 class="mt-5">Edit Device</h4>
+
+            <p>
+                Device information can be updated at any time. Users can edit details
+                such as the device name, type, manufacturer, model, serial number,
+                IP address, MAC address, and assigned real estate.
+            </p>
+
+            <Image Src="/images/demoImages/DeviceEdit.png"
+                   Alt="Edit Device Details" />
+
+
+            <h4 class="mt-5">Delete Device</h4>
+
+            <p>
+                Before a device is permanently removed, MyHome displays a confirmation
+                dialog to help prevent accidental deletion.
+            </p>
+
+            <Image Src="/images/demoImages/DeviceDelete.png"
+                   Alt="Delete Device Confirmation" />
+
+
+            <h4 class="mt-5">Device QR Codes</h4>
+
+            <p>
+                MyHome can generate QR codes for registered devices. Each QR code
+                provides a quick way to identify a physical device and access its
+                information in the application.
+            </p>
+
+            <Image Src="/images/demoImages/DeviceQrLabels.png"
+                   Alt="Generated Device QR Codes" />
+
+
+            <h4 class="mt-5">Print QR Codes</h4>
+
+            <p>
+                Generated QR codes can be prepared for printing directly from the
+                application, making it possible to create physical labels for devices
+                around the property.
+            </p>
+
+            <Image Src="/images/demoImages/DeviceQrPrint.png"
+                   Alt="Print Device QR Codes" />
+
+
+            <h4 class="mt-5">Create Device Email</h4>
+
+            <p>
+                Users can select device information and generate an email containing
+                the relevant details. This can be useful when contacting a retailer,
+                manufacturer, service company, or other support provider.
+            </p>
+
+            <Image Src="/images/demoImages/DeviceEmailSelection.png"
+                   Alt="Select Device Information for Email" />
+
+
+            <h4 class="mt-5">Generated Email</h4>
+
+            <p>
+                MyHome automatically prepares the selected device information in an
+                email, reducing the need to manually copy model numbers, serial numbers,
+                and other device details.
+            </p>
+
+            <Image Src="/images/demoImages/DeviceEmailCreated.png"
+                   Alt="Generated Device Email" />
+
+        </div>
+    </Content>
+</Tab>
+    <Tab Title="Device Warranties">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Device Warranty Management</h4>
+
+            <p>
+                The Device Warranties section keeps warranty and purchase information
+                connected to each registered device. Users can store the purchase date,
+                warranty period, extended warranty information, receipts, and insurance
+                documents. This makes it easier to find important documentation and
+                monitor upcoming warranty expiration dates.
+            </p>
+
+            <Image Src="/images/demoImages/DeviceWarranties.png"
+                   Alt="Device Warranty Management" />
+
+
+            <h4 class="mt-5">Edit Warranty Details</h4>
+
+            <p>
+                Warranty information can be updated directly from the warranty overview.
+                Users can change the purchase date, warranty length, and extended warranty
+                period. MyHome automatically calculates the warranty expiration date based
+                on the stored warranty information.
+            </p>
+
+            <p>
+                Warranty receipts and extended warranty documents can also be uploaded
+                and stored with the device. Existing documents can be opened or replaced,
+                keeping purchase and warranty documentation easily accessible in one place.
+            </p>
+
+            <Image Src="/images/demoImages/EditDeviceWarranty.png"
+                   Alt="Edit Device Warranty Details" />
+
+        </div>
+    </Content>
+</Tab>
+    <Tab Title="Shop Details">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Shop Details</h4>
+
+            <p>
+                Purchase shop information is connected to registered devices.
+                Users can view and update the shop name, website, phone number
+                and address, keeping purchase information together with the
+                corresponding device and warranty data.
+            </p>
+
+            <Image Src="/images/demoImages/ShopDetails.png"
+                   Alt="Device Shop Details" />
+
+        </div>
+    </Content>
+</Tab>
+    <Tab Title="Wi-Fi QR Code">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Wi-Fi QR Code Generator</h4>
+
+            <p>
+                MyHome includes a tool for generating a QR code from a Wi-Fi
+                network name and password. The generated QR code can be scanned
+                by another device to simplify connecting to the network.
+            </p>
+
+            <Image Src="/images/demoImages/WifiQrCode.png"
+                   Alt="Wi-Fi QR Code Generator" />
+
+        </div>
+    </Content>
+</Tab>
+    <Tab Title="User Management">
+        <Content>
+            <div class="demo-content">
+
+                <h4 class="mt-3">User Management Dashboard</h4>
+
+                <p>
+                    Administrators can manage registered users from a dedicated dashboard.
+                    Users can be searched, assigned roles, deleted, or temporarily accessed
+                    for support and troubleshooting.
+                </p>
+
+                <Image Src="/images/demoImages/UserManagement.png"
+                       Alt="User Management Dashboard" />
+
+                <h4 class="mt-5">Role Management</h4>
+
+                <p>
+                    Administrators can change a user's role directly from the user management
+                    dashboard. Role-based authorization is implemented using ASP.NET Core Identity.
+                </p>
+
+                <Image Src="/images/demoImages/RoleManagement.png"
+                       Alt="User Role Management" />
+
+                <h4 class="mt-5">Delete User</h4>
+
+                <p>
+                    User deletion requires confirmation before the account is removed,
+                    helping prevent accidental administrative actions.
+                </p>
+
+                <Image Src="/images/demoImages/DeleteUser.png"
+                       Alt="Delete User Confirmation" />
+
+                <h4 class="mt-5">Login as User</h4>
+
+                <p>
+                    Administrators can temporarily access the application as another user
+                    for support and troubleshooting. While impersonation mode is active,
+                    a visible banner identifies the current user and provides an option
+                    to return to the administrator account.
+                </p>
+
+                <Image Src="/images/demoImages/Impersonation.png"
+                       Alt="Administrator Impersonation Mode" />
+
+            </div>
+        </Content>
+    </Tab>
+    <Tab Title="User Account">
+    <Content>
+        <div class="demo-content">
+
+            <h4 class="mt-3">Account Overview</h4>
+
+            <p>
+                Users can manage their personal account information from the account
+                area. The overview also displays a summary of the user's registered
+                real estates and devices.
+            </p>
+
+            <Image Src="/images/demoImages/UserProfile.png"
+                   Alt="User Account Profile" />
+
+            <h4 class="mt-5">Email Management</h4>
+
+            <p>
+                Users can view their current email address and update it through
+                the account management interface.
+            </p>
+
+            <Image Src="/images/demoImages/UserEmail.png"
+                   Alt="User Email Management" />
+
+            <h4 class="mt-5">Password Management</h4>
+
+            <p>
+                Users can securely change their password by providing their current
+                password and confirming the new password.
+            </p>
+
+            <Image Src="/images/demoImages/UserPassword.png"
+                   Alt="User Password Management" />
+
+        </div>
+    </Content>
+</Tab>
+</Tabs>
+<footer class="demo-footer">
+    <div class="container text-center py-4">
+
+        <p class="mb-2">
+            MyHome — C# / .NET / Blazor Portfolio Project
+        </p>
+
+        <a href="https://github.com/LySeriuos/MyHome"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="me-3">
+            <i class="bi bi-github"></i>
+            GitHub
+        </a>
+
+        <a href="https://www.linkedin.com/in/paulius-drungilas-4875b180"
+           target="_blank"
+           rel="noopener noreferrer">
+            <i class="bi bi-linkedin"></i>
+            LinkedIn
+        </a>
+
+    </div>
+</footer>
+<style>
+    .demo-content {
+    max-width: 1200px;
+    margin-top: 20px;
+    padding-bottom: 4rem;
+}
+
+.demo-content h3 {
+    margin-bottom: 10px;
+}
+
+.demo-content h4 {
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+
+.demo-content p {
+    max-width: 900px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.demo-screenshot {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+.demo-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    min-height: 55px;
+    padding: 12px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+
+    background-color: white;
+    border-top: 1px solid #dee2e6;
+
+    z-index: 1000;
+}
+
+.demo-footer a {
+    text-decoration: none;
+}
+
+.demo-tabs .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.demo-tabs .nav-link {
+    border: 1px solid #d8e3e8;
+    border-radius: 12px 12px 0 0;
+
+    padding: 10px 22px;
+
+    background-color: #edf4f7;
+    color: #495057;
+
+    font-weight: 500;
+
+    transition: all 0.2s ease;
+}
+
+/* Mouse hover */
+.demo-tabs .nav-link:hover {
+    background-color: #e1edf2;
+    color: #212529;
+}
+
+/* Selected tab */
+.demo-tabs .nav-link.active {
+    background-color: #efdcd3;
+    color: #212529;
+
+    border-color: #efdcd3;
+    font-weight: 600;
+}
+</style>
+
+@code {
+
+}

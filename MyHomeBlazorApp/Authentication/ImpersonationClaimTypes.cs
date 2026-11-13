@@ -1,4 +1,4 @@
-﻿namespace MyHomeBlazorApp.BlazorData
+namespace MyHomeBlazorApp.BlazorData
 {
     public class ImpersonationClaimTypes
     {
