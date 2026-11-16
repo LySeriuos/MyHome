@@ -1,0 +1,13 @@
+@namespace MyHomeBlazorApp.Pages
+@inject NavigationManager UriHelper
+
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        UriHelper.NavigateTo("Account/Login");
+    }
+}
+
+

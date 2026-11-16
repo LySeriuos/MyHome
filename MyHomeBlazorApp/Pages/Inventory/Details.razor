@@ -1,0 +1,94 @@
+@page "/details/{Tab:int}"
+@page "/details"
+@namespace MyHomeBlazorApp.Pages
+@using MyHomeBlazorApp.Components
+@using MyHomeBlazorApp.Components.DetailsTabs
+@using MyHomeBlazorApp.Components.TabComponents
+@using MyHomeBlazorApp.Components.Modals
+@using MyHomeBlazorApp.Shared
+@attribute [Authorize]
+
+<main class="bodySection">
+    <section class="bodySection-content">
+        <div>
+            <TabControl TabID="TabID">
+                <TabPage Text="Estates">
+                    <EstatesTab Items="@_realEstatesListAsQueryable" OnAdd="OnShowModalAddNewRealEstate" OnEdit="OnShowModalRealEstateClick" OnDelete="OnShowModalChooseOptionDeleteRealEstate" />
+                </TabPage>
+                <TabPage Text="Devices">
+                    <DevicesTab Items="@_devicesListAsQueryable" OnAdd="OnShowModalAddNewDevice" OnEdit="ShowDeviceEditFormInModal" OnDelete="OnShowModalDeleteDeviceClick" OnQueueDevice="HandleQrCode" OnCreateEmail="SendDeviceIDToCreateEmailComponent" OnQueueAll="HandleAddAllToPrint" OnPrint="NavToPrintPage" OnRemoveQueuedDevice="HandleRemoveQueuedDevice" />
+                </TabPage>
+                <TabPage Text="Devices Warranties">
+                    <WarrantiesTab Items="@_devicesListAsQueryable" OnEdit="OnShowModalEditAddDeviceWarrantyClick" />
+                </TabPage>
+                <TabPage Text="Shops Details">
+                    <ShopsTab Items="@_devicesListAsQueryable" OnEdit="OnShowModalEditAddShopClick" />
+                </TabPage>
+            </TabControl>
+        </div>
+    </section>
+</main>
+<!--#region Edit Form Modals  -->
+
+<div>
+    <ModalEditAddRealEstate @ref="@refModalEditAddRealEstate"
+                            CurrentRealEstate="@currentRealEstate"
+                            OnDataChanged="RealEstateDataHasChanged"
+                            ModalTitle="@modalTitle">
+    </ModalEditAddRealEstate>
+</div>
+<div>
+    <ModalEditWarrantyDetails @ref="_refModalEditWarrantyDetails"
+                              CurrentDevice="@currentDevice"
+                              DevicesListAsQueryable="@_devicesListAsQueryable"
+                              OnDataChanged="RealEstateDataHasChanged">
+    </ModalEditWarrantyDetails>
+</div>
+<div>
+    <ModalEditShopDetails @ref="refModalEditShopDetails"
+                          CurrentDevice="@currentDevice"
+                          ShopAddress="@shopAddress"
+                          DevicesListAsQueryable="@_devicesListAsQueryable"
+                          OnDataChanged="RealEstateDataHasChanged">
+    </ModalEditShopDetails>
+</div>
+<div>
+    <ModalDeleteRealEstate @ref="refModalRealEstateDelete"
+                           CurrentRealEstate="@currentRealEstate"
+                           OnDataChanged="RealEstateDataHasChanged"
+                           OnDeleteSuccess="OnModalDeleteSuccess"
+                           OnDevicesListDataChanged="DeviceDataHasChanged"
+                           AllOtherRealEstates="@_realEstatesList">
+    </ModalDeleteRealEstate>
+</div>
+<div>
+    <ModalConfirmDeviceDeletion @ref="refModalConfirmDeviceDeletion"
+                                CurrentDeviceToDelete="@currentDevice"
+                                onDataChanged="DeviceDataHasChanged"
+                                eventCallback="OnModalDeleteSuccess"
+                                OnUnnassignedDeviceListDataChanged="HandleUnnassignedDevicesListDataChanged">
+    </ModalConfirmDeviceDeletion>
+</div>
+<div>
+    <ModalDeleteSuccessful @ref="refModalDeleteSuccess"
+                           ObjectName="@_deletedObjectName"
+                           onDataChanged="DeviceDataHasChanged">
+    </ModalDeleteSuccessful>
+</div>
+<div>
+    <SuccessModal @ref="_refSuccessModal" Title="Add/Edit Confirmation" Text="Data updated/added successfully!"></SuccessModal>
+</div>
+
+@* CustomReusableModal is for adding different forms in one modal to save code lines *@
+<div>
+    <CustomReusableModal @ref="_reusableModal" Title="@modalTitle">
+        <AddEditDeviceForm CurrentDevice="currentDevice"
+                           CurrentUser="currentUser"
+                           ChosenRealEstateId="chosenRealEsatateId"
+                           DataChangedEvent="DeviceDataHasChanged" />
+    </CustomReusableModal>
+</div>
+
+
+
+<!--#endregion -->

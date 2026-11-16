@@ -1,0 +1,42 @@
+@namespace MyHomeBlazorApp.Components.DetailsTabs
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using MyHome.Models
+@using MyHomeBlazorApp.Components
+
+<div class="grid my-5">
+    <div class="">
+        <div class="col my-3"><Icon Color="IconColor.Dark" Name="IconName.PencilFill" /> Press Edit Icon to change your device purchase shop data</div>
+    </div>
+    @if (Items != null)
+    {
+        <QuickGrid tabindex="4" Items="@Items" Class="table-responsive">
+            <TemplateColumn>
+                <div>
+                    <Button Class="btn btn-outline-dark" @onclick="() => OnEdit.InvokeAsync(context.DeviceID)"><Icon Name="IconName.PencilFill" /></Button>
+                </div>
+            </TemplateColumn>
+            <TemplateColumn Title="Real Estate / ID" Sortable="true" SortBy="GridSort<DeviceProfile>.ByAscending(d => d.TempRealEstateName).ThenAscending(d => d.DeviceID)">
+                <span>@context.TempRealEstateName</span>
+            </TemplateColumn>
+            <PropertyColumn Title="Device Name" Property="@(d => d.DeviceName)" Sortable="true" />
+            <PropertyColumn Title="Shop Name" Property="@(d => d.DeviceWarranty.Shop.ShopName)" Sortable="true" />
+            <PropertyColumn Title="Website Adrress" Property="@(d => d.DeviceWarranty.Shop.ShopWebAddress)" Sortable="true" />
+            <PropertyColumn Title="Phone Number" Property="@(d => d.DeviceWarranty.Shop.PhoneNumber)" />
+            <PropertyColumn Title="Street Name" Property="@(d => d.DeviceWarranty.Shop.Address.StreetName)" />
+            <PropertyColumn Title="House Number" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumber)" />
+            <PropertyColumn Title="Number Extension" Property="@(d => d.DeviceWarranty.Shop.Address.HouseNumberExtension)" />
+            <PropertyColumn Title="City" Property="@(d => d.DeviceWarranty.Shop.Address.City)" Sortable="true" />
+            <PropertyColumn Title="Country" Property="@(d => d.DeviceWarranty.Shop.Address.Country)" Sortable="true" />
+        </QuickGrid>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public IQueryable<DeviceProfile>? Items { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnEdit { get; set; }
+}

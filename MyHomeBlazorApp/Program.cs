@@ -1,3 +1,4 @@
+using MyHomeBlazorApp.Services.Files;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -56,10 +57,8 @@ namespace MyHomeBlazorApp
 
             builder.Services.AddIdentityCore<MyHomeBlazorAppUser>(options =>
             {
-                var requireConfirmation = !builder.Environment.IsDevelopment();
-
-                options.SignIn.RequireConfirmedAccount = requireConfirmation;
-                options.SignIn.RequireConfirmedEmail = requireConfirmation;
+                options.SignIn.RequireConfirmedAccount = true;
+                options.SignIn.RequireConfirmedEmail = true;
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MyHomeBlazorAppContext>()
@@ -78,6 +77,7 @@ namespace MyHomeBlazorApp
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddScoped<DataService>();
+            builder.Services.AddSingleton<DeviceFileStorage>();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazorBootstrap();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("AuthMessageSenderOptions"));

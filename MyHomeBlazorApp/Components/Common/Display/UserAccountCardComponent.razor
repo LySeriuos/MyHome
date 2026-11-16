@@ -1,0 +1,94 @@
+@namespace MyHomeBlazorApp.Components
+@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+
+<style>
+    .card-style {
+    display: flex;
+    justify-content: center;
+    background-color: #eeeff4;
+    max-width: 30rem;
+    margin-right: 50px;
+    margin-top: 50px;
+    }
+
+    .card-btn {
+    color: #2d2a2b;
+    background-color: #cfd9e1;
+    border-color: #1861ac;
+    border-radius: 1.3rem;
+    width: 50%;
+    }
+
+    .card-btn:hover {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background: #e2c8c0;
+    color: #2d2a2b;
+    }
+</style>
+
+<Card Class="card-style">
+
+    <img src="/images/d24e91fb-8837-4e8d-9584-8eb3a46f3f98.png" />
+    <CardBody>
+        <CardText>@ChildContent2</CardText>
+    </CardBody>
+    @if(DoubleCard == true)
+    {
+        <hr />
+        <hr />
+    }
+        <CardBody>        
+            <CardTitle Class="text-center fw-bolder mb-5">@Title
+                <Icon name="@IconName"></Icon>
+            </CardTitle>        
+            <CardText>@ChildContent</CardText>            
+            @* <Button Type="ButtonType.Submit"></Button> *@
+        </CardBody>
+    @* <CardBody>
+        <CardTitle Class="text-center fw-bolder">
+            <Icon name="@SecondIconName"></Icon>
+        </CardTitle>
+        <CardText>@ChildContent2</CardText>
+    </CardBody> *@
+</Card>
+
+@code {
+
+    [Parameter]
+    public string? IconStyle { get; set; }
+    [Parameter]
+    public IconName IconName { get; set; }
+    [Parameter]
+    public IconName SecondIconName { get; set; }
+    [Parameter]
+    public string? Image { get; set; }
+    [Parameter]
+    public string? IconPath { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? SecondTitle { get; set; }
+    [Parameter]
+    public string? Text { get; set; }
+    [Parameter]
+    public List<string?> ListItems { get; set; } = new List<string?>();
+    [Parameter]
+    public string? LinkName { get; set; }
+    [Parameter]
+    public bool? DoubleCard { get; set; }
+    [Parameter]
+    public string? LinkTo { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent2 { get; set; }
+}
+
+
+
+@code {
+
+}

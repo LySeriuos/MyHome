@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using MyHomeBlazorApp.BlazorData;
 
 namespace MyHomeBlazorApp.Components.Account
