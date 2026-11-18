@@ -1,0 +1,89 @@
+@namespace MyHomeBlazorApp.Components.Modals
+@using BlazorBootstrap
+@inject BlazorData.DataService DataService
+@using MyHome.Models
+@using MyHomeBlazorApp.Components.Modals
+
+<style>
+    .btn-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .left-buttons button,
+    .right-buttons button {
+        margin: 0 5px;
+    }
+</style>
+
+<Modal @ref="refModalEditShopDetails" Title="Edit Shop Details">
+    <BodyTemplate>
+        @if (CurrentDevice != null)
+        {
+            <EditForm Model="@CurrentDevice" Context="ShopDetails" OnSubmit="ShopDetailsFormSubmitted">
+                <div class="form-group row mt-2 align-items-center">
+                    <label for="shopName" class="col-sm-4 col-form-label">Shop Name</label>
+                    <div class="col-sm-8">
+                        <InputText id="shopName" class="form-control" placeholder="Shop Name" @bind-Value="CurrentDevice.DeviceWarranty.Shop.ShopName">Shop Name</InputText>
+                    </div>
+                </div>
+                <div class="form-group row mt-2 align-items-center">
+                    <label for="shopWebAdrress" class="col-sm-4 col-form-label">Shop Web Adrress</label>
+                    <div class="col-sm-8">
+                        <InputText id="shopWebAdrress" class="form-control" placeholder="Shop Web Address" @bind-Value="CurrentDevice.DeviceWarranty.Shop.ShopWebAddress">Shop Phone Number</InputText>
+                    </div>
+                </div>
+                <div class="form-group row mt-2 align-items-center">
+                    <label for="shopPhoneNumber" class="col-sm-4 col-form-label">Shop Phone Number</label>
+                    <div class="col-sm-8">
+                        <InputNumber id="shopPhoneNumber" class="form-control" @bind-Value="CurrentDevice.DeviceWarranty.Shop.PhoneNumber">Shop Phone Number</InputNumber>
+                    </div>
+                </div>
+                <AddressComponent DisplaySubmitButton="false" CurrentObjectAddress="@ShopAddress" />
+                <div class="btn-row mt-3">
+                    <div class="left-buttons">
+                        <NextPreviuosButtons @bind-CurrentDevice="@CurrentDevice" DevicesListAsQueryable="@DevicesListAsQueryable"></NextPreviuosButtons>
+                    </div>
+                    <div class="right-buttons">
+                        <ButtonSave />
+                        <ButtonCloseCancel TextButton="Close" ButtonEvent="OnHideModalEditAddShopClick" />
+                    </div>
+                </div>
+            </EditForm>
+        }
+    </BodyTemplate>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public DeviceProfile? CurrentDevice { get; set; }
+    [Parameter]
+    public Address? ShopAddress { get; set; }
+    [Parameter]
+    public IQueryable<DeviceProfile>? DevicesListAsQueryable { get; set; }
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
+    private Modal refModalEditShopDetails { get; set; } = new();
+
+    public async Task OnHideModalEditAddShopClick()
+    {
+        await refModalEditShopDetails.HideAsync();
+    }
+
+    public async Task OnShowModalEditAddShopClick()
+    {
+        await refModalEditShopDetails.ShowAsync();
+    }
+
+    private async Task ShopDetailsFormSubmitted(EditContext Context)
+    {
+        // await OnSubmit.InvokeAsync(CurrentDevice);
+        await DataService.UpdateObjectInDB();
+        await OnDataChanged.InvokeAsync();
+        await refModalEditShopDetails.HideAsync();
+    }
+
+
+}
